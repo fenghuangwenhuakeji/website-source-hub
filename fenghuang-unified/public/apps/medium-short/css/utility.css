@@ -1,0 +1,273 @@
+/* 
+ * WriterCenterArchon - 工具类样式
+ * 毛玻璃现代极简风格 - 浅色主题
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   滚动条
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 自定义滚动条 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+/* 隐藏滚动条但保留功能 */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   毛玻璃模糊效果工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 模糊程度 */
+.blur-sm {
+    backdrop-filter: blur(var(--blur-sm));
+    -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+.blur-md {
+    backdrop-filter: blur(var(--blur-md));
+    -webkit-backdrop-filter: blur(var(--blur-md));
+}
+.blur-lg {
+    backdrop-filter: blur(var(--blur-lg));
+    -webkit-backdrop-filter: blur(var(--blur-lg));
+}
+.blur-xl {
+    backdrop-filter: blur(var(--blur-xl));
+    -webkit-backdrop-filter: blur(var(--blur-xl));
+}
+.blur-none {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   边框工具类 - 浅色主题
+   ═══════════════════════════════════════════════════════════════ */
+
+.border-glass {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+.border-glass-subtle {
+    border-color: rgba(0, 0, 0, 0.04);
+}
+.border-glass-strong {
+    border-color: rgba(0, 0, 0, 0.1);
+}
+.border-accent {
+    border-color: var(--color-accent);
+}
+.border-accent-subtle {
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   背景工具类 - 浅色主题
+   ═══════════════════════════════════════════════════════════════ */
+
+/* 主背景色 */
+.bg-app {
+    background-color: var(--color-bg);
+}
+.bg-elevated {
+    background-color: var(--color-bg-elevated);
+}
+.bg-surface {
+    background-color: var(--color-bg-surface);
+}
+
+/* 玻璃背景 */
+.bg-glass {
+    background: rgba(0, 0, 0, 0.02);
+}
+.bg-glass-hover:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+.bg-glass-strong {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   文字工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-bright));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-shadow-glow {
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   交互状态工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.hover-lift {
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+.hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.hover-glow {
+    transition: box-shadow var(--transition-fast);
+}
+.hover-glow:hover {
+    box-shadow: var(--shadow-glow);
+}
+
+.hover-scale {
+    transition: transform var(--transition-fast);
+}
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   布局工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.flex-col-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   动画工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.animate-fade-in {
+    animation: fadeIn 0.4s var(--ease-smooth) forwards;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s var(--ease-smooth) forwards;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s var(--ease-bounce) forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   间距工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.gap-xs { gap: var(--space-xs); }
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+.gap-2xl { gap: var(--space-2xl); }
+
+.p-xs { padding: var(--space-xs); }
+.p-sm { padding: var(--space-sm); }
+.p-md { padding: var(--space-md); }
+.p-lg { padding: var(--space-lg); }
+.p-xl { padding: var(--space-xl); }
+.p-2xl { padding: var(--space-2xl); }
+
+.m-xs { margin: var(--space-xs); }
+.m-sm { margin: var(--space-sm); }
+.m-md { margin: var(--space-md); }
+.m-lg { margin: var(--space-lg); }
+.m-xl { margin: var(--space-xl); }
+.m-2xl { margin: var(--space-2xl); }
+
+/* ═══════════════════════════════════════════════════════════════
+   圆角工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.rounded-xs { border-radius: var(--radius-xs); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-2xl { border-radius: var(--radius-2xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* ═══════════════════════════════════════════════════════════════
+   阴影工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow-md { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+.shadow-xl { box-shadow: var(--shadow-xl); }
+.shadow-glow { box-shadow: var(--shadow-glow); }
+.shadow-none { box-shadow: none; }
+
+/* ═══════════════════════════════════════════════════════════════
+   过渡工具类
+   ═══════════════════════════════════════════════════════════════ */
+
+.transition-fast { transition: all var(--transition-fast); }
+.transition-normal { transition: all var(--transition-normal); }
+.transition-slow { transition: all var(--transition-slow); }
+.transition-none { transition: none; }

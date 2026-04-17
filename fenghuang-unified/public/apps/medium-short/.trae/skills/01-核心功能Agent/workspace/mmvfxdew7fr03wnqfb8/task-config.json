@@ -1,0 +1,9 @@
+{
+  "project": "AI Assistant Platform",
+  "phases": [
+    "需求分析",
+    "架构设计",
+    "开发实现",
+    "测试部署"
+  ]
+}

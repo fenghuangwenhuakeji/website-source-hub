@@ -1,0 +1,71 @@
+{
+  "batch_name": "Batch-test-agent",
+  "output_dir": "D:\\AIcreateEngine\\标准软件开发范式\\.trae\\skills\\01-核心功能Agent\\workspace\\mmvfxdedm5pb382ve5",
+  "agents": [
+    {
+      "name": "test-agent-1",
+      "type": "skill",
+      "title": "test-agent-1",
+      "description": "Auto generated test-agent-1",
+      "core_concept": "Batch generated agent",
+      "features": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3"
+      ],
+      "priority": "medium"
+    },
+    {
+      "name": "test-agent-2",
+      "type": "skill",
+      "title": "test-agent-2",
+      "description": "Auto generated test-agent-2",
+      "core_concept": "Batch generated agent",
+      "features": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3"
+      ],
+      "priority": "medium"
+    },
+    {
+      "name": "test-agent-3",
+      "type": "skill",
+      "title": "test-agent-3",
+      "description": "Auto generated test-agent-3",
+      "core_concept": "Batch generated agent",
+      "features": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3"
+      ],
+      "priority": "medium"
+    },
+    {
+      "name": "test-agent-4",
+      "type": "skill",
+      "title": "test-agent-4",
+      "description": "Auto generated test-agent-4",
+      "core_concept": "Batch generated agent",
+      "features": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3"
+      ],
+      "priority": "medium"
+    },
+    {
+      "name": "test-agent-5",
+      "type": "skill",
+      "title": "test-agent-5",
+      "description": "Auto generated test-agent-5",
+      "core_concept": "Batch generated agent",
+      "features": [
+        "Feature 1",
+        "Feature 2",
+        "Feature 3"
+      ],
+      "priority": "medium"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+export class XiuxianEngine extends BaseGameEngine { constructor(c){super(c); Modules.games.type='xiuxian'; Modules.games.ctx=this.ctx; Modules.games.initXianxia(); this.draw=()=>{Modules.games.loop();}} }
