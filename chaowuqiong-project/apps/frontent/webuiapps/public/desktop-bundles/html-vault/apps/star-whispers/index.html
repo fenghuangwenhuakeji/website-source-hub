@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>星语心伴 - 全年龄段AI心理陪伴平台</title>
+    <meta name="description" content="星座运势、心理测试、塔罗占卜、八字命理、AI心理陪伴">
+    <meta name="keywords" content="星座,心理测试,塔罗,八字,运势,AI陪伴">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <link rel="stylesheet" href="css/home.css">
+    <style>
+        /* 聊天快捷回复按钮 */
+        .quick-reply-btn {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            color: rgba(255,255,255,0.7);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+        .quick-reply-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        /* 聊天消息样式 */
+        .chat-msg { max-width: 85%; margin-bottom: 16px; animation: msgIn 0.3s ease; }
+        .chat-msg.user { margin-left: auto; }
+        .chat-msg-hd { font-size: 11px; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+        .chat-msg.user .chat-msg-hd { text-align: right; }
+        .chat-msg-content { padding: 14px 18px; border-radius: 20px; font-size: 15px; line-height: 1.7; word-break: break-word; }
+        .chat-msg.user .chat-msg-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-bottom-right-radius: 6px; }
+        .chat-msg.ai .chat-msg-content { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); color: white; border-bottom-left-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+        .chat-msg.system .chat-msg-content { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); font-size: 13px; text-align: center; max-width: 100%; border-radius: 12px; padding: 10px 16px; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* 正在输入提示 */
+        .typing-indicator { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 16px 20px; background: rgba(255,255,255,0.1); border-radius: 20px; border-bottom-left-radius: 6px; border: 1px solid rgba(255,255,255,0.1); }
+        .typing-text { font-size: 14px; color: rgba(255,255,255,0.7); display: flex; align-items: center; gap: 8px; }
+        .typing-text .heart { animation: heartbeat 1s ease-in-out infinite; }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        .typing-dots { display: flex; gap: 6px; }
+        .typing-dots span { width: 10px; height: 10px; border-radius: 50%; animation: cuteBounce 1.2s ease-in-out infinite; }
+        .typing-dots span:nth-child(1) { background: #FF6B6B; animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { background: #4ECDC4; animation-delay: 0.15s; }
+        .typing-dots span:nth-child(3) { background: #FFD700; animation-delay: 0.3s; }
+        .typing-dots span:nth-child(4) { background: #9B59B6; animation-delay: 0.45s; }
+        @keyframes cuteBounce { 0%, 80%, 100% { transform: translateY(0) scale(1); } 40% { transform: translateY(-12px) scale(1.1); } }
+        /* 聊天Tab特殊样式 */
+        #tab-chat { display: none; flex-direction: column; height: calc(100vh - 60px); padding: 0; position: relative; }
+        #tab-chat.active { display: flex; }
+        #chatMessages { flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 180px; }
+        #chatMessages::-webkit-scrollbar { width: 0; display: none; }
+        #chatMessages { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 隐藏所有tab内容的滚动条 */
+        .tab-content::-webkit-scrollbar { width: 0; display: none; }
+        .tab-content { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body data-theme="adult">
+    <!-- 星空背景 -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <!-- 加载动画 -->
+    <div class="loading-overlay" id="loading">
+        <div class="loading-content">
+            <div class="loading-logo">✨</div>
+            <div class="loading-text">星语心伴</div>
+            <div class="loading-dots">
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+                <div class="loading-dot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用容器 -->
+    <div class="app-container">
+        <!-- 顶部区域 -->
+        <header class="header-section">
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo-icon">✨</div>
+                    <span class="logo-text">星语心伴</span>
+                </div>
+                <div class="header-actions">
+                    <button class="header-btn" id="themeBtn" title="切换主题">
+                        <i class="fas fa-palette"></i>
+                    </button>
+                    <button class="header-btn" id="userBtn" title="个人中心">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 每日签语 -->
+            <div class="daily-quote-card">
+                <div class="quote-header">
+                    <span class="quote-title">💫 今日签语</span>
+                    <span class="quote-date" id="quoteDate"></span>
+                </div>
+                <p class="quote-content" id="quoteContent">每一个日出都是新的开始，相信自己的力量，今天也会是美好的一天。</p>
+                <p class="quote-author">—— 星语心伴</p>
+            </div>
+        </header>
+
+        <!-- 主导航 -->
+        <nav class="main-nav">
+            <button class="nav-tab active" data-tab="home">首页</button>
+            <button class="nav-tab" data-tab="discover">发现</button>
+            <button class="nav-tab" data-tab="community">社区</button>
+            <button class="nav-tab" data-tab="chat">聊天</button>
+        </nav>
+
+        <!-- 内容区域 -->
+        <main class="content-section">
+            <!-- 首页内容 -->
+            <div class="tab-content active" id="tab-home">
+            <!-- 功能入口 -->
+            <section class="feature-section">
+                <div class="feature-grid">
+                    <a href="pages/horoscope.html" class="feature-item">
+                        <div class="feature-icon horoscope">♈</div>
+                        <span class="feature-name">星座运势</span>
+                    </a>
+                    <a href="pages/test.html" class="feature-item">
+                        <div class="feature-icon test">🧠</div>
+                        <span class="feature-name">心理测试</span>
+                    </a>
+                    <a href="pages/tarot.html" class="feature-item">
+                        <div class="feature-icon tarot">🔮</div>
+                        <span class="feature-name">塔罗占卜</span>
+                    </a>
+                    <a href="pages/bazi.html" class="feature-item">
+                        <div class="feature-icon bazi">☯️</div>
+                        <span class="feature-name">八字命理</span>
+                    </a>
+                    <a href="pages/chat.html" class="feature-item">
+                        <div class="feature-icon chat">💬</div>
+                        <span class="feature-name">AI聊天</span>
+                    </a>
+                    <a href="pages/mbti.html" class="feature-item">
+                        <div class="feature-icon npti">🧩</div>
+                        <span class="feature-name">MBTI人格</span>
+                    </a>
+                    <a href="#" class="feature-item" id="communityBtn">
+                        <div class="feature-icon community">👥</div>
+                        <span class="feature-name">社区</span>
+                    </a>
+                    <a href="pages/api-settings.html" class="feature-item" id="settingsBtn">
+                        <div class="feature-icon settings">⚙️</div>
+                        <span class="feature-name">设置</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 星座选择 -->
+            <section class="zodiac-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-star"></i> 选择星座查看运势</h2>
+                </div>
+                <div class="zodiac-grid" id="zodiacGrid">
+                    <div class="zodiac-item" data-sign="白羊座"><span class="zodiac-symbol">♈</span><span class="zodiac-name">白羊</span></div>
+                    <div class="zodiac-item" data-sign="金牛座"><span class="zodiac-symbol">♉</span><span class="zodiac-name">金牛</span></div>
+                    <div class="zodiac-item" data-sign="双子座"><span class="zodiac-symbol">♊</span><span class="zodiac-name">双子</span></div>
+                    <div class="zodiac-item" data-sign="巨蟹座"><span class="zodiac-symbol">♋</span><span class="zodiac-name">巨蟹</span></div>
+                    <div class="zodiac-item" data-sign="狮子座"><span class="zodiac-symbol">♌</span><span class="zodiac-name">狮子</span></div>
+                    <div class="zodiac-item" data-sign="处女座"><span class="zodiac-symbol">♍</span><span class="zodiac-name">处女</span></div>
+                    <div class="zodiac-item" data-sign="天秤座"><span class="zodiac-symbol">♎</span><span class="zodiac-name">天秤</span></div>
+                    <div class="zodiac-item" data-sign="天蝎座"><span class="zodiac-symbol">♏</span><span class="zodiac-name">天蝎</span></div>
+                    <div class="zodiac-item" data-sign="射手座"><span class="zodiac-symbol">♐</span><span class="zodiac-name">射手</span></div>
+                    <div class="zodiac-item" data-sign="摩羯座"><span class="zodiac-symbol">♑</span><span class="zodiac-name">摩羯</span></div>
+                    <div class="zodiac-item" data-sign="水瓶座"><span class="zodiac-symbol">♒</span><span class="zodiac-name">水瓶</span></div>
+                    <div class="zodiac-item" data-sign="双鱼座"><span class="zodiac-symbol">♓</span><span class="zodiac-name">双鱼</span></div>
+                </div>
+            </section>
+
+            <!-- 今日运势卡片 -->
+            <section class="horoscope-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-sun"></i> 今日运势</h2>
+                    <a href="pages/horoscope.html" class="section-more">查看更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="horoscope-card" id="horoscopeCard">
+                    <div class="horoscope-header">
+                        <div class="horoscope-icon" id="horoscopeIcon">♈</div>
+                        <div class="horoscope-info">
+                            <h3 id="horoscopeSign">白羊座</h3>
+                            <p id="horoscopeDate">2024年2月14日</p>
+                        </div>
+                        <div class="horoscope-score">
+                            <span class="score-stars" id="scoreStars">★★★★☆</span>
+                            <span class="score-text" id="scoreText">85分</span>
+                        </div>
+                    </div>
+                    <div class="horoscope-scores">
+                        <div class="score-item">
+                            <span class="score-label">爱情</span>
+                            <div class="score-bar"><div class="score-fill love" style="width: 90%"></div></div>
+                            <span class="score-value">90</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">事业</span>
+                            <div class="score-bar"><div class="score-fill career" style="width: 85%"></div></div>
+                            <span class="score-value">85</span>
+                        </div>
+                        <div class="score-item">
+                            <span class="score-label">财运</span>
+                            <div class="score-bar"><div class="score-fill wealth" style="width: 75%"></div></div>
+                            <span class="score-value">75</span>
+                        </div>
+                    </div>
+                    <div class="lucky-elements">
+                        <div class="lucky-item"><i class="fas fa-palette"></i> 幸运色: <span id="luckyColor">红色</span></div>
+                        <div class="lucky-item"><i class="fas fa-hashtag"></i> 幸运数: <span id="luckyNumber">9</span></div>
+                        <div class="lucky-item"><i class="fas fa-compass"></i> 幸运方位: <span id="luckyDirection">东方</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 热门测试 -->
+            <section class="test-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-clipboard-list"></i> 热门测试</h2>
+                    <a href="pages/test.html" class="section-more">全部测试 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="test-list">
+                    <a href="pages/mbti.html" class="test-card">
+                        <div class="test-icon mbti">🧩</div>
+                        <div class="test-info">
+                            <h4>MBTI性格测试</h4>
+                            <p>探索你的16型人格类型</p>
+                        </div>
+                        <div class="test-meta">
+                            <span class="test-count">128.5万人测过</span>
+                            <span class="test-tag">免费</span>
+                        </div>
+                    </a>
+                    <a href="pages/test.html?type=stress" class="test-card">
+                        <div class="test-icon stress">😓</div>
+                        <div class="test-info">
+                            <h4>压力指数测试</h4>
+                            <p>评估你当前的压力水平</p>
+                        </div>
+                        <div class="test-meta">
+                            <span class="test-count">45.3万人测过</span>
+                            <span class="test-tag">热门</span>
+                        </div>
+                    </a>
+                    <a href="pages/test.html?type=eq" class="test-card">
+                        <div class="test-icon eq">❤️</div>
+                        <div class="test-info">
+                            <h4>情商EQ测试</h4>
+                            <p>了解你的情绪智力水平</p>
+                        </div>
+                        <div class="test-meta">
+                            <span class="test-count">89.3万人测过</span>
+                            <span class="test-tag">热门</span>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 塔罗占卜入口 -->
+            <section class="tarot-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-moon"></i> 塔罗占卜</h2>
+                    <a href="pages/tarot.html" class="section-more">开始占卜 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="tarot-cards">
+                    <div class="tarot-preview">
+                        <div class="tarot-card-item"><span>🌊</span></div>
+                        <div class="tarot-card-item"><span>⭐</span></div>
+                        <div class="tarot-card-item"><span>🌙</span></div>
+                    </div>
+                    <p class="tarot-desc">抽取塔罗牌，获取命运的指引</p>
+                </div>
+            </section>
+            </div>
+
+            <!-- 发现内容 -->
+            <div class="tab-content" id="tab-discover">
+                <!-- 精选推荐 -->
+                <section class="discover-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-fire"></i> 精选推荐</h2>
+                    </div>
+                    <div class="discover-banner">
+                        <div class="banner-card gradient-1">
+                            <div class="banner-content">
+                                <h3>本周星座运势榜</h3>
+                                <p>看看谁是本周幸运儿</p>
+                            </div>
+                            <div class="banner-icon">🏆</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 热门话题 -->
+                <section class="discover-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-hashtag"></i> 热门话题</h2>
+                    </div>
+                    <div class="topic-list">
+                        <div class="topic-item">
+                            <span class="topic-rank rank-1">1</span>
+                            <span class="topic-name">#水逆期间如何保护自己</span>
+                            <span class="topic-heat">🔥 2.3万</span>
+                        </div>
+                        <div class="topic-item">
+                            <span class="topic-rank rank-2">2</span>
+                            <span class="topic-name">#十二星座的理想恋人</span>
+                            <span class="topic-heat">🔥 1.8万</span>
+                        </div>
+                        <div class="topic-item">
+                            <span class="topic-rank rank-3">3</span>
+                            <span class="topic-name">#塔罗牌入门指南</span>
+                            <span class="topic-heat">🔥 1.5万</span>
+                        </div>
+                        <div class="topic-item">
+                            <span class="topic-rank">4</span>
+                            <span class="topic-name">#农历新年开运秘籍</span>
+                            <span class="topic-heat">🔥 1.2万</span>
+                        </div>
+                        <div class="topic-item">
+                            <span class="topic-rank">5</span>
+                            <span class="topic-name">#八字合婚解读</span>
+                            <span class="topic-heat">🔥 9.8千</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 精选文章 -->
+                <section class="discover-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-newspaper"></i> 精选文章</h2>
+                        <a href="#" class="section-more">更多 <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <div class="article-list">
+                        <a href="#" class="article-card">
+                            <div class="article-image">🌟</div>
+                            <div class="article-info">
+                                <h4>2024年星座全年运势详解</h4>
+                                <p>详细解析十二星座在2024年的整体运势走向...</p>
+                                <div class="article-meta">
+                                    <span>星语君</span>
+                                    <span>3.2万阅读</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="article-card">
+                            <div class="article-image">🔮</div>
+                            <div class="article-info">
+                                <h4>塔罗牌新手入门完全指南</h4>
+                                <p>从零开始学习塔罗牌的解读技巧...</p>
+                                <div class="article-meta">
+                                    <span>塔罗师小月</span>
+                                    <span>2.1万阅读</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="#" class="article-card">
+                            <div class="article-image">💫</div>
+                            <div class="article-info">
+                                <h4>如何根据自己的星盘找到真爱</h4>
+                                <p>通过分析金星和第七宫，找到最适合你的人...</p>
+                                <div class="article-meta">
+                                    <span>占星师Amy</span>
+                                    <span>1.8万阅读</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- 每日一测 -->
+                <section class="discover-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-magic"></i> 每日一测</h2>
+                    </div>
+                    <div class="daily-test-card">
+                        <div class="daily-test-header">
+                            <span class="test-badge">限时免费</span>
+                            <span class="test-date">今日推荐</span>
+                        </div>
+                        <h3>🌟 今日能量测试</h3>
+                        <p>测测你今天的能量场是什么颜色</p>
+                        <a href="pages/test.html" class="start-test-btn">开始测试</a>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 社区内容 -->
+            <div class="tab-content" id="tab-community">
+                <!-- 社区头部 -->
+                <section class="community-header-section">
+                    <div class="community-tabs">
+                        <button class="community-tab active">推荐</button>
+                        <button class="community-tab">关注</button>
+                        <button class="community-tab">热门</button>
+                    </div>
+                    <button class="post-btn" id="openPostModal">
+                        <i class="fas fa-plus"></i> 发帖
+                    </button>
+                </section>
+
+                <!-- 帖子列表 -->
+                <section class="post-list">
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">🌙</div>
+                            <div class="post-author">
+                                <span class="author-name">星空下的猫</span>
+                                <span class="post-time">2小时前</span>
+                            </div>
+                            <span class="post-tag tag-zodiac">星座</span>
+                        </div>
+                        <div class="post-content">
+                            <p>今天的水逆终于结束了！感觉整个人都轻松了很多，希望接下来的日子一切顺利 ✨</p>
+                        </div>
+                        <div class="post-footer">
+                            <span class="post-action"><i class="far fa-heart"></i> 128</span>
+                            <span class="post-action"><i class="far fa-comment"></i> 32</span>
+                            <span class="post-action"><i class="far fa-share-square"></i> 分享</span>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">🔮</div>
+                            <div class="post-author">
+                                <span class="author-name">塔罗少女</span>
+                                <span class="post-time">5小时前</span>
+                            </div>
+                            <span class="post-tag tag-tarot">塔罗</span>
+                        </div>
+                        <div class="post-content">
+                            <p>今天的塔罗牌抽到了太阳牌正位！据说这是最好的牌之一，代表成功、快乐和正能量☀️ 有没有人也抽到过这张牌？</p>
+                        </div>
+                        <div class="post-image">🌅</div>
+                        <div class="post-footer">
+                            <span class="post-action"><i class="far fa-heart"></i> 256</span>
+                            <span class="post-action"><i class="far fa-comment"></i> 48</span>
+                            <span class="post-action"><i class="far fa-share-square"></i> 分享</span>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">⭐</div>
+                            <div class="post-author">
+                                <span class="author-name">占星爱好者</span>
+                                <span class="post-time">昨天</span>
+                            </div>
+                            <span class="post-tag tag-bazi">命理</span>
+                        </div>
+                        <div class="post-content">
+                            <p>有人会看八字吗？最近想学习八字命理，不知道从哪里开始入门，求大佬们推荐一些学习资料～</p>
+                        </div>
+                        <div class="post-footer">
+                            <span class="post-action"><i class="far fa-heart"></i> 89</span>
+                            <span class="post-action"><i class="far fa-comment"></i> 67</span>
+                            <span class="post-action"><i class="far fa-share-square"></i> 分享</span>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">🎭</div>
+                            <div class="post-author">
+                                <span class="author-name">心理探索者</span>
+                                <span class="post-time">昨天</span>
+                            </div>
+                            <span class="post-tag tag-test">测试</span>
+                        </div>
+                        <div class="post-content">
+                            <p>刚做完MBTI测试，结果是INFJ！感觉描述真的很准，有没有其他INFJ的小伙伴来交流一下？🤔</p>
+                        </div>
+                        <div class="post-footer">
+                            <span class="post-action"><i class="far fa-heart"></i> 198</span>
+                            <span class="post-action"><i class="far fa-comment"></i> 86</span>
+                            <span class="post-action"><i class="far fa-share-square"></i> 分享</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 聊天内容 -->
+            <div class="tab-content" id="tab-chat">
+                <!-- 聊天头部 -->
+                <div class="chat-header-bar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; border-radius: 0 0 20px 20px; margin: -16px -16px 16px -16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 42px; height: 42px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">✨</div>
+                        <div>
+                            <h4 style="font-size: 16px; margin-bottom: 2px;">星语心伴</h4>
+                            <span id="chatModelInfo" style="font-size: 12px; color: rgba(255,255,255,0.8);">未连接</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="if(confirm('确定清空对话？')){localStorage.removeItem('xyxb_chat');document.getElementById('chatMessages').innerHTML='';chatApp.messages=[];chatApp.addWelcome();}" style="width: 38px; height: 38px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; color: white; font-size: 14px; cursor: pointer;"><i class="fas fa-trash-alt"></i></button>
+                        <a href="pages/api-settings.html" style="width: 38px; height: 38px; background: rgba(255,255,255,0.15); border: none; border-radius: 50%; color: white; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-cog"></i></a>
+                    </div>
+                </div>
+                
+                <!-- 聊天消息区 -->
+                <div id="chatMessages" style="flex: 1; overflow-y: auto; padding: 16px; padding-bottom: 160px;"></div>
+                
+                <!-- 快捷回复 -->
+                <div id="quickReplies" style="position: fixed; bottom: 130px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; padding: 0 16px; z-index: 100; display: flex; gap: 8px; overflow-x: auto;">
+                    <button class="quick-reply-btn" onclick="chatApp.quickSend('你好！最近怎么样？')">👋 打招呼</button>
+                    <button class="quick-reply-btn" onclick="chatApp.quickSend('我今天心情不太好')">😢 倾诉心事</button>
+                    <button class="quick-reply-btn" onclick="chatApp.quickSend('最近压力很大')">🧠 缓解压力</button>
+                    <button class="quick-reply-btn" onclick="chatApp.quickSend('给我讲个暖心的小故事')">📖 听故事</button>
+                </div>
+                
+                <!-- 输入区域 -->
+                <div style="position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); padding: 12px 16px; z-index: 200;">
+                    <div style="display: flex; gap: 12px; align-items: flex-end;">
+                        <textarea id="chatInput" placeholder="输入你想说的话..." rows="1" style="flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); border-radius: 25px; color: white; font-size: 15px; resize: none; max-height: 100px; min-height: 48px; line-height: 1.4;"></textarea>
+                        <button id="chatSendBtn" onclick="chatApp.send()" style="width: 48px; height: 48px; border-radius: 50%; border: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 我的内容 -->
+            <div class="tab-content" id="tab-mine">
+                <!-- 用户信息卡片 -->
+                <section class="profile-card-section">
+                    <div class="profile-card">
+                        <div class="profile-avatar">
+                            <span>👤</span>
+                        </div>
+                        <div class="profile-info">
+                            <h3>星语用户</h3>
+                            <p>点击登录享受更多服务</p>
+                        </div>
+                        <button class="login-btn">登录/注册</button>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="stat-item">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">关注</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">粉丝</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value">0</span>
+                            <span class="stat-label">获赞</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 我的服务 -->
+                <section class="mine-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-th-large"></i> 我的服务</h2>
+                    </div>
+                    <div class="service-grid">
+                        <a href="#" class="service-item">
+                            <div class="service-icon">📊</div>
+                            <span>我的运势</span>
+                        </a>
+                        <a href="#" class="service-item">
+                            <div class="service-icon">📝</div>
+                            <span>测试记录</span>
+                        </a>
+                        <a href="#" class="service-item">
+                            <div class="service-icon">🃏</div>
+                            <span>塔罗记录</span>
+                        </a>
+                        <a href="#" class="service-item">
+                            <div class="service-icon">💬</div>
+                            <span>聊天记录</span>
+                        </a>
+                        <a href="#" class="service-item">
+                            <div class="service-icon">⭐</div>
+                            <span>我的收藏</span>
+                        </a>
+                        <a href="#" class="service-item">
+                            <div class="service-icon">📌</div>
+                            <span>我的发帖</span>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- 我的星座 -->
+                <section class="mine-section">
+                    <div class="section-header">
+                        <h2 class="section-title"><i class="fas fa-star"></i> 我的星座</h2>
+                        <a href="#" class="section-more">设置 <i class="fas fa-chevron-right"></i></a>
+                    </div>
+                    <div class="zodiac-info-card">
+                        <div class="zodiac-info-left">
+                            <span class="zodiac-big-symbol">♌</span>
+                        </div>
+                        <div class="zodiac-info-right">
+                            <h4>狮子座</h4>
+                            <p>7月23日 - 8月22日</p>
+                            <p>火象星座 · 守护星：太阳</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 功能列表 -->
+                <section class="mine-section">
+                    <div class="function-list">
+                        <a href="#" class="function-item">
+                            <i class="fas fa-cog"></i>
+                            <span>设置</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="function-item">
+                            <i class="fas fa-bell"></i>
+                            <span>消息通知</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="function-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>隐私设置</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="function-item">
+                            <i class="fas fa-question-circle"></i>
+                            <span>帮助与反馈</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="#" class="function-item">
+                            <i class="fas fa-info-circle"></i>
+                            <span>关于我们</span>
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" id="navHome">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="#" class="nav-item" id="navHoroscope">
+                <i class="fas fa-star"></i>
+                <span>星座</span>
+            </a>
+            <a href="#" class="nav-item" id="navChat">
+                <i class="fas fa-comment-dots"></i>
+                <span>AI聊天</span>
+            </a>
+            <a href="#" class="nav-item" id="navTarot">
+                <i class="fas fa-hat-wizard"></i>
+                <span>占卜</span>
+            </a>
+            <a href="#" class="nav-item" id="profileNav">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="js/api-config.js"></script>
+    <script src="js/home.js"></script>
+    <script>
+        // ========== 聊天功能 ==========
+        const chatApp = {
+            messages: [],
+            isTyping: false,
+            
+            init() {
+                this.loadHistory();
+                this.bindEvents();
+                this.checkAPI();
+                if (this.messages.length === 0) this.addWelcome();
+            },
+            
+            checkAPI() {
+                const config = window.ApiManager?.getActiveConfig();
+                const info = document.getElementById('chatModelInfo');
+                const sendBtn = document.getElementById('chatSendBtn');
+                if (config) {
+                    info.textContent = config.model;
+                    sendBtn && (sendBtn.disabled = false);
+                } else {
+                    info.textContent = '未配置API';
+                    sendBtn && (sendBtn.disabled = true);
+                }
+            },
+            
+            addWelcome() {
+                this.addMsg('ai', '你好！我是星语心伴 ✨\n\n我是你的专属心理陪伴助手，可以陪你聊天、倾诉心事、解读星座运势。\n\n有什么想聊的吗？');
+            },
+            
+            loadHistory() {
+                try {
+                    const saved = localStorage.getItem('xyxb_chat');
+                    if (saved) {
+                        this.messages = JSON.parse(saved);
+                        this.messages.forEach(m => this.renderMsg(m.role, m.content));
+                    }
+                } catch(e) {}
+            },
+            
+            saveHistory() {
+                try { localStorage.setItem('xyxb_chat', JSON.stringify(this.messages)); } catch(e) {}
+            },
+            
+            bindEvents() {
+                const input = document.getElementById('chatInput');
+                const sendBtn = document.getElementById('chatSendBtn');
+                
+                if (sendBtn) sendBtn.addEventListener('click', () => this.send());
+                if (input) {
+                    input.addEventListener('keypress', e => {
+                        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); this.send(); }
+                    });
+                    input.addEventListener('input', () => {
+                        input.style.height = 'auto';
+                        input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+                    });
+                }
+            },
+            
+            quickSend(text) { 
+                const input = document.getElementById('chatInput');
+                if (input) { input.value = text; this.send(); }
+            },
+            
+            async send() {
+                const input = document.getElementById('chatInput');
+                const text = input?.value?.trim();
+                if (!text || this.isTyping) return;
+                
+                const config = window.ApiManager?.getActiveConfig();
+                if (!config) { this.checkAPI(); return; }
+                
+                this.addMsg('user', text);
+                this.messages.push({ role: 'user', content: text });
+                input.value = '';
+                input.style.height = 'auto';
+                
+                const quickReplies = document.getElementById('quickReplies');
+                if (quickReplies) quickReplies.style.display = 'none';
+                
+                this.isTyping = true;
+                this.showTyping();
+                
+                try {
+                    const sysPrompt = '你是星语心伴，一个温暖、专业的AI心理陪伴助手。回复温暖有同理心，100-200字，适当用emoji。';
+                    const msgs = [{ role: 'system', content: sysPrompt }, ...this.messages.slice(-10)];
+                    
+                    let resp = '';
+                    await window.ApiManager.callLLM(msgs, chunk => {
+                        resp += chunk;
+                        this.updateTyping(resp);
+                    });
+                    
+                    this.messages.push({ role: 'assistant', content: resp });
+                    this.saveHistory();
+                } catch(err) {
+                    this.hideTyping();
+                    this.addMsg('system', '抱歉，出现了错误: ' + err.message);
+                } finally {
+                    this.isTyping = false;
+                    this.hideTyping();
+                }
+            },
+            
+            addMsg(type, text) {
+                const container = document.getElementById('chatMessages');
+                if (!container) return;
+                const div = document.createElement('div');
+                div.className = `chat-msg ${type}`;
+                const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                if (type === 'ai') {
+                    div.innerHTML = `<div class="chat-msg-hd">星语心伴 · ${time}</div><div class="chat-msg-content">${this.fmt(text)}</div>`;
+                } else if (type === 'user') {
+                    div.innerHTML = `<div class="chat-msg-hd">${time}</div><div class="chat-msg-content">${this.fmt(text)}</div>`;
+                } else {
+                    div.innerHTML = `<div class="chat-msg-content">${text}</div>`;
+                }
+                container.appendChild(div);
+                this.scrollToBottom();
+            },
+            
+            renderMsg(role, content) {
+                this.addMsg(role === 'assistant' ? 'ai' : 'user', content);
+            },
+            
+            fmt(text) { return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); },
+            
+            showTyping() {
+                const container = document.getElementById('chatMessages');
+                if (!container) return;
+                const div = document.createElement('div');
+                div.className = 'chat-msg ai';
+                div.id = 'chatTyping';
+                div.innerHTML = `<div class="chat-msg-hd">星语心伴</div><div class="typing-indicator"><div class="typing-text"><span class="heart">❤️</span>正在思考中，请宝宝耐心等待哦~</div><div class="typing-dots"><span></span><span></span><span></span><span></span></div></div>`;
+                container.appendChild(div);
+                this.scrollToBottom();
+            },
+            
+            updateTyping(text) {
+                const t = document.getElementById('chatTyping');
+                if (t) t.innerHTML = `<div class="chat-msg-hd">星语心伴</div><div class="chat-msg-content">${this.fmt(text)}</div>`;
+                this.scrollToBottom();
+            },
+            
+            hideTyping() { const t = document.getElementById('chatTyping'); if (t) t.remove(); },
+            
+            scrollToBottom() { const c = document.getElementById('chatMessages'); if (c) c.scrollTop = c.scrollHeight; }
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 设置日期
+            const today = new Date();
+            const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
+            document.getElementById('quoteDate').textContent = dateStr;
+            document.getElementById('horoscopeDate').textContent = dateStr;
+
+            // 星座选择
+            const zodiacItems = document.querySelectorAll('.zodiac-item');
+            zodiacItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    zodiacItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                    updateHoroscope(this.dataset.sign);
+                });
+            });
+
+            // 主题切换
+            const themes = ['adult', 'teen', 'child'];
+            let currentTheme = 0;
+            document.getElementById('themeBtn').addEventListener('click', function() {
+                currentTheme = (currentTheme + 1) % themes.length;
+                document.body.setAttribute('data-theme', themes[currentTheme]);
+            });
+
+            // 主导航标签切换
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.dataset.tab;
+                    
+                    // 切换标签激活状态
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 切换内容区域
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === 'tab-' + targetTab) {
+                            content.classList.add('active');
+                        }
+                    });
+
+                    // 如果是"我的"标签，特殊处理顶部header
+                    const headerSection = document.querySelector('.header-section');
+                    if (targetTab === 'mine') {
+                        headerSection.style.display = 'none';
+                    } else {
+                        headerSection.style.display = 'block';
+                    }
+                });
+            });
+
+            // 社区标签切换
+            const communityTabs = document.querySelectorAll('.community-tab');
+            communityTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    communityTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // 功能入口点击事件 - 跳转到对应标签
+            document.getElementById('communityBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.nav-tab[data-tab="community"]').click();
+            });
+
+            // 显示"我的"页面的通用函数
+            function showMineTab() {
+                // 移除所有导航标签的active状态
+                navTabs.forEach(t => t.classList.remove('active'));
+                // 隐藏所有内容
+                tabContents.forEach(content => content.classList.remove('active'));
+                // 显示"我的"内容
+                document.getElementById('tab-mine').classList.add('active');
+                // 隐藏顶部header
+                document.querySelector('.header-section').style.display = 'none';
+            }
+
+            // 用户按钮点击 - 跳转到我的页面
+            document.getElementById('userBtn').addEventListener('click', function() {
+                showMineTab();
+            });
+
+            // 底部导航"我的"按钮 - 跳转到标签而非页面
+            document.getElementById('profileNav').addEventListener('click', function(e) {
+                e.preventDefault();
+                showMineTab();
+            });
+
+            // 底部导航 - 首页和聊天按钮
+            document.getElementById('navHome').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.nav-tab[data-tab="home"]').click();
+                updateBottomNav(this);
+            });
+            
+            document.getElementById('navChat').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.nav-tab[data-tab="chat"]').click();
+                updateBottomNav(this);
+                // 初始化聊天
+                if (chatApp.messages.length === 0) {
+                    chatApp.init();
+                }
+            });
+            
+            // 星座和占卜按钮 - 跳转到子页面（保持后台运行聊天）
+            document.getElementById('navHoroscope').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 保存当前状态，跳转到星座页面
+                const targetUrl = 'pages/horoscope.html';
+                if (targetUrl && targetUrl.trim() !== '') {
+                    window.location.href = targetUrl;
+                } else {
+                    console.error('Invalid URL for navigation');
+                }
+            });
+            
+            document.getElementById('navTarot').addEventListener('click', function(e) {
+                e.preventDefault();
+                // 保存当前状态，跳转到塔罗页面
+                const targetUrl = 'pages/tarot.html';
+                if (targetUrl && targetUrl.trim() !== '') {
+                    window.location.href = targetUrl;
+                } else {
+                    console.error('Invalid URL for navigation');
+                }
+            });
+
+            function updateBottomNav(activeItem) {
+                document.querySelectorAll('.bottom-nav .nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                activeItem.classList.add('active');
+            }
+
+            // 初始化聊天
+            chatApp.init();
+
+            // 隐藏加载动画（只在首次打开时显示，之后不再显示）
+            if (sessionStorage.getItem('app_loaded')) {
+                // 已经加载过，立即隐藏
+                document.getElementById('loading').classList.add('hidden');
+            } else {
+                // 首次加载，显示动画后隐藏
+                sessionStorage.setItem('app_loaded', 'true');
+                setTimeout(() => {
+                    document.getElementById('loading').classList.add('hidden');
+                }, 1500);
+            }
+
+            // 生成星空背景
+            generateStars();
+        });
+
+        function updateHoroscope(sign) {
+            document.getElementById('horoscopeIcon').textContent = getZodiacSymbol(sign);
+            document.getElementById('horoscopeSign').textContent = sign;
+            // 这里可以添加运势数据更新逻辑
+        }
+
+        function getZodiacSymbol(sign) {
+            const symbols = {
+                '白羊座': '♈', '金牛座': '♉', '双子座': '♊', '巨蟹座': '♋',
+                '狮子座': '♌', '处女座': '♍', '天秤座': '♎', '天蝎座': '♏',
+                '射手座': '♐', '摩羯座': '♑', '水瓶座': '♒', '双鱼座': '♓'
+            };
+            return symbols[sign] || '♈';
+        }
+
+        function generateStars() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        }
+    </script>
+</body>
+</html>

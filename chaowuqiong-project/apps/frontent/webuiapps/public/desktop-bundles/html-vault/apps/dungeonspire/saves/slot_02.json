@@ -1,0 +1,7 @@
+{
+    "playtime": 7200,
+    "gold": 500,
+    "floor": 12,
+    "character": "Mage",
+    "deck": ["Fireball", "IceBolt"]
+}

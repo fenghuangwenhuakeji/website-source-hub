@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>卡牌引擎</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">卡牌引擎</p>
+        <h1>机制卡与角色卡生成台</h1>
+        <p>把角色、阵营、稀有度和核心机制揉成可继续扩写的卡面雏形，解决之前点开后直接空白的问题。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">角色卡</span>
+        <span class="pill">机制描述</span>
+        <span class="pill">可继续扩写</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>卡组设定</h2><p>先给出世界观和玩法方向。</p></div></div>
+        <form id="workspace-form" class="form-grid">
+          <label class="field"><span>阵营</span><input name="faction" placeholder="例如：遗迹教团"></label>
+          <label class="field"><span>核心角色</span><input name="hero" placeholder="例如：看见未来碎片的侍从"></label>
+          <div class="inline-grid">
+            <label class="field"><span>稀有度</span><select name="rarity"><option>SSR</option><option>SR</option><option>R</option></select></label>
+            <label class="field"><span>消耗</span><input name="cost" value="3"></label>
+          </div>
+          <label class="field"><span>核心机制</span><input name="mechanic" placeholder="例如：弃牌后触发回响"></label>
+          <label class="field"><span>剧情钩子</span><textarea name="notes" placeholder="说明这套卡为什么成立，最好带一个剧情反转。"></textarea></label>
+        </form>
+        <div class="button-row">
+          <button id="generate-button" class="primary-btn" type="button">生成卡牌组</button>
+          <button id="reset-button" class="ghost-btn" type="button">清空草稿</button>
+        </div>
+      </div></section>
+
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>生成结果</h2><p id="result-summary">生成 3 张可以继续扩展的卡牌样例。</p></div><span id="status-text" class="pill">等待生成</span></div>
+        <div id="result-grid" class="result-grid"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initGeneratorPage({
+        storageKey: 'fh-fenghuang-card-engine',
+        summary: '生成 3 张可以继续扩展的卡牌样例。',
+        generate(data) {
+          const faction = data.faction || '未知阵营';
+          const hero = data.hero || '无名角色';
+          const mechanic = data.mechanic || '机制未设定';
+          const rarity = data.rarity || 'SR';
+          const cost = data.cost || '3';
+          return [
+            { title: `${rarity}｜${hero}`, bullets: [`阵营：${faction}`, `费用：${cost}`, `效果：登场时复制一次“${mechanic}”的最强收益。`, '副效果：如果本回合已经触发过回响，则额外抽 1 张。'] },
+            { title: `机制卡｜${mechanic}`, bullets: [`启动条件：本回合第一次完成与“${mechanic}”相关的动作。`, '收益结构：先回收，再放大，再留一个下回合延续点。', `剧情味道：${data.notes || '让机制本身带着人物命运感。'}`] },
+            { title: `支援卡｜${faction} 后勤`, bullets: ['效果：检索 1 张同阵营卡，并令其本回合费用 -1。', `联动：若场上存在 ${hero}，则再附加一次剧情播报或立绘反馈。`, '平衡建议：把爆发留给中后段，前段更多用于铺场和叙事。'] },
+          ];
+        },
+      });
+    });
+  </script>
+</body>
+</html>

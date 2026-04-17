@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>服务器测试 - 统一酒馆游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(22, 33, 62, 0.9);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #e94560;
+        }
+
+        .status {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 2px solid #f44336;
+            color: #f44336;
+        }
+
+        .status.loading {
+            background: rgba(33, 150, 243, 0.2);
+            border: 2px solid #2196F3;
+            color: #2196F3;
+        }
+
+        .info {
+            background: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .info h3 {
+            color: #2196F3;
+            margin-bottom: 10px;
+        }
+
+        .info p {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .info code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #e94560;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #ff6b81;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .details {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .details h4 {
+            margin-bottom: 10px;
+            color: #a0a0a0;
+        }
+
+        .check-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .check-item .icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+
+        .check-item.success .icon {
+            background: #4CAF50;
+        }
+
+        .check-item.error .icon {
+            background: #f44336;
+        }
+
+        .check-item.loading .icon {
+            background: #2196F3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 本地服务器测试</h1>
+
+        <div id="status" class="status loading">
+            <div>正在测试...</div>
+        </div>
+
+        <div class="info">
+            <h3>📋 测试说明</h3>
+            <p>此页面用于测试本地服务器是否正常工作。</p>
+            <p>如果测试通过，你可以正常使用 ES6 模块加载游戏。</p>
+            <p>当前协议: <code id="protocol"></code></p>
+        </div>
+
+        <div id="checks">
+            <!-- 测试项将在这里显示 -->
+        </div>
+
+        <div id="details" class="details" style="display: none;">
+            <h4>📝 详细信息</h4>
+            <div id="details-content"></div>
+        </div>
+
+        <button id="gameBtn" class="btn" disabled onclick="window.location.href='index.html'">
+            🎮 进入游戏
+        </button>
+    </div>
+
+    <script>
+        // 显示当前协议
+        document.getElementById('protocol').textContent = window.location.protocol;
+
+        const statusEl = document.getElementById('status');
+        const checksEl = document.getElementById('checks');
+        const gameBtn = document.getElementById('gameBtn');
+
+        // 创建检查项
+        function createCheck(label, status = 'loading', message = '') {
+            const div = document.createElement('div');
+            div.className = `check-item ${status}`;
+
+            let icon = '⏳';
+            if (status === 'success') icon = '✓';
+            if (status === 'error') icon = '✗';
+
+            div.innerHTML = `
+                <div class="icon">${icon}</div>
+                <div>
+                    <strong>${label}</strong>
+                    ${message ? `<br><small>${message}</small>` : ''}
+                </div>
+            `;
+            return div;
+        }
+
+        // 测试函数
+        async function testServer() {
+            const checks = [];
+
+            // 测试1: 检查协议
+            const protocolCheck = createCheck('检查协议', 'loading');
+            checksEl.appendChild(protocolCheck);
+
+            if (window.location.protocol === 'file:') {
+                updateCheck(protocolCheck, 'error', '当前使用 file:// 协议，不推荐');
+                statusEl.className = 'status error';
+                statusEl.innerHTML = '<div>❌ 检测到问题</div>';
+                return;
+            } else {
+                updateCheck(protocolCheck, 'success', '使用 HTTP 协议，良好');
+            }
+
+            // 测试2: 检查 fetch 支持
+            const fetchCheck = createCheck('检查 Fetch API', 'loading');
+            checksEl.appendChild(fetchCheck);
+
+            if (typeof fetch === 'function') {
+                updateCheck(fetchCheck, 'success', 'Fetch API 可用');
+            } else {
+                updateCheck(fetchCheck, 'error', 'Fetch API 不可用');
+                return;
+            }
+
+            // 测试3: 检查 ES6 模块支持
+            const moduleCheck = createCheck('检查 ES6 模块', 'loading');
+            checksEl.appendChild(moduleCheck);
+
+            try {
+                const moduleTest = await import('./js/core/GameEngine.js').catch(() => null);
+                if (moduleTest && moduleTest.GameEngine) {
+                    updateCheck(moduleCheck, 'success', 'ES6 模块加载成功');
+                } else {
+                    updateCheck(moduleCheck, 'error', '无法加载 GameEngine');
+                    return;
+                }
+            } catch (e) {
+                updateCheck(moduleCheck, 'error', e.message);
+                return;
+            }
+
+            // 所有测试通过
+            statusEl.className = 'status success';
+            statusEl.innerHTML = '<div>✅ 所有测试通过！</div>';
+            gameBtn.disabled = false;
+            gameBtn.innerHTML = '🎮 进入游戏';
+        }
+
+        function updateCheck(element, status, message) {
+            element.className = `check-item ${status}`;
+            const icon = element.querySelector('.icon');
+            icon.textContent = status === 'success' ? '✓' : '✗';
+            icon.style.background = status === 'success' ? '#4CAF50' : '#f44336';
+
+            const messageEl = element.querySelector('small');
+            if (!messageEl) {
+                element.querySelector('div').innerHTML += `<br><small>${message}</small>`;
+            } else {
+                messageEl.textContent = message;
+            }
+        }
+
+        // 运行测试
+        testServer();
+
+        // 添加详细信息
+        const details = {
+            '当前URL': window.location.href,
+            '协议': window.location.protocol,
+            '主机': window.location.hostname,
+            '端口': window.location.port,
+            '用户代理': navigator.userAgent,
+            '模块支持': 'script[type="module"]' in document.createElement('script')
+        };
+
+        const detailsEl = document.getElementById('details');
+        const detailsContent = document.getElementById('details-content');
+
+        for (const [key, value] of Object.entries(details)) {
+            const p = document.createElement('p');
+            p.innerHTML = `<strong>${key}:</strong> ${value}`;
+            detailsContent.appendChild(p);
+        }
+
+        detailsEl.style.display = 'block';
+    </script>
+</body>
+</html>

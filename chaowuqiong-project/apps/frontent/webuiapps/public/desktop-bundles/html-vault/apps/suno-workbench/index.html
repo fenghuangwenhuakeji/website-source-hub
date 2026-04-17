@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno 工作台 - AI音乐创作助手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app" class="app">
+        <header class="header">
+            <div class="logo-group">
+                <div class="logo-icon">🎵</div>
+                <h1>Suno 工作台</h1>
+                <span class="version-badge">v1.0</span>
+            </div>
+            <div class="header-actions">
+                <div class="api-status" :class="{connected: apiConnected}">
+                    <span class="status-dot"></span>
+                    <span>{{ apiConnected ? activeApiName : '未连接API' }}</span>
+                </div>
+                <button class="btn btn-secondary" @click="showSettings = true">
+                    <i class="fa-solid fa-gear"></i> 设置
+                </button>
+                <button class="btn btn-secondary" @click="showPromptLibrary = true">
+                    <i class="fa-solid fa-book"></i> 提示词库
+                </button>
+                <button class="btn btn-primary" @click="exportProject">
+                    <i class="fa-solid fa-download"></i> 导出
+                </button>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-sliders"></i> 快速设置</h3>
+                    
+                    <div class="form-group">
+                        <label>音乐风格</label>
+                        <select v-model="settings.genre" @change="updatePrompt">
+                            <option value="">选择风格...</option>
+                            <optgroup label="流行音乐">
+                                <option value="Pop ballad">流行抒情</option>
+                                <option value="Dance-pop">舞曲流行</option>
+                                <option value="Synth-pop">合成器流行</option>
+                                <option value="Indie pop">独立流行</option>
+                                <option value="C-pop">华语流行</option>
+                                <option value="K-pop">韩国流行</option>
+                                <option value="J-pop">日本流行</option>
+                            </optgroup>
+                            <optgroup label="电子音乐">
+                                <option value="EDM">电子舞曲</option>
+                                <option value="House">浩室</option>
+                                <option value="Techno">科技舞曲</option>
+                                <option value="Trance">迷幻舞曲</option>
+                                <option value="Dubstep">回响贝斯</option>
+                                <option value="Future Bass">未来贝斯</option>
+                                <option value="Synthwave">合成器波</option>
+                                <option value="Ambient">氛围音乐</option>
+                            </optgroup>
+                            <optgroup label="摇滚音乐">
+                                <option value="Pop rock">流行摇滚</option>
+                                <option value="Alternative rock">另类摇滚</option>
+                                <option value="Indie rock">独立摇滚</option>
+                                <option value="Punk rock">朋克摇滚</option>
+                                <option value="Metal">金属</option>
+                            </optgroup>
+                            <optgroup label="嘻哈/R&B">
+                                <option value="Hip-hop">嘻哈</option>
+                                <option value="R&B">节奏布鲁斯</option>
+                                <option value="Trap">陷阱音乐</option>
+                                <option value="Lo-fi hip-hop">低保真嘻哈</option>
+                            </optgroup>
+                            <optgroup label="民谣/乡村">
+                                <option value="Folk">民谣</option>
+                                <option value="Acoustic">原声</option>
+                                <option value="Country">乡村</option>
+                            </optgroup>
+                            <optgroup label="爵士/古典">
+                                <option value="Jazz">爵士</option>
+                                <option value="Classical">古典</option>
+                                <option value="Orchestral">管弦乐</option>
+                                <option value="Piano solo">钢琴独奏</option>
+                            </optgroup>
+                            <optgroup label="影视/游戏">
+                                <option value="Cinematic">影视配乐</option>
+                                <option value="Epic orchestral">史诗管弦</option>
+                                <option value="Game soundtrack">游戏配乐</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>情绪氛围</label>
+                        <select v-model="settings.mood" @change="updatePrompt">
+                            <option value="">选择情绪...</option>
+                            <optgroup label="积极情绪">
+                                <option value="Uplifting">振奋</option>
+                                <option value="Euphoric">狂喜</option>
+                                <option value="Joyful">欢乐</option>
+                                <option value="Energetic">充满活力</option>
+                                <option value="Optimistic">乐观</option>
+                                <option value="Hopeful">充满希望</option>
+                                <option value="Romantic">浪漫</option>
+                                <option value="Triumphant">胜利</option>
+                            </optgroup>
+                            <optgroup label="消极情绪">
+                                <option value="Melancholic">忧郁</option>
+                                <option value="Sad">悲伤</option>
+                                <option value="Dark">黑暗</option>
+                                <option value="Angry">愤怒</option>
+                                <option value="Anxious">焦虑</option>
+                                <option value="Lonely">孤独</option>
+                                <option value="Nostalgic">怀旧</option>
+                                <option value="Heartbroken">心碎</option>
+                            </optgroup>
+                            <optgroup label="中性/氛围">
+                                <option value="Calm">平静</option>
+                                <option value="Mysterious">神秘</option>
+                                <option value="Dreamy">梦幻</option>
+                                <option value="Ethereal">空灵</option>
+                                <option value="Epic">史诗</option>
+                                <option value="Cinematic">电影感</option>
+                                <option value="Atmospheric">氛围感</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>人声类型</label>
+                        <select v-model="settings.vocals" @change="updatePrompt">
+                            <option value="">选择人声...</option>
+                            <option value="Female vocals">女声</option>
+                            <option value="Male vocals">男声</option>
+                            <option value="Duet">二重唱</option>
+                            <option value="Choir">合唱</option>
+                            <option value="Rap vocals">说唱</option>
+                            <option value="Layered harmonies">多层和声</option>
+                            <option value="Instrumental">纯音乐 (无人声)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>速度 (BPM)</label>
+                        <div class="bpm-control">
+                            <input type="range" v-model="settings.bpm" min="60" max="180" @input="updatePrompt">
+                            <span class="bpm-value">{{ settings.bpm }} BPM</span>
+                        </div>
+                        <div class="bpm-presets">
+                            <button @click="settings.bpm = 72" :class="{active: settings.bpm == 72}">慢板</button>
+                            <button @click="settings.bpm = 100" :class="{active: settings.bpm == 100}">中板</button>
+                            <button @click="settings.bpm = 128" :class="{active: settings.bpm == 128}">快板</button>
+                            <button @click="settings.bpm = 150" :class="{active: settings.bpm == 150}">极速</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-guitar"></i> 乐器配置</h3>
+                    <div class="instrument-grid">
+                        <label class="instrument-item" v-for="inst in instruments" :key="inst.id">
+                            <input type="checkbox" v-model="settings.selectedInstruments" :value="inst.id" @change="updatePrompt">
+                            <span class="instrument-icon">{{ inst.icon }}</span>
+                            <span class="instrument-name">{{ inst.name }}</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3><i class="fa-solid fa-microphone"></i> 参考艺术家</h3>
+                    <input type="text" v-model="settings.referenceArtist" placeholder="如: Taylor Swift" @input="updatePrompt" class="form-input">
+                </div>
+            </aside>
+
+            <main class="content">
+                <div class="tabs">
+                    <button :class="{active: activeTab === 'lyrics'}" @click="activeTab = 'lyrics'">
+                        <i class="fa-solid fa-pen"></i> 歌词创作
+                    </button>
+                    <button :class="{active: activeTab === 'prompt'}" @click="activeTab = 'prompt'">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> 提示词生成
+                    </button>
+                    <button :class="{active: activeTab === 'structure'}" @click="activeTab = 'structure'">
+                        <i class="fa-solid fa-list"></i> 结构模板
+                    </button>
+                    <button :class="{active: activeTab === 'ai'}" @click="activeTab = 'ai'">
+                        <i class="fa-solid fa-robot"></i> AI助手
+                    </button>
+                </div>
+
+                <div class="tab-content" v-show="activeTab === 'lyrics'">
+                    <div class="lyrics-editor">
+                        <div class="editor-header">
+                            <input type="text" v-model="lyrics.title" placeholder="歌曲标题..." class="title-input">
+                            <div class="editor-actions">
+                                <button class="btn btn-sm btn-ai" @click="aiGenerateLyrics" :disabled="!apiConnected || isGenerating">
+                                    <i class="fa-solid fa-robot"></i> AI生成
+                                </button>
+                                <button class="btn btn-sm btn-ai" @click="aiImproveLyrics" :disabled="!apiConnected || !lyrics.content || isGenerating">
+                                    <i class="fa-solid fa-magic"></i> AI润色
+                                </button>
+                                <button class="btn btn-sm" @click="insertStructureTemplate">
+                                    <i class="fa-solid fa-list-ol"></i> 插入结构
+                                </button>
+                                <button class="btn btn-sm" @click="clearLyrics">
+                                    <i class="fa-solid fa-trash"></i> 清空
+                                </button>
+                            </div>
+                        </div>
+                        <textarea v-model="lyrics.content" placeholder="在这里创作你的歌词...
+
+示例结构:
+[Intro]
+[Verse 1]
+[Pre-Chorus]
+[Chorus]
+[Verse 2]
+[Chorus]
+[Bridge]
+[Final Chorus]
+[Outro]" class="lyrics-textarea"></textarea>
+                        <div class="editor-footer">
+                            <span class="word-count">{{ lyricsWordCount }} 字</span>
+                            <span class="line-count">{{ lyricsLineCount }} 行</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" v-show="activeTab === 'prompt'">
+                    <div class="prompt-generator">
+                        <div class="prompt-output">
+                            <h3><i class="fa-solid fa-sparkles"></i> 生成的 Suno 提示词</h3>
+                            <div class="prompt-box">
+                                <textarea v-model="generatedPrompt" readonly class="prompt-textarea"></textarea>
+                                <button class="copy-btn" @click="copyPrompt">
+                                    <i class="fa-solid fa-copy"></i> 复制
+                                </button>
+                            </div>
+                            <div class="prompt-actions">
+                                <button class="btn btn-ai" @click="aiGeneratePrompt" :disabled="!apiConnected || isGenerating">
+                                    <i class="fa-solid fa-robot"></i> AI优化提示词
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="prompt-customize">
+                            <h3><i class="fa-solid fa-sliders"></i> 自定义调整</h3>
+                            <div class="form-group">
+                                <label>额外描述</label>
+                                <textarea v-model="settings.customDescription" placeholder="添加额外的风格描述..." @input="updatePrompt" class="form-textarea"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>制作质量</label>
+                                <select v-model="settings.productionQuality" @change="updatePrompt">
+                                    <option value="demo">Demo 质量</option>
+                                    <option value="radio-ready">广播级</option>
+                                    <option value="cinematic">电影级</option>
+                                    <option value="professional">专业级</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="quick-prompts">
+                            <h3><i class="fa-solid fa-bolt"></i> 快速提示词</h3>
+                            <div class="quick-prompt-grid">
+                                <button v-for="qp in quickPrompts" :key="qp" class="quick-prompt-btn" @click="appendQuickPrompt(qp)">
+                                    {{ qp }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" v-show="activeTab === 'structure'">
+                    <div class="structure-templates">
+                        <h3><i class="fa-solid fa-music"></i> 歌曲结构模板</h3>
+                        <div class="template-grid">
+                            <div class="template-card" v-for="template in structureTemplates" :key="template.name" @click="applyTemplate(template)">
+                                <h4>{{ template.name }}</h4>
+                                <p>{{ template.description }}</p>
+                                <div class="template-structure">
+                                    <span v-for="section in template.sections" :key="section" class="section-tag">{{ section }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" v-show="activeTab === 'ai'">
+                    <div class="ai-assistant">
+                        <h3><i class="fa-solid fa-robot"></i> AI音乐助手</h3>
+                        <div class="ai-features">
+                            <div class="ai-feature-card" @click="aiGenerateLyrics">
+                                <div class="feature-icon">📝</div>
+                                <h4>智能歌词生成</h4>
+                                <p>根据主题、风格、情绪自动创作歌词</p>
+                            </div>
+                            <div class="ai-feature-card" @click="aiGeneratePrompt">
+                                <div class="feature-icon">✨</div>
+                                <h4>提示词优化</h4>
+                                <p>AI优化Suno提示词，提升生成质量</p>
+                            </div>
+                            <div class="ai-feature-card" @click="aiAnalyzeLyrics">
+                                <div class="feature-icon">🔍</div>
+                                <h4>歌词分析</h4>
+                                <p>分析歌词结构、情感曲线和改进建议</p>
+                            </div>
+                            <div class="ai-feature-card" @click="aiImproveLyrics">
+                                <div class="feature-icon">🎨</div>
+                                <h4>歌词润色</h4>
+                                <p>优化歌词韵律、情感表达</p>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-chat">
+                            <h4>自由对话</h4>
+                            <div class="chat-messages" ref="chatMessages">
+                                <div class="message" v-for="(msg, i) in chatMessages" :key="i" :class="msg.role">
+                                    <div class="message-content">{{ msg.content }}</div>
+                                </div>
+                            </div>
+                            <div class="chat-input">
+                                <input type="text" v-model="chatInput" @keyup.enter="sendChat" placeholder="输入问题，如：帮我写一首关于春天的歌词...">
+                                <button class="btn btn-primary" @click="sendChat" :disabled="!apiConnected || isGenerating || !chatInput">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <aside class="right-panel">
+                <div class="panel-section">
+                    <h3><i class="fa-solid fa-history"></i> 历史记录</h3>
+                    <div class="history-list">
+                        <div class="history-item" v-for="(item, index) in history" :key="index" @click="loadHistory(item)">
+                            <div class="history-title">{{ item.title || '未命名' }}</div>
+                            <div class="history-time">{{ item.time }}</div>
+                        </div>
+                        <div v-if="history.length === 0" class="empty-state">
+                            暂无历史记录
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fa-solid fa-lightbulb"></i> 创作提示</h3>
+                    <div class="tips-list">
+                        <div class="tip-item">
+                            <strong>提示词技巧:</strong> 具体化描述比模糊词汇效果更好
+                        </div>
+                        <div class="tip-item">
+                            <strong>风格参考:</strong> 提供艺术家名字帮助AI理解风格
+                        </div>
+                        <div class="tip-item">
+                            <strong>情绪优先:</strong> 情绪词比技术词更重要
+                        </div>
+                        <div class="tip-item">
+                            <strong>迭代优化:</strong> 根据生成结果调整提示词
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3><i class="fa-solid fa-bookmark"></i> 收藏</h3>
+                    <div class="favorites-list">
+                        <div class="favorite-item" v-for="(fav, index) in favorites" :key="index" @click="loadFavorite(fav)">
+                            <span class="fav-genre">{{ fav.genre }}</span>
+                            <span class="fav-prompt">{{ fav.prompt.substring(0, 30) }}...</span>
+                        </div>
+                        <button class="btn btn-block" @click="saveFavorite">
+                            <i class="fa-solid fa-plus"></i> 保存当前设置
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- 设置模态框 -->
+        <div class="modal-overlay" v-if="showSettings" @click.self="showSettings = false">
+            <div class="settings-modal">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-gear"></i> 设置</h2>
+                    <button class="close-btn" @click="showSettings = false">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-tabs">
+                        <button :class="{active: settingsTab === 'api'}" @click="settingsTab = 'api'">API配置</button>
+                        <button :class="{active: settingsTab === 'about'}" @click="settingsTab = 'about'">关于</button>
+                    </div>
+                    
+                    <div class="settings-content" v-show="settingsTab === 'api'">
+                        <div class="api-header">
+                            <h3>API 流量池</h3>
+                            <button class="btn btn-primary btn-sm" @click="openAddApiModal">
+                                <i class="fa-solid fa-plus"></i> 添加配置
+                            </button>
+                        </div>
+                        
+                        <div class="api-list">
+                            <div class="api-card" v-for="api in apiConfigs" :key="api.id" :class="{active: api.is_active}">
+                                <div class="api-info">
+                                    <div class="api-name">{{ api.config_name }}</div>
+                                    <div class="api-meta">
+                                        <span class="provider-badge" :class="api.provider">{{ api.provider }}</span>
+                                        <span>{{ api.model_name }}</span>
+                                    </div>
+                                </div>
+                                <div class="api-actions">
+                                    <button class="btn btn-sm" @click="setActiveApi(api.id)" v-if="!api.is_active">
+                                        激活
+                                    </button>
+                                    <button class="btn btn-sm" @click="editApiConfig(api.id)">
+                                        编辑
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" @click="deleteApiConfig(api.id)">
+                                        删除
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="empty-state" v-if="apiConfigs.length === 0">
+                                暂无API配置，请点击"添加配置"按钮添加
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-content" v-show="settingsTab === 'about'">
+                        <div class="about-section">
+                            <h3>Suno 工作台</h3>
+                            <p>版本: 1.0.0</p>
+                            <p>一款专业的AI音乐创作辅助工具，帮助您更高效地使用Suno AI创作音乐。</p>
+                            <h4>主要功能</h4>
+                            <ul>
+                                <li>歌词创作与AI辅助</li>
+                                <li>Suno提示词生成与优化</li>
+                                <li>丰富的提示词库</li>
+                                <li>歌曲结构模板</li>
+                                <li>多API服务商支持</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API配置模态框 -->
+        <div class="modal-overlay" v-if="showApiModal" @click.self="showApiModal = false">
+            <div class="api-modal">
+                <div class="modal-header">
+                    <h2>{{ editingApiId ? '编辑API配置' : '添加API配置' }}</h2>
+                    <button class="close-btn" @click="showApiModal = false">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>配置名称 *</label>
+                        <input type="text" v-model="apiForm.config_name" placeholder="如: 我的GPT-4" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>服务商 *</label>
+                        <select v-model="apiForm.provider" @change="onProviderChange" class="form-input">
+                            <option value="openai">OpenAI</option>
+                            <option value="claude">Claude (Anthropic)</option>
+                            <option value="gemini">Gemini (Google)</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="moonshot">Moonshot (月之暗面)</option>
+                            <option value="zhipu">智谱AI (GLM)</option>
+                            <option value="qwen">通义千问 (阿里)</option>
+                            <option value="custom">自定义</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>API Key *</label>
+                        <input type="password" v-model="apiForm.api_key" placeholder="输入API密钥" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Base URL</label>
+                        <input type="text" v-model="apiForm.base_url" :placeholder="providerPlaceholder" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>模型名称</label>
+                        <div class="model-input-group">
+                            <input type="text" v-model="apiForm.model_name" placeholder="模型名称" class="form-input" list="model-list">
+                            <datalist id="model-list">
+                                <option v-for="model in providerModels" :key="model" :value="model"></option>
+                            </datalist>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" @click="testApiConnection" :disabled="isTestingApi">
+                            <i class="fa-solid fa-plug"></i> {{ isTestingApi ? '测试中...' : '测试连接' }}
+                        </button>
+                        <button class="btn btn-primary" @click="saveApiConfig">
+                            <i class="fa-solid fa-check"></i> 保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提示词库模态框 -->
+        <div class="modal-overlay" v-if="showPromptLibrary" @click.self="showPromptLibrary = false">
+            <div class="prompt-library-modal">
+                <div class="modal-header">
+                    <h2><i class="fa-solid fa-book"></i> 提示词库</h2>
+                    <button class="close-btn" @click="showPromptLibrary = false">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="library-tabs">
+                        <button :class="{active: libraryTab === 'moods'}" @click="libraryTab = 'moods'">情绪词</button>
+                        <button :class="{active: libraryTab === 'genres'}" @click="libraryTab = 'genres'">风格词</button>
+                        <button :class="{active: libraryTab === 'instruments'}" @click="libraryTab = 'instruments'">乐器词</button>
+                        <button :class="{active: libraryTab === 'structure'}" @click="libraryTab = 'structure'">结构词</button>
+                        <button :class="{active: libraryTab === 'dance'}" @click="libraryTab = 'dance'">舞曲提示词</button>
+                        <button :class="{active: libraryTab === 'techno'}" @click="libraryTab = 'techno'">Techno提示词</button>
+                    </div>
+                    <div class="library-content">
+                        <div v-show="libraryTab === 'moods'" class="tag-cloud">
+                            <span class="tag" v-for="mood in moodTags" :key="mood" @click="addTag(mood)">{{ mood }}</span>
+                        </div>
+                        <div v-show="libraryTab === 'genres'" class="tag-cloud">
+                            <span class="tag" v-for="genre in genreTags" :key="genre" @click="addTag(genre)">{{ genre }}</span>
+                        </div>
+                        <div v-show="libraryTab === 'instruments'" class="tag-cloud">
+                            <span class="tag" v-for="inst in instrumentTags" :key="inst" @click="addTag(inst)">{{ inst }}</span>
+                        </div>
+                        <div v-show="libraryTab === 'structure'" class="tag-cloud">
+                            <span class="tag" v-for="s in structureTags" :key="s" @click="addTag(s)">{{ s }}</span>
+                        </div>
+                        <div v-show="libraryTab === 'dance'" class="prompt-list">
+                            <div class="prompt-item" v-for="(p, i) in dancePrompts" :key="i" @click="usePrompt(p)">
+                                <code>{{ p }}</code>
+                            </div>
+                        </div>
+                        <div v-show="libraryTab === 'techno'" class="tag-cloud">
+                            <span class="tag" v-for="t in technoTags" :key="t" @click="addTag(t)">{{ t }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通知 -->
+        <div class="notification" :class="notification.type" v-if="notification.show">
+            <i class="fa-solid" :class="notification.icon"></i>
+            <span>{{ notification.message }}</span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

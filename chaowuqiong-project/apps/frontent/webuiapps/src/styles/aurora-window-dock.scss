@@ -1,0 +1,819 @@
+/**
+ * Aurora Window & Dock Styles v2.0
+ * 极光窗口和Dock样式 - 现代化升级
+ * 
+ * 特性：
+ * - 玻璃拟态效果增强
+ * - 流畅的动画过渡
+ * - 现代化的视觉效果
+ * - 响应式交互反馈
+ */
+
+@use './aurora-design-system-v2.scss' as aurora;
+
+// ============================================
+// 窗口样式 - Aurora Glass v2.0
+// ============================================
+
+.aurora-window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  @include aurora.aurora-glass-dark;
+  border-radius: aurora.$radius-xl;
+  overflow: hidden;
+  transition: all aurora.$duration-normal aurora.$ease-out;
+  min-width: 380px;
+  min-height: 280px;
+  
+  // 激活状态发光边框
+  &.active {
+    box-shadow: 
+      aurora.$shadow-2xl,
+      0 0 0 1px rgba(99, 102, 241, 0.2),
+      aurora.$shadow-glow-lg;
+    
+    .aurora-window-header {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+    }
+    
+    .aurora-window-title {
+      color: aurora.$text-primary;
+    }
+  }
+  
+  // 最大化状态
+  &.maximized {
+    border-radius: 0;
+    box-shadow: none;
+    border: none;
+  }
+  
+  // 全屏状态
+  &.fullscreen {
+    border-radius: 0;
+  }
+  
+  // 窗口打开动画
+  &.opening {
+    animation: aurora-window-enter aurora.$duration-slower aurora.$ease-spring;
+  }
+  
+  // 窗口关闭动画
+  &.closing {
+    animation: aurora-window-exit aurora.$duration-normal aurora.$ease-out forwards;
+  }
+  
+  // 最小化动画
+  &.minimizing {
+    animation: aurora-window-minimize aurora.$duration-normal aurora.$ease-out forwards;
+  }
+}
+
+// 窗口头部
+.aurora-window-header {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  padding: 0 aurora.$space-5;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+  cursor: default;
+  user-select: none;
+  transition: background aurora.$duration-normal aurora.$ease-out;
+}
+
+// 窗口控制按钮容器
+.aurora-window-controls {
+  display: flex;
+  gap: 10px;
+}
+
+// 窗口控制按钮
+.aurora-control-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.35),
+    0 1px 4px rgba(0,0,0,0.25);
+  
+  svg {
+    opacity: 0;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    color: rgba(0, 0, 0, 0.6);
+    width: 9px;
+    height: 9px;
+  }
+  
+  &:hover {
+    transform: scale(1.15);
+    
+    svg {
+      opacity: 1;
+    }
+  }
+  
+  &:active {
+    transform: scale(0.92);
+  }
+  
+  // 关闭按钮
+  &.close {
+    background: linear-gradient(180deg, #ff5f57 0%, #e0443c 100%);
+    
+    &:hover { 
+      background: linear-gradient(180deg, #ff7870 0%, #ff5f57 100%);
+      box-shadow: 
+        0 0 12px rgba(255, 95, 87, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+  }
+  
+  // 最小化按钮
+  &.minimize {
+    background: linear-gradient(180deg, #febc2e 0%, #e5a623 100%);
+    
+    &:hover { 
+      background: linear-gradient(180deg, #ffd93d 0%, #febc2e 100%);
+      box-shadow: 
+        0 0 12px rgba(254, 188, 46, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+  }
+  
+  // 最大化按钮
+  &.maximize {
+    background: linear-gradient(180deg, #28c840 0%, #1ead33 100%);
+    
+    &:hover { 
+      background: linear-gradient(180deg, #3dd855 0%, #28c840 100%);
+      box-shadow: 
+        0 0 12px rgba(40, 200, 64, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.35);
+    }
+  }
+}
+
+// 窗口标题
+.aurora-window-title {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: aurora.$space-2;
+  font-size: 14px;
+  font-weight: 600;
+  color: aurora.$text-secondary;
+  letter-spacing: 0.3px;
+  transition: color aurora.$duration-normal aurora.$ease-out;
+  
+  svg {
+    color: aurora.$aurora-primary;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.5));
+  }
+}
+
+// 窗口内容区域
+.aurora-window-content {
+  flex: 1;
+  overflow: auto;
+  background: aurora.$bg-deep;
+  position: relative;
+  
+  @include aurora.aurora-scrollbar;
+  
+  & > * {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// 窗口调整大小手柄
+.aurora-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  cursor: se-resize;
+  background: linear-gradient(135deg, transparent 40%, rgba(99, 102, 241, 0.25) 50%);
+  border-bottom-right-radius: aurora.$radius-xl;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  
+  &:hover {
+    background: linear-gradient(135deg, transparent 40%, rgba(99, 102, 241, 0.5) 50%);
+  }
+}
+
+// 窗口spacer
+.aurora-window-spacer {
+  width: 70px;
+}
+
+// 隐藏类
+.hidden {
+  display: none !important;
+}
+
+// ============================================
+// Dock 样式 - Aurora Glass v2.0
+// ============================================
+
+.aurora-dock {
+  position: fixed;
+  bottom: aurora.$space-4;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 88px;
+  @include aurora.aurora-glass-floating;
+  border-radius: aurora.$radius-2xl;
+  padding: aurora.$space-3 aurora.$space-5;
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  z-index: 9998;
+  
+  // 顶部发光效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(99, 102, 241, 0.5) 30%,
+      rgba(139, 92, 246, 0.6) 50%,
+      rgba(99, 102, 241, 0.5) 70%,
+      transparent 100%
+    );
+    border-radius: 1px;
+  }
+  
+  // 底部反射效果
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 4%;
+    right: 4%;
+    height: 40px;
+    background: linear-gradient(180deg, rgba(99, 102, 241, 0.1), transparent);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+}
+
+// Dock应用容器
+.aurora-dock-apps {
+  display: flex;
+  gap: aurora.$space-3;
+  position: relative;
+  z-index: 1;
+}
+
+// Dock项目
+.aurora-dock-item {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: aurora.$space-2;
+  transition: all aurora.$duration-normal aurora.$ease-spring;
+  
+  &:hover {
+    transform: scale(1.25) translateY(-16px);
+    
+    .aurora-dock-tooltip {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    
+    .aurora-dock-icon {
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45),
+        0 0 40px rgba(99, 102, 241, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      
+      &::before {
+        opacity: 0.4;
+      }
+    }
+    
+    .aurora-dock-indicator {
+      transform: translateX(-50%) scale(1.2);
+      box-shadow: 0 0 16px rgba(99, 102, 241, 1);
+    }
+  }
+  
+  &:active {
+    transform: scale(1.1) translateY(-10px);
+    transition: all aurora.$duration-fast;
+  }
+  
+  // 打开状态
+  &.open {
+    .aurora-dock-indicator {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
+  }
+  
+  // 弹跳动画
+  &.bounce {
+    animation: aurora-dock-bounce aurora.$duration-slower aurora.$ease-spring;
+  }
+}
+
+// Dock图标
+.aurora-dock-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: aurora.$radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all aurora.$duration-normal aurora.$ease-spring;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  // 渐变高光
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+    border-radius: aurora.$radius-xl aurora.$radius-xl 0 0;
+    opacity: 0.25;
+    transition: opacity aurora.$duration-normal aurora.$ease-out;
+  }
+  
+  // 内边框
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: calc(#{aurora.$radius-xl} - 2px);
+    pointer-events: none;
+  }
+  
+  svg {
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+    z-index: 1;
+    transition: transform aurora.$duration-normal aurora.$ease-spring;
+  }
+}
+
+// Dock提示框
+.aurora-dock-tooltip {
+  position: absolute;
+  top: -48px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(5, 3, 10, 0.95);
+  color: aurora.$text-primary;
+  padding: aurora.$space-2 aurora.$space-4;
+  border-radius: aurora.$radius-lg;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all aurora.$duration-normal aurora.$ease-out;
+  pointer-events: none;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 
+    0 10px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(99, 102, 241, 0.2);
+  letter-spacing: 0.3px;
+  backdrop-filter: blur(20px);
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 7px 7px 0;
+    border-style: solid;
+    border-color: rgba(5, 3, 10, 0.95) transparent transparent;
+  }
+}
+
+// Dock打开指示器
+.aurora-dock-indicator {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  width: 5px;
+  height: 5px;
+  background: aurora.$aurora-primary;
+  border-radius: 50%;
+  opacity: 0;
+  transition: all aurora.$duration-normal aurora.$ease-spring;
+  box-shadow: 
+    0 0 12px rgba(99, 102, 241, 1),
+    0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+// Dock分隔线
+.aurora-dock-divider {
+  width: 1px;
+  height: 48px;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(255,255,255,0.15) 25%, 
+    rgba(255,255,255,0.25) 50%, 
+    rgba(255,255,255,0.15) 75%, 
+    transparent 100%
+  );
+  margin: 0 aurora.$space-3;
+}
+
+// ============================================
+// 动画关键帧
+// ============================================
+
+@keyframes aurora-window-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes aurora-window-exit {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+}
+
+@keyframes aurora-window-minimize {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.5) translateY(100px);
+  }
+}
+
+@keyframes aurora-dock-bounce {
+  0%, 100% { transform: translateY(0); }
+  25% { transform: translateY(-20px); }
+  50% { transform: translateY(-10px); }
+  75% { transform: translateY(-15px); }
+}
+
+// ============================================
+// 菜单栏样式 - Aurora Glass v2.0
+// ============================================
+
+.aurora-menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  @include aurora.aurora-glass-floating;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 aurora.$space-6;
+  z-index: 9999;
+  
+  // 顶部微光效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(99, 102, 241, 0.4) 20%,
+      rgba(139, 92, 246, 0.5) 50%,
+      rgba(99, 102, 241, 0.4) 80%,
+      transparent 100%
+    );
+  }
+  
+  // 底部微妙阴影
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.3), transparent);
+  }
+}
+
+.aurora-menu-left {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.aurora-menu-logo {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: aurora.$space-2 aurora.$space-3;
+  border-radius: aurora.$radius-md;
+  transition: all aurora.$duration-normal aurora.$ease-out;
+  color: aurora.$text-primary;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+  
+  &:hover {
+    background: rgba(99, 102, 241, 0.15);
+    box-shadow: aurora.$shadow-glow-sm;
+  }
+  
+  svg {
+    filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+  }
+}
+
+.aurora-menu-items {
+  display: flex;
+  gap: 4px;
+}
+
+.aurora-menu-item {
+  position: relative;
+  font-size: 13px;
+  color: aurora.$text-secondary;
+  cursor: pointer;
+  padding: aurora.$space-2 aurora.$space-3;
+  border-radius: aurora.$radius-md;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  font-weight: 500;
+  
+  &:hover {
+    color: aurora.$text-primary;
+    background: rgba(99, 102, 241, 0.12);
+  }
+  
+  &.active {
+    color: aurora.$aurora-primary;
+    background: rgba(99, 102, 241, 0.2);
+  }
+}
+
+.aurora-menu-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.aurora-menu-icon {
+  color: aurora.$text-secondary;
+  cursor: pointer;
+  padding: aurora.$space-2;
+  border-radius: aurora.$radius-md;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  display: flex;
+  align-items: center;
+  position: relative;
+  
+  &:hover {
+    color: aurora.$text-primary;
+    background: rgba(99, 102, 241, 0.12);
+  }
+  
+  &.active {
+    color: aurora.$aurora-primary;
+    background: rgba(99, 102, 241, 0.2);
+    box-shadow: aurora.$shadow-glow-sm;
+  }
+}
+
+.aurora-menu-time {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 70px;
+  text-align: center;
+  color: aurora.$text-primary;
+  letter-spacing: 0.3px;
+  font-variant-numeric: tabular-nums;
+}
+
+// ============================================
+// 下拉菜单样式
+// ============================================
+
+.aurora-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 220px;
+  background: linear-gradient(180deg, rgba(15, 10, 30, 0.98) 0%, rgba(5, 3, 10, 0.98) 100%);
+  border-radius: aurora.$radius-lg;
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(99, 102, 241, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  padding: aurora.$space-2 0;
+  z-index: 10000;
+  animation: aurora-dropdown-appear aurora.$duration-fast aurora.$ease-out;
+  backdrop-filter: blur(50px) saturate(200%);
+  -webkit-backdrop-filter: blur(50px) saturate(200%);
+}
+
+@keyframes aurora-dropdown-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.aurora-dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  color: aurora.$text-secondary;
+  font-size: 13px;
+  
+  &:hover {
+    background: rgba(99, 102, 241, 0.15);
+    color: aurora.$text-primary;
+  }
+  
+  &.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    
+    &:hover {
+      background: none;
+      color: aurora.$text-tertiary;
+    }
+  }
+}
+
+.aurora-dropdown-divider {
+  height: 1px;
+  background: rgba(99, 102, 241, 0.12);
+  margin: 6px 0;
+}
+
+// ============================================
+// 桌面图标样式
+// ============================================
+
+.aurora-desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-3;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: aurora.$radius-xl;
+  transition: all aurora.$duration-normal aurora.$ease-spring;
+  position: relative;
+  
+  // 选中/悬停光晕
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 120%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.18) 0%, transparent 65%);
+    opacity: 0;
+    transition: opacity aurora.$duration-normal aurora.$ease-out;
+    border-radius: aurora.$radius-xl;
+    pointer-events: none;
+  }
+  
+  &:hover {
+    transform: translateY(-10px) scale(1.03);
+    
+    &::before {
+      opacity: 1;
+    }
+    
+    .aurora-desktop-icon-shape {
+      transform: scale(1.1);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(99, 102, 241, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+    
+    .aurora-desktop-icon-label {
+      text-shadow: 0 6px 20px rgba(0, 0, 0, 0.8);
+    }
+  }
+  
+  &:active {
+    transform: scale(0.95) translateY(-5px);
+    transition: all aurora.$duration-fast;
+  }
+}
+
+.aurora-desktop-icon-shape {
+  width: 68px;
+  height: 68px;
+  border-radius: aurora.$radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(28px) saturate(200%);
+  transition: all aurora.$duration-normal aurora.$ease-spring;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  // 渐变高光
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.05) 100%);
+    border-radius: aurora.$radius-xl aurora.$radius-xl 0 0;
+  }
+  
+  // 内发光边框
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: calc(#{aurora.$radius-xl} - 2px);
+    pointer-events: none;
+  }
+  
+  svg {
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+    z-index: 1;
+    transition: transform aurora.$duration-normal aurora.$ease-spring;
+  }
+}
+
+.aurora-desktop-icon-label {
+  font-size: 12px;
+  color: #ffffff;
+  text-align: center;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+  text-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.7),
+    0 0 20px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.3px;
+  transition: all aurora.$duration-normal aurora.$ease-out;
+}

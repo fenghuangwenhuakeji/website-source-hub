@@ -1,0 +1,1 @@
+export default { file: 'fs_water.wav', volume: 0.7, pitchVar: 0.1 };

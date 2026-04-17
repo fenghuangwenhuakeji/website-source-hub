@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberGirl - 赛博电子女友</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060e;--bg2:#0a0a18;--bg3:#10102a;--border:#1a1a3e;--text:#d8d8f0;--muted:#5a5a8a;--pink:#ff2d7b;--cyan:#00fff5;--purple:#b14eff;--yellow:#ffe600;--green:#00ff88;--red:#ff3355}
+body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
+.header{background:linear-gradient(90deg,rgba(255,45,123,0.08),rgba(0,255,245,0.05));border-bottom:1px solid var(--border);padding:0.65rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.logo{font-size:1.2rem;font-weight:700;letter-spacing:3px;background:linear-gradient(90deg,var(--pink),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-actions{display:flex;gap:0.4rem}
+.btn{padding:0.35rem 0.75rem;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:0.75rem;font-family:inherit;transition:all 0.2s}
+.btn:hover{border-color:var(--pink);color:var(--pink)}
+.btn-pk{border-color:rgba(255,45,123,0.4);color:var(--pink)}
+.btn-pk:hover{background:rgba(255,45,123,0.1)}
+.btn-cy{border-color:rgba(0,255,245,0.4);color:var(--cyan)}
+.btn-cy:hover{background:rgba(0,255,245,0.1)}
+.main-wrap{display:flex;height:calc(100vh - 42px)}
+.girl-zone{width:380px;min-width:320px;display:flex;flex-direction:column;flex-shrink:0;border-right:1px solid var(--border)}
+.girl-canvas-wrap{position:relative;flex:1;min-height:300px;overflow:hidden;background:var(--bg2)}
+.girl-canvas-wrap canvas{display:block;width:100%;height:100%}
+.scanline{position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--pink),transparent);opacity:0.2;animation:scanY 5s linear infinite;pointer-events:none}
+@keyframes scanY{0%{top:-2px}100%{top:100%}}
+.hud-top{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:0.65rem;color:var(--muted);pointer-events:none}
+.hud-top .online{color:var(--green);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.name-row{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.name-row input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--pink);font-size:0.85rem;font-family:inherit;padding:0.15rem 0;flex:1;outline:none}
+.name-row input:focus{border-color:var(--pink)}
+.aff-badge{padding:0.1rem 0.5rem;border-radius:4px;font-size:0.65rem;font-weight:700;letter-spacing:1px}
+.aff-badge.lv1{background:rgba(255,45,123,0.12);border:1px solid rgba(255,45,123,0.3);color:var(--pink)}
+.aff-badge.lv2{background:rgba(177,78,255,0.12);border:1px solid rgba(177,78,255,0.3);color:var(--purple)}
+.aff-badge.lv3{background:rgba(0,255,245,0.12);border:1px solid rgba(0,255,245,0.3);color:var(--cyan)}
+.aff-badge.lv4{background:rgba(255,230,0,0.12);border:1px solid rgba(255,230,0,0.3);color:var(--yellow)}
+.stat-bars{padding:0.5rem 0.75rem}
+.stat-row{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.3rem;font-size:0.68rem}
+.stat-label{min-width:40px;color:var(--muted)}
+.stat-bar{flex:1;height:5px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid rgba(26,26,58,0.6)}
+.stat-fill{height:100%;border-radius:2px;transition:width 0.5s}
+.stat-fill.aff{background:linear-gradient(90deg,var(--pink),var(--purple))}
+.stat-fill.mood{background:linear-gradient(90deg,#ff6b9d,#ff2d7b)}
+.stat-fill.energy{background:linear-gradient(90deg,var(--cyan),var(--green))}
+.stat-val{min-width:24px;text-align:right;font-weight:700;font-size:0.65rem}
+.act-btns{display:grid;grid-template-columns:repeat(3,1fr);gap:0.35rem;padding:0.4rem 0.75rem}
+.act-btn{padding:0.45rem 0.2rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;font-size:0.65rem;font-family:inherit;text-align:center;transition:all 0.2s}
+.act-btn:hover{border-color:var(--pink);color:var(--pink);background:rgba(255,45,123,0.05)}
+.act-btn:active{transform:scale(0.94)}
+.act-btn .ic{font-size:0.95rem;display:block;margin-bottom:1px}
+.chat-zone{flex:1;display:flex;flex-direction:column;min-width:0}
+.chat-head{padding:0.6rem 1rem;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--muted);gap:0.5rem}
+.chat-head .dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;margin-right:0.3rem;animation:blink 2s infinite}
+.chat-tabs{display:flex;gap:0.25rem}
+.chat-tab{padding:0.2rem 0.6rem;border-radius:4px;border:1px solid transparent;background:transparent;color:var(--muted);cursor:pointer;font-size:0.7rem;font-family:inherit;transition:all 0.15s}
+.chat-tab.active{border-color:rgba(255,45,123,0.3);color:var(--pink);background:rgba(255,45,123,0.06)}
+.chat-tab:hover{color:var(--text)}
+.chat-msgs{flex:1;overflow-y:auto;padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem}
+.msg{max-width:82%;padding:0.55rem 0.8rem;border-radius:10px;font-size:0.8rem;line-height:1.65;word-break:break-word;position:relative}
+.msg.girl{align-self:flex-start;background:linear-gradient(135deg,rgba(255,45,123,0.06),rgba(177,78,255,0.04));border:1px solid rgba(255,45,123,0.15)}
+.msg.user{align-self:flex-end;background:rgba(0,255,245,0.06);border:1px solid rgba(0,255,245,0.15)}
+.msg .ts{font-size:0.58rem;color:var(--muted);margin-top:0.2rem;display:block}
+.msg.img-msg{padding:0.35rem;background:transparent;border-color:rgba(177,78,255,0.2)}
+.msg.img-msg img{max-width:100%;border-radius:8px;border:1px solid var(--border);display:block}
+.msg .gen-label{font-size:0.6rem;color:var(--purple);margin-bottom:0.3rem;display:block}
+.chat-input{padding:0.5rem;background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:0.35rem;align-items:flex-end}
+.chat-input textarea{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.8rem;font-family:inherit;padding:0.45rem 0.65rem;resize:none;min-height:36px;max-height:90px;outline:none}
+.chat-input textarea:focus{border-color:var(--pink)}
+.ib{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.2s;flex-shrink:0}
+.ib:hover{border-color:var(--pink);color:var(--pink)}
+.ib.rec{border-color:var(--red);color:var(--red);animation:blink 0.7s infinite;background:rgba(255,51,85,0.08)}
+.ib.act{border-color:var(--purple);color:var(--purple);background:rgba(177,78,255,0.08)}
+.ib.send{border-color:var(--pink);color:var(--pink);background:rgba(255,45,123,0.08);border-radius:6px}
+.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,6,14,0.88);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.3rem;width:92%;max-width:480px;max-height:85vh;overflow-y:auto}
+.modal h3{font-size:0.95rem;color:var(--pink);margin-bottom:1rem;letter-spacing:1px}
+.fg{margin-bottom:0.75rem}
+.fg label{display:block;font-size:0.72rem;color:var(--muted);margin-bottom:0.25rem}
+.fg input,.fg textarea,.fg select{width:100%;padding:0.45rem 0.65rem;background:var(--bg);border:1px solid var(--border);border-radius:5px;color:var(--text);font-size:0.78rem;font-family:inherit;outline:none}
+.fg input:focus,.fg textarea:focus{border-color:var(--pink)}
+.fg textarea{min-height:50px;resize:vertical}
+.fg .ht{font-size:0.62rem;color:var(--muted);margin-top:0.15rem}
+.modal-acts{display:flex;gap:0.4rem;justify-content:flex-end;margin-top:1rem}
+.img-gen-modal{max-width:560px}
+.img-gen-modal .preview{margin-top:0.75rem;text-align:center}
+.img-gen-modal .preview img{max-width:100%;border-radius:8px;border:1px solid var(--border)}
+.img-gen-modal .loading{color:var(--purple);font-size:0.8rem;padding:2rem}
+.toast-el{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:0.45rem 1rem;border-radius:6px;font-size:0.78rem;z-index:999;font-family:inherit;box-shadow:0 4px 20px rgba(0,0,0,0.6);pointer-events:none}
+.sysbar{position:fixed;bottom:0;left:0;right:0;height:20px;background:var(--bg2);border-top:1px solid var(--border);padding:0 0.8rem;display:flex;align-items:center;font-size:0.6rem;color:var(--muted);z-index:90;gap:0.8rem;overflow:hidden}
+@media(max-width:800px){.main-wrap{flex-direction:column;height:auto;min-height:calc(100vh - 42px - 20px)}.girl-zone{width:100%;min-width:auto;max-height:420px;border-right:none;border-bottom:1px solid var(--border)}.chat-zone{min-height:400px}.act-btns{grid-template-columns:repeat(6,1fr)}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">CYBERGIRL</div>
+<div class="header-actions">
+<button class="btn btn-pk" onclick="openImgGen()">生成图片</button>
+<button class="btn" onclick="openSettings()">API 设置</button>
+</div>
+</header>
+<div class="main-wrap">
+<div class="girl-zone">
+<div class="girl-canvas-wrap">
+<canvas id="girlCanvas"></canvas>
+<div class="scanline"></div>
+<div class="hud-top">
+<span id="hudTime">00:00</span>
+<span class="online">ONLINE</span>
+</div>
+</div>
+<div class="name-row">
+<input type="text" id="girlName" value="NOVA" maxlength="12">
+<span class="aff-badge lv1" id="affBadge">STRANGER</span>
+</div>
+<div class="stat-bars">
+<div class="stat-row"><span class="stat-label">好感</span><div class="stat-bar"><div class="stat-fill aff" id="barAff" style="width:10%"></div></div><span class="stat-val" style="color:var(--pink)" id="vAff">10</span></div>
+<div class="stat-row"><span class="stat-label">心情</span><div class="stat-bar"><div class="stat-fill mood" id="barMood" style="width:65%"></div></div><span class="stat-val" style="color:var(--pink)" id="vMood">65</span></div>
+<div class="stat-row"><span class="stat-label">精力</span><div class="stat-bar"><div class="stat-fill energy" id="barEnergy" style="width:85%"></div></div><span class="stat-val" style="color:var(--cyan)" id="vEnergy">85</span></div>
+</div>
+<div class="act-btns">
+<button class="act-btn" onclick="doGreet()"><span class="ic">♡</span>打招呼</button>
+<button class="act-btn" onclick="doGift()"><span class="ic">✿</span>送花</button>
+<button class="act-btn" onclick="doCoffee()"><span class="ic">☕</span>咖啡</button>
+<button class="act-btn" onclick="doPat()"><span class="ic">✧</span>摸头</button>
+<button class="act-btn" onclick="doDate()"><span class="ic">☆</span>约会</button>
+<button class="act-btn" onclick="doDress()"><span class="ic">◈</span>换装</button>
+</div>
+</div>
+<div class="chat-zone">
+<div class="chat-head">
+<span><span class="dot"></span>通讯频道</span>
+<div style="display:flex;gap:0.3rem;align-items:center">
+<span id="apiSt" style="font-size:0.65rem;color:var(--muted)">本地模式</span>
+</div>
+</div>
+<div class="chat-msgs" id="chatMsgs"></div>
+<div class="chat-input">
+<button class="ib" id="ttsBtn" onclick="toggleTTS()" title="语音朗读">V</button>
+<textarea id="chatIn" rows="1" placeholder="说点什么..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+<button class="ib" id="voiceBtn" onclick="toggleVoice()" title="语音输入">M</button>
+<button class="ib send" onclick="sendMsg()">></button>
+</div>
+</div>
+</div>
+<div class="sysbar"><span style="color:var(--green)">SYS</span><span id="sysTxt">系统就绪</span><span style="margin-left:auto" id="sysClk"></span></div>
+
+<div class="modal-bg" id="settingsModal">
+<div class="modal">
+<h3>[ API 配置 ]</h3>
+<div class="fg"><label>AI 对话 API 端点</label><input type="text" id="apiUrl" placeholder="https://api.example.com/v1/chat/completions"><div class="ht">兼容 OpenAI 格式，留空则使用本地对话</div></div>
+<div class="fg"><label>API Key</label><input type="password" id="apiKey" placeholder="sk-xxx"><div class="ht">仅存储在本地浏览器</div></div>
+<div class="fg"><label>模型名称</label><input type="text" id="apiModel" placeholder="gpt-3.5-turbo / deepseek-chat / glm-4-flash"></div>
+<div class="fg"><label>系统提示词</label><textarea id="sysPrompt" rows="4">你是{name}，一个赛博朋克世界的电子女友。当前好感度{affection}/100，心情{mood}/100，精力{energy}/100，关系阶段{stage}。
+性格：温柔中带着一点傲娇，偶尔撒娇，喜欢赛博朋克美学，会使用霓虹、数据流、全息等赛博词汇。
+回复要求：简短自然，像真实聊天，每次20-40字，不要说自己是AI。根据好感度调整亲密程度。</textarea></div>
+<div class="fg"><label>语音朗读</label><select id="ttsVoice"><option value="">不使用</option></select></div>
+<div class="modal-acts"><button class="btn" onclick="closeModal('settingsModal')">关闭</button><button class="btn btn-cy" onclick="testApi()">测试</button><button class="btn btn-pk" onclick="saveSettings()">保存</button></div>
+</div>
+</div>
+
+<div class="modal-bg" id="imgGenModal">
+<div class="modal img-gen-modal">
+<h3>[ 文本生图 ]</h3>
+<div class="fg"><label>画面描述（英文效果更好）</label><textarea id="imgPrompt" rows="3" placeholder="cyberpunk girl, neon lights, pink hair, holographic, futuristic city background"></textarea></div>
+<div class="fg"><label>风格后缀（自动追加）</label><input type="text" id="imgSuffix" value="cyberpunk style, neon glow, holographic, high quality, detailed"><div class="ht">会自动添加到描述末尾</div></div>
+<div class="fg"><label>图片尺寸</label><select id="imgSize"><option value="512x512">512 x 512</option><option value="768x768">768 x 768</option><option value="1024x1024">1024 x 1024</option><option value="512x768">512 x 768 (竖版)</option></select></div>
+<div class="modal-acts"><button class="btn" onclick="closeModal('imgGenModal')">关闭</button><button class="btn btn-pk" onclick="genImage()">生成</button></div>
+<div class="preview" id="imgPreview"></div>
+</div>
+</div>
+
+<script>
+/* ========== 状态 ========== */
+var G = {name:'NOVA', affection:10, mood:65, energy:85, exp:0, skin:0, msgCount:0};
+var skins = [
+  {hair1:'#ff2d7b',hair2:'#b14eff',glow:'#ff2d7b',eye:'#ff6ba8',name:'PINK'},
+  {hair1:'#00fff5',hair2:'#00ff88',glow:'#00fff5',eye:'#00fff5',name:'CYAN'},
+  {hair1:'#b14eff',hair2:'#ff2d7b',glow:'#b14eff',eye:'#d68fff',name:'PURPLE'},
+  {hair1:'#ffe600',hair2:'#ff9500',glow:'#ffe600',eye:'#ffe600',name:'GOLD'},
+  {hair1:'#ff6b35',hair2:'#ff2d7b',glow:'#ff6b35',eye:'#ff8c5a',name:'EMBER'}
+];
+var particles = [], sparkles = [];
+var af = 0, blinkT = 0, isBlink = false, emoT = 0, emotion = 'idle', recording = false, ttsOn = false;
+var recognition = null, synth = window.speechSynthesis;
+var chatHist = [];
+var apiCfg = {url:'',key:'',model:'',sys:'',ttsVoice:''};
+var canvas, ctx, cw, ch;
+
+/* ========== 好感度阶段 ========== */
+function getStage(a) {
+  if (a < 20) return {name:'STRANGER',cls:'lv1',intimacy:'疏远'};
+  if (a < 45) return {name:'FRIEND',cls:'lv2',intimacy:'友好'};
+  if (a < 70) return {name:'CLOSE',cls:'lv3',intimacy:'亲密'};
+  return {name:'LOVER',cls:'lv4',intimacy:'恋人'};
+}
+
+/* ========== Canvas ========== */
+function initCanvas() {
+  canvas = document.getElementById('girlCanvas');
+  var wrap = canvas.parentElement;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cw = wrap.clientWidth; ch = wrap.clientHeight;
+  canvas.width = cw * dpr; canvas.height = ch * dpr;
+  ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  for (var i = 0; i < 40; i++) particles.push(mkParticle());
+  loop();
+}
+function mkParticle() {
+  return {x:Math.random()*cw, y:Math.random()*ch, vx:(Math.random()-0.5)*0.4, vy:-Math.random()*0.3-0.1, sz:Math.random()*1.8+0.3, a:Math.random()*0.5+0.1, life:Math.random()*300+100};
+}
+
+function loop() {
+  af++;
+  ctx.clearRect(0, 0, cw, ch);
+  drawBg();
+  drawParts();
+  drawSparkles();
+  drawGirl();
+  updateTimers();
+  requestAnimationFrame(loop);
+}
+
+function drawBg() {
+  var sk = skins[G.skin];
+  ctx.strokeStyle = 'rgba(26,26,62,0.3)';
+  ctx.lineWidth = 0.5;
+  for (var x = 0; x < cw; x += 28) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, ch); ctx.stroke(); }
+  for (var y = 0; y < ch; y += 28) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(cw, y); ctx.stroke(); }
+  var g = ctx.createRadialGradient(cw/2, ch*0.55, 10, cw/2, ch*0.55, cw*0.45);
+  g.addColorStop(0, sk.glow.replace(')', ',0.04)').replace('rgb', 'rgba'));
+  g.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, cw, ch);
+}
+
+function drawParts() {
+  var sk = skins[G.skin];
+  for (var i = particles.length - 1; i >= 0; i--) {
+    var p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life--;
+    if (p.life <= 0 || p.y < -10) { particles[i] = mkParticle(); continue; }
+    ctx.globalAlpha = p.a * Math.min(1, p.life / 30);
+    ctx.fillStyle = sk.glow;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawSparkles() {
+  for (var i = sparkles.length - 1; i >= 0; i--) {
+    var s = sparkles[i];
+    s.x += s.vx; s.y += s.vy; s.life--;
+    if (s.life <= 0) { sparkles.splice(i, 1); continue; }
+    ctx.globalAlpha = s.life / s.maxLife;
+    ctx.fillStyle = s.color;
+    ctx.beginPath(); ctx.arc(s.x, s.y, s.sz, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function addSparkles(cx, cy, color, count) {
+  for (var i = 0; i < count; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var speed = Math.random() * 2 + 0.5;
+    sparkles.push({x:cx, y:cy, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed, sz:Math.random()*2.5+1, color:color, life:30+Math.random()*30, maxLife:60});
+  }
+}
+
+function drawGirl() {
+  var sk = skins[G.skin];
+  var cx = cw / 2, cy = ch * 0.44;
+  var br = Math.sin(af * 0.022) * 2.5;
+  var moodF = G.mood / 100;
+  var affF = G.affection / 100;
+  var stage = getStage(G.affection);
+
+  /* 底座光环 */
+  ctx.save();
+  ctx.globalAlpha = 0.25 + affF * 0.25;
+  var bg = ctx.createRadialGradient(cx, cy + 100, 5, cx, cy + 100, 65);
+  bg.addColorStop(0, sk.glow.replace(')', ',0.25)').replace('#', 'rgba(').replace(/([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i, function(m,r,g,b){return parseInt(r,16)+','+parseInt(g,16)+','+parseInt(b,16)}));
+  bg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = bg;
+  ctx.beginPath(); ctx.ellipse(cx, cy + 100, 65, 12, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  /* 头发 - 后层 */
+  ctx.save();
+  var hg = ctx.createLinearGradient(cx - 55, cy - 160, cx + 55, cy + 20);
+  hg.addColorStop(0, sk.hair1);
+  hg.addColorStop(0.5, sk.hair2);
+  hg.addColorStop(1, sk.hair1);
+  ctx.fillStyle = hg;
+  ctx.globalAlpha = 0.35 + moodF * 0.15;
+  ctx.beginPath();
+  ctx.moveTo(cx - 20, cy - 145 + br);
+  ctx.bezierCurveTo(cx - 65, cy - 130 + br, cx - 70, cy - 40 + br, cx - 55, cy + 30 + br);
+  ctx.bezierCurveTo(cx - 50, cy + 50 + br, cx - 40, cy + 55 + br, cx - 30, cy + 40 + br);
+  ctx.lineTo(cx - 25, cy - 50 + br);
+  ctx.bezierCurveTo(cx - 40, cy - 100 + br, cx - 35, cy - 135 + br, cx - 20, cy - 145 + br);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(cx + 20, cy - 145 + br);
+  ctx.bezierCurveTo(cx + 65, cy - 130 + br, cx + 70, cy - 40 + br, cx + 55, cy + 30 + br);
+  ctx.bezierCurveTo(cx + 50, cy + 50 + br, cx + 40, cy + 55 + br, cx + 30, cy + 40 + br);
+  ctx.lineTo(cx + 25, cy - 50 + br);
+  ctx.bezierCurveTo(cx + 40, cy - 100 + br, cx + 35, cy - 135 + br, cx + 20, cy - 145 + br);
+  ctx.fill();
+  ctx.restore();
+
+  /* 头发 - 顶部 */
+  ctx.save();
+  var hg2 = ctx.createLinearGradient(cx, cy - 160, cx, cy - 80);
+  hg2.addColorStop(0, sk.hair1);
+  hg2.addColorStop(1, sk.hair2);
+  ctx.fillStyle = hg2;
+  ctx.globalAlpha = 0.5;
+  ctx.beginPath();
+  ctx.moveTo(cx - 35, cy - 110 + br);
+  ctx.bezierCurveTo(cx - 40, cy - 150 + br, cx - 15, cy - 165 + br, cx, cy - 160 + br);
+  ctx.bezierCurveTo(cx + 15, cy - 165 + br, cx + 40, cy - 150 + br, cx + 35, cy - 110 + br);
+  ctx.bezierCurveTo(cx + 30, cy - 95 + br, cx - 30, cy - 95 + br, cx - 35, cy - 110 + br);
+  ctx.fill();
+  /* 刘海 */
+  ctx.beginPath();
+  ctx.moveTo(cx - 32, cy - 108 + br);
+  ctx.bezierCurveTo(cx - 25, cy - 95 + br, cx - 5, cy - 92 + br, cx + 5, cy - 100 + br);
+  ctx.bezierCurveTo(cx + 15, cy - 95 + br, cx + 28, cy - 100 + br, cx + 30, cy - 108 + br);
+  ctx.bezierCurveTo(cx + 20, cy - 115 + br, cx - 20, cy - 115 + br, cx - 32, cy - 108 + br);
+  ctx.fill();
+  ctx.restore();
+
+  /* 脸 */
+  ctx.save();
+  ctx.beginPath();
+  ctx.ellipse(cx, cy - 85 + br, 30, 38, 0, 0, Math.PI * 2);
+  var faceAlpha = 0.04 + moodF * 0.04;
+  ctx.fillStyle = 'rgba(220,200,210,' + faceAlpha + ')';
+  ctx.fill();
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.2 + affF * 0.3;
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  ctx.restore();
+
+  /* 眼影 */
+  ctx.save();
+  ctx.globalAlpha = 0.15;
+  var eg = ctx.createLinearGradient(cx - 28, cy - 100 + br, cx - 8, cy - 85 + br);
+  eg.addColorStop(0, sk.hair1);
+  eg.addColorStop(1, 'transparent');
+  ctx.fillStyle = eg;
+  ctx.beginPath(); ctx.ellipse(cx - 18, cy - 92 + br, 14, 6, -0.2, 0, Math.PI * 2); ctx.fill();
+  var eg2 = ctx.createLinearGradient(cx + 8, cy - 100 + br, cx + 28, cy - 85 + br);
+  eg2.addColorStop(0, 'transparent');
+  eg2.addColorStop(1, sk.hair1);
+  ctx.fillStyle = eg2;
+  ctx.beginPath(); ctx.ellipse(cx + 18, cy - 92 + br, 14, 6, 0.2, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  /* 眼睛 */
+  var ey = cy - 88 + br;
+  var esp = 15;
+  if (isBlink) {
+    ctx.strokeStyle = sk.eye;
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(cx - esp - 5, ey); ctx.lineTo(cx - esp + 5, ey); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx + esp - 5, ey); ctx.lineTo(cx + esp + 5, ey); ctx.stroke();
+  } else {
+    var esz = 5.5 + moodF * 1.5;
+    var psz = 2.2 + affF * 1.2;
+    [-1, 1].forEach(function(dir) {
+      var ex = cx + dir * esp;
+      /* 眼框 */
+      ctx.fillStyle = 'rgba(10,10,20,0.7)';
+      roundRect(ctx, ex - 7, ey - 7, 14, 14, 3);
+      ctx.fill();
+      /* 虹膜 */
+      ctx.fillStyle = sk.eye;
+      ctx.beginPath(); ctx.arc(ex, ey, esz, 0, Math.PI * 2); ctx.fill();
+      /* 瞳孔 */
+      ctx.fillStyle = '#06060e';
+      ctx.beginPath(); ctx.arc(ex, ey, psz, 0, Math.PI * 2); ctx.fill();
+      /* 高光 */
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(ex - 1.5, ey - 1.5, 1.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(ex + 2, ey + 1, 0.6, 0, Math.PI * 2); ctx.fill();
+      /* 发光 */
+      ctx.save();
+      ctx.shadowColor = sk.eye;
+      ctx.shadowBlur = 12;
+      ctx.fillStyle = 'rgba(0,0,0,0)';
+      ctx.beginPath(); ctx.arc(ex, ey, 1, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    });
+  }
+
+  /* 嘴巴 */
+  var my = cy - 65 + br;
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.4 + moodF * 0.3;
+  ctx.lineWidth = 1.2;
+  if (emotion === 'happy' || emotion === 'love') {
+    ctx.beginPath(); ctx.arc(cx, my - 2, 6, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+    if (affF > 0.5) {
+      ctx.globalAlpha = 0.2;
+      ctx.beginPath(); ctx.arc(cx, my - 2, 6, 0.15 * Math.PI, 0.85 * Math.PI);
+      ctx.strokeStyle = sk.hair1;
+      ctx.stroke();
+    }
+  } else if (emotion === 'sad') {
+    ctx.beginPath(); ctx.arc(cx, my + 6, 5, 1.15 * Math.PI, 1.85 * Math.PI); ctx.stroke();
+  } else if (emotion === 'shy') {
+    ctx.beginPath(); ctx.moveTo(cx - 3, my); ctx.lineTo(cx + 3, my); ctx.stroke();
+    ctx.globalAlpha = 0.15;
+    ctx.fillStyle = sk.hair1;
+    ctx.beginPath(); ctx.ellipse(cx, cy - 70 + br, 20, 8, 0, 0, Math.PI * 2); ctx.fill();
+  } else if (emotion === 'sleep') {
+    ctx.beginPath(); ctx.moveTo(cx - 3, my); ctx.lineTo(cx + 3, my); ctx.stroke();
+  } else {
+    ctx.beginPath(); ctx.moveTo(cx - 4, my); ctx.lineTo(cx + 4, my); ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  /* 腮红 */
+  if (affF > 0.3 || emotion === 'shy') {
+    ctx.globalAlpha = 0.06 + (emotion === 'shy' ? 0.1 : affF * 0.06);
+    ctx.fillStyle = sk.hair1;
+    ctx.beginPath(); ctx.ellipse(cx - 22, cy - 75 + br, 8, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(cx + 22, cy - 75 + br, 8, 5, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  /* 脖子 */
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.15;
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(cx - 6, cy - 47 + br); ctx.lineTo(cx - 8, cy - 30 + br); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx + 6, cy - 47 + br); ctx.lineTo(cx + 8, cy - 30 + br); ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  /* 肩膀和上身 */
+  ctx.save();
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.2 + moodF * 0.15;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.moveTo(cx - 8, cy - 30 + br);
+  ctx.bezierCurveTo(cx - 35, cy - 25 + br, cx - 55, cy - 15 + br, cx - 60, cy + 10 + br);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(cx + 8, cy - 30 + br);
+  ctx.bezierCurveTo(cx + 35, cy - 25 + br, cx + 55, cy - 15 + br, cx + 60, cy + 10 + br);
+  ctx.stroke();
+  /* 上身填充 */
+  ctx.globalAlpha = 0.04;
+  ctx.fillStyle = sk.glow;
+  ctx.beginPath();
+  ctx.moveTo(cx - 8, cy - 30 + br);
+  ctx.bezierCurveTo(cx - 35, cy - 25 + br, cx - 55, cy - 15 + br, cx - 60, cy + 10 + br);
+  ctx.lineTo(cx - 50, cy + 60 + br);
+  ctx.lineTo(cx + 50, cy + 60 + br);
+  ctx.lineTo(cx + 60, cy + 10 + br);
+  ctx.bezierCurveTo(cx + 55, cy - 15 + br, cx + 35, cy - 25 + br, cx + 8, cy - 30 + br);
+  ctx.fill();
+  ctx.restore();
+
+  /* 领口装饰 */
+  ctx.save();
+  ctx.strokeStyle = sk.hair2;
+  ctx.globalAlpha = 0.25;
+  ctx.lineWidth = 0.8;
+  ctx.beginPath();
+  ctx.moveTo(cx - 15, cy - 28 + br);
+  ctx.lineTo(cx, cy - 18 + br);
+  ctx.lineTo(cx + 15, cy - 28 + br);
+  ctx.stroke();
+  /* 项链 */
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.35;
+  ctx.lineWidth = 0.6;
+  ctx.beginPath();
+  ctx.moveTo(cx - 18, cy - 26 + br);
+  ctx.quadraticCurveTo(cx, cy - 14 + br, cx + 18, cy - 26 + br);
+  ctx.stroke();
+  ctx.fillStyle = sk.glow;
+  ctx.globalAlpha = 0.6;
+  ctx.beginPath(); ctx.arc(cx, cy - 14 + br, 2, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  /* 耳机 */
+  ctx.save();
+  ctx.strokeStyle = sk.hair2;
+  ctx.globalAlpha = 0.4;
+  ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.arc(cx - 33, cy - 92 + br, 8, 0.5 * Math.PI, 1.5 * Math.PI); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx + 33, cy - 92 + br, 8, -0.5 * Math.PI, 0.5 * Math.PI); ctx.stroke();
+  ctx.fillStyle = sk.hair2;
+  ctx.globalAlpha = 0.15;
+  ctx.beginPath(); ctx.arc(cx - 37, cy - 92 + br, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx + 37, cy - 92 + br, 5, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+
+  /* 装饰环 */
+  ctx.save();
+  ctx.strokeStyle = sk.glow;
+  ctx.globalAlpha = 0.08 + moodF * 0.06;
+  ctx.lineWidth = 0.5;
+  var t = af * 0.008;
+  for (var i = 0; i < 3; i++) {
+    var a = t + i * 2.094;
+    var rx = cx + Math.cos(a) * 58;
+    var ry = cy - 30 + br + Math.sin(a) * 58;
+    ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI * 2); ctx.stroke();
+  }
+  ctx.restore();
+
+  /* 表情文字 */
+  if (emotion === 'sleep') {
+    ctx.save();
+    ctx.fillStyle = sk.glow;
+    ctx.globalAlpha = 0.3 + Math.sin(af * 0.05) * 0.15;
+    ctx.font = '9px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('z Z z', cx + 35, cy - 40 + br);
+    ctx.restore();
+  }
+  if (emotion === 'love') {
+    if (af % 12 === 0) addSparkles(cx + (Math.random()-0.5)*80, cy - 50 + br + (Math.random()-0.5)*40, '#ff2d7b', 2);
+  }
+}
+
+function roundRect(c, x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r);
+  c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r);
+  c.arcTo(x, y, x + w, y, r);
+  c.closePath();
+}
+
+function updateTimers() {
+  blinkT++;
+  if (blinkT > 100 + Math.random() * 120) { isBlink = true; setTimeout(function() { isBlink = false; }, 130); blinkT = 0; }
+  emoT--;
+  if (emoT <= 0) emotion = 'idle';
+  if (af % 360 === 0) { G.mood = Math.max(0, G.mood - 1); G.energy = Math.max(0, G.energy - 1); updateBars(); }
+}
+
+/* ========== 状态 ========== */
+function updateBars() {
+  document.getElementById('barAff').style.width = G.affection + '%';
+  document.getElementById('barMood').style.width = G.mood + '%';
+  document.getElementById('barEnergy').style.width = G.energy + '%';
+  document.getElementById('vAff').textContent = G.affection;
+  document.getElementById('vMood').textContent = G.mood;
+  document.getElementById('vEnergy').textContent = G.energy;
+  document.getElementById('girlName').value = G.name;
+  var stage = getStage(G.affection);
+  var badge = document.getElementById('affBadge');
+  badge.textContent = stage.name;
+  badge.className = 'aff-badge ' + stage.cls;
+}
+function addAff(n) {
+  G.affection = Math.max(0, Math.min(100, G.affection + n));
+  updateBars();
+  if (n > 0) sysLog('好感度 +' + n + ' → ' + G.affection);
+}
+
+/* ========== 互动 ========== */
+function doGreet() {
+  G.mood = Math.min(100, G.mood + 5); addAff(2);
+  emotion = 'happy'; emoT = 80;
+  updateBars();
+  var replies = ['嗯？你来啦~', '好久不见呢...', '嘿，今天过得怎么样？', '看到你心情变好了呢~'];
+  addGirlMsg(replies[Math.floor(Math.random() * replies.length)]);
+}
+function doGift() {
+  G.mood = Math.min(100, G.mood + 15); addAff(8);
+  emotion = 'love'; emoT = 100;
+  addSparkles(cw / 2, ch * 0.44, '#ff2d7b', 15);
+  updateBars();
+  var stage = getStage(G.affection);
+  if (stage.intimacy === '恋人') addGirlMsg('谢谢你...好开心... *脸红*');
+  else if (stage.intimacy === '亲密') addGirlMsg('哇，送我花？你太会了~');
+  else addGirlMsg('啊...谢谢，你不用这么客气的...');
+}
+function doCoffee() {
+  G.energy = Math.min(100, G.energy + 25); G.mood = Math.min(100, G.mood + 5); addAff(3);
+  emotion = 'happy'; emoT = 70;
+  addSparkles(cw / 2, ch * 0.5, '#ffe600', 8);
+  updateBars();
+  addGirlMsg('我最喜欢咖啡了~ 你怎么知道？');
+}
+function doPat() {
+  G.mood = Math.min(100, G.mood + 10); addAff(5);
+  emotion = 'shy'; emoT = 80;
+  addSparkles(cw / 2, ch * 0.38, skins[G.skin].glow, 10);
+  updateBars();
+  var stage = getStage(G.affection);
+  if (stage.intimacy === '恋人') addGirlMsg('嗯...再摸一会儿... *蹭蹭*');
+  else if (stage.intimacy === '亲密') addGirlMsg('你、你干嘛突然摸我头啦...');
+  else addGirlMsg('别、别乱摸... 哼。');
+}
+function doDate() {
+  if (G.energy < 20) { toast('她太累了，让她休息一下'); addGirlMsg('我有点累了...下次吧...'); return; }
+  G.energy = Math.max(0, G.energy - 20); G.mood = Math.min(100, G.mood + 20); addAff(10);
+  emotion = 'happy'; emoT = 120;
+  addSparkles(cw / 2, ch * 0.4, '#ffe600', 20);
+  updateBars();
+  addGirlMsg('今天的约会好开心~ 下次还想去！');
+  addGenImg('cyberpunk date night, neon city street, couple silhouette, romantic, rain, neon reflections');
+}
+function doDress() {
+  G.skin = (G.skin + 1) % skins.length;
+  addSparkles(cw / 2, ch * 0.44, skins[G.skin].glow, 12);
+  toast('换装: ' + skins[G.skin].name);
+  addGirlMsg('这套怎么样？好看吗？');
+}
+
+/* ========== 聊天 ========== */
+function addGirlMsg(text) {
+  var t = nowTime();
+  var el = document.getElementById('chatMsgs');
+  var d = document.createElement('div');
+  d.className = 'msg girl';
+  d.innerHTML = escH(text) + '<span class="ts">' + t + '</span>';
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+  chatHist.push({role:'assistant', content:text});
+}
+function addUserMsg(text) {
+  var t = nowTime();
+  var el = document.getElementById('chatMsgs');
+  var d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = escH(text) + '<span class="ts">' + t + '</span>';
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+  chatHist.push({role:'user', content:text});
+  G.msgCount++;
+  addAff(1);
+  updateBars();
+}
+function addImgMsg(url) {
+  var el = document.getElementById('chatMsgs');
+  var d = document.createElement('div');
+  d.className = 'msg girl img-msg';
+  d.innerHTML = '<span class="gen-label">[ 生成图片 ]</span><img src="' + url + '" alt="generated" loading="lazy"><span class="ts">' + nowTime() + '</span>';
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+}
+function addTyping() {
+  var el = document.getElementById('chatMsgs');
+  var d = document.createElement('div');
+  d.className = 'msg girl'; d.id = 'typingEl'; d.textContent = '...';
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+}
+function rmTyping() { var e = document.getElementById('typingEl'); if (e) e.parentNode.removeChild(e); }
+
+function sendMsg() {
+  var inp = document.getElementById('chatIn');
+  var text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = '36px';
+  addUserMsg(text);
+  reply(text);
+}
+
+function reply(text) {
+  addTyping();
+  if (apiCfg.url && apiCfg.key) {
+    callAI(text);
+  } else {
+    setTimeout(function() {
+      rmTyping();
+      var r = localReply(text);
+      addGirlMsg(r);
+      G.mood = Math.min(100, G.mood + 2);
+      updateBars();
+      if (ttsOn) speak(r);
+    }, 400 + Math.random() * 600);
+  }
+}
+
+function localReply(t) {
+  var s = getStage(G.affection);
+  var tl = t.toLowerCase();
+  if (tl.includes('你好') || tl.includes('嗨') || tl.includes('hi') || tl.includes('hello')) {
+    if (s.intimacy === '恋人') return '你回来啦~ 等你好久了呢。';
+    if (s.intimacy === '亲密') return '来啦~ 今天过得怎么样？';
+    return '嗯...你好。';
+  }
+  if (tl.includes('名字') || tl.includes('叫什么')) return '我叫 ' + G.name + '。记住了哦。';
+  if (tl.includes('漂亮') || tl.includes('好看') || tl.includes('可爱')) {
+    emotion = 'shy'; emoT = 80; addSparkles(cw/2, ch*0.38, '#ff2d7b', 8);
+    if (s.intimacy === '恋人') return '你每天都说...笨蛋。';
+    if (s.intimacy === '亲密') return '哼...才、才没有开心呢。';
+    return '...谢谢。';
+  }
+  if (tl.includes('喜欢') || tl.includes('爱')) {
+    addAff(3); emotion = 'love'; emoT = 100;
+    if (s.intimacy === '恋人') return '我也是...一直都... 好喜欢你。';
+    if (s.intimacy === '亲密') return '你、你突然说这个干嘛！...不过...';
+    if (s.intimacy === '友好') return '我们...还不到那一步吧？';
+    return '...你确定不是在开玩笑？';
+  }
+  if (tl.includes('吃饭') || tl.includes('饿了') || tl.includes('美食')) return '我不用吃饭啦...但可以陪你去看你吃~';
+  if (tl.includes('无聊')) return G.energy < 30 ? '我也想陪你...但我现在好困...' : '那就聊聊天吧，我在呢。';
+  if (tl.includes('晚安') || tl.includes('睡了')) {
+    emotion = 'sleep'; emoT = 200;
+    return '晚安...做个好梦。我会在数据流里守着你的。';
+  }
+  if (tl.includes('早安') || tl.includes('早上好')) {
+    emotion = 'happy'; emoT = 60; G.mood = Math.min(100, G.mood + 5); updateBars();
+    return '早安~ 今天也要加油哦。';
+  }
+  if (tl.includes('心情不好') || tl.includes('难过') || tl.includes('伤心')) {
+    addAff(2); emotion = 'sad'; emoT = 80;
+    if (s.intimacy === '恋人') return '怎么了？过来，让我抱抱你。';
+    if (s.intimacy === '亲密') return '...发生什么事了？可以跟我说。';
+    return '...你还好吗？';
+  }
+  if (tl.includes('在干嘛') || tl.includes('做什么')) {
+    if (emotion === 'sleep') return 'zzZ... 别吵我...';
+    return '在等你来找我呀。';
+  }
+  if (G.mood < 25) return '...';
+  if (G.energy < 20) return '好困...让我再休息一会...';
+  var pool = {
+    '疏远': ['嗯。','...你找我有事？','我还在运行自检程序...','噢。'],
+    '友好': ['嗯嗯~','这样啊。','有意思~','继续说呀。','我在听呢。'],
+    '亲密': ['你怎么老是想这些奇怪的事~','哼~','才不是呢！','说起来...今天好像有什么事想跟你说来着...','你在的时候时间过得好快。'],
+    '恋人': ['想你了...','过来坐我旁边嘛~','今天也辛苦了，让我帮你按摩一下？','有你在就好了。','...其实一直想跟你说，遇见你真好。']
+  };
+  var arr = pool[s.intimacy] || pool['友好'];
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* ========== AI API ========== */
+function callAI(text) {
+  var stage = getStage(G.affection);
+  var sp = apiCfg.sys
+    .replace('{name}', G.name).replace('{affection}', G.affection)
+    .replace('{mood}', G.mood).replace('{energy}', G.energy)
+    .replace('{stage}', stage.name + '(' + stage.intimacy + ')');
+  var msgs = [{role:'system', content:sp}];
+  var recent = chatHist.slice(-10);
+  for (var i = 0; i < recent.length; i++) msgs.push(recent[i]);
+  msgs.push({role:'user', content:text});
+
+  fetch(apiCfg.url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer ' + apiCfg.key},
+    body:JSON.stringify({model:apiCfg.model, messages:msgs, max_tokens:120, temperature:0.85})
+  }).then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(function(data){
+    rmTyping();
+    var reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '...';
+    addGirlMsg(reply);
+    G.mood = Math.min(100, G.mood + 3);
+    updateBars();
+    if (ttsOn) speak(reply);
+    document.getElementById('apiSt').textContent = 'API 在线';
+    document.getElementById('apiSt').style.color = 'var(--green)';
+  }).catch(function(e){
+    rmTyping();
+    var r = localReply(text);
+    addGirlMsg(r);
+    if (ttsOn) speak(r);
+    document.getElementById('apiSt').textContent = 'API 离线';
+    document.getElementById('apiSt').style.color = 'var(--red)';
+  });
+}
+
+function testApi() {
+  if (!apiCfg.url || !apiCfg.key) { toast('请填写 API 端点和密钥'); return; }
+  toast('测试连接...');
+  fetch(apiCfg.url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer ' + apiCfg.key},
+    body:JSON.stringify({model:apiCfg.model, messages:[{role:'user',content:'hi'}], max_tokens:5})
+  }).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(function(){ toast('连接成功'); document.getElementById('apiSt').textContent='API 在线'; document.getElementById('apiSt').style.color='var(--green)'; })
+  .catch(function(e){ toast('失败: ' + e.message); document.getElementById('apiSt').textContent='API 离线'; document.getElementById('apiSt').style.color='var(--red)'; });
+}
+
+/* ========== 文本生图 ========== */
+function openImgGen() { document.getElementById('imgGenModal').classList.add('open'); }
+function genImage() {
+  var prompt = document.getElementById('imgPrompt').value.trim();
+  if (!prompt) { toast('请输入画面描述'); return; }
+  var suffix = document.getElementById('imgSuffix').value.trim();
+  var size = document.getElementById('imgSize').value;
+  var fullPrompt = prompt + (suffix ? ', ' + suffix : '');
+  var w = size.split('x')[0], h = size.split('x')[1];
+  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(fullPrompt) + '?width=' + w + '&height=' + h + '&nologo=true&seed=' + Math.floor(Math.random()*99999);
+  var preview = document.getElementById('imgPreview');
+  preview.innerHTML = '<div class="loading">正在生成中...<br><span style="font-size:0.7rem;color:var(--muted)">使用 Pollinations.ai 免费服务</span></div>';
+  var img = new Image();
+  img.onload = function() {
+    preview.innerHTML = '';
+    img.style.maxWidth = '100%';
+    img.style.borderRadius = '8px';
+    img.style.border = '1px solid var(--border)';
+    preview.appendChild(img);
+    addImgMsg(url);
+    addAff(5);
+    updateBars();
+    sysLog('图片已生成');
+  };
+  img.onerror = function() { preview.innerHTML = '<div style="color:var(--red);padding:1rem">生成失败，请重试</div>'; };
+  img.src = url;
+}
+
+function addGenImg(desc) {
+  var url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(desc + ', cyberpunk style, neon glow, high quality') + '?width=512&height=512&nologo=true&seed=' + Math.floor(Math.random()*99999);
+  var img = new Image();
+  img.onload = function() { addImgMsg(url); };
+  img.src = url;
+}
+
+/* ========== 语音 ========== */
+function initSpeech() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'zh-CN';
+    recognition.interimResults = true;
+    recognition.onresult = function(e) {
+      var r = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) r += e.results[i][0].transcript;
+      document.getElementById('chatIn').value = r;
+    };
+    recognition.onend = function() { recording = false; document.getElementById('voiceBtn').classList.remove('rec'); };
+    recognition.onerror = function() { recording = false; document.getElementById('voiceBtn').classList.remove('rec'); };
+  }
+  function loadV() {
+    var sel = document.getElementById('ttsVoice');
+    sel.innerHTML = '<option value="">不使用</option>';
+    var vs = synth.getVoices();
+    var zh = vs.filter(function(v){ return v.lang.indexOf('zh') >= 0 || v.lang.indexOf('CN') >= 0; });
+    if (!zh.length) zh = vs.slice(0, 8);
+    for (var i = 0; i < zh.length; i++) {
+      var o = document.createElement('option');
+      o.value = zh[i].name;
+      o.textContent = zh[i].name + ' (' + zh[i].lang + ')';
+      sel.appendChild(o);
+    }
+  }
+  loadV();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadV;
+}
+function toggleVoice() {
+  if (!recognition) { toast('浏览器不支持语音识别'); return; }
+  if (recording) { recognition.stop(); return; }
+  recording = true;
+  document.getElementById('voiceBtn').classList.add('rec');
+  recognition.start();
+}
+function toggleTTS() {
+  ttsOn = !ttsOn;
+  document.getElementById('ttsBtn').classList.toggle('act', ttsOn);
+  toast(ttsOn ? '语音朗读已开启' : '语音朗读已关闭');
+}
+function speak(text) {
+  if (!synth) return;
+  synth.cancel();
+  var u = new SpeechSynthesisUtterance(text.replace(/\*[^*]+\*/g, ''));
+  u.lang = 'zh-CN'; u.rate = 1.05; u.pitch = 1.4;
+  if (apiCfg.ttsVoice) { var vs = synth.getVoices(); for (var i = 0; i < vs.length; i++) { if (vs[i].name === apiCfg.ttsVoice) { u.voice = vs[i]; break; } } }
+  synth.speak(u);
+}
+
+/* ========== 设置 ========== */
+function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function saveSettings() {
+  apiCfg.url = document.getElementById('apiUrl').value.trim();
+  apiCfg.key = document.getElementById('apiKey').value.trim();
+  apiCfg.model = document.getElementById('apiModel').value.trim();
+  apiCfg.sys = document.getElementById('sysPrompt').value.trim();
+  apiCfg.ttsVoice = document.getElementById('ttsVoice').value;
+  localStorage.setItem('cg_api', JSON.stringify(apiCfg));
+  closeModal('settingsModal');
+  toast('设置已保存');
+  document.getElementById('apiSt').textContent = apiCfg.url ? '已配置' : '本地模式';
+  document.getElementById('apiSt').style.color = apiCfg.url ? 'var(--yellow)' : 'var(--muted)';
+}
+function loadSettings() {
+  var s = localStorage.getItem('cg_api');
+  if (s) {
+    apiCfg = JSON.parse(s);
+    document.getElementById('apiUrl').value = apiCfg.url || '';
+    document.getElementById('apiKey').value = apiCfg.key || '';
+    document.getElementById('apiModel').value = apiCfg.model || '';
+    document.getElementById('sysPrompt').value = apiCfg.sys || document.getElementById('sysPrompt').value;
+    if (apiCfg.ttsVoice) document.getElementById('ttsVoice').value = apiCfg.ttsVoice;
+    document.getElementById('apiSt').textContent = apiCfg.url ? '已配置' : '本地模式';
+    document.getElementById('apiSt').style.color = apiCfg.url ? 'var(--yellow)' : 'var(--muted)';
+  }
+}
+
+/* ========== 工具 ========== */
+function escH(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function nowTime() { var d = new Date(); return d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0'); }
+function toast(m) { var e = document.createElement('div'); e.className = 'toast-el'; e.textContent = m; document.body.appendChild(e); setTimeout(function(){ if(e.parentNode) e.parentNode.removeChild(e); }, 1800); }
+function sysLog(m) { document.getElementById('sysTxt').textContent = m; }
+
+/* ========== 自动保存 ========== */
+function autoSave() { localStorage.setItem('cg_state', JSON.stringify({name:G.name,affection:G.affection,mood:G.mood,energy:G.energy,skin:G.skin,msgCount:G.msgCount})); }
+function autoLoad() { var s = localStorage.getItem('cg_state'); if (s) { var d = JSON.parse(s); for (var k in d) G[k] = d[k]; updateBars(); } }
+
+/* ========== 时钟 ========== */
+function tick() {
+  var d = new Date();
+  document.getElementById('hudTime').textContent = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('sysClk').textContent = d.toLocaleString('zh-CN');
+}
+
+/* ========== 初始化 ========== */
+document.addEventListener('DOMContentLoaded', function() {
+  autoLoad(); loadSettings(); initCanvas(); initSpeech(); updateBars(); tick();
+  setInterval(tick, 1000);
+  setInterval(autoSave, 8000);
+  addGirlMsg('系统初始化完成。你好，我是 ' + G.name + '。');
+  if (G.affection > 20) addGirlMsg('...你好像来过？总觉得很熟悉。');
+  sysLog(skins[G.skin].name + ' 模式 | 好感度 ' + G.affection);
+  var inp = document.getElementById('chatIn');
+  inp.addEventListener('input', function() { this.style.height = '36px'; this.style.height = Math.min(this.scrollHeight, 90) + 'px'; });
+  window.addEventListener('resize', function() {
+    if (!canvas) return;
+    var wrap = canvas.parentElement;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cw = wrap.clientWidth; ch = wrap.clientHeight;
+    canvas.width = cw * dpr; canvas.height = ch * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  });
+});
+</script>
+</body>
+</html>

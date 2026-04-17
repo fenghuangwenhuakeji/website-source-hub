@@ -1,0 +1,1 @@
+import{j as s}from"./react-vendor-CzYU1_kB.js";const n="_scanlines_1v3cl_132",t="_line_1v3cl_142",i="_vignette_1v3cl_152",e={scanlines:n,line:t,vignette:i},c=()=>s.jsxs("div",{className:e.scanlines,children:[s.jsx("div",{className:e.line}),s.jsx("div",{className:e.vignette})]});export{c as default};

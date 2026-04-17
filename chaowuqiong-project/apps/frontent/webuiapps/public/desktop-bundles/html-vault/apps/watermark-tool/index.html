@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>去水印工具</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-dark:#0d1117;--bg-card:#161b22;--bg-input:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f0883e;--accent-light:#ffa657;--success:#3fb950;--danger:#f85149;--step-active:#388bfd;--purple:#a371f7}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
+.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.header-actions{display:flex;gap:0.75rem}
+.btn{padding:0.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);cursor:pointer;font-size:0.875rem;transition:all 0.2s}
+.btn:hover{background:var(--border)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.8rem}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover{background:rgba(248,81,73,0.15)}
+.main-container{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:280px;background:var(--bg-card);border-right:1px solid var(--border);padding:1.25rem;flex-shrink:0;display:flex;flex-direction:column;gap:0.75rem;overflow-y:auto}
+.card{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.card h3{font-size:0.95rem;margin-bottom:0.6rem;color:var(--accent)}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;margin-bottom:0.35rem;font-weight:500;font-size:0.85rem}
+.form-group .hint{font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem}
+input[type=range]{width:100%;padding:0;background:transparent;border:none;cursor:pointer;-webkit-appearance:none;height:6px;border-radius:3px;background:var(--bg-card);outline:none;margin-top:0.4rem}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
+input[type=color]{width:100%;height:36px;padding:2px;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;cursor:pointer}
+.tool-list{display:flex;flex-direction:column;gap:0.35rem}
+.tool-btn{display:flex;align-items:center;gap:0.6rem;padding:0.6rem 0.8rem;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.85rem;color:var(--text)}
+.tool-btn:hover{border-color:var(--text-muted)}
+.tool-btn.active{border-color:var(--accent);background:rgba(240,136,62,0.12)}
+.tool-btn .tb-icon{width:28px;height:28px;border-radius:6px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0}
+.tool-btn.active .tb-icon{background:var(--accent);color:#000}
+.tip-box{background:rgba(56,139,253,0.1);border:1px solid rgba(56,139,253,0.3);border-radius:8px;padding:0.75rem;font-size:0.8rem;color:var(--text-muted);line-height:1.6}
+.tip-box strong{color:var(--step-active)}
+.key-row{display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;color:var(--text-muted);margin-top:0.25rem}
+.key{display:inline-block;padding:0.1rem 0.45rem;background:var(--bg-card);border:1px solid var(--border);border-radius:3px;font-size:0.72rem;font-weight:600;color:var(--text-muted)}
+.content-area{flex:1;padding:1.5rem;overflow-y:auto;display:flex;flex-direction:column}
+.upload-zone{border:2px dashed var(--border);border-radius:16px;padding:3rem 2rem;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg-card);max-width:700px;margin:0 auto;width:100%}
+.upload-zone:hover{border-color:var(--accent);background:rgba(240,136,62,0.05)}
+.upload-zone .uz-icon{font-size:3rem;margin-bottom:0.75rem;display:block}
+.upload-zone p{color:var(--text-muted);font-size:0.9rem}
+.upload-zone .uz-hint{font-size:0.78rem;color:var(--text-muted);margin-top:0.5rem}
+.canvas-workspace{position:relative;display:none;max-width:960px;margin:0 auto;width:100%}
+.canvas-workspace.open{display:block}
+.canvas-container{position:relative;background:#0a0e14;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:0.75rem}
+.canvas-container canvas{display:block;width:100%;height:auto;cursor:crosshair}
+.toolbar{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.75rem;align-items:center}
+.toolbar .sep{width:1px;height:24px;background:var(--border);margin:0 0.15rem}
+.video-controls{display:none;max-width:960px;margin:0 auto 0.75rem;width:100%}
+.video-controls.open{display:block}
+.vc-bar{display:flex;align-items:center;gap:0.75rem;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem}
+.vc-bar input[type=range]{flex:1}
+.vc-bar span{font-size:0.8rem;color:var(--text-muted);min-width:100px}
+.progress-bar{height:4px;background:var(--bg-input);border-radius:2px;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--accent);transition:width 0.3s}
+.status-bar{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;color:var(--text-muted);padding:0.3rem 0}
+.before-after{display:none;max-width:960px;margin:0 auto;width:100%}
+.before-after.open{display:block}
+.ba-label{text-align:center;font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;padding:0.3rem;background:var(--bg-card);border-radius:6px}
+.ba-label.before{color:var(--danger)}
+.ba-label.after{color:var(--success)}
+.ba-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.ba-row canvas{width:100%;height:auto;border-radius:8px;border:1px solid var(--border);display:block}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:0.7rem 1.5rem;border-radius:8px;font-size:0.9rem;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.processing-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(13,17,23,0.7);display:none;align-items:center;justify-content:center;border-radius:12px;z-index:10}
+.processing-overlay.open{display:flex}
+.processing-overlay span{color:var(--accent);font-size:1.1rem;font-weight:600}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-right:0.5rem;vertical-align:middle}
+@media(max-width:900px){.main-container{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:0.75rem;flex-direction:row;flex-wrap:wrap}.sidebar .card{flex:1;min-width:200px}.sidebar .card.hide-m{display:none}.ba-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">去水印工具</div>
+<div class="header-actions">
+<button class="btn" onclick="undoAction()">撤销</button>
+<button class="btn" onclick="resetMask()">清除标记</button>
+<button class="btn" onclick="resetAll()">重置</button>
+<button class="btn btn-primary" onclick="exportResult()">导出结果</button>
+</div>
+</header>
+<div class="main-container">
+<nav class="sidebar">
+<div class="card">
+<h3>工作模式</h3>
+<div class="tool-list">
+<div class="tool-btn active" id="modeImage" onclick="switchMode('image')"><span class="tb-icon">🖼</span><span>图片去水印</span></div>
+<div class="tool-btn" id="modeVideo" onclick="switchMode('video')"><span class="tb-icon">🎬</span><span>视频去水印</span></div>
+</div>
+</div>
+<div class="card">
+<h3>去除方式</h3>
+<div class="tool-list">
+<div class="tool-btn active" id="toolHeal" onclick="switchTool('heal')"><span class="tb-icon">✨</span><span>智能修复</span></div>
+<div class="tool-btn" id="toolBlur" onclick="switchTool('blur')"><span class="tb-icon">🌫</span><span>模糊覆盖</span></div>
+<div class="tool-btn" id="toolCrop" onclick="switchTool('crop')"><span class="tb-icon">✂</span><span>裁剪去除</span></div>
+<div class="tool-btn" id="toolReplace" onclick="switchTool('replace')"><span class="tb-icon">🎨</span><span>颜色替换</span></div>
+</div>
+</div>
+<div class="card" id="brushCard">
+<h3>画笔设置</h3>
+<div class="form-group">
+<label>画笔大小：<span id="brushVal">20</span>px</label>
+<input type="range" id="brushSize" min="2" max="80" value="20" oninput="document.getElementById('brushVal').textContent=this.value">
+</div>
+</div>
+<div class="card" id="colorCard" style="display:none">
+<h3>颜色设置</h3>
+<div class="form-group">
+<label>取色方式</label>
+<div style="display:flex;gap:0.5rem;margin-top:0.3rem">
+<button class="btn btn-sm" id="pickMode" onclick="setPickMode('pick')">点击取色</button>
+<button class="btn btn-sm" id="customMode" onclick="setPickMode('custom')">自定义颜色</button>
+</div>
+</div>
+<div class="form-group" id="customColorGroup" style="display:none">
+<label>目标颜色</label>
+<input type="color" id="targetColor" value="#888888">
+</div>
+<div class="form-group">
+<label>容差：<span id="tolVal">30</span></label>
+<input type="range" id="tolerance" min="0" max="100" value="30" oninput="document.getElementById('tolVal').textContent=this.value">
+</div>
+<div class="form-group">
+<label>替换为</label>
+<input type="color" id="replaceColor" value="#000000">
+</div>
+</div>
+<div class="card hide-m">
+<h3>操作提示</h3>
+<div class="tip-box">
+<strong>使用步骤：</strong><br>
+1. 上传图片或视频<br>
+2. 用画笔涂抹水印区域（红色标记）<br>
+3. 选择去除方式，点击"执行去除"<br>
+4. 导出处理结果<br><br>
+<strong class="key">快捷键</strong><br>
+<div class="key-row"><span class="key">Ctrl+Z</span>撤销</div>
+<div class="key-row"><span class="key">+/-</span>调整画笔</div>
+<div class="key-row"><span class="key">1-4</span>切换工具</div>
+</div>
+</div>
+</nav>
+<main class="content-area">
+<!-- 上传区 -->
+<div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()">
+<span class="uz-icon">📂</span>
+<p>点击或拖拽文件到此处</p>
+<p class="uz-hint">支持 JPG / PNG / WebP / MP4 / WebM</p>
+</div>
+<input type="file" id="fileInput" accept="image/*,video/*" style="display:none" onchange="handleFile(this.files[0])">
+<!-- 视频控制 -->
+<div class="video-controls" id="videoControls">
+<div class="vc-bar">
+<button class="btn btn-sm" id="vPrev" onclick="prevFrame()">上一帧</button>
+<button class="btn btn-sm" id="vPlay" onclick="togglePlay()">播放</button>
+<button class="btn btn-sm" id="vNext" onclick="nextFrame()">下一帧</button>
+<input type="range" id="frameSlider" min="0" max="100" value="0" oninput="seekFrame(this.value)">
+<span id="frameInfo">帧 0 / 0</span>
+</div>
+</div>
+<!-- 工作区 -->
+<div class="canvas-workspace" id="workspace">
+<div class="toolbar">
+<button class="btn btn-sm" onclick="zoomIn()">放大</button>
+<button class="btn btn-sm" onclick="zoomOut()">缩小</button>
+<button class="btn btn-sm" onclick="zoomFit()">适应</button>
+<div class="sep"></div>
+<button class="btn btn-sm" onclick="undoAction()">撤销</button>
+<button class="btn btn-sm" onclick="resetMask()">清除标记</button>
+<div class="sep"></div>
+<button class="btn btn-primary btn-sm" onclick="executeRemove()">执行去除</button>
+<button class="btn btn-sm" onclick="showCompare()">对比</button>
+</div>
+<div class="status-bar">
+<span id="imgInfo">-</span>
+<span id="maskInfo">标记区域: 0 px</span>
+</div>
+<div class="canvas-container" id="canvasContainer">
+<canvas id="mainCanvas"></canvas>
+<canvas id="maskCanvas" style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"></canvas>
+<div class="processing-overlay" id="procOverlay"><span class="spinner"></span><span>处理中...</span></div>
+</div>
+</div>
+<!-- 对比区 -->
+<div class="before-after" id="compareZone">
+<div class="ba-row">
+<div>
+<div class="ba-label before">处理前</div>
+<canvas id="beforeCanvas"></canvas>
+</div>
+<div>
+<div class="ba-label after">处理后</div>
+<canvas id="afterCanvas"></canvas>
+</div>
+</div>
+</div>
+<video id="videoEl" style="display:none" preload="auto"></video>
+</main>
+</div>
+<script>
+/* ========== 状态 ========== */
+var S = {
+  mode: 'image',
+  tool: 'heal',
+  brushSize: 20,
+  pickMode: 'pick',
+  tolerance: 30,
+  zoom: 1,
+  painting: false,
+  origData: null,
+  history: [],
+  maxHistory: 15,
+  videoLoaded: false,
+  playing: false,
+  playTimer: null,
+  currentFrame: 0,
+  totalFrames: 0,
+  frameImages: [],
+  imgWidth: 0,
+  imgHeight: 0,
+  fileName: '',
+  fileType: ''
+};
+
+var mainCanvas = document.getElementById('mainCanvas');
+var mainCtx = mainCanvas.getContext('2d');
+var maskCanvas = document.getElementById('maskCanvas');
+var maskCtx = maskCanvas.getContext('2d');
+var videoEl = document.getElementById('videoEl');
+
+/* ========== 模式切换 ========== */
+function switchMode(m) {
+  S.mode = m;
+  document.getElementById('modeImage').classList.toggle('active', m === 'image');
+  document.getElementById('modeVideo').classList.toggle('active', m === 'video');
+  document.getElementById('videoControls').classList.toggle('open', m === 'video');
+  resetAll();
+}
+function switchTool(t) {
+  S.tool = t;
+  var ids = ['toolHeal', 'toolBlur', 'toolCrop', 'toolReplace'];
+  for (var i = 0; i < ids.length; i++) document.getElementById(ids[i]).classList.toggle('active', ids[i] === 'tool' + t.charAt(0).toUpperCase() + t.slice(1));
+  document.getElementById('brushCard').style.display = (t === 'replace') ? 'none' : '';
+  document.getElementById('colorCard').style.display = (t === 'replace') ? '' : 'none';
+  if (t === 'replace') setPickMode('pick');
+}
+function setPickMode(m) {
+  S.pickMode = m;
+  document.getElementById('pickMode').classList.toggle('active', m === 'pick');
+  document.getElementById('customMode').classList.toggle('active', m === 'custom');
+  document.getElementById('customColorGroup').style.display = m === 'custom' ? '' : 'none';
+}
+
+/* ========== 文件处理 ========== */
+function handleFile(file) {
+  if (!file) return;
+  S.fileName = file.name;
+  S.fileType = file.type;
+  resetAll();
+  if (file.type.startsWith('image')) {
+    loadImage(file);
+  } else if (file.type.startsWith('video')) {
+    loadVideo(file);
+  } else {
+    toast('不支持的文件格式');
+  }
+}
+
+function loadImage(file) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var maxW = 1600, maxH = 1200;
+      var w = img.width, h = img.height;
+      if (w > maxW) { h = h * maxW / w; w = maxW; }
+      if (h > maxH) { w = w * maxH / h; h = maxH; }
+      w = Math.round(w); h = Math.round(h);
+      S.imgWidth = w; S.imgHeight = h;
+      mainCanvas.width = w; mainCanvas.height = h;
+      maskCanvas.width = w; maskCanvas.height = h;
+      mainCtx.drawImage(img, 0, 0, w, h);
+      S.origData = mainCtx.getImageData(0, 0, w, h);
+      S.history = [];
+      S.zoom = 1;
+      document.getElementById('uploadZone').style.display = 'none';
+      document.getElementById('workspace').classList.add('open');
+      updateInfo();
+      toast('图片已加载：' + w + ' x ' + h);
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function loadVideo(file) {
+  var url = URL.createObjectURL(file);
+  videoEl.src = url;
+  videoEl.onloadedmetadata = function() {
+    videoEl.currentTime = 0;
+    S.videoLoaded = true;
+    S.totalFrames = Math.floor(videoEl.duration * 30);
+    document.getElementById('frameSlider').max = S.totalFrames;
+    document.getElementById('uploadZone').style.display = 'none';
+    toast('视频已加载：' + videoEl.videoWidth + 'x' + videoEl.videoHeight + '，约' + S.totalFrames + '帧');
+    videoEl.onseeked = function() {
+      drawVideoFrame();
+    };
+    setTimeout(drawVideoFrame, 200);
+  };
+}
+
+function drawVideoFrame() {
+  if (!S.videoLoaded) return;
+  var w = videoEl.videoWidth, h = videoEl.videoHeight;
+  var maxW = 1600, maxH = 1200;
+  if (w > maxW) { h = h * maxW / w; w = maxW; }
+  if (h > maxH) { w = w * maxH / h; h = maxH; }
+  w = Math.round(w); h = Math.round(h);
+  S.imgWidth = w; S.imgHeight = h;
+  mainCanvas.width = w; mainCanvas.height = h;
+  maskCanvas.width = w; maskCanvas.height = h;
+  mainCtx.drawImage(videoEl, 0, 0, w, h);
+  S.origData = mainCtx.getImageData(0, 0, w, h);
+  S.history = [];
+  document.getElementById('workspace').classList.add('open');
+  S.currentFrame = Math.floor(videoEl.currentTime * 30);
+  document.getElementById('frameSlider').value = S.currentFrame;
+  document.getElementById('frameInfo').textContent = '帧 ' + S.currentFrame + ' / ' + S.totalFrames;
+  updateInfo();
+}
+
+function seekFrame(v) {
+  S.currentFrame = parseInt(v);
+  videoEl.currentTime = S.currentFrame / 30;
+  document.getElementById('frameInfo').textContent = '帧 ' + S.currentFrame + ' / ' + S.totalFrames;
+}
+function prevFrame() { if (S.currentFrame > 0) { S.currentFrame--; document.getElementById('frameSlider').value = S.currentFrame; seekFrame(S.currentFrame); } }
+function nextFrame() { if (S.currentFrame < S.totalFrames) { S.currentFrame++; document.getElementById('frameSlider').value = S.currentFrame; seekFrame(S.currentFrame); } }
+function togglePlay() {
+  S.playing = !S.playing;
+  document.getElementById('vPlay').textContent = S.playing ? '暂停' : '播放';
+  if (S.playing) {
+    S.playTimer = setInterval(function() { nextFrame(); }, 1000 / 30);
+  } else {
+    clearInterval(S.playTimer);
+  }
+}
+
+/* ========== 涂抹标记 ========== */
+function getPos(e) {
+  var rect = mainCanvas.getBoundingClientRect();
+  var scaleX = S.imgWidth / rect.width;
+  var scaleY = S.imgHeight / rect.height;
+  var cx, cy;
+  if (e.touches) { cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+  else { cx = e.clientX; cy = e.clientY; }
+  return { x: (cx - rect.left) * scaleX, y: (cy - rect.top) * scaleY };
+}
+
+mainCanvas.addEventListener('mousedown', function(e) {
+  if (S.tool === 'replace' && S.pickMode === 'pick') {
+    pickColor(e);
+    return;
+  }
+  S.painting = true;
+  paintAt(getPos(e));
+});
+mainCanvas.addEventListener('mousemove', function(e) {
+  if (S.painting) paintAt(getPos(e));
+  if (S.tool === 'replace' && S.pickMode === 'pick') {
+    mainCanvas.style.cursor = 'crosshair';
+  } else {
+    mainCanvas.style.cursor = 'crosshair';
+  }
+});
+mainCanvas.addEventListener('mouseup', function() { S.painting = false; });
+mainCanvas.addEventListener('mouseleave', function() { S.painting = false; });
+mainCanvas.addEventListener('touchstart', function(e) { e.preventDefault(); S.painting = true; paintAt(getPos(e)); }, { passive: false });
+mainCanvas.addEventListener('touchmove', function(e) { e.preventDefault(); if (S.painting) paintAt(getPos(e)); }, { passive: false });
+mainCanvas.addEventListener('touchend', function() { S.painting = false; });
+
+function paintAt(pos) {
+  var r = parseInt(document.getElementById('brushSize').value) || 20;
+  maskCtx.fillStyle = 'rgba(255,60,60,0.45)';
+  maskCtx.beginPath();
+  maskCtx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
+  maskCtx.fill();
+  updateMaskInfo();
+}
+
+function pickColor(e) {
+  var pos = getPos(e);
+  var px = Math.floor(pos.x), py = Math.floor(pos.y);
+  if (px < 0 || py < 0 || px >= S.imgWidth || py >= S.imgHeight) return;
+  var data = mainCtx.getImageData(px, py, 1, 1).data;
+  var hex = '#' + ((1 << 24) + (data[0] << 16) + (data[1] << 8) + data[2]).toString(16).slice(1);
+  document.getElementById('targetColor').value = hex;
+  toast('取色成功：' + hex);
+}
+
+function updateMaskInfo() {
+  var md = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var count = 0;
+  for (var i = 3; i < md.data.length; i += 4) { if (md.data[i] > 30) count++; }
+  document.getElementById('maskInfo').textContent = '标记区域: ' + count.toLocaleString() + ' px';
+}
+function updateInfo() {
+  document.getElementById('imgInfo').textContent = S.imgWidth + ' x ' + S.imgHeight + ' | ' + S.fileName;
+}
+
+/* ========== 撤销 ========== */
+function saveState() {
+  var d = mainCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var m = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  S.history.push({ main: d, mask: m });
+  if (S.history.length > S.maxHistory) S.history.shift();
+}
+function undoAction() {
+  if (S.history.length === 0) { toast('无可撤销操作'); return; }
+  var s = S.history.pop();
+  mainCtx.putImageData(s.main, 0, 0);
+  maskCtx.putImageData(s.mask, 0, 0);
+  toast('已撤销');
+}
+
+/* ========== 去除算法 ========== */
+function executeRemove() {
+  if (!S.origData) { toast('请先上传文件'); return; }
+  saveState();
+  if (S.tool === 'heal') inpaintHeal();
+  else if (S.tool === 'blur') blurRemove();
+  else if (S.tool === 'crop') cropRemove();
+  else if (S.tool === 'replace') colorReplace();
+  maskCtx.clearRect(0, 0, S.imgWidth, S.imgHeight);
+  updateMaskInfo();
+  toast('处理完成');
+}
+
+/* 智能修复 - 迭代扩散 */
+function inpaintHeal() {
+  var md = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var img = mainCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var w = S.imgWidth, h = S.imgHeight;
+  var d = img.data;
+  var iterations = 60;
+
+  for (var it = 0; it < iterations; it++) {
+    var changed = false;
+    var prev = new Uint8ClampedArray(d);
+    for (var y = 1; y < h - 1; y++) {
+      for (var x = 1; x < w - 1; x++) {
+        var mi = (y * w + x) * 4;
+        if (md.data[mi + 3] < 30) continue;
+        var neighbors = [];
+        var offsets = [[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]];
+        for (var o = 0; o < offsets.length; o++) {
+          var nx = x + offsets[o][0], ny = y + offsets[o][1];
+          var ni = (ny * w + nx) * 4;
+          if (md.data[ni + 3] < 30) {
+            neighbors.push([prev[ni], prev[ni+1], prev[ni+2]]);
+          }
+        }
+        if (neighbors.length > 0) {
+          var r = 0, g = 0, b = 0;
+          for (var n = 0; n < neighbors.length; n++) { r += neighbors[n][0]; g += neighbors[n][1]; b += neighbors[n][2]; }
+          d[mi] = r / neighbors.length;
+          d[mi+1] = g / neighbors.length;
+          d[mi+2] = b / neighbors.length;
+          md.data[mi+3] = 0;
+          changed = true;
+        }
+      }
+    }
+    if (!changed) break;
+  }
+  mainCtx.putImageData(img, 0, 0);
+}
+
+/* 模糊覆盖 */
+function blurRemove() {
+  var md = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var w = S.imgWidth, h = S.imgHeight;
+  var radius = 8;
+
+  /* 先从原图提取标记区域边缘的颜色用于填充基底 */
+  var img = mainCtx.getImageData(0, 0, w, h);
+  var d = img.data;
+
+  /* 对标记区域做多次box blur */
+  for (var pass = 0; pass < 3; pass++) {
+    var copy = new Uint8ClampedArray(d);
+    for (var y = 0; y < h; y++) {
+      for (var x = 0; x < w; x++) {
+        var mi = (y * w + x) * 4;
+        if (md.data[mi+3] < 30) continue;
+        var r = 0, g = 0, b = 0, cnt = 0;
+        for (var dy = -radius; dy <= radius; dy++) {
+          for (var dx = -radius; dx <= radius; dx++) {
+            var nx = x + dx, ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= w || ny >= h) continue;
+            var ni = (ny * w + nx) * 4;
+            r += copy[ni]; g += copy[ni+1]; b += copy[ni+2]; cnt++;
+          }
+        }
+        if (cnt > 0) { d[mi] = r/cnt; d[mi+1] = g/cnt; d[mi+2] = b/cnt; }
+      }
+    }
+  }
+  mainCtx.putImageData(img, 0, 0);
+}
+
+/* 裁剪去除 - 将标记区域边缘向内收缩，然后裁剪 */
+function cropRemove() {
+  var md = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var w = S.imgWidth, h = S.imgHeight;
+  /* 找标记区域的边界框 */
+  var minX = w, minY = h, maxX = 0, maxY = 0;
+  for (var y = 0; y < h; y++) {
+    for (var x = 0; x < w; x++) {
+      if (md.data[(y * w + x) * 4 + 3] > 30) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+    }
+  }
+  if (maxX <= minX || maxY <= minY) { toast('未标记裁剪区域'); return; }
+
+  /* 扩展标记区域为完整的行/列（适用于水印通常在边缘） */
+  var isTopEdge = minY < h * 0.15;
+  var isBottomEdge = maxY > h * 0.85;
+  var isLeftEdge = minX < w * 0.15;
+  var isRightEdge = maxX > w * 0.85;
+
+  var cropX = 0, cropY = 0, cropW = w, cropH = h;
+  if (isTopEdge) { cropY = maxY + 2; cropH = h - cropY; }
+  else if (isBottomEdge) { cropH = minY - 2; }
+  else if (isLeftEdge) { cropX = maxX + 2; cropW = w - cropX; }
+  else if (isRightEdge) { cropW = minX - 2; }
+  else {
+    /* 非边缘水印，用模糊代替 */
+    blurRemove();
+    return;
+  }
+  cropW = Math.max(10, cropW);
+  cropH = Math.max(10, cropH);
+
+  var imgData = mainCtx.getImageData(cropX, cropY, cropW, cropH);
+  S.imgWidth = cropW;
+  S.imgHeight = cropH;
+  mainCanvas.width = cropW;
+  mainCanvas.height = cropH;
+  maskCanvas.width = cropW;
+  maskCanvas.height = cropH;
+  mainCtx.putImageData(imgData, 0, 0);
+  S.origData = mainCtx.getImageData(0, 0, cropW, cropH);
+  updateInfo();
+  toast('已裁剪：' + cropW + 'x' + cropH);
+}
+
+/* 颜色替换 */
+function colorReplace() {
+  var targetHex = document.getElementById('targetColor').value;
+  var replaceHex = document.getElementById('replaceColor').value;
+  var tol = parseInt(document.getElementById('tolerance').value);
+  var tr = parseInt(targetHex.slice(1,3),16);
+  var tg = parseInt(targetHex.slice(3,5),16);
+  var tb = parseInt(targetHex.slice(5,7),16);
+  var rr = parseInt(replaceHex.slice(1,3),16);
+  var rg = parseInt(replaceHex.slice(3,5),16);
+  var rb = parseInt(replaceHex.slice(5,7),16);
+
+  var md = maskCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var img = mainCtx.getImageData(0, 0, S.imgWidth, S.imgHeight);
+  var d = img.data;
+  var w = S.imgWidth;
+  var count = 0;
+
+  for (var i = 0; i < d.length; i += 4) {
+    var useMask = md.data[i+3] > 30;
+    if (!useMask) continue;
+    var diff = Math.abs(d[i] - tr) + Math.abs(d[i+1] - tg) + Math.abs(d[i+2] - tb);
+    if (diff <= tol * 3) {
+      /* 混合替换，保留一些纹理 */
+      var blend = 0.85;
+      d[i] = d[i] * (1-blend) + rr * blend;
+      d[i+1] = d[i+1] * (1-blend) + rg * blend;
+      d[i+2] = d[i+2] * (1-blend) + rb * blend;
+      count++;
+    }
+  }
+  mainCtx.putImageData(img, 0, 0);
+  toast('已替换 ' + count.toLocaleString() + ' 个像素');
+}
+
+/* ========== 缩放 ========== */
+function zoomIn() { S.zoom = Math.min(3, S.zoom + 0.25); applyZoom(); }
+function zoomOut() { S.zoom = Math.max(0.25, S.zoom - 0.25); applyZoom(); }
+function zoomFit() { S.zoom = 1; applyZoom(); }
+function applyZoom() {
+  mainCanvas.style.transform = 'scale(' + S.zoom + ')';
+  maskCanvas.style.transform = 'scale(' + S.zoom + ')';
+}
+
+/* ========== 对比 ========== */
+function showCompare() {
+  if (!S.origData) { toast('无处理结果可对比'); return; }
+  document.getElementById('compareZone').classList.add('open');
+  var bc = document.getElementById('beforeCanvas');
+  var ac = document.getElementById('afterCanvas');
+  bc.width = S.imgWidth; bc.height = S.imgHeight;
+  ac.width = S.imgWidth; ac.height = S.imgHeight;
+  bc.getContext('2d').putImageData(S.origData, 0, 0);
+  ac.getContext('2d').drawImage(mainCanvas, 0, 0);
+  /* 缩小显示 */
+  var maxW = Math.min(480, window.innerWidth * 0.4);
+  var scale = Math.min(1, maxW / S.imgWidth);
+  bc.style.width = (S.imgWidth * scale) + 'px';
+  ac.style.width = (S.imgWidth * scale) + 'px';
+}
+
+/* ========== 重置 ========== */
+function resetMask() {
+  maskCtx.clearRect(0, 0, S.imgWidth, S.imgHeight);
+  if (S.origData) mainCtx.putImageData(S.origData, 0, 0);
+  updateMaskInfo();
+  toast('已清除标记并恢复原图');
+}
+function resetAll() {
+  if (S.playing) togglePlay();
+  S.history = [];
+  S.origData = null;
+  S.zoom = 1;
+  document.getElementById('uploadZone').style.display = '';
+  document.getElementById('workspace').classList.remove('open');
+  document.getElementById('compareZone').classList.remove('open');
+  document.getElementById('videoControls').classList.remove('open');
+  mainCanvas.width = 0; mainCanvas.height = 0;
+  maskCanvas.width = 0; maskCanvas.height = 0;
+  mainCanvas.style.transform = '';
+  maskCanvas.style.transform = '';
+  updateInfo();
+  document.getElementById('maskInfo').textContent = '标记区域: 0 px';
+}
+
+/* ========== 导出 ========== */
+function exportResult() {
+  if (!S.imgWidth) { toast('无内容可导出'); return; }
+  var link = document.createElement('a');
+  if (S.mode === 'image') {
+    var dataUrl = mainCanvas.toDataURL('image/png');
+    link.download = S.fileName.replace(/\.[^.]+$/, '') + '_no_watermark.png';
+    link.href = dataUrl;
+  } else {
+    var dataUrl = mainCanvas.toDataURL('image/png');
+    link.download = 'frame_' + S.currentFrame + '_no_watermark.png';
+    link.href = dataUrl;
+  }
+  link.click();
+  toast('已导出');
+}
+
+/* ========== 批量处理视频 ========== */
+/* 暂不实现完整批量导出，提供单帧处理即可 */
+
+/* ========== 拖拽上传 ========== */
+var uz = document.getElementById('uploadZone');
+uz.addEventListener('dragover', function(e) { e.preventDefault(); uz.style.borderColor = 'var(--accent)'; });
+uz.addEventListener('dragleave', function() { uz.style.borderColor = ''; });
+uz.addEventListener('drop', function(e) {
+  e.preventDefault(); uz.style.borderColor = '';
+  if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+});
+
+/* ========== 快捷键 ========== */
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && e.key === 'z') { e.preventDefault(); undoAction(); }
+  if (e.key === '=' || e.key === '+') {
+    var bs = document.getElementById('brushSize');
+    bs.value = Math.min(80, parseInt(bs.value) + 2);
+    document.getElementById('brushVal').textContent = bs.value;
+  }
+  if (e.key === '-') {
+    var bs = document.getElementById('brushSize');
+    bs.value = Math.max(2, parseInt(bs.value) - 2);
+    document.getElementById('brushVal').textContent = bs.value;
+  }
+  if (e.key === '1') switchTool('heal');
+  if (e.key === '2') switchTool('blur');
+  if (e.key === '3') switchTool('crop');
+  if (e.key === '4') switchTool('replace');
+});
+
+/* ========== 工具 ========== */
+function toast(msg) {
+  var el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(function() { if (el.parentNode) el.parentNode.removeChild(el); }, 2200);
+}
+
+/* ========== 初始化 ========== */
+updateInfo();
+</script>
+</body>
+</html>

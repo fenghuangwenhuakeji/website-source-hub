@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Voice Call | 实时语音交互站</title>
+    <style>
+        :root {
+            --bg: #050507;
+            --accent: #4f46e5;
+            --accent-glow: rgba(79, 70, 229, 0.5);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'PingFang SC', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* --- 核心交互球 --- */
+        #ai-orb {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #4f46e5 0%, #000 70%);
+            box-shadow: 0 0 50px var(--accent-glow);
+            cursor: pointer;
+            transition: all 0.5s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 状态动画 */
+        .listening { animation: pulse-blue 1.5s infinite ease-in-out; box-shadow: 0 0 80px #3b82f6 !important; }
+        .thinking { animation: pulse-purple 1s infinite ease-in-out; box-shadow: 0 0 80px #a855f7 !important; }
+        .speaking { animation: pulse-green 0.8s infinite ease-in-out; box-shadow: 0 0 80px #10b981 !important; }
+
+        @keyframes pulse-blue { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        @keyframes pulse-purple { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.2); opacity: 1; } }
+        @keyframes pulse-green { 0%, 100% { transform: scale(1.05); } 50% { transform: scale(0.95); } }
+
+        #status-text {
+            position: absolute;
+            bottom: -60px;
+            width: 300px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+        }
+
+        /* --- 隐藏配置面板 --- */
+        #config-panel {
+            position: fixed;
+            left: -400px;
+            top: 0;
+            width: 380px;
+            height: 100vh;
+            background: #111;
+            border-right: 1px solid #333;
+            transition: 0.3s;
+            padding: 20px;
+            z-index: 100;
+            overflow-y: auto;
+        }
+        #config-panel.open { left: 0; }
+        .panel-toggle {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            z-index: 101;
+            background: #222;
+            color: white;
+            border: 1px solid #444;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .input-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+        .input-group label { font-size: 0.8rem; color: #aaa; }
+        .input-group input { background: #222; border: 1px solid #444; color: white; padding: 8px; border-radius: 5px; }
+        
+        .btn-save { background: #4f46e5; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+
+        /* 隐藏的文本记录区 */
+        #transcript {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 200px;
+            font-size: 0.8rem;
+            color: #555;
+            text-align: right;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="panel-toggle" onclick="document.getElementById('config-panel').classList.toggle('open')">⚙️ 配置</button>
+
+    <div id="config-panel">
+        <h2>API 调度配置</h2>
+        <div class="input-group">
+            <label>LLM 模型名称</label>
+            <input type="text" id="llm-model" placeholder="gpt-4">
+        </div>
+        <div class="input-group">
+            <label>LLM API URL</label>
+            <input type="text" id="llm-url" placeholder="https://...">
+        </div>
+        <div class="input-group">
+            <label>LLM API Key</label>
+            <input type="password" id="llm-key">
+        </div>
+        <hr>
+        <div class="input-group">
+            <label>TTS 模型名称</label>
+            <input type="text" id="tts-model" placeholder="tts-1">
+        </div>
+        <div class="input-group">
+            <label>TTS API URL</label>
+            <input type="text" id="tts-url" placeholder="https://...">
+        </div>
+        <div class="input-group">
+            <label>TTS API Key</label>
+            <input type="password" id="tts-key">
+        </div>
+        <div class="input-group">
+            <label>发音人 ID</label>
+            <input type="text" id="tts-voice" placeholder="alloy">
+        </div>
+        <button class="btn-save" onclick="saveSettings()">保存并应用</button>
+    </div>
+
+    <div id="ai-orb" onclick="toggleCall()">
+        <div id="status-text">点击开始通话</div>
+    </div>
+
+    <div id="transcript"></div>
+
+    <script>
+        let isCalling = false;
+        let currentStatus = 'idle'; // idle, listening, thinking, speaking
+        let audioContext, analyser, microphone;
+        let currentAudio = null;
+        let recognition;
+
+        // 状态颜色映射
+        const statusMap = {
+            'idle': '点击开始通话',
+            'listening': '正在倾听...',
+            'thinking': 'AI 思考中...',
+            'speaking': 'AI 正在说话...'
+        };
+
+        window.onload = () => {
+            loadSettings();
+            initSTT();
+        };
+
+        function saveSettings() {
+            const s = {
+                llm_m: document.getElementById('llm-model').value,
+                llm_u: document.getElementById('llm-url').value,
+                llm_k: document.getElementById('llm-key').value,
+                tts_m: document.getElementById('tts-model').value,
+                tts_u: document.getElementById('tts-url').value,
+                tts_k: document.getElementById('tts-key').value,
+                tts_v: document.getElementById('tts-voice').value,
+            };
+            localStorage.setItem('voice_call_settings', JSON.stringify(s));
+            alert('配置已保存');
+        }
+
+        function loadSettings() {
+            const s = JSON.parse(localStorage.getItem('voice_call_settings') || '{}');
+            if (s.llm_m) {
+                document.getElementById('llm-model').value = s.llm_m;
+                document.getElementById('llm-url').value = s.llm_u;
+                document.getElementById('llm-key').value = s.llm_k;
+                document.getElementById('tts-model').value = s.tts_m;
+                document.getElementById('tts-url').value = s.tts_u;
+                document.getElementById('tts-key').value = s.tts_k;
+                document.getElementById('tts-voice').value = s.tts_v;
+            }
+        }
+
+        function initSTT() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) return alert('浏览器不支持语音识别');
+            recognition = new SpeechRec();
+            recognition.lang = 'zh-CN';
+            recognition.continuous = false; // 关键：让它在检测到停顿后自动结束
+            recognition.interimResults = false;
+
+            recognition.onresult = (e) => {
+                const text = e.results[0][0].transcript;
+                updateTranscript('用户: ' + text);
+                handleAIPipeline(text);
+            };
+
+            recognition.onend = () => {
+                if (currentStatus === 'listening' && isCalling) {
+                    // 正常流程：识别结束 -> 思考
+                }
+            };
+        }
+
+        async function toggleCall() {
+            if (isCalling) {
+                stopCall();
+            } else {
+                startCall();
+            }
+        }
+
+        async function startCall() {
+            isCalling = true;
+            updateStatus('listening');
+            await initAudioMonitor();
+            startListening();
+        }
+
+        function stopCall() {
+            isCalling = false;
+            updateStatus('idle');
+            if (currentAudio) currentAudio.pause();
+            recognition.stop();
+        }
+
+        function updateStatus(status) {
+            currentStatus = status;
+            const orb = document.getElementById('ai-orb');
+            const text = document.getElementById('status-text');
+            orb.className = ''; 
+            if (status === 'listening') orb.classList.add('listening');
+            if (status === 'thinking') orb.classList.add('thinking');
+            if (status === 'speaking') orb.classList.add('speaking');
+            text.innerText = statusMap[status];
+        }
+
+        // --- 核心：声音监测与打断机制 ---
+        async function initAudioMonitor() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            microphone = audioContext.createMediaStreamSource(stream);
+            microphone.connect(analyser);
+
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            function checkInterruption() {
+                if (!isCalling) return;
+                analyser.getByteFrequencyData(dataArray);
+                let sum = 0;
+                for(let i=0; i<bufferLength; i++) sum += dataArray[i];
+                let average = sum / bufferLength;
+
+                // 如果 AI 正在说话，但检测到环境声音超过阈值 (例如 40)
+                if (currentStatus === 'speaking' && average > 40) {
+                    console.log('检测到打断！');
+                    interruptAI();
+                }
+                requestAnimationFrame(checkInterruption);
+            }
+            checkInterruption();
+        }
+
+        function interruptAI() {
+            if (currentAudio) {
+                currentAudio.pause();
+                currentAudio = null;
+            }
+            updateStatus('listening');
+            startListening();
+        }
+
+        function startListening() {
+            if (currentStatus !== 'listening') return;
+            try {
+                recognition.start();
+            } catch(e) {}
+        }
+
+        // --- AI 管道流水线 ---
+        async function handleAIPipeline(text) {
+            updateStatus('thinking');
+            
+            try {
+                // 1. LLM 生成文本
+                const llmRes = await fetch(document.getElementById('llm-url').value, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${document.getElementById('llm-key').value}` },
+                    body: JSON.stringify({
+                        model: document.getElementById('llm-model').value,
+                        messages: [{role: 'user', content: text}]
+                    })
+                });
+                const llmData = await llmRes.json();
+                const aiText = llmData.choices[0].message.content;
+                updateTranscript('AI: ' + aiText);
+
+                // 2. TTS 合成语音
+                updateStatus('speaking');
+                const ttsRes = await fetch(document.getElementById('tts-url').value, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${document.getElementById('tts-key').value}` },
+                    body: JSON.stringify({
+                        model: document.getElementById('tts-model').value,
+                        input: aiText,
+                        voice: document.getElementById('tts-voice').value
+                    })
+                });
+
+                const audioBlob = await ttsRes.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                currentAudio = new Audio(audioUrl);
+                
+                currentAudio.onended = () => {
+                    if (isCalling) {
+                        updateStatus('listening');
+                        startListening();
+                    }
+                };
+                currentAudio.play();
+
+            } catch (e) {
+                console.error(e);
+                updateStatus('listening');
+                startListening();
+            }
+        }
+
+        function updateTranscript(txt) {
+            const div = document.getElementById('transcript');
+            div.innerHTML += `<div>${txt}</div>`;
+            div.scrollTop = div.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: cyber.$color-bg;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 16px;
+  background: cyber.$color-surface;
+  border-bottom: 2px solid cyber.$color-accent;
+}
+
+.fileInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: cyber.$color-text;
+  font-size: 13px;
+  font-weight: 600;
+
+  svg {
+    color: cyber.$color-accent;
+  }
+}
+
+.viewToggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: cyber.$color-text-muted;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  transform: skewX(cyber.$skew-angle);
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+    border-color: rgba(250, 234, 95, 0.3);
+  }
+
+  &.active {
+    background: cyber.$color-accent;
+    color: #121214;
+    border-color: cyber.$color-accent;
+  }
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 4px;
+  }
+}
+
+// Rendered Markdown Styles - 表格化结构化显示
+.rendered {
+  color: cyber.$color-text;
+  line-height: 1.8;
+  font-size: 14px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+// 标题样式
+.heading1 {
+  color: cyber.$color-accent;
+  font-size: 1.8em;
+  font-weight: 700;
+  margin: 0 0 24px 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid cyber.$color-accent;
+  transform: skewX(cyber.$skew-angle);
+  letter-spacing: 1px;
+}
+
+.heading2 {
+  color: cyber.$color-accent;
+  font-size: 1.4em;
+  font-weight: 700;
+  margin: 32px 0 16px 0;
+  padding: 8px 16px;
+  background: rgba(250, 234, 95, 0.1);
+  border-left: 4px solid cyber.$color-accent;
+  transform: skewX(cyber.$skew-angle);
+}
+
+.heading3 {
+  color: cyber.$color-text;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 24px 0 12px 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+.heading4, .heading5, .heading6 {
+  color: cyber.$color-text-secondary;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 16px 0 8px 0;
+}
+
+// 段落
+.paragraph {
+  margin: 16px 0;
+  text-align: justify;
+}
+
+// 信息卡片网格 - 用于文档信息表格
+.infoCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+  padding: 16px;
+  background: rgba(250, 234, 95, 0.03);
+  border: 1px solid rgba(250, 234, 95, 0.1);
+}
+
+.infoCard {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  background: cyber.$color-surface;
+  border: 1px solid rgba(250, 234, 95, 0.15);
+  transition: all 0.2s;
+
+  &:hover {
+    border-color: rgba(250, 234, 95, 0.3);
+    background: rgba(250, 234, 95, 0.05);
+  }
+}
+
+.infoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: cyber.$color-text-muted;
+  margin-bottom: 4px;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: cyber.$color-text;
+  font-weight: 500;
+}
+
+// 表格包装器
+.tableWrapper {
+  margin: 20px 0;
+  overflow-x: auto;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  background: cyber.$color-surface;
+}
+
+// 数据表格
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+
+  thead {
+    background: rgba(250, 234, 95, 0.1);
+  }
+
+  th {
+    padding: 14px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: cyber.$color-accent;
+    border-bottom: 2px solid cyber.$color-accent;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+    vertical-align: top;
+  }
+
+  tr:hover td {
+    background: rgba(250, 234, 95, 0.03);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// 代码块
+.codeBlock {
+  margin: 20px 0;
+  background: #0a0a0f;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  overflow: hidden;
+
+  pre {
+    margin: 0;
+    padding: 16px 20px;
+    overflow-x: auto;
+
+    code {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+  }
+}
+
+.codeLang {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  background: rgba(250, 234, 95, 0.1);
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: cyber.$color-accent;
+}
+
+// 行内代码
+.inlineCode {
+  background: rgba(250, 234, 95, 0.1);
+  padding: 2px 8px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  color: cyber.$color-accent;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  border-radius: 3px;
+}
+
+// 粗体
+.bold {
+  color: cyber.$color-accent;
+  font-weight: 700;
+}
+
+// 斜体
+.italic {
+  color: rgba(250, 234, 95, 0.8);
+  font-style: italic;
+}
+
+// 链接
+.link {
+  color: cyber.$color-accent;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.3);
+  transition: all 0.2s;
+
+  &:hover {
+    border-bottom-color: cyber.$color-accent;
+  }
+}
+
+// 列表
+.list, .orderedList {
+  margin: 16px 0;
+  padding-left: 24px;
+}
+
+.list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.listItem {
+  position: relative;
+  padding-left: 24px;
+  margin: 8px 0;
+
+  &::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: cyber.$color-accent;
+    font-weight: 700;
+  }
+}
+
+.orderedList .listItem {
+  counter-increment: item;
+
+  &::before {
+    content: counter(item) '.';
+    color: cyber.$color-accent;
+    font-weight: 700;
+    font-size: 12px;
+  }
+}
+
+// 引用块
+.blockquote {
+  margin: 20px 0;
+  padding: 16px 20px;
+  background: rgba(250, 234, 95, 0.05);
+  border-left: 4px solid cyber.$color-accent;
+  font-style: italic;
+  color: cyber.$color-text-secondary;
+}
+
+// 分隔线
+.divider {
+  border: none;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, cyber.$color-accent, transparent);
+  margin: 32px 0;
+}
+
+// Raw Markdown Styles
+.raw {
+  margin: 0;
+  padding: 0;
+  background: #0a0a0f;
+  height: 100%;
+
+  code {
+    display: block;
+    padding: 20px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #e0e0e0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

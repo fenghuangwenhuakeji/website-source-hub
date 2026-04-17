@@ -1,0 +1,859 @@
+/**
+ * Integrated Agent Sidebar Styles - Aurora Design System
+ * 完整的侧边栏样式，匹配组件中的所有类名
+ */
+
+@use '../../styles/aurora-design-system-v2.scss' as aurora;
+
+// ============================================
+// 主面板样式
+// ============================================
+
+.chatPanel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: aurora.$bg-base;
+  color: aurora.$text-primary;
+  overflow: hidden;
+}
+
+.chatMain {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ============================================
+// 头部样式
+// ============================================
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-4;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+}
+
+.agentAvatar {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+  border-radius: aurora.$radius-lg;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.headerTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: aurora.$text-primary;
+}
+
+.headerStatus {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+  font-size: 12px;
+  color: aurora.$text-tertiary;
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background: aurora.$success;
+  border-radius: 50%;
+  box-shadow: 0 0 8px aurora.$success;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.newChatBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-md;
+  color: aurora.$aurora-primary;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+// ============================================
+// 消息区域样式
+// ============================================
+
+.messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-4;
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-4;
+  @include aurora.aurora-scrollbar;
+}
+
+.message {
+  display: flex;
+  gap: aurora.$space-3;
+  max-width: 90%;
+  animation: message-enter 0.3s aurora.$ease-out;
+
+  &.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+
+    .messageBody {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
+      color: white;
+      border: none;
+    }
+  }
+
+  &.assistant {
+    align-self: flex-start;
+
+    .messageBody {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+.messageAvatar {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-md;
+  color: aurora.$aurora-primary;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.messageBody {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  padding: aurora.$space-3 aurora.$space-4;
+  border-radius: aurora.$radius-lg;
+  max-width: calc(100% - 44px);
+}
+
+.messageContent {
+  font-size: 14px;
+  line-height: 1.6;
+  word-wrap: break-word;
+
+  p {
+    margin: 0 0 aurora.$space-2 0;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  pre {
+    background: rgba(0, 0, 0, 0.3);
+    padding: aurora.$space-3;
+    border-radius: aurora.$radius-md;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  code {
+    background: rgba(99, 102, 241, 0.15);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+}
+
+.streamingCursor {
+  animation: blink 1s step-end infinite;
+}
+
+// 工具调用样式
+.toolCallsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  margin-top: aurora.$space-2;
+}
+
+.toolCall {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-md;
+  padding: aurora.$space-2 aurora.$space-3;
+}
+
+.toolCallHeader {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+  margin-bottom: aurora.$space-2;
+}
+
+.toolCallName {
+  font-size: 12px;
+  font-weight: 600;
+  color: aurora.$aurora-primary;
+}
+
+.toolSuccess {
+  color: aurora.$success;
+}
+
+.toolError {
+  color: aurora.$error;
+}
+
+.toolLoading {
+  color: aurora.$warning;
+  animation: spin 1s linear infinite;
+}
+
+.toolCallParams {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-1;
+}
+
+.toolParam {
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.toolParamKey {
+  color: aurora.$text-tertiary;
+}
+
+.toolParamValue {
+  color: aurora.$text-secondary;
+}
+
+.toolResult {
+  margin-top: aurora.$space-2;
+  padding: aurora.$space-2;
+  border-radius: aurora.$radius-sm;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+
+  &.success {
+    background: rgba(16, 185, 129, 0.1);
+    border-left: 2px solid aurora.$success;
+  }
+
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-left: 2px solid aurora.$error;
+  }
+}
+
+.messageActions {
+  display: flex;
+  gap: aurora.$space-2;
+  opacity: 0;
+  transition: opacity aurora.$duration-fast aurora.$ease-out;
+
+  .message:hover & {
+    opacity: 1;
+  }
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  border: none;
+  border-radius: aurora.$radius-sm;
+  color: aurora.$text-tertiary;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: aurora.$text-primary;
+  }
+}
+
+.messageTime {
+  font-size: 11px;
+  color: aurora.$text-muted;
+  text-align: right;
+}
+
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+  padding: aurora.$space-3;
+  background: rgba(99, 102, 241, 0.05);
+  border-radius: aurora.$radius-lg;
+}
+
+.dots {
+  display: flex;
+  gap: 4px;
+
+  span {
+    width: 8px;
+    height: 8px;
+    background: aurora.$aurora-primary;
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+
+    &:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+  }
+}
+
+// ============================================
+// 输入区域样式
+// ============================================
+
+.inputArea {
+  padding: aurora.$space-4;
+  background: rgba(0, 0, 0, 0.2);
+  border-top: 1px solid aurora.$border-subtle;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: flex-end;
+  gap: aurora.$space-3;
+  padding: aurora.$space-3;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid aurora.$border-subtle;
+  border-radius: aurora.$radius-xl;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:focus-within {
+    border-color: aurora.$aurora-primary;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+}
+
+.textarea {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: aurora.$text-primary;
+  font-size: 14px;
+  line-height: 1.5;
+  resize: none;
+  min-height: 20px;
+  max-height: 120px;
+
+  &::placeholder {
+    color: aurora.$text-muted;
+  }
+}
+
+.sendBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.9), rgba(139, 92, 246, 0.9));
+  border: none;
+  border-radius: aurora.$radius-md;
+  color: white;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  flex-shrink: 0;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .spin {
+    animation: spin 1s linear infinite;
+  }
+}
+
+// ============================================
+// 面板通用样式
+// ============================================
+
+.panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-4;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-full;
+  font-size: 11px;
+  font-weight: 600;
+  color: aurora.$aurora-primary;
+}
+
+// ============================================
+// 智能体列表样式
+// ============================================
+
+.agentList {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  @include aurora.aurora-scrollbar;
+}
+
+.agentItemWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.agentItem {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-3;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-lg;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateX(4px);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  }
+
+  &.expanded {
+    border-radius: aurora.$radius-lg aurora.$radius-lg 0 0;
+  }
+}
+
+.agentIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8), rgba(139, 92, 246, 0.8));
+  border-radius: aurora.$radius-md;
+  color: white;
+  font-size: 18px;
+}
+
+.agentInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.agentName {
+  font-size: 14px;
+  font-weight: 600;
+  color: aurora.$text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agentDesc {
+  font-size: 12px;
+  color: aurora.$text-tertiary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agentRight {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+}
+
+.agentStatus {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.online {
+    background: aurora.$success;
+    box-shadow: 0 0 8px aurora.$success;
+  }
+
+  &.offline {
+    background: aurora.$text-muted;
+  }
+
+  &.busy {
+    background: aurora.$warning;
+    box-shadow: 0 0 8px aurora.$warning;
+  }
+}
+
+// ============================================
+// 配置面板样式
+// ============================================
+
+.configPanel {
+  padding: aurora.$space-4;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-top: none;
+  border-radius: 0 0 aurora.$radius-lg aurora.$radius-lg;
+}
+
+.configSection {
+  margin-bottom: aurora.$space-4;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.configTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: aurora.$text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: aurora.$space-3;
+}
+
+.configField {
+  margin-bottom: aurora.$space-3;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.configRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-2 0;
+}
+
+.configLabel {
+  font-size: 13px;
+  color: aurora.$text-secondary;
+}
+
+.capabilitiesGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: aurora.$space-2;
+}
+
+.capabilityItem {
+  padding: aurora.$space-1 aurora.$space-3;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-full;
+  font-size: 11px;
+  color: aurora.$aurora-primary;
+}
+
+// 开关样式
+.toggleSwitch {
+  position: relative;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .toggleSlider {
+      background: aurora.$aurora-primary;
+
+      &:before {
+        transform: translateX(20px);
+      }
+    }
+  }
+}
+
+.toggleSlider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: aurora.$radius-full;
+  transition: background aurora.$duration-fast aurora.$ease-out;
+
+  &:before {
+    content: '';
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform aurora.$duration-fast aurora.$ease-out;
+  }
+}
+
+// ============================================
+// 通道列表样式
+// ============================================
+
+.channelList {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  @include aurora.aurora-scrollbar;
+}
+
+.channelItemWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.channelItem {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-3;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-lg;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+
+  &.expanded {
+    border-radius: aurora.$radius-lg aurora.$radius-lg 0 0;
+  }
+}
+
+.channelIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: aurora.$radius-md;
+  color: white;
+  font-size: 18px;
+}
+
+.channelInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.channelName {
+  font-size: 14px;
+  font-weight: 600;
+  color: aurora.$text-primary;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.channelType {
+  font-size: 11px;
+  color: aurora.$text-tertiary;
+}
+
+.channelActions {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+}
+
+.statusIndicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+
+  &.connected {
+    background: aurora.$success;
+    box-shadow: 0 0 8px aurora.$success;
+  }
+
+  &.disconnected {
+    background: aurora.$text-muted;
+  }
+
+  &.connecting {
+    background: aurora.$warning;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+}
+
+.connectBtn {
+  padding: aurora.$space-1 aurora.$space-3;
+  background: rgba(99, 102, 241, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: aurora.$radius-md;
+  font-size: 12px;
+  color: aurora.$aurora-primary;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+}
+
+// ============================================
+// 技能管理样式
+// ============================================
+
+.skillsContent {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  @include aurora.aurora-scrollbar;
+}
+
+.skillCategory {
+  margin-bottom: aurora.$space-4;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.skillList {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+}
+
+// ============================================
+// 动画定义
+// ============================================
+
+@keyframes message-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}

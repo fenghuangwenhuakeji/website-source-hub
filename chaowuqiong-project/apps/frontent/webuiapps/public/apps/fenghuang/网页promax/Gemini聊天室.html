@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能创作工作台</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">智能创作</p>
+        <h1>Gemini 聊天室</h1>
+        <p>这里补回的是可直接使用的创作聊天工作台，保留上下文、常用提示词和阶段化回应，不再点开空页面。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">对话工作台</span>
+        <span class="pill">本地持久化</span>
+        <span class="pill">创作建议</span>
+      </div>
+    </header>
+
+    <main class="chat-shell">
+      <aside class="chat-sidebar panel">
+        <div class="panel-body">
+          <div class="panel-header">
+            <div>
+              <h3>快速提示</h3>
+              <p>点击即可填入输入框，适合开题、补桥段、查情绪。</p>
+            </div>
+          </div>
+          <div class="list-stack">
+            <button class="tag-btn" data-prompt="帮我把这个故事种子扩成 3 幕短篇结构。">三幕短篇</button>
+            <button class="tag-btn" data-prompt="从人物动机、冲突、转折三个层面帮我检查这段剧情。">剧情诊断</button>
+            <button class="tag-btn" data-prompt="把这段小说改写成更有镜头感的版本。">镜头化改写</button>
+            <button class="tag-btn" data-prompt="给我 5 个更抓人的章节标题，并说明各自卖点。">标题增强</button>
+            <button class="tag-btn" data-prompt="我想做漫剧，请把这段内容拆成分镜节点。">分镜拆解</button>
+          </div>
+          <div class="panel-header" style="margin-top:18px;">
+            <div>
+              <h3>当前定位</h3>
+              <p>作为智能创作入口，用来承接灵感、诊断和改写。</p>
+            </div>
+          </div>
+          <div class="mini-card">
+            <strong>推荐流程</strong>
+            <span>先丢故事问题，再拿结果回根应用继续写作，适合快速思考和内容拆解。</span>
+          </div>
+        </div>
+      </aside>
+
+      <section class="chat-main panel">
+        <div class="panel-body">
+          <div class="panel-header">
+            <div>
+              <h2>对话记录</h2>
+              <p>本页会把聊天草稿留在浏览器里，方便继续追问。</p>
+            </div>
+            <button id="clear-button" class="ghost-btn" type="button">清空记录</button>
+          </div>
+          <div id="message-list" class="message-list"></div>
+          <div class="composer">
+            <textarea id="chat-input" placeholder="输入你的问题，例如：帮我把这个故事改成更锋利的短篇结构。"></textarea>
+            <div class="button-row">
+              <button id="send-button" class="primary-btn" type="button">发送</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initChatPage({
+        storageKey: 'fh-fenghuang-gemini-room',
+        respond(prompt) {
+          return [
+            '我先按创作工作台的方式给你一版可继续使用的回应：',
+            `1. 核心目标：${prompt}`,
+            '2. 建议动作：先抓主冲突，再确认人物动机，最后把转折点前置。',
+            '3. 下一步输出：你可以继续追问“扩成大纲”“改成分镜”“改成更有画面感”。',
+          ].join('\n');
+        },
+      });
+    });
+  </script>
+</body>
+</html>

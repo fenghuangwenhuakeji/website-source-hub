@@ -1,0 +1,563 @@
+/* 功能页面通用样式 - Page Common Styles */
+
+/* 返回导航 */
+.back-nav {
+    padding: 10px 15px !important;
+}
+
+.back-link {
+    color: var(--primary-color, #667eea);
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+/* 页面头部 */
+.page-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.page-header h1 {
+    font-size: 1.5rem;
+    color: #333;
+}
+
+.page-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-left: auto;
+    margin-right: 20px;
+}
+
+.status-indicator {
+    font-size: 0.8em;
+    color: green;
+}
+
+/* 通用按钮样式 */
+.primary-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: var(--card-radius, 12px);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.primary-btn.large {
+    padding: 15px 40px;
+    font-size: 1.1rem;
+}
+
+.secondary-btn {
+    padding: 10px 20px;
+    background: transparent;
+    color: #666;
+    border: 2px solid #ddd;
+    border-radius: var(--card-radius, 12px);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.secondary-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.secondary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========== 塔罗页面样式 ========== */
+.tarot-page .tarot-main {
+    background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.tarot-content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: calc(100% - 80px);
+    overflow-y: auto;
+}
+
+.question-area textarea {
+    width: 100%;
+    min-height: 80px;
+    padding: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 1rem;
+    resize: vertical;
+    margin-top: 10px;
+}
+
+.question-area textarea::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.tarot-page .panel {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.tarot-page .panel h3 {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.cards-display {
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.placeholder-text {
+    color: rgba(255, 255, 255, 0.5);
+    text-align: center;
+}
+
+.tarot-card {
+    width: 120px;
+    height: 180px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.tarot-card:hover {
+    transform: translateY(-10px);
+}
+
+.tarot-card.reversed {
+    transform: rotate(180deg);
+}
+
+.tarot-card .card-name {
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 5px;
+}
+
+.tarot-card .card-position {
+    font-size: 0.75rem;
+    opacity: 0.8;
+}
+
+.action-area {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.interpretation-area {
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.spread-list {
+    list-style: none;
+}
+
+.spread-list li {
+    padding: 10px;
+    margin: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.spread-list li:hover,
+.spread-list li.active {
+    background: rgba(102, 126, 234, 0.3);
+}
+
+.daily-result {
+    margin-top: 15px;
+    text-align: center;
+}
+
+/* ========== 八字页面样式 ========== */
+.bazi-content {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.birth-input-area .input-row {
+    display: flex;
+    gap: 15px;
+    margin: 15px 0;
+    flex-wrap: wrap;
+}
+
+.input-group {
+    flex: 1;
+    min-width: 120px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.input-group select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.bazi-result {
+    animation: fadeIn 0.5s ease;
+}
+
+.pillars-display {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin: 20px 0;
+}
+
+.pillar {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    border-radius: 12px;
+    min-width: 80px;
+}
+
+.pillar-name {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.pillar-chars {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.pillar-chars .top {
+    display: block;
+    color: #667eea;
+}
+
+.pillar-chars .bottom {
+    display: block;
+    color: #764ba2;
+    margin-top: 5px;
+}
+
+.wuxing-chart {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.wuxing-item {
+    text-align: center;
+}
+
+.wuxing-bar {
+    width: 30px;
+    background: #eee;
+    border-radius: 15px;
+    overflow: hidden;
+    height: 80px;
+    display: flex;
+    align-items: flex-end;
+    margin: 0 auto 5px;
+}
+
+.wuxing-bar-fill {
+    width: 100%;
+    border-radius: 15px;
+    transition: height 0.5s ease;
+}
+
+.wuxing-bar-fill.wood { background: #4caf50; }
+.wuxing-bar-fill.fire { background: #f44336; }
+.wuxing-bar-fill.earth { background: #9e9e9e; }
+.wuxing-bar-fill.metal { background: #ffc107; }
+.wuxing-bar-fill.water { background: #2196f3; }
+
+/* ========== 测试页面样式 ========== */
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+.test-card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 2px solid transparent;
+}
+
+.test-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color, #667eea);
+}
+
+.test-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.test-card-icon {
+    font-size: 2rem;
+}
+
+.test-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.test-card-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.test-card-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #999;
+}
+
+.category-list {
+    list-style: none;
+}
+
+.category-list li {
+    padding: 10px 15px;
+    margin: 5px 0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.category-list li:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.category-list li.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+/* 测试进度 */
+.test-progress {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 30px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #eee;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* 问题卡片 */
+.question-card {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+.question-card h3 {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.options-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.option-item {
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.option-item:hover {
+    background: #e9ecef;
+}
+
+.option-item.selected {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+}
+
+.test-nav {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* 测试结果 */
+.result-card {
+    max-width: 600px;
+    margin: 30px auto;
+    text-align: center;
+    padding: 40px;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.result-card h2 {
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.result-score {
+    font-size: 3rem;
+    font-weight: bold;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+}
+
+.result-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.result-details {
+    text-align: left;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.result-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* 动画 */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .page-desc {
+        margin: 0;
+    }
+    
+    .birth-input-area .input-row {
+        flex-direction: column;
+    }
+    
+    .pillars-display {
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+    
+    .pillar {
+        min-width: 60px;
+        padding: 15px;
+    }
+    
+    .test-grid {
+        grid-template-columns: 1fr;
+    }
+}

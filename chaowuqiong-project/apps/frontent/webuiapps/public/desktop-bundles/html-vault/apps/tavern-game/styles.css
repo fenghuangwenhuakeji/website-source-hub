@@ -1,0 +1,1154 @@
+/* ========== 全局样式 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #fff;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+/* ========== 主菜单 ========== */
+#main-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+#main-menu h1 {
+    font-size: 4rem;
+    margin-bottom: 3rem;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    animation: titlePulse 2s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 300px;
+}
+
+.menu-buttons button {
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.menu-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ========== 游戏界面 ========== */
+#game-interface {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* 顶部信息栏 */
+#top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    border-bottom: 2px solid #dfe6e9;
+}
+
+.player-info {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.1rem;
+}
+
+.player-stats {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.bar-container {
+    width: 150px;
+    height: 20px;
+    background: #2d3436;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #636e72;
+}
+
+.bar {
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.hp-bar {
+    background: linear-gradient(90deg, #ff6b6b, #ee5a5a);
+}
+
+.mp-bar {
+    background: linear-gradient(90deg, #74b9ff, #0984e3);
+}
+
+.exp-bar {
+    background: linear-gradient(90deg, #ffeaa7, #fdcb6e);
+}
+
+.resource-info {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.1rem;
+}
+
+/* 主内容区域 */
+#main-content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.game-view {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+.game-view.active {
+    display: block;
+}
+
+/* ========== 地图视图 ========== */
+#map-view {
+    background: #2d3436;
+}
+
+#map-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+#map-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.location-info {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    pointer-events: auto;
+}
+
+/* ========== 酒馆视图 ========== */
+.tavern-scene {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.tavern-bg {
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%231a1a2e" width="100" height="100"/><rect fill="%2316213e" x="10" y="10" width="80" height="80" rx="5"/></svg>');
+    background-size: cover;
+    position: relative;
+}
+
+.tavern-interior {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+}
+
+.npc-area {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-end;
+}
+
+.npc {
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.npc:hover {
+    transform: scale(1.1);
+}
+
+.npc-sprite {
+    width: 80px;
+    height: 120px;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.player-area {
+    display: flex;
+    align-items: flex-end;
+}
+
+.player-sprite {
+    width: 80px;
+    height: 120px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    animation: playerIdle 2s ease-in-out infinite;
+}
+
+@keyframes playerIdle {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.tavern-dialogue {
+    height: 20%;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1rem;
+    border-top: 3px solid #dfe6e9;
+}
+
+.dialogue-box {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    padding: 1rem;
+    border-radius: 10px;
+    border: 2px solid #dfe6e9;
+}
+
+.speaker-name {
+    font-size: 1.2rem;
+    color: #74b9ff;
+    margin-bottom: 0.5rem;
+}
+
+.dialogue-text {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.dialogue-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.dialogue-options button {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.dialogue-options button:hover {
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+}
+
+.tavern-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    border-top: 2px solid #dfe6e9;
+}
+
+.tavern-actions button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.tavern-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== 战斗视图 ========== */
+#battle-view {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+}
+
+.battle-scene {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem;
+    position: relative;
+}
+
+.enemy-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.enemy-sprite {
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    margin-bottom: 1rem;
+    animation: enemyIdle 1.5s ease-in-out infinite;
+}
+
+@keyframes enemyIdle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.enemy-info {
+    text-align: center;
+    width: 200px;
+}
+
+.enemy-hp-bar {
+    width: 100%;
+    height: 15px;
+    background: #2d3436;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.enemy-hp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b6b, #ee5a5a);
+    transition: width 0.3s ease;
+}
+
+.player-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#battle-player-sprite {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.battle-effects {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+}
+
+.battle-actions {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.battle-menu {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.battle-menu.hidden {
+    display: none;
+}
+
+.battle-menu button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    border: none;
+    border-radius: 8px;
+    color: #2d3436;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.battle-menu button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.skill-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.skill-item {
+    padding: 1rem;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.skill-item:hover {
+    transform: scale(1.05);
+}
+
+.card-hand {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.battle-card {
+    width: 80px;
+    height: 120px;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.battle-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+.battle-card .card-icon {
+    font-size: 2rem;
+}
+
+.battle-card .card-name {
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.battle-card .card-cost {
+    font-size: 0.7rem;
+    color: #ffeaa7;
+}
+
+/* ========== 角色面板 ========== */
+#character-view {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.character-panel {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.character-portrait {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.character-basic h2 {
+    color: #74b9ff;
+    margin-bottom: 0.5rem;
+}
+
+.character-stats,
+.character-skills,
+.character-inventory,
+.character-abilities {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 2px solid #636e72;
+}
+
+.character-stats h3,
+.character-skills h3,
+.character-inventory h3,
+.character-abilities h3 {
+    color: #74b9ff;
+    margin-bottom: 1rem;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+.skill-panel,
+.equipment-panel,
+.ability-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
+}
+
+.skill-icon,
+.equipment-slot,
+.ability-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.skill-icon:hover,
+.equipment-slot:hover,
+.ability-icon:hover {
+    transform: scale(1.1);
+}
+
+/* ========== 升级系统 ========== */
+#upgrade-view {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.upgrade-panel {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.upgrade-panel h2 {
+    color: #74b9ff;
+    margin-bottom: 2rem;
+}
+
+.upgrade-info {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+}
+
+.upgrade-options h3,
+.upgrade-skills h3 {
+    color: #74b9ff;
+    margin-bottom: 1rem;
+}
+
+.upgrade-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.upgrade-stats button {
+    padding: 1rem;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    border: none;
+    border-radius: 8px;
+    color: #2d3436;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.upgrade-stats button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.skill-learn-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.learnable-skill {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.learnable-skill:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* ========== 职业系统 ========== */
+#class-view {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.class-panel {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.class-panel h2 {
+    text-align: center;
+    color: #74b9ff;
+    margin-bottom: 2rem;
+}
+
+.class-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.class-card {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 2px solid #636e72;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.class-card:hover {
+    transform: translateY(-5px);
+    border-color: #74b9ff;
+    box-shadow: 0 5px 20px rgba(116, 185, 255, 0.3);
+}
+
+.class-card.active {
+    border-color: #74b9ff;
+    background: rgba(116, 185, 255, 0.1);
+}
+
+.class-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+}
+
+.class-card h3 {
+    text-align: center;
+    color: #74b9ff;
+    margin-bottom: 0.5rem;
+}
+
+.class-card p {
+    text-align: center;
+    color: #b2bec3;
+    font-size: 0.9rem;
+}
+
+.class-bonuses {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #636e72;
+}
+
+.class-bonuses span {
+    display: block;
+    font-size: 0.8rem;
+    color: #b2bec3;
+}
+
+/* ========== 剧情系统 ========== */
+#story-view {
+    background: #000;
+    display: flex;
+    flex-direction: column;
+}
+
+.story-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.story-scene {
+    flex: 1;
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+}
+
+.story-bg {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+.story-characters {
+    position: absolute;
+    bottom: 20%;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.story-character {
+    font-size: 8rem;
+    animation: characterEnter 0.5s ease-out;
+}
+
+@keyframes characterEnter {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.story-dialogue {
+    height: 30%;
+    background: rgba(0, 0, 0, 0.9);
+    padding: 1.5rem;
+    border-top: 3px solid #74b9ff;
+}
+
+.story-speaker {
+    font-size: 1.3rem;
+    color: #74b9ff;
+    margin-bottom: 0.5rem;
+}
+
+.story-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    min-height: 60px;
+}
+
+.story-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.story-choices button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.story-choices button:hover {
+    transform: translateX(10px);
+    background: linear-gradient(135deg, #0984e3, #74b9ff);
+}
+
+/* ========== 卡牌收藏 ========== */
+#card-collection-view {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.card-collection {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card-collection h2 {
+    text-align: center;
+    color: #74b9ff;
+    margin-bottom: 2rem;
+}
+
+.collection-filters {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 1rem;
+}
+
+.collection-card {
+    aspect-ratio: 3/4;
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.collection-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 20px rgba(240, 147, 251, 0.5);
+    z-index: 10;
+}
+
+.collection-card .card-icon {
+    font-size: 3rem;
+}
+
+.collection-card .card-name {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    text-align: center;
+}
+
+.collection-card .card-type {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.card-count {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #2d3436;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+/* ========== 底部导航栏 ========== */
+#bottom-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    border-top: 2px solid #dfe6e9;
+}
+
+#bottom-bar button {
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    border: none;
+    border-radius: 8px;
+    color: #2d3436;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+#bottom-bar button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* ========== 模态框 ========== */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+    padding: 2rem;
+    border-radius: 10px;
+    border: 2px solid #dfe6e9;
+    max-width: 500px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.modal-content h2 {
+    color: #74b9ff;
+    margin-bottom: 1.5rem;
+}
+
+.modal-content button {
+    width: 100%;
+    padding: 0.8rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+}
+
+.modal-content button:hover {
+    transform: translateY(-2px);
+}
+
+.settings-section {
+    margin-bottom: 1.5rem;
+}
+
+.settings-section label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #b2bec3;
+}
+
+.settings-section input[type="range"],
+.settings-section select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+}
+
+/* ========== 通知系统 ========== */
+.notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: notificationSlide 0.3s ease-out;
+    max-width: 300px;
+}
+
+@keyframes notificationSlide {
+    from {
+        opacity: 0;
+        transform: translateX(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #a8e6cf, #dcedc1);
+    color: #2d3436;
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    color: #2d3436;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+    #main-menu h1 {
+        font-size: 2.5rem;
+    }
+    
+    .character-panel {
+        grid-template-columns: 1fr;
+    }
+    
+    .upgrade-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    #bottom-bar button {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .battle-menu button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ========== 动画效果 ========== */
+.fade-in {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pulse {
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}

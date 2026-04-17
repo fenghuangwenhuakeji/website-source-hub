@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心灵聊天 - 星语心伴</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/common.css">
+    <style>
+        /* 聊天页面专用样式 */
+        .chat-page-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .chat-header-bar {
+            background: var(--primary-gradient);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .chat-header-bar::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: linear-gradient(to bottom, rgba(102, 126, 234, 0.3), transparent);
+        }
+        
+        .ai-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .ai-avatar {
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .ai-info h4 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        
+        .ai-info .model-name {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #2ECC71;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 8px rgba(46, 204, 113, 0.6);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(0.9); }
+        }
+        
+        .header-btns {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .h-btn {
+            width: 38px;
+            height: 38px;
+            background: rgba(255, 255, 255, 0.15);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .h-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.1);
+        }
+        
+        .chat-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            padding-bottom: 160px;
+            scroll-behavior: smooth;
+        }
+        
+        .chat-messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+        }
+        
+        .msg {
+            max-width: 85%;
+            margin-bottom: 16px;
+            animation: msgIn 0.3s ease;
+        }
+        
+        @keyframes msgIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .msg.user {
+            margin-left: auto;
+        }
+        
+        .msg-hd {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .msg.user .msg-hd {
+            justify-content: flex-end;
+        }
+        
+        .msg-content {
+            padding: 14px 18px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.7;
+            word-break: break-word;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .msg.user .msg-content {
+            background: var(--primary-gradient);
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+        
+        .msg.ai .msg-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            color: white;
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .msg.system .msg-content {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            font-size: 13px;
+            text-align: center;
+            max-width: 100%;
+            border-radius: 12px;
+            padding: 10px 16px;
+        }
+        
+        .msg-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: 0.2s;
+        }
+        
+        .msg:hover .msg-actions {
+            opacity: 1;
+        }
+        
+        .msg-act {
+            font-size: 11px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .msg-act:hover {
+            color: var(--accent-color);
+        }
+        
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 14px 18px;
+        }
+        
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+        
+        /* 正在回复中的可爱样式 */
+        .replying-msg {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .replying-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .replying-text .heart {
+            color: #FF6B6B;
+            animation: heartbeat 1s ease-in-out infinite;
+        }
+        
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        .cute-spinner {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .cute-spinner span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: cuteBounce 1.2s ease-in-out infinite;
+        }
+        
+        .cute-spinner span:nth-child(1) {
+            background: #FF6B6B;
+            animation-delay: 0s;
+        }
+        
+        .cute-spinner span:nth-child(2) {
+            background: #4ECDC4;
+            animation-delay: 0.15s;
+        }
+        
+        .cute-spinner span:nth-child(3) {
+            background: #FFD700;
+            animation-delay: 0.3s;
+        }
+        
+        .cute-spinner span:nth-child(4) {
+            background: #9B59B6;
+            animation-delay: 0.45s;
+        }
+        
+        @keyframes cuteBounce {
+            0%, 80%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            40% {
+                transform: translateY(-12px) scale(1.1);
+            }
+        }
+        
+        .api-warning {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 20px;
+            padding: 32px 24px;
+            margin: 60px 16px;
+            text-align: center;
+        }
+        
+        .api-warning i {
+            font-size: 48px;
+            color: #E74C3C;
+            margin-bottom: 16px;
+            display: block;
+        }
+        
+        .api-warning h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .api-warning p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .quick-actions {
+            position: fixed;
+            bottom: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            padding: 0 16px;
+            z-index: 100;
+        }
+        
+        .quick-scroll {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+        
+        .quick-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .q-btn {
+            flex-shrink: 0;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .q-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .input-container {
+            position: fixed;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: rgba(15, 12, 41, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px 16px;
+            z-index: 200;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            color: white;
+            font-size: 15px;
+            resize: none;
+            max-height: 100px;
+            min-height: 48px;
+            line-height: 1.4;
+        }
+        
+        .chat-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        .chat-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary-gradient);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* 思考中三个点动画 */
+        .thinking-dots {
+            display: inline-block;
+        }
+        
+        .thinking-dots span {
+            animation: thinkingDot 1.4s infinite;
+            opacity: 0;
+        }
+        
+        .thinking-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .thinking-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .thinking-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes thinkingDot {
+            0%, 60%, 100% {
+                opacity: 0;
+            }
+            30% {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="app-container" style="padding-bottom: 0;">
+        <div class="chat-header-bar">
+            <div class="ai-status">
+                <div class="ai-avatar">✨</div>
+                <div class="ai-info">
+                    <h4>星语心伴</h4>
+                    <span class="model-name">
+                        <span id="modelInfo">未连接</span>
+                        <span class="online-dot" id="onlineDot" style="display:none;"></span>
+                    </span>
+                </div>
+            </div>
+            <div class="header-btns">
+                <button class="h-btn" id="clearBtn" title="清空对话"><i class="fas fa-trash-alt"></i></button>
+                <button class="h-btn" id="settingsBtn" title="API设置"><i class="fas fa-cog"></i></button>
+            </div>
+        </div>
+        <div class="chat-body">
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="quick-actions" id="quickBar">
+                <div class="quick-scroll">
+                    <button class="q-btn" data-msg="你好！最近怎么样？"><i class="fas fa-hand-wave"></i>打招呼</button>
+                    <button class="q-btn" data-msg="我今天心情不太好"><i class="fas fa-sad-tear"></i>倾诉心事</button>
+                    <button class="q-btn" data-msg="最近压力很大"><i class="fas fa-brain"></i>缓解压力</button>
+                    <button class="q-btn" data-msg="帮我看看今天的星座运势"><i class="fas fa-star"></i>星座运势</button>
+                    <button class="q-btn" data-msg="给我讲个暖心的小故事"><i class="fas fa-book"></i>听故事</button>
+                    <button class="q-btn" data-msg="我做了一个奇怪的梦，帮我解读一下"><i class="fas fa-cloud-moon"></i>解梦</button>
+                </div>
+            </div>
+            <div class="input-container">
+                <div class="input-row">
+                    <textarea class="chat-input" id="input" placeholder="输入你想说的话..." rows="1"></textarea>
+                    <button class="send-btn" id="sendBtn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="horoscope.html" class="nav-item"><i class="fas fa-star"></i><span>星座</span></a>
+            <a href="chat.html" class="nav-item active"><i class="fas fa-comment-dots"></i><span>AI聊天</span></a>
+            <a href="tarot.html" class="nav-item"><i class="fas fa-hat-wizard"></i><span>占卜</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>我的</span></a>
+        </nav>
+    </div>
+    <script src="../js/api-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        });
+
+        // 全局聊天实例 - 确保页面切换时状态保持
+        let globalChatApp = null;
+
+        class ChatApp {
+            constructor() {
+                this.messages = [];
+                this.isTyping = false;
+                this.pendingResponse = ''; // 正在生成的响应
+                this.init();
+            }
+
+            init() {
+                this.checkAPI();
+                this.loadHistory();
+                this.bindEvents();
+                if (this.messages.length === 0) {
+                    this.addMsg('ai', '你好！我是星语心伴 ✨\n\n我是你的专属心理陪伴助手，可以陪你聊天、倾诉心事、解读星座运势、分析梦境，或者给你讲个暖心的小故事。\n\n有什么想聊的吗？');
+                }
+            }
+
+            checkAPI() {
+                const config = ApiManager.getActiveConfig();
+                const info = document.getElementById('modelInfo');
+                const dot = document.getElementById('onlineDot');
+                const sendBtn = document.getElementById('sendBtn');
+                
+                if (config) {
+                    info.textContent = config.model;
+                    dot.style.display = 'block';
+                    sendBtn.disabled = false;
+                } else {
+                    info.textContent = '未配置API';
+                    dot.style.display = 'none';
+                    this.showAPIWarn();
+                }
+            }
+
+            showAPIWarn() {
+                const container = document.getElementById('chatMessages');
+                container.innerHTML = `
+                    <div class="api-warn">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <h3>API未配置</h3>
+                        <p>请先配置大模型API才能使用AI聊天功能</p>
+                        <a href="api-settings.html" class="btn btn-primary">去配置</a>
+                    </div>
+                `;
+                document.getElementById('sendBtn').disabled = true;
+            }
+
+            loadHistory() {
+                try {
+                    const saved = localStorage.getItem('xyxb_chat');
+                    if (saved) {
+                        this.messages = JSON.parse(saved);
+                        this.messages.forEach(m => this.renderMsg(m.role, m.content, false));
+                        this.scrollToBottom();
+                    }
+                } catch(e) {}
+            }
+
+            saveHistory() {
+                try {
+                    localStorage.setItem('xyxb_chat', JSON.stringify(this.messages));
+                } catch(e) {}
+            }
+
+            bindEvents() {
+                const input = document.getElementById('input');
+                const sendBtn = document.getElementById('sendBtn');
+
+                sendBtn.addEventListener('click', () => this.send());
+                
+                input.addEventListener('keypress', e => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        this.send();
+                    }
+                });
+
+                input.addEventListener('input', () => {
+                    input.style.height = 'auto';
+                    input.style.height = Math.min(input.scrollHeight, 100) + 'px';
+                });
+
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    if (confirm('确定清空所有对话？')) {
+                        this.messages = [];
+                        localStorage.removeItem('xyxb_chat');
+                        document.getElementById('chatMessages').innerHTML = '';
+                        this.addMsg('ai', '对话已清空。有什么新话题想聊吗？ ✨');
+                        document.getElementById('quickBar').style.display = 'block';
+                    }
+                });
+
+                document.getElementById('settingsBtn').addEventListener('click', () => {
+                    const targetUrl = 'api-settings.html';
+                    if (targetUrl && targetUrl.trim() !== '') {
+                        location.href = targetUrl;
+                    } else {
+                        console.error('Invalid URL for navigation');
+                    }
+                });
+
+                document.querySelectorAll('.q-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        input.value = btn.dataset.msg;
+                        this.send();
+                    });
+                });
+            }
+
+            async send() {
+                const input = document.getElementById('input');
+                const text = input.value.trim();
+                if (!text || this.isTyping) return;
+
+                const config = ApiManager.getActiveConfig();
+                if (!config) {
+                    this.showAPIWarn();
+                    return;
+                }
+
+                this.addMsg('user', text);
+                this.messages.push({ role: 'user', content: text });
+                input.value = '';
+                input.style.height = 'auto';
+                document.getElementById('quickBar').style.display = 'none';
+
+                this.isTyping = true;
+                this.showTyping();
+
+                try {
+                    const sysPrompt = `你是星语心伴，一个温暖、专业、善解人意的AI心理陪伴助手。
+
+特点：善于倾听，回复温暖有同理心，可以聊心理、星座、生活等，给用户力量。
+要求：回复简洁温暖（100-200字），适当用emoji，对负面情绪先表示理解共情。`;
+
+                    const msgs = [
+                        { role: 'system', content: sysPrompt },
+                        ...this.messages.slice(-10)
+                    ];
+
+                    let resp = '';
+                    const self = this; // 保存this引用
+                    await ApiManager.callLLM(msgs, (chunk, full) => {
+                        resp = full; // 使用完整的累积内容
+                        self.updateTyping(resp);
+                    });
+
+                    this.messages.push({ role: 'assistant', content: resp });
+                    this.saveHistory();
+                } catch(err) {
+                    this.hideTyping();
+                    this.addMsg('system', '抱歉，出现了错误: ' + err.message);
+                } finally {
+                    this.isTyping = false;
+                    this.hideTyping();
+                }
+            }
+
+            addMsg(type, text, save = true) {
+                const container = document.getElementById('chatMessages');
+                const div = document.createElement('div');
+                div.className = `msg ${type}`;
+                
+                const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                
+                if (type === 'ai') {
+                    div.innerHTML = `
+                        <div class="msg-hd">星语心伴 · ${time}</div>
+                        <div class="msg-content">${this.fmt(text)}</div>
+                    `;
+                } else if (type === 'user') {
+                    div.innerHTML = `
+                        <div class="msg-hd">${time}</div>
+                        <div class="msg-content">${this.fmt(text)}</div>
+                    `;
+                } else {
+                    div.innerHTML = `<div class="msg-content">${text}</div>`;
+                }
+                
+                container.appendChild(div);
+                this.scrollToBottom();
+            }
+
+            renderMsg(role, content) {
+                const type = role === 'assistant' ? 'ai' : 'user';
+                this.addMsg(type, content, false);
+            }
+
+            fmt(text) {
+                return text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            }
+
+            showTyping() {
+                const container = document.getElementById('chatMessages');
+                
+                // 先移除旧的typing元素
+                const oldTyping = document.getElementById('typing');
+                if (oldTyping) oldTyping.remove();
+                
+                const div = document.createElement('div');
+                div.className = 'msg ai';
+                div.id = 'typing';
+                const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                div.innerHTML = `
+                    <div class="msg-hd">星语心伴 · ${time}</div>
+                    <div class="msg-content" id="streaming-content">正在思考中，请宝宝耐心等待哦<span class="thinking-dots"><span>.</span><span>.</span><span>.</span></span></div>
+                `;
+                container.appendChild(div);
+                this.scrollToBottom();
+                
+                // 强制让浏览器渲染
+                void div.offsetHeight;
+                
+                console.log('[Chat] showTyping created, streaming-content element:', document.getElementById('streaming-content'));
+            }
+
+            updateTyping(text) {
+                // 直接获取流式内容元素
+                let el = document.getElementById('streaming-content');
+                
+                // 如果元素不存在，检查是否有typing容器
+                let typingEl = document.getElementById('typing');
+                
+                if (!typingEl) {
+                    // 如果连typing容器都没有，重新创建
+                    this.showTyping();
+                    el = document.getElementById('streaming-content');
+                    typingEl = document.getElementById('typing');
+                }
+                
+                // 直接更新，不使用requestAnimationFrame
+                if (el) {
+                    el.innerHTML = this.fmt(text);
+                } else if (typingEl) {
+                    const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                    typingEl.innerHTML = `
+                        <div class="msg-hd">星语心伴 · ${time}</div>
+                        <div class="msg-content">${this.fmt(text)}</div>
+                    `;
+                }
+                
+                // 滚动到底部
+                const container = document.getElementById('chatMessages');
+                if (container) container.scrollTop = container.scrollHeight;
+            }
+
+            hideTyping() {
+                const t = document.getElementById('typing');
+                if (t) t.remove();
+            }
+
+            scrollToBottom() {
+                const c = document.getElementById('chatMessages');
+                c.scrollTop = c.scrollHeight;
+            }
+        }
+
+        new ChatApp();
+    </script>
+</body>
+</html>

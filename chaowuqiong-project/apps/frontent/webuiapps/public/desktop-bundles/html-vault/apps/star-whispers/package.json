@@ -1,0 +1,12 @@
+{
+  "name": "star-whispers",
+  "version": "2.0.0",
+  "description": "星语心伴 - 全年龄段AI心理陪伴",
+  "scripts": {
+    "dev": "npx serve -l 3000",
+    "start": "npx serve -l 3000"
+  },
+  "keywords": ["psychology", "tarot", "bazi", "ai-companion"],
+  "author": "StarWhispers Team",
+  "license": "MIT"
+}

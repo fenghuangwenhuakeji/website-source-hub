@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星语心伴 - StarWhispers</title>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Tailwind CSS - 使用本地构建版本避免外部CDN追踪问题 -->
+    <script>
+        // 如需使用Tailwind，请下载本地版本或通过构建工具集成
+        // 当前暂时禁用外部CDN以避免Tracking Prevention问题
+        console.log('提示：Tailwind CSS CDN已禁用，如需样式请使用本地CSS');
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+    <div id="app" class="h-screen flex flex-col">
+        <!-- 动态加载 UI 组件 -->
+        <header id="main-header" class="p-4 shadow-sm bg-white"></header>
+        <main id="content-area" class="flex-1 overflow-y-auto p-4"></main>
+        <footer id="input-area" class="p-4 bg-white border-t"></footer>
+    </div>
+
+    <!-- Core Modules -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

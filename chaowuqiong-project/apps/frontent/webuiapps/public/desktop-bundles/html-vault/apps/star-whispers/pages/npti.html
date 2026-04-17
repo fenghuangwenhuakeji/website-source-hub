@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPTI人格分析 - 星语心伴</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/pages.css">
+</head>
+<body>
+    <div id="app" class="npti-page">
+        <!-- 侧边栏 -->
+        <aside class="sidebar">
+            <div class="panel back-nav">
+                <a href="../index.html" class="back-link">← 返回首页</a>
+            </div>
+            
+            <div class="panel npti-info">
+                <h3>🎯 关于NPTI</h3>
+                <p>NPTI人格分析系统是基于心理学理论开发的人格测评工具，帮助你了解自己的人格特质。</p>
+            </div>
+
+            <div class="panel dimensions-panel">
+                <h3>📊 四个维度</h3>
+                <ul class="dimension-list">
+                    <li>能量来源：内向/外向</li>
+                    <li>信息获取：感觉/直觉</li>
+                    <li>决策方式：思考/情感</li>
+                    <li>生活方式：判断/感知</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <header class="page-header">
+                <h1>🎭 NPTI人格分析</h1>
+                <p class="page-desc">专业人格类型分析，发现真实的自己</p>
+            </header>
+
+            <div class="npti-content">
+                <!-- 测试入口 -->
+                <div class="npti-intro panel" id="npti-intro">
+                    <div class="intro-icon">🎭</div>
+                    <h2>发现你的人格类型</h2>
+                    <p>通过科学的测评了解你的人格特质，获得个性化的发展建议。</p>
+                    <ul class="intro-features">
+                        <li>✅ 20道精选题目</li>
+                        <li>✅ 4个维度深度分析</li>
+                        <li>✅ 16种人格类型解读</li>
+                        <li>✅ 个性化成长建议</li>
+                    </ul>
+                    <button id="start-test-btn" class="primary-btn large">开始测评</button>
+                </div>
+
+                <!-- 测试区域 -->
+                <div class="npti-test" id="npti-test" style="display: none;">
+                    <div class="test-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="npti-progress-fill"></div>
+                        </div>
+                        <span class="progress-text" id="npti-progress-text">1 / 20</span>
+                    </div>
+
+                    <div class="question-card panel">
+                        <h3 id="npti-question">题目加载中...</h3>
+                        <div class="options-list" id="npti-options">
+                            <!-- 选项将动态加载 -->
+                        </div>
+                    </div>
+
+                    <div class="test-nav">
+                        <button id="npti-prev-btn" class="secondary-btn" disabled>上一题</button>
+                        <button id="npti-next-btn" class="primary-btn">下一题</button>
+                    </div>
+                </div>
+
+                <!-- 结果展示 -->
+                <div class="npti-result" id="npti-result" style="display: none;">
+                    <div class="result-card panel">
+                        <div class="result-type" id="result-type">INTJ</div>
+                        <div class="result-nickname" id="result-nickname">建筑师</div>
+                        <div class="result-description" id="result-description"></div>
+                    </div>
+
+                    <div class="dimensions-result panel">
+                        <h3>📊 维度分析</h3>
+                        <div id="dimensions-chart" class="dimensions-chart"></div>
+                    </div>
+
+                    <div class="result-traits panel">
+                        <h3>✨ 特质解读</h3>
+                        <div id="traits-list"></div>
+                    </div>
+
+                    <div class="result-advice panel">
+                        <h3>💡 成长建议</h3>
+                        <div id="advice-text"></div>
+                    </div>
+
+                    <div class="result-actions">
+                        <button id="retake-npti-btn" class="secondary-btn">重新测试</button>
+                        <a href="../index.html" class="primary-btn">返回首页</a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        class NPTIPage {
+            constructor() {
+                this.currentQuestion = 0;
+                this.answers = [];
+                this.questions = this.getQuestions();
+                
+                this.bindEvents();
+            }
+
+            getQuestions() {
+                return [
+                    { text: '在社交聚会中，你通常：', options: ['主动与多人交谈', '与少数熟悉的人交谈'], dimension: 'EI' },
+                    { text: '你更倾向于：', options: ['关注当下的现实', '想象未来的可能'], dimension: 'SN' },
+                    { text: '做决定时，你更看重：', options: ['逻辑和分析', '价值观和感受'], dimension: 'TF' },
+                    { text: '你的生活方式更接近：', options: ['有计划有条理', '灵活随性'], dimension: 'JP' },
+                    { text: '独处时，你通常感到：', options: ['精力充沛', '需要社交充电'], dimension: 'EI' },
+                    { text: '你更喜欢阅读：', options: ['实用性的内容', '富有想象力的内容'], dimension: 'SN' },
+                    { text: '批评别人时，你会：', options: ['直言不讳', '委婉表达'], dimension: 'TF' },
+                    { text: '完成任务时，你喜欢：', options: ['提前完成', '在截止日期前完成'], dimension: 'JP' },
+                    { text: '你的朋友圈：', options: ['广泛而多样', '小而紧密'], dimension: 'EI' },
+                    { text: '你更关注：', options: ['具体细节', '整体模式'], dimension: 'SN' },
+                    { text: '你认为自己是：', options: ['理性的', '感性的'], dimension: 'TF' },
+                    { text: '你的工作风格是：', options: ['系统化', '即兴式'], dimension: 'JP' },
+                    { text: '在团队中，你倾向于：', options: ['积极发言', '倾听思考'], dimension: 'EI' },
+                    { text: '你更相信：', options: ['经验', '直觉'], dimension: 'SN' },
+                    { text: '面对冲突，你更注重：', options: ['公平公正', '维护关系'], dimension: 'TF' },
+                    { text: '你对新事物的态度是：', options: ['谨慎接受', '开放尝试'], dimension: 'JP' },
+                    { text: '周末时你更喜欢：', options: ['参加社交活动', '独自放松'], dimension: 'EI' },
+                    { text: '描述事物时，你会：', options: ['详细具体', '抽象概括'], dimension: 'SN' },
+                    { text: '你更容易被什么打动：', options: ['合理的论证', '感人的故事'], dimension: 'TF' },
+                    { text: '你更喜欢：', options: ['确定的事物', '开放的选择'], dimension: 'JP' }
+                ];
+            }
+
+            bindEvents() {
+                document.querySelector('#start-test-btn')?.addEventListener('click', () => this.startTest());
+                document.querySelector('#npti-prev-btn')?.addEventListener('click', () => this.prevQuestion());
+                document.querySelector('#npti-next-btn')?.addEventListener('click', () => this.nextQuestion());
+                document.querySelector('#retake-npti-btn')?.addEventListener('click', () => this.retakeTest());
+            }
+
+            startTest() {
+                document.querySelector('#npti-intro').style.display = 'none';
+                document.querySelector('#npti-test').style.display = 'block';
+                document.querySelector('#npti-result').style.display = 'none';
+                this.loadQuestion();
+            }
+
+            loadQuestion() {
+                const question = this.questions[this.currentQuestion];
+                
+                // 更新进度
+                const progress = ((this.currentQuestion + 1) / this.questions.length) * 100;
+                document.querySelector('#npti-progress-fill').style.width = `${progress}%`;
+                document.querySelector('#npti-progress-text').textContent = `${this.currentQuestion + 1} / ${this.questions.length}`;
+
+                // 显示题目
+                document.querySelector('#npti-question').textContent = question.text;
+
+                // 显示选项
+                const optionsList = document.querySelector('#npti-options');
+                optionsList.innerHTML = question.options.map((option, index) => `
+                    <div class="option-item ${this.answers[this.currentQuestion] === index ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `).join('');
+
+                optionsList.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        this.selectOption(parseInt(item.dataset.index));
+                    });
+                });
+
+                // 更新按钮状态
+                document.querySelector('#npti-prev-btn').disabled = this.currentQuestion === 0;
+                document.querySelector('#npti-next-btn').textContent = 
+                    this.currentQuestion === this.questions.length - 1 ? '完成测评' : '下一题';
+            }
+
+            selectOption(index) {
+                this.answers[this.currentQuestion] = index;
+                document.querySelectorAll('#npti-options .option-item').forEach((item, i) => {
+                    item.classList.toggle('selected', i === index);
+                });
+            }
+
+            prevQuestion() {
+                if (this.currentQuestion > 0) {
+                    this.currentQuestion--;
+                    this.loadQuestion();
+                }
+            }
+
+            nextQuestion() {
+                if (this.answers[this.currentQuestion] === undefined) {
+                    alert('请选择一个选项');
+                    return;
+                }
+
+                if (this.currentQuestion < this.questions.length - 1) {
+                    this.currentQuestion++;
+                    this.loadQuestion();
+                } else {
+                    this.showResult();
+                }
+            }
+
+            showResult() {
+                document.querySelector('#npti-test').style.display = 'none';
+                document.querySelector('#npti-result').style.display = 'block';
+
+                // 计算结果
+                const result = this.calculateResult();
+
+                // 显示结果
+                document.querySelector('#result-type').textContent = result.type;
+                document.querySelector('#result-nickname').textContent = result.nickname;
+                document.querySelector('#result-description').textContent = result.description;
+
+                // 维度图表
+                document.querySelector('#dimensions-chart').innerHTML = `
+                    <div class="dimension-bar"><span>E 外向</span><div class="bar-fill" style="width: ${result.E}%"></div><span>I 内向</span></div>
+                    <div class="dimension-bar"><span>S 感觉</span><div class="bar-fill" style="width: ${result.S}%"></div><span>N 直觉</span></div>
+                    <div class="dimension-bar"><span>T 思考</span><div class="bar-fill" style="width: ${result.T}%"></div><span>F 情感</span></div>
+                    <div class="dimension-bar"><span>J 判断</span><div class="bar-fill" style="width: ${result.J}%"></div><span>P 感知</span></div>
+                `;
+
+                // 特质
+                document.querySelector('#traits-list').innerHTML = result.traits.map(t => `<p>• ${t}</p>`).join('');
+                
+                // 建议
+                document.querySelector('#advice-text').textContent = result.advice;
+            }
+
+            calculateResult() {
+                // 简化计算
+                let E = 0, S = 0, T = 0, J = 0;
+                
+                this.questions.forEach((q, i) => {
+                    const ans = this.answers[i] || 0;
+                    if (q.dimension === 'EI') E += ans === 0 ? 10 : 0;
+                    if (q.dimension === 'SN') S += ans === 0 ? 10 : 0;
+                    if (q.dimension === 'TF') T += ans === 0 ? 10 : 0;
+                    if (q.dimension === 'JP') J += ans === 0 ? 10 : 0;
+                });
+
+                const type = (E > 50 ? 'E' : 'I') + (S > 50 ? 'S' : 'N') + (T > 50 ? 'T' : 'F') + (J > 50 ? 'J' : 'P');
+
+                const profiles = {
+                    'INTJ': { nickname: '建筑师', desc: '富有想象力和战略性的思想家' },
+                    'INTP': { nickname: '逻辑学家', desc: '富有创造力的发明家' },
+                    'ENTJ': { nickname: '指挥官', desc: '大胆富有想象力的领导者' },
+                    'ENTP': { nickname: '辩论家', desc: '聪明好奇的思想家' },
+                    'INFJ': { nickname: '提倡者', desc: '安静而神秘的理想主义者' },
+                    'INFP': { nickname: '调停者', desc: '诗意善良的利他主义者' },
+                    'ENFJ': { nickname: '主人公', desc: '富有魅力的激励者' },
+                    'ENFP': { nickname: '竞选者', desc: '热情有创造力的社交者' },
+                    'ISTJ': { nickname: '物流师', desc: '务实的事实导向者' },
+                    'ISFJ': { nickname: '守卫者', desc: '非常专注和温暖的守护者' },
+                    'ESTJ': { nickname: '总经理', desc: '出色的管理者' },
+                    'ESFJ': { nickname: '执政官', desc: '极具同情心的人' },
+                    'ISTP': { nickname: '鉴赏家', desc: '大胆实际的实验家' },
+                    'ISFP': { nickname: '探险家', desc: '灵活有魅力的艺术家' },
+                    'ESTP': { nickname: '企业家', desc: '聪明精力充沛的冒险家' },
+                    'ESFP': { nickname: '表演者', desc: '自发精力充沛的娱乐者' }
+                };
+
+                const profile = profiles[type] || { nickname: '探索者', desc: '独特的人格类型' };
+
+                return {
+                    type,
+                    nickname: profile.nickname,
+                    description: profile.desc,
+                    E, S, T, J,
+                    traits: ['思维敏捷', '善于分析', '独立自主', '追求卓越'],
+                    advice: '建议多与他人交流，保持开放的心态，善于发现自己的优点。'
+                };
+            }
+
+            retakeTest() {
+                this.currentQuestion = 0;
+                this.answers = [];
+                document.querySelector('#npti-intro').style.display = 'block';
+                document.querySelector('#npti-test').style.display = 'none';
+                document.querySelector('#npti-result').style.display = 'none';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => new NPTIPage());
+    </script>
+</body>
+</html>
+</task_progress>- [x] Phase 1: 基础架构升级 (完成核心模块)
+- [x] 重构 index.html 为入口导航页
+- [x] 创建各功能模块的独立页面
+- [x] 创建配套CSS和JS文件
+- [x] 启动开发服务器并测试
+- [x] 创建缺失的页面
+  - [x] pages/horoscope.html
+  - [x] pages/npti.html
+</task_progress>
+</write_to_file>

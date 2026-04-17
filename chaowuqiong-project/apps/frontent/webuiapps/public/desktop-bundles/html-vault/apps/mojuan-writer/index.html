@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>墨卷 - 小说写作工具</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-dark:#0d1117;--bg-card:#161b22;--bg-input:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f0883e;--accent-light:#ffa657;--success:#3fb950;--danger:#f85149;--step-active:#388bfd;--purple:#a371f7}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;line-height:1.6}
+.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.header-actions{display:flex;gap:0.75rem}
+.btn{padding:0.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);cursor:pointer;font-size:0.875rem;transition:all 0.2s}
+.btn:hover{background:var(--border)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-sm{padding:0.3rem 0.6rem;font-size:0.8rem}
+.btn-danger{color:var(--danger);border-color:var(--danger)}
+.btn-danger:hover{background:rgba(248,81,73,0.15)}
+.main-container{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:280px;background:var(--bg-card);border-right:1px solid var(--border);padding:1.5rem;flex-shrink:0;display:flex;flex-direction:column;gap:0.75rem}
+.card{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.card h3{font-size:0.95rem;margin-bottom:0.6rem;color:var(--accent)}
+.stat-row{display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem}
+.stat-label{color:var(--text-muted)}
+.stat-val{font-weight:700;color:var(--accent)}
+.stat-val.blue{color:var(--step-active)}
+.stat-val.green{color:volgreen)}
+.tag-list{display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.3rem}
+.tag-item{padding:0.15rem 0.5rem;background:rgba(240,136,62,0.12);border:1px solid rgba(240,136,62,0.25);border-radius:10px;font-size:0.72rem;color:var(--accent-light)}
+.know-list{display:flex;flex-direction:column;gap:0.35rem;max-height:300px;overflow-y:auto}
+.know-item{padding:0.5rem 0.6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border-color 0.2s;font-size:0.78rem}
+.know-item:hover{border-color:var(--step-active)}
+.know-item .ki-head{display:flex;justify-content:space-between;align-items:center}
+.know-item .ki-title{font-weight:600;color:var(--text)}
+.know-item .ki-cat{font-size:0.65rem;padding:0.1rem 0.4rem;border-radius:8px;font-weight:600}
+.ki-cat.char{background:rgba(56,139,253,0.15);color:var(--step-active)}
+.ki-cat.place{background:rgba(63,185,80,0.15);color:var(--success)}
+.ki-cat.item{background:rgba(240,136,62,0.15);color:var(--accent)}
+.ki-cat.world{background:rgba(163,113,247,0.15);color:var(--purple)}
+.ki-cat.other{background:rgba(139,148,158,0.15);color:var(--text-muted)}
+.content-area{flex:1;padding:2rem;overflow-y:auto}
+.step-panel{display:none;max-width:960px;margin:0 auto}
+.step-panel.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{margin-bottom:1.5rem}
+.panel-header h2{font-size:1.5rem;margin-bottom:0.3rem;color:var(--accent)}
+.panel-header p{color:var(--text-muted);font-size:0.9rem}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;margin-bottom:0.4rem;font-weight:500;font-size:0.88rem}
+input,textarea,select{width:100%;padding:0.7rem 1rem;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:0.92rem;transition:border-color 0.2s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:100px;font-family:inherit}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.tip-box{background:rgba(56,139,253,0.1);border:1px solid rgba(56,139,253,0.3);border-radius:8px;padding:0.85rem;margin-bottom:1.25rem;font-size:0.85rem;color:var(--text-muted)}
+.tip-box strong{color:var(--step-active)}
+/* 步骤导航 */
+.step-item{display:flex;align-items:center;gap:0.7rem;padding:0.8rem 1rem;border-radius:8px;cursor:pointer;transition:all 0.2s;margin-bottom:0.4rem;border:1px solid transparent}
+.step-item:hover{background:var(--bg-input)}
+.step-item.active{background:rgba(240,136,62,0.15);border-color:var(--accent)}
+.step-number{width:26px;height:26px;border-radius:50%;background:var(--bg-input);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:600;flex-shrink:0}
+.step-item.active .step-number{background:var(--accent);color:#000}
+.step-info h4{font-size:0.88rem;font-weight:500}
+.step-info p{font-size:0.72rem;color:var(--text-muted)}
+.progress-bar{height:4px;background:var(--bg-input);border-radius:2px;margin-bottom:1rem;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--accent);transition:width 0.3s}
+/* 卷章树 */
+.tree-list{display:flex;flex-direction:column;gap:0.4rem}
+.vol-item{background:var(--bg-input);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.vol-head{display:flex;justify-content:space-between;align-items:center;padding:0.7rem 1rem;cursor:pointer;transition:background 0.2s}
+.vol-head:hover{background:var(--border)}
+.vol-head h4{font-size:0.9rem;font-weight:600;color:var(--accent)}
+.ch-list{padding:0 0.5rem 0.5rem 1.5rem;display:none}
+.ch-list.open{display:block}
+.ch-item{display:flex;align-items:center;gap:0.6rem;padding:0.5rem 0.6rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:0.3rem;cursor:pointer;transition:border-color 0.2s;font-size:0.82rem}
+.ch-item:hover{border-color:var(--step-active)}
+.ch-item.active{border-color:var(--accent);background:rgba(240,136,62,0.08)}
+.ch-num{width:24px;height:24px;border-radius:4px;background:var(--bg-input);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:var(--text-muted);flex-shrink:0}
+.ch-item.active .ch-num{background:var(--accent);color:#000}
+.ch-words{margin-left:auto;font-size:0.72rem;color:var(--text-muted)}
+/* 编辑器 */
+.editor-wrap{position:relative;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.editor-toolbar{display:flex;gap:0.3rem;padding:0.6rem 0.8rem;background:var(--bg-card);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
+.editor-toolbar .sep{width:1px;height:20px;background:var(--border);margin:0 0.2rem}
+.editor-body{display:flex;min-height:520px}
+.editor-body textarea{flex:1;border:none;border-radius:0;background:#0a0e14;color:var(--text);font-size:1rem;line-height:1.9;padding:1.2rem;resize:none;font-family:inherit;outline:none}
+.editor-body textarea::placeholder{color:var(--text-muted)}
+.editor-side{width:260px;background:var(--bg-card);border-left:1px solid var(--border);padding:1rem;overflow-y:auto;display:none}
+.editor-side.open{display:block}
+.es-section{margin-bottom:1rem}
+.es-section h4{font-size:0.8rem;color:var(--accent);margin-bottom:0.4rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)}
+.es-item{font-size:0.78rem;color:var(--text-muted);padding:0.25rem 0;cursor:pointer;border-radius:4px;transition:background 0.15s}
+.es-item:hover{background:var(--bg-input);color:var(--text)}
+.es-item .insert{color:var(--step-active)}
+/* 搜索结果 */
+.search-results{max-height:400px;overflow-y:auto}
+.sr-item{padding:0.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;margin-bottom:0.5rem;cursor:pointer;transition:border-color 0.2s}
+.sr-item:hover{border-color:var(--step-active)}
+.sr-head{font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.3rem}
+.sr-ctx{font-size:0.78rem;color:var(--text-muted);line-height:1.6;background:var(--bg-card);border-radius:4px;padding:0.5rem}
+.sr-ctx .hl{background:rgba(240,136,62,0.25);color:var(--accent);padding:0 2px;border-radius:2px}
+.sr-meta{font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem}
+/* 统计 */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.stat-card{background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center}
+.stat-card .sc-val{font-size:1.8rem;font-weight:700;color:var(--accent);margin-top:0.25rem}
+.stat-card .sc-label{font-size:0.78rem;color:var(--text-muted)}
+.vol-stats{margin-top:0.75rem}
+.vs-row{display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0.7rem;background:var(--bg-card);border:1px solid var(--border);border-radius:6px;margin-bottom:0.3rem;font-size:0.82rem}
+.vs-bar{height:6px;background:var(--bg-input);border-radius:3px;margin-top:0.3rem;overflow:hidden}
+.vs-bar .fill{height:100%;background:var(--accent);border-radius:3px;transition:width 0.3s}
+.panel-nav{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.know-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,17,23,0.85);z-index:200;align-items:center;justify-content:center}
+.know-modal.open{display:flex}
+.know-modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;width:90%;max-width:520px;max-height:80vh;overflow-y:auto}
+.know-modal-box h3{font-size:1.1rem;color:var(--accent);margin-bottom:1rem}
+.ch-modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,17,23,0.85);z-index:200;align-items:center;justify-content:center}
+.ch-modal.open{display:flex}
+.ch-modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2rem;width:90%;max-width:420px}
+@media(max-width:900px){.main-container{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:0.75rem;flex-direction:row;flex-wrap:wrap}.sidebar .card{flex:1;min-width:180px}.sidebar .card.hide-m{display:none}.editor-side{display:none!important}.editor-side.open{display:none!important}.form-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">墨卷</div>
+<div class="header-actions">
+<button class="btn" onclick="saveProject()">保存</button>
+<button class="btn" onclick="loadProject()">加载</button>
+<button class="btn btn-primary" onclick="exportTxt()">导出 TXT</button>
+</div>
+</header>
+<div class="main-container">
+<nav class="sidebar">
+<div class="progress-bar"><div class="fill" id="progressFill" style="width:16.6%"></div></div>
+<div class="step-item active" onclick="goTo(0)"><div class="step-number">1</div><div class="step-info"><h4>作品设定</h4><p>标题、标签、简介</p></div></div>
+<div class="step-item" onclick="goTo(1)"><div class="step-number">2</div><div class="step-info"><h4>大纲规划</h4><p>卷章结构</p></div></div>
+<div class="step-item" onclick="goTo(2)"><div class="step-number">3</div><div class="step-info"><h4>章节编辑</h4><p>正文写作</p></div></div>
+<div class="step-item" onclick="goTo(3)"><div class="step-number">4</div><div class="step-info"><h4>知识库</h4><p>角色、设定</p></div></div>
+<div class="step-item" onclick="goTo(4)"><div class="step-number">5</div><div class="step-info"><h4>检索分析</h4><p>全文搜索RAG</p></div></div>
+<div class="step-item" onclick="goTo(5)"><div class="step-number">6</div><div class="step-info"><h4>统计导出</h4><p>字数、预览</p></div></div>
+<div class="card hide-m">
+<h3>写作统计</h3>
+<div class="stat-row"><span class="stat-label">总字数</span><span class="stat-val" id="sTotalWords">0</span></div>
+<div class="stat-row"><span class="stat-label">总章节</span><span class="stat-val blue" id="sTotalCh">0</span></div>
+<div class="stat-row"><span class="stat-label">总卷数</span><span class="stat-val" id="sTotalVol">0</span></div>
+<div class="stat-row"><span class="stat-label">知识库</span><span class="stat-val green" id="sTotalKnow">0</span></div>
+</div>
+<div class="card hide-m">
+<h3>知识库速查</h3>
+<div class="know-list" id="sideKnowList"><div style="color:var(--text-muted);text-align:center;padding:0.5rem;font-size:0.8rem">暂无条目</div></div>
+</div>
+</nav>
+<main class="content-area">
+<!-- 面板1：作品设定 -->
+<div class="step-panel active" id="p0">
+<div class="panel-header"><h2>作品设定</h2><p>定义小说的基础信息</p></div>
+<div class="form-grid">
+<div class="form-group"><label>作品名称</label><input type="text" id="nTitle" placeholder="例如：星河猎手"></div>
+<div class="form-group"><label>作品类型</label>
+<select id="nType"><option value="">选择类型</option><option value="玄幻">玄幻</option><option value="仙侠">仙侠</option><option value="都市">都市</option><option value="科幻">科幻</option><option value="奇幻">奇幻</option><option value="历史">历史</option><option value="悬疑">悬疑</option><option value="武侠">武侠</option><option value="言情">言情</option><option value="军事">军事</option><option value="游戏">游戏</option><option value="其他">其他</option></select>
+</div>
+</div>
+<div class="form-group"><label>作品标签</label><input type="text" id="nTags" placeholder="用逗号分隔，如：升级流,爽文,热血"><p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem">用于分类和检索</p></div>
+<div class="form-group"><label>作品简介</label><textarea id="nSynopsis" rows="4" placeholder="用1-3段话描述故事的核心设定和卖点..."></textarea></div>
+<div class="form-group"><label>创作背景</label><textarea id="nBg" rows="3" placeholder="灵感来源、参考作品、想要传达的主题..."></textarea></div>
+<div class="panel-nav"><div></div><button class="btn btn-primary" onclick="goTo(1)">下一步 →</button></div>
+</div>
+<!-- 面板2：大纲规划 -->
+<div class="step-panel" id="p1">
+<div class="panel-header"><h2>大纲规划</h2><p>构建卷章结构，理清故事脉络</p></div>
+<div class="tip-box"><strong>提示：</strong><br>先规划卷章再逐章写作，有助于保持故事节奏。每章可以写简要大纲摘要。</div>
+<div style="display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="addVol()">添加卷</button>
+<button class="btn" onclick="addChapterToAll()">所有卷追加章节</button>
+</div>
+<div class="tree-list" id="treeList"><p style="color:var(--text-muted);text-align:center;padding:2rem;font-size:0.9rem">点击"添加卷"开始构建大纲</p></div>
+<div class="panel-nav"><button class="btn" onclick="goTo(0)">← 上一步</button><button class="btn btn-primary" onclick="goTo(2)">下一步 →</button></div>
+</div>
+<!-- 面板3：章节编辑 -->
+<div class="step-panel" id="p2">
+<div class="panel-header"><h2>章节编辑</h2><p id="editHint">选择左侧卷章开始写作</p></div>
+<div class="editor-wrap">
+<div class="editor-toolbar">
+<span style="font-size:0.8rem;color:var(--text-muted);margin-right:0.5rem" id="editInfo">未选择章节</span>
+<div class="sep"></div>
+<button class="btn btn-sm" onclick="insertText('　　')">缩进</button>
+<button class="btn btn-sm" onclick="insertText('\n')">换行</button>
+<button class="btn btn-sm" onclick="insertText('「')">「</button>
+<button class="btn btn-sm" onclick="insertText('」')">」</button>
+<button class="btn btn-sm" onclick="insertText('——')">——</button>
+<button class="btn btn-sm" onclick="insertText('……')">……</button>
+<div class="sep"></div>
+<button class="btn btn-sm" onclick="toggleSide()">知识库</button>
+<button class="btn btn-sm" onclick="toggleSide()">大纲</button>
+</div>
+<div class="editor-body">
+<textarea id="editorArea" placeholder="选择左侧卷章开始写作..."></textarea>
+<div class="editor-side" id="editorSide">
+<div class="es-section" id="sideOutline"><h4>本章大纲</h4><div id="sideOutlineText" style="font-size:0.82rem;color:var(--text-muted)">-</div></div>
+<div class="es-section"><h4>知识库引用</h4><div id="sideKnowText" style="font-size:0.82rem;color:var(--text-muted)">-</div></div>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;padding:0.5rem 0;font-size:0.85rem;color:var(--text-muted)">
+<span id="wordCountInline">0 字</span>
+<span id="autoSaveHint"></span>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(1)">← 上一步</button><button class="btn btn-primary" onclick="goTo(3)">下一步 →</button></div>
+</div>
+<!-- 面板4：知识库 -->
+<div class="step-panel" id="p3">
+<div class="panel-header"><h2>知识库</h2><p>管理角色、地点、世界观等设定素材</p></div>
+<div class="tip-box"><strong>用途：</strong><br>知识库中的条目可在章节编辑时快速引用，也可作为检索范围。建议在写作前先录入核心角色和设定。</div>
+<div style="display:flex;gap:0.75rem;margin-bottom:1.25rem">
+<select id="knowCat" style="width:120px"><option value="角色">角色</option><option value="地点">地点</option><option value="物品">物品</option><option value="世界观">世界观</option><option value="情节">情节</option><option value="其他">其他</option></select>
+<input type="text" id="knowTitle" placeholder="条目标题" style="flex:1">
+<button class="btn btn-primary" onclick="addKnow()">添加</button>
+</div>
+<div style="margin-bottom:0.75rem"><input type="text" id="knowSearch" placeholder="搜索知识库..." style="width:100%" oninput="searchKnow()"></div>
+<div class="know-list" id="knowList"><p style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.85rem">暂无条目</p></div>
+<div class="panel-nav"><button class="btn" onclick="goTo(2)">← 上一步</button><button class="btn btn-primary" onclick="goTo(4)">下一步 →</button></div>
+</div>
+<!-- 面板5：检索分析 -->
+<div class="step-panel" id="p4">
+<div class="panel-header"><h2>检索分析</h2><p>全文与知识库文本检索，快速定位内容</p></div>
+<div class="tip-box"><strong>使用方式：</strong><br>输入关键词后在正文或知识库中检索，点击结果跳转到对应章节。支持多关键词空格分隔，同时匹配时高亮显示。</div>
+<div class="form-grid">
+<div class="form-group"><label>搜索关键词</label><input type="text" id="searchKey" placeholder="输入关键词，空格分隔多个" oninput="doSearch()"></div>
+<div class="form-group"><label>搜索范围</label>
+<select id="searchScope"><option value="all">全部</option><option value="content">仅正文</option><option value="outline">仅大纲</option><option value="know">仅知识库</option></select>
+</div>
+</div>
+<div class="search-results" id="searchResults"><p style="color:var(--text-muted);text-align:center;padding:2rem;font-size:0.9rem">输入关键词开始检索</p></div>
+<div class="panel-nav"><button class="btn" onclick="goTo(3)">← 上一步</button><button class="btn btn-primary" onclick="goTo(5)">下一步 →</button></div>
+</div>
+<!-- 面板6：统计导出 -->
+<div class="step-panel" id="p5">
+<div class="panel-header"><h2>统计导出</h2><p>查看写作数据，导出完整小说文本</p></div>
+<div class="stats-grid">
+<div class="stat-card"><div class="sc-val" id="stWords">0</div><div class="sc-label">总字数</div></div>
+<div class="stat-card"><div class="sc-val" id="stChapters">0</div><div class="sc-label">总章节</div></div>
+<div class="stat-card"><div class="sc-val" id="stVols">0</div><div class="sc-label">总卷数</div></div>
+<div class="stat-card"><div class="sc-val" id="stKnow">0</div><div class="sc-label">知识库条目</div></div>
+</div>
+<div style="margin-bottom:1rem">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem"><h3 style="font-size:1rem;color:var(--accent)">各卷字数分布</h3><span style="font-size:0.8rem;color:var(--text-muted)" id="estRead"></span></div>
+<div class="vol-stats" id="volStats"><p style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.85rem">暂无数据</p></div>
+</div>
+<div style="display:flex;gap:1rem;flex-wrap:wrap">
+<button class="btn btn-primary" onclick="exportTxt()">导出 TXT</button>
+<button class="btn" onclick="exportJson()">导出项目文件</button>
+<button class="btn" onclick="exportJson()">导入项目文件</button>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(4)">← 上一步</button><button class="btn btn-primary" onclick="alert('写作完成！')">完成 ✨</button></div>
+</div>
+</main>
+</div>
+<!-- 知识库详情弹窗 -->
+<div class="know-modal" id="knowModal">
+<div class="know-modal-box">
+<h3 id="kmTitle">标题</h3>
+<div id="kmMeta" style="margin-bottom:1rem;font-size:0.82rem;color:var(--text-muted)"></div>
+<div style="background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:0.92rem;line-height:1.8;color:var(--text);white-space:pre-wrap" id="kmContent"></div>
+<div style="display:flex;gap:0.75rem;justify-content:flex-end">
+<button class="btn" onclick="insertKnowRef()">引用到正文</button>
+<button class="btn" onclick="closeKnowModal()">关闭</button>
+<button class="btn btn-danger btn-sm" onclick="deleteKnow()">删除</button>
+</div>
+</div>
+<!-- 章节编辑弹窗 -->
+<div class="ch-modal" id="chModal">
+<div class="ch-modal-box">
+<h3 style="color:var(--accent);margin-bottom:1rem">编辑章节</h3>
+<div class="form-group"><label>章节标题</label><input type="text" id="cmTitle"></div>
+<div class="form-group"><label>大纲摘要</label><textarea id="cmOutline" rows="3" placeholder="本章的剧情概要..."></textarea></div>
+<div style="display:flex;gap:0.75rem;justify-content:flex-end">
+<button class="btn" onclick="closeChModal()">取消</button>
+<button class="btn btn-primary" onclick="saveChModal()">保存</button>
+</div>
+</div>
+<script>
+// ========== 数据结构 ==========
+var D = {
+  title:'',type:'',tags:'',synopsis:'',bg:'',
+  volumes:[],
+  knowledge:[]
+};
+var curStep = 0;
+var curVol = -1;
+var curCh = -1;
+var editKnowId = -1;
+var editVolIdx = -1;
+var editChIdx = -1;
+var autoTimer = null;
+
+// ========== 导航 ==========
+function goTo(s){saveCur();curStep=s;updateUI();window.scrollTo(0,0)}
+function updateUI(){
+  document.querySelectorAll('.step-panel').forEach(function(p,i){p.classList.toggle('active',i===s)});
+  document.querySelectorAll('.step-item').forEach(function(it,i){it.classList.remove('active');if(i===s)it.classList.add('active')});
+  document.getElementById('progressFill').style.width=((s+1)/6*100)+'%';
+  if(s===5)refreshStats();
+  if(s===2)refreshEditInfo();
+  refreshSide();
+  refreshSideKnow();
+}
+
+// ========== 保存当前 ==========
+function saveCur(){
+  D.title=document.getElementById('nTitle').value;
+  D.type=document.getElementById('nType').value;
+  D.tags=document.getElementById('nTags').value;
+  D.synopsis=document.getElementById('nSynopsis').value;
+  D.bg=document.getElementById('nBg').value;
+  if(curCh>=0 && curVol>=0) D.volumes[curVol].chapters[curCh].content=document.getElementById('editorArea').value;
+}
+
+// ========== 卷章管理 ==========
+function addVol(){
+  var n=D.volumes.length+1;
+  D.volumes.push({id:n,name:'第'+num+'卷',chapters:[]});
+  renderTree();
+  toast('已添加第'+num+'卷');
+}
+function addChapterToAll(){
+  if(D.volumes.length===0){toast('请先添加卷');return;}
+  var last=D.volumes[D.volumes.length-1];
+  var n=last.chapters.length+1;
+  last.chapters.push({id:n,title:'第'+num+'章',outline:'',content:''});
+  renderTree();
+  toast('已在最后一卷追加章节');
+}
+function addChapterToVol(vi){
+  var vol=D.volumes[vi];
+  if(!vol)return;
+  var n=vol.chapters.length+1;
+  vol.chapters.push({id:n,title:'第'+n+'章',outline:'',content:''});
+  renderTree();
+}
+function toggleVol(vi){
+  var el=document.getElementById('vol-'+vi);
+  if(el) el.querySelector('.ch-list').classList.toggle('open');
+}
+function selectChapter(vi,ci){
+  saveCur();
+  curVol=vi;curCh=ci;
+  updateUI();
+}
+function editChapterMeta(vi,ci){
+  editVolIdx=vi;editChIdx=ci;
+  var ch=D.volumes[vi].chapters[ci];
+  document.getElementById('cmTitle').value=ch.title;
+  document.getElementById('cmOutline').value=ch.outline;
+  document.getElementById('chModal').classList.add('open');
+}
+function saveChModal(){
+  if(editVolIdx<0)return;
+  D.volumes[editVolIdx].chapters[editChIdx].title=document.getElementById('cmTitle').value;
+  D.volumes[editVolIdx].chapters[editChIdx].outline=document.getElementById('cmOutline').value;
+  closeChModal();
+  renderTree();
+  if(curVol===editVolIdx&&curCh===editChIdx)refreshEditInfo();
+}
+function closeChModal(){document.getElementById('chModal').classList.remove('open')}
+function deleteChapter(vi,ci){
+  if(!confirm('确定删除该章节？正文将丢失。'))return;
+  D.volumes[vi].chapters.splice(ci,1);
+  if(curVol===vi&&curCh===ci){curVol=-1;curCh=-1;document.getElementById('editorArea').value='';}
+  renderTree();updateUI();
+}
+function deleteVol(vi){
+  if(!confirm('确定删除该卷及所有章节？'))return;
+  D.volumes.splice(vi,1);
+  curVol=-1;curCh=-1;
+  renderTree();updateUI();
+}
+function renderTree(){
+  var el=document.getElementById('treeList');
+  if(D.volumes.length===0){el.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:2rem;font-size:0.9rem">点击"添加卷"开始构建大纲</p>';return;}
+  var h='';
+  for(var v=0;v<D.volumes.length;v++){
+    var vol=D.volumes[v];
+    var w=countWords(vol);
+    h+='<div class="vol-item"><div class="vol-head" onclick="toggleVol('+v+')"><h4>'+esc(vol.name)+'</h4><span style="font-size:0.75rem;color:var(--text-muted)">'+vol.chapters.length+'章 · '+w+'字</span></div><div class="ch-list" id="vol-'+v+'">';
+    for(var c=0;c<vol.chapters.length;c++){
+      var ch=vol.chapters[c];
+      var cw=countWords(ch);
+      var act=(curVol===v&&curCh===c)?' active':'';
+      h+='<div class="ch-item'+act+'" onclick="selectChapter('+v+','+c+')"><span class="ch-num">'+c+'</span><span>'+esc(ch.title)+'</span><span class="ch-words">'+cw+'字</span><button class="btn btn-sm" style="margin-left:auto;padding:0.2rem 0.4rem;font-size:0.72rem" onclick="event.stopPropagation();editChapterMeta('+v+','+c+')">编辑</button><button class="btn btn-sm btn-danger" style="padding:0.2rem 0.4rem;font-size:0.72rem" onclick="event.stopPropagation();deleteChapter('+v+','+c+')">删</button></div>';
+    }
+    h+='</div><div style="padding:0.5rem 1rem"><button class="btn btn-sm" style="width:100%" onclick="event.stopPropagation();addChapterToVol('+v+')">+ 添加章节</button></div></div>';
+  }
+  el.innerHTML=h;
+}
+
+// ========== 编辑器 ==========
+function refreshEditInfo(){
+  var hint='未选择章节';
+  if(curVol>=0&&curCh>=0){
+    var ch=D.volumes[curVol].chapters[curCh];
+    hint=D.volumes[curVol].name+' · '+esc(ch.title)+' · '+countWords(ch)+'字';
+  }
+  document.getElementById('editHint').textContent=hint;
+  if(curVol>=0&&curCh>=0){
+    document.getElementById('editorArea').value=D.volumes[curVol].chapters[curCh].content;
+    document.getElementById('sideOutlineText').textContent=D.volumes[curVol].chapters[curCh].outline||'（未填写大纲）';
+  } else {
+    document.getElementById('editorArea').value='';
+    document.getElementById('sideOutlineText').textContent='-';
+  }
+  updateInlineWC();
+}
+function insertText(t){
+  var ta=document.getElementById('editorArea');
+  if(!ta)return;
+  var s=ta.selectionStart,e=ta.selectionEnd;
+  ta.value=ta.value.substring(0,s)+t+ta.value.substring(e);
+  ta.selectionStart=ta.selectionEnd=s+t.length;
+  ta.focus();
+  updateInlineWC();
+  autoSave();
+}
+function updateInlineWC(){
+  var ta=document.getElementById('editorArea');
+  var w=countStr(ta.value);
+  document.getElementById('wordCountInline').textContent=w+' 字';
+}
+function toggleSide(){
+  var el=document.getElementById('editorSide');
+  el.classList.toggle('open');
+  var btn=el.previousElementSibling;
+  // 切换知识库/大纲
+  var ko=document.getElementById('sideKnowText').parentElement;
+  var oo=document.getElementById('sideOutlineText').parentElement;
+  if(ko.style.display==='none'){ko.style.display='';oo.style.display='none';}
+  else{ko.style.display='none';oo.style.display='';}
+}
+
+function autoSave(){
+  if(curVol>=0&&curCh>=0){
+    D.volumes[curVol].chapters[curCh].content=document.getElementById('editorArea').value;
+  }
+  document.getElementById('autoSaveHint').textContent='已自动保存';
+  setTimeout(function(){document.getElementById('autoSaveHint').textContent='';},2000);
+}
+
+// 监听编辑器输入
+document.getElementById('editorArea').addEventListener('input',function(){
+  updateInlineWC();
+  clearTimeout(autoTimer);
+  autoTimer=setTimeout(autoSave,1500);
+});
+
+// ========== 知识库 ==========
+var knowIdCounter=0;
+function addKnow(){
+  var cat=document.getElementById('knowCat').value;
+  var title=document.getElementById('knowTitle').value.trim();
+  if(!title){toast('请输入标题');return;}
+  D.knowledge.push({id:++knowIdCounter,category:cat,title:title,content:''});
+  editKnow(knowIdCounter);
+  renderKnowList();renderSideKnow();refreshSide();
+  document.getElementById('knowTitle').value='';
+  toast('已添加：'+title);
+}
+function editKnow(id){
+  editKnowId=id;
+  var item=null;
+  for(var i=0;i<D.knowledge.length;i++){if(D.knowledge[i].id===id){item=D.knowledge[i];break;}}
+  if(!item)return;
+  var catMap={角色:'char',地点:'place',物品:'item',世界观:'world',情节:'plot',其他:'other'};
+  document.getElementById('kmTitle').textContent=item.title;
+  document.getElementById('kmMeta').innerHTML='<span class="ki-cat '+catMap[item.category]+'">'+item.category+'</span>';
+  document.getElementById('kmContent').textContent=item.content||'（未填写内容）';
+  document.getElementById('knowModal').classList.add('open');
+}
+function saveKnow(){
+  if(editKnowId<0)return;
+  for(var i=0;i<D.knowledge.length;i++){
+    if(D.knowledge[i].id===editKnowId){D.knowledge[i].content=document.getElementById('kmContent').value;break;}
+  }
+  closeKnowModal();renderKnowList();renderSideKnow();refreshSide();
+  toast('已保存');
+}
+function closeKnowModal(){document.getElementById('knowModal').classList.remove('open');editKnowId=-1;}
+function deleteKnow(){
+  if(editKnowId<0)return;
+  if(!confirm('确定删除？'))return;
+  for(var i=0;i<D.knowledge.length;i++){if(D.knowledge[i].id===editKnowId){D.knowledge.splice(i,1);break;}}
+  closeKnowModal();renderKnowList();renderSideKnow();refreshSide();
+}
+function insertKnowRef(){
+  if(editKnowId<0)return;
+  var item=null;
+  for(var i=0;i<D.knowledge.length;i++){if(D.knowledge[i].id===editKnowId){item=D.knowledge[i];break;}}
+  if(!item)return;
+  var text='\n【'+item.title+'】\n'+item.content+'\n';
+  insertText(text);
+  closeKnowModal();
+  toast('已引用到正文');
+}
+function searchKnow(){
+  var kw=document.getElementById('knowSearch').value.trim().toLowerCase();
+  var list=document.getElementById('knowList');
+  if(!kw){renderKnowList();return;}
+  var html='';
+  var count=0;
+  for(var i=0;i<D.knowledge.length;i++){
+    var it=D.knowledge[i];
+    if(it.title.toLowerCase().indexOf(kw)>=0||(it.content&&it.content.toLowerCase().indexOf(kw)>=0)){
+      var catMap={角色:'char',地点:'place',物品:'item',世界观:'world',情节:'plot',其他:'other'};
+      html+='<div class="know-item" onclick="editKnow('+it.id+')"><div class="ki-head"><span class="ki-title">'+esc(it.title)+'</span><span class="ki-cat '+catMap[it.category]+'">'+it.category+'</span></div></div>';
+      count++;
+    }
+  }
+  list.innerHTML=count>0?'<p style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.82rem">无匹配结果</p>':html;
+}
+
+function renderKnowList(){
+  var list=document.getElementById('knowList');
+  if(D.knowledge.length===0){list.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.82rem">暂无条目</p>';return;}
+  var catMap={角色:'char',地点:'place',物品:'item',世界观:'world',情节:'plot',其他:'other'};
+  var html='';
+  for(var i=0;i<D.knowledge.length;i++){
+    var it=D.knowledge[i];
+    html+='<div class="know-item" onclick="editKnow('+it.id+')"><div class="ki-head"><span class="ki-title">'+esc(it.title)+'</span><span class="ki-cat '+catMap[it.category]+'">'+it.category+'</span></div></div>';
+  }
+  list.innerHTML=html;
+}
+
+function renderSideKnow(){
+  var list=document.getElementById('sideKnowList');
+  if(D.knowledge.length===0){list.innerHTML='<div style="color:var(--text-muted);text-align:center;padding:0.5rem;font-size:0.78rem">空</div>';return;}
+  var html='';
+  for(var i=0;i<Math.min(D.knowledge.length,8);i++){
+    var it=D.knowledge[i];
+    html+='<div class="es-item" onclick="editKnow('+it.id+')"><span class="insert">'+esc(it.title)+'</span></div>';
+  }
+  list.innerHTML=html;
+}
+function refreshSide(){
+  var list=document.getElementById('sideKnowText');
+  // 根据当前章节正文中的【引用】提取显示
+  if(curVol<0||curCh<0){list.innerHTML='<div style="color:var(--text-muted);font-size:0.78rem">选择章节后显示引用</div>';return;}
+  var content=D.volumes[curVol].chapters[curCh].content;
+  var refs=content.match(/【[^】]+】/g);
+  if(!refs||refs.length===0){list.innerHTML='<div style="color:var(--text-muted);font-size:0.78rem">本章无引用</div>';return;}
+  var html='';
+  for(var i=0;i<refs.length&&i<10;i++){
+    html+='<div class="es-item" onclick="jumpToRef(\''+refs[i].replace(/'/g,"\\'")+'\')"><span class="insert">'+esc(refs[i])+'</span></div>';
+  }
+  list.innerHTML=html;
+}
+function jumpToRef(ref){
+  var title=ref.replace(/【|】/g,'');
+  for(var i=0;i<D.knowledge.length;i++){
+    if(D.knowledge[i].title===title){editKnow(D.knowledge[i].id);break;}
+  }
+}
+
+// ========== 检索RAG ==========
+function doSearch(){
+  var kw=document.getElementById('searchKey').value.trim();
+  var scope=document.getElementById('searchScope').value;
+  var results=document.getElementById('searchResults');
+  if(!kw){results.innerHTML='<p style="color:var(--text);text-align:center;padding:2rem;font-size:0.9rem">输入关键词开始检索</p>';return;}
+  var keywords=kw.toLowerCase().split(/\s+/);
+  var items=[];
+  // 搜索正文
+  if(scope==='all'||scope==='content'||scope==='outline'){
+    for(var v=0;v<D.volumes.length;v++){
+      for(var c=0;c<D.volumes[v].chapters.length;c++){
+        var ch=D.volumes[v].chapters[c];
+        var txt=scope==='outline'?ch.outline:ch.content;
+        var idx=searchInText(txt,keywords);
+        if(idx>=0){
+          items.push({type:'正文',vol:v,ch:c,title:D.volumes[v].name+' · '+esc(ch.title),ctx:getContext(txt,idx,keywords),vol:v,ch:c});
+        }
+      }
+    }
+  }
+  // 搜索知识库
+  if(scope==='all'||scope==='know'){
+    for(var i=0;i<D.knowledge.length;i++){
+      var it=D.knowledge[i];
+      var txt=(it.title+' '+it.content).toLowerCase();
+      var idx=searchInText(txt,keywords);
+      if(idx>=0){
+        items.push({type:'知识库',title:esc(it.title),ctx:getContext(txt,idx,keywords),knowId:it.id});
+      }
+    }
+  }
+  if(items.length===0){results.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:2rem;font-size:0.9rem">未找到匹配内容</p>';return;}
+  var html='';
+  for(var j=0;j<Math.min(items.length,30);j++){
+    var it=items[j];
+    html+='<div class="sr-item"'+(it.vol!==undefined?' onclick="selectChapter('+it.vol+','+it.ch+')"':' onclick="editKnow('+it.knowId+')"')+'">';
+    html+='<div class="sr-head"><span style="font-size:0.72rem;color:var(--accent)">['+it.type+']</span> '+it.title+'</div>';
+    html+='<div class="sr-ctx">'+it.ctx+'</div>';
+    html+='<div class="sr-meta">'+(it.vol!==undefined?'位置：'+D.volumes[it.vol].name+' · '+esc(D.volumes[it.vol].chapters[it.ch].title):'知识库条目')+'</div>';
+    html+='</div>';
+  }
+  results.innerHTML=html;
+}
+function searchInText(text,keywords){
+  var lower=text.toLowerCase();
+  for(var k=0;k<keywords.length;k++){
+    var idx=lower.indexOf(keywords[k]);
+    if(idx<0)return -1;
+    // 找所有关键词都出现的最近位置
+    var start=Math.max(0,idx-60);
+    var end=Math.min(text.length,idx+60);
+    // 确认所有关键词都在这段范围内
+    var seg=lower.substring(start,end);
+    var allFound=true;
+    for(var m=0;m<keywords.length;m++){if(seg.indexOf(keywords[m])<0){allFound=false;break;}}
+    if(!allFound)continue;
+    return start;
+  }
+  return -1;
+}
+function getContext(text,centerIdx,keywords){
+  var start=Math.max(0,centerIdx-60);
+  var end=Math.min(text.length,centerIdx+60);
+  var seg=text.substring(start,end);
+  // 高亮关键词
+  for(var k=0;k<keywords.length;k++){
+    seg=seg.replace(new RegExp('('+keywords[k].replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'gi'),'<span class="hl">$1</span>');
+  }
+  // 加省略号
+  if(start>0)seg='...'+seg;
+  if(end<text.length)seg=seg+'...';
+  return seg;
+}
+
+// ========== 统计 ==========
+function countStr(s){return s.replace(/[\s\n\r\t]+/g,'').length;}
+function countWords(obj){return countStr(obj.content||'')+(obj.outline?countStr(obj.outline):0);}
+function countWordsVol(vol){
+  var w=0;
+  for(var i=0;i<vol.chapters.length;i++) w+=countWords(vol.chapters[i]);
+  return w;
+}
+function getTotalWords(){
+  var w=0;
+  for(var v=0;v<D.volumes.length;v++) w+=countWordsVol(D.volumes[v]);
+  return w;
+}
+function getTotalChapters(){
+  var n=0;
+  for(var v=0;v<D.volumes.length;v++) n+=D.volumes[v].chapters.length;
+  return n;
+}
+function refreshStats(){
+  var tw=getTotalWords();
+  var tc=getTotalChapters();
+  document.getElementById('stWords').textContent=tw.toLocaleString();
+  document.getElementById('stChapters').textContent=tc;
+  document.getElementById('stVols').textContent=D.volumes.length;
+  document.getElementById('stKnow').textContent=D.knowledge.length;
+  document.getElementById('sTotalWords').textContent=tw.toLocaleString();
+  document.getElementById('sTotalCh').textContent=tc;
+  document.getElementById('sTotalVol').textContent=D.volumes.length;
+  document.getElementById('sTotalKnow').textContent=D.knowledge.length;
+  var estMin=Math.ceil(tw/300);
+  document.getElementById('estRead').textContent='预计阅读 '+estMin+' 分钟';
+  // 各卷统计
+  var vs=document.getElementById('volStats');
+  if(D.volumes.length===0){vs.innerHTML='<p style="color:var(--text-muted);text-align:center;padding:1rem;font-size:0.85rem">暂无数据</p>';return;}
+  var maxW=0;
+  for(var v=0;v<D.volumes.length;v++){var w=countWordsVol(D.volumes[v]);if(w>maxW)maxW=w;}
+  var h='';
+  for(var v=0;v<D.volumes.length;v++){
+    var vol=D.volumes[v];
+    var w=countWordsVol(vol);
+    var pct=maxW>0?Math.round(w/maxW*100):0;
+    h+='<div class="vs-row"><span>'+esc(vol.name)+'（'+vol.chapters.length+'章）</span><span>'+w.toLocaleString()+' 字</span></div>';
+    h+='<div class="vs-bar"><div class="fill" style="width:'+pct+'%"></div></div>';
+  }
+  vs.innerHTML=h;
+}
+
+// ========== 导出 ==========
+function exportTxt(){
+  saveCur();
+  if(getTotalWords()<1){toast('暂无内容可导出');return;}
+  var title=D.title||'未命名小说';
+  var out=''+title+'\n'+('='.repeat(40))+'\n\n';
+  if(D.type) out+='类型：'+D.type+'\n';
+  if(D.tags) out+='标签：'+D.tags+'\n';
+  out+='\n简介\n'+(D.synopsis||'（未填写）')+'\n\n';
+  out+='='.repeat(40)+'\n\n';
+  for(var v=0;v<D.volumes.length;v++){
+    var vol=D.volumes[v];
+    out+='【'+vol.name+'】\n\n';
+    for(var c=0;c<vol.chapters.length;c++){
+      var ch=vol.chapters[c];
+      out+='第'+ch.id+'章 '+ch.title+'\n';
+      if(ch.outline) out+='[大纲] '+ch.outline+'\n\n';
+      out+=ch.content+'\n\n';
+    }
+  }
+  downloadFile(out,title+'.txt','text/plain');
+  toast('已导出 TXT');
+}
+function exportJson(){
+  saveCur();
+  var out=JSON.stringify(D,null,2);
+  downloadFile(out,(D.title||'未命名小说')+'_project.json','application/json');
+  toast('已导出项目文件');
+}
+function importJson(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      try{
+        var data=JSON.parse(ev.target.result);
+        D=data;
+        curVol=-1;curCh=-1;
+        renderTree();updateUI();
+        toast('项目已导入');
+      }catch(ex){toast('文件格式错误');}
+    };
+    input.click();
+  };
+  toast('请选择之前导出的 .json 文件');
+}
+function downloadFile(content,filename,type){
+  var blob=new Blob([content],{type:type+';charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');
+  a.href=url;a.download=filename;a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ========== 存储 ==========
+function saveProject(){
+  saveCur();
+  localStorage.setItem('novel_project',JSON.stringify(D));
+  toast('已保存到浏览器');
+}
+function loadProject(){
+  var s=localStorage.getItem('novel_project');
+  if(s){D=JSON.parse(s);curVol=-1;curCh=-1;renderTree();updateUI();toast('已加载项目');}
+  else toast('未找到存档');
+}
+function loadToForm(){
+  document.getElementById('nTitle').value=D.title||'';
+  document.getElementById('nType').value=D.type||'';
+  document.getElementById('nTags').value=D.tags||'';
+  document.getElementById('nSynopsis').value=D.synopsis||'';
+  document.getElementById('nBg').value=D.bg||'';
+}
+
+// ========== 工具 ==========
+function esc(s){if(!s)return '';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toast(msg){
+  var el=document.createElement('div');
+  el.style.cssText='position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:0.7rem 1.5rem;border-radius:8px;font-size:0.9rem;z-index:999;animation:fadeIn 0.3s ease;box-shadow:0 4px 16px rgba(0,0,0,0.4);text-align:center';
+  el.textContent=msg;
+  document.body.appendChild(el);
+  setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},2000);
+}
+
+// ========== 初始化 ==========
+document.addEventListener('DOMContentLoaded',function(){
+  var s=localStorage.getItem('novel_project');
+  if(s){D=JSON.parse(s);loadToForm();renderTree();}
+  updateUI();
+});
+</script>
+</body>
+</html>

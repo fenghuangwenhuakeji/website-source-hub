@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>量化金融工作台 - AI Studio Pro</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="title-bar">
+      <div class="logo-group"><div class="logo-icon">📊</div><h1>量化金融工作台</h1><span class="version-badge">Pro+</span></div>
+      <div class="status-pill connected"><span class="pulse-dot"></span><span>已连接</span></div>
+    </header>
+    <div class="main-container">
+      <aside class="sidebar">
+        <div class="section"><h3>📈 交易</h3><div class="item active">股票分析</div><div class="item">期货策略</div></div>
+        <div class="section"><h3>📉 分析</h3><div class="item">技术指标</div><div class="item">回测系统</div></div>
+      </aside>
+      <main class="content">
+        <div class="charts"><div class="chart-placeholder">📈 K线图展示区域</div><div class="chart-placeholder">📊 指标分析区域</div></div>
+        <div class="code-area">
+          <h3>📝 策略代码</h3>
+          <textarea v-model="code" class="code-editor" placeholder="# 在此编写量化策略代码..."></textarea>
+          <div class="actions">
+            <button @click="runBacktest">▶️ 运行回测</button>
+            <button @click="aiOptimize">🤖 AI优化</button>
+            <button @click="analyzeRisk">⚠️ 风险分析</button>
+          </div>
+        </div>
+      </main>
+      <aside class="result-panel"><h3>📋 分析结果</h3><div class="result-content"><pre>{{result || '运行回测后显示结果...'}}</pre></div></aside>
+    </div>
+  </div>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

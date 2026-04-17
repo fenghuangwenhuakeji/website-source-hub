@@ -1,0 +1,307 @@
+{
+  "version": "1.0.0",
+  "name": "Agent快速启动配置",
+  "description": "Trae IDE Agent快速加载和启动配置",
+  
+  "default_agent": "rust-agent",
+  "default_workflow": "sequential",
+  
+  "shortcuts": {
+    "rust": "rust-agent",
+    "go": "go-agent",
+    "py": "python-agent",
+    "ts": "typescript-agent",
+    "js": "javascript-agent",
+    "java": "java-agent",
+    "kt": "kotlin-agent",
+    "cs": "csharp-agent",
+    "cpp": "cpp-agent",
+    "c": "c-agent",
+    "vue": "vue3-agent",
+    "react": "react-agent",
+    "flutter": "flutter-agent",
+    "plan": "plan-agent",
+    "spec": "spec-agent",
+    "debug": "debug-agent",
+    "gen": "agent-generator",
+    "godot": "godot-gdscript-agent",
+    "godotcs": "godot-csharp-agent",
+    "write": "narrative-engine-agent",
+    "story": "storyboard-agent",
+    "comic": "comic-creator-agent",
+    "script": "script-creator-agent",
+    "music": "suno-music-agent",
+    "brain": "brainstorm-agent",
+    "outline": "outline-agent",
+    "polish": "polish-agent",
+    "asset": "nanobanana-asset-agent",
+    "grid": "nanobanana-grid-agent",
+    "animate": "animation-creator-agent",
+    "lang": "language-selector-agent"
+  },
+  
+  "templates": {
+    "web": {
+      "name": "Web全栈开发",
+      "agents": ["plan-agent", "rust-agent", "vue3-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "后端Rust + 前端Vue3"
+    },
+    "web-java": {
+      "name": "Java Web开发",
+      "agents": ["plan-agent", "java-agent", "vue3-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "后端Java + 前端Vue3"
+    },
+    "web-go": {
+      "name": "Go Web开发",
+      "agents": ["plan-agent", "go-agent", "react-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "后端Go + 前端React"
+    },
+    "app": {
+      "name": "移动App开发",
+      "agents": ["plan-agent", "flutter-agent", "go-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "Flutter跨平台 + Go后端"
+    },
+    "game": {
+      "name": "游戏开发",
+      "agents": ["plan-agent", "godot-gdscript-agent", "nanobanana-asset-agent", "suno-music-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "Godot引擎 + AI美术 + AI音乐"
+    },
+    "game-cs": {
+      "name": "C#游戏开发",
+      "agents": ["plan-agent", "godot-csharp-agent", "nanobanana-asset-agent", "suno-music-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "Godot C# + AI美术 + AI音乐"
+    },
+    "content": {
+      "name": "内容创作",
+      "agents": ["brainstorm-agent", "outline-agent", "narrative-engine-agent", "polish-agent"],
+      "workflow": "sequential",
+      "description": "从创意到成品的完整写作流程"
+    },
+    "comic": {
+      "name": "AI漫剧生产",
+      "agents": ["script-creator-agent", "storyboard-agent", "comic-creator-agent", "animation-creator-agent", "suno-music-agent"],
+      "workflow": "sequential",
+      "description": "剧本→分镜→漫画→动画→音乐"
+    },
+    "api": {
+      "name": "API开发",
+      "agents": ["spec-agent", "rust-agent", "debug-agent"],
+      "workflow": "sequential",
+      "description": "快速开发RESTful API"
+    },
+    "fix": {
+      "name": "代码修复",
+      "agents": ["debug-agent"],
+      "workflow": "single",
+      "description": "快速修复代码问题"
+    }
+  },
+  
+  "hotkeys": {
+    "ctrl+shift+1": {
+      "agent": "rust-agent",
+      "description": "启动Rust Agent"
+    },
+    "ctrl+shift+2": {
+      "agent": "go-agent",
+      "description": "启动Go Agent"
+    },
+    "ctrl+shift+3": {
+      "agent": "python-agent",
+      "description": "启动Python Agent"
+    },
+    "ctrl+shift+4": {
+      "agent": "typescript-agent",
+      "description": "启动TypeScript Agent"
+    },
+    "ctrl+shift+p": {
+      "agent": "plan-agent",
+      "description": "启动Plan Agent"
+    },
+    "ctrl+shift+r": {
+      "agent": "debug-agent",
+      "description": "启动Debug Agent"
+    },
+    "ctrl+shift+g": {
+      "agent": "agent-generator",
+      "description": "启动Agent Generator"
+    },
+    "ctrl+shift+w": {
+      "template": "web",
+      "description": "启动Web开发模板"
+    },
+    "ctrl+shift+a": {
+      "template": "app",
+      "description": "启动App开发模板"
+    }
+  },
+  
+  "preload_agents": [
+    "plan-agent",
+    "spec-agent",
+    "debug-agent",
+    "rust-agent",
+    "vue3-agent"
+  ],
+  
+  "contexts": {
+    "rust-web": {
+      "name": "Rust Web开发",
+      "agents": ["rust-agent", "vue3-agent"],
+      "templates": ["web"],
+      "description": "Rust后端 + Vue3前端"
+    },
+    "go-micro": {
+      "name": "Go微服务",
+      "agents": ["go-agent", "react-agent"],
+      "templates": ["web-go"],
+      "description": "Go微服务 + React前端"
+    },
+    "java-ee": {
+      "name": "Java企业级",
+      "agents": ["java-agent", "vue3-agent"],
+      "templates": ["web-java"],
+      "description": "Java Spring Boot + Vue3"
+    },
+    "game-dev": {
+      "name": "游戏开发",
+      "agents": ["godot-gdscript-agent", "nanobanana-asset-agent", "suno-music-agent"],
+      "templates": ["game"],
+      "description": "Godot游戏开发"
+    },
+    "content-create": {
+      "name": "内容创作",
+      "agents": ["brainstorm-agent", "outline-agent", "narrative-engine-agent", "polish-agent"],
+      "templates": ["content"],
+      "description": "完整内容创作流程"
+    },
+    "comic-prod": {
+      "name": "漫剧生产",
+      "agents": ["script-creator-agent", "comic-creator-agent", "animation-creator-agent"],
+      "templates": ["comic"],
+      "description": "AI漫剧生产流程"
+    }
+  },
+  
+  "smart_router": {
+    "enabled": true,
+    "version": "2.0",
+    "description": "智能路由与自主决策系统",
+    "auto_mode": true,
+    "analysis_depth": 3,
+    
+    "complexity_threshold": {
+      "simple": 2,
+      "medium": 5,
+      "complex": 8,
+      "extreme": 10
+    },
+    
+    "execution_modes": {
+      "simple": {
+        "name": "单Agent模式",
+        "trigger": "score < 2",
+        "action": "single_agent",
+        "max_time": "30s"
+      },
+      "medium": {
+        "name": "Agent组合模式",
+        "trigger": "2 <= score < 5",
+        "action": "agent_combo",
+        "max_time": "5min"
+      },
+      "complex": {
+        "name": "Agent团队模式",
+        "trigger": "5 <= score < 8",
+        "action": "agent_team",
+        "formation": "company",
+        "max_time": "30min"
+      },
+      "extreme": {
+        "name": "动态创建模式",
+        "trigger": "score >= 8 or match < 0.5",
+        "action": "dynamic_creation",
+        "auto_create": true,
+        "max_time": "60min"
+      }
+    },
+    
+    "intent_classification": {
+      "programming": {
+        "keywords": ["代码", "程序", "开发", "实现", "函数", "类", "API", "接口", "后端", "服务"],
+        "weight": 1.0,
+        "default_agents": ["rust-agent", "go-agent", "python-agent"]
+      },
+      "frontend": {
+        "keywords": ["前端", "页面", "界面", "UI", "组件", "样式", "布局", "响应式"],
+        "weight": 1.0,
+        "default_agents": ["vue3-agent", "react-agent", "flutter-agent"]
+      },
+      "game": {
+        "keywords": ["游戏", "Game", "关卡", "角色", "场景", "物理", "动画", "音效"],
+        "weight": 1.2,
+        "default_agents": ["godot-gdscript-agent", "godot-csharp-agent"]
+      },
+      "content": {
+        "keywords": ["写作", "文章", "小说", "故事", "内容", "文案", "博客"],
+        "weight": 1.0,
+        "default_agents": ["narrative-engine-agent", "outline-agent"]
+      },
+      "creative": {
+        "keywords": ["漫画", "剧本", "动画", "分镜", "美术", "音乐", "视频"],
+        "weight": 1.2,
+        "default_agents": ["comic-creator-agent", "script-creator-agent", "animation-creator-agent"]
+      },
+      "debug": {
+        "keywords": ["bug", "错误", "修复", "调试", "问题", "异常", "崩溃"],
+        "weight": 0.8,
+        "default_agents": ["debug-agent"]
+      },
+      "planning": {
+        "keywords": ["计划", "规划", "排期", "里程碑", "需求", "规格", "文档"],
+        "weight": 0.8,
+        "default_agents": ["plan-agent", "spec-agent"]
+      }
+    },
+    
+    "complexity_indicators": {
+      "increase": ["完整", "系统", "平台", "微服务", "分布式", "高并发", "AI", "机器学习", "深度学习", "区块链", "3D", "物理引擎"],
+      "decrease": ["简单", "快速", "示例", "演示", "原型", "草稿"]
+    },
+    
+    "auto_creation": {
+      "enabled": true,
+      "match_threshold": 0.5,
+      "auto_learn": true,
+      "save_new_agents": true,
+      "creation_timeout": "5min",
+      "default_category": "02-编程语言Agent/04-新兴技术"
+    },
+    
+    "decision_log": {
+      "enabled": true,
+      "log_level": "info",
+      "save_history": true,
+      "feedback_loop": true
+    }
+  },
+  
+  "legacy_routing": {
+    "enabled": false,
+    "rules": []
+  },
+  
+  "performance": {
+    "lazy_load": true,
+    "cache_enabled": true,
+    "cache_ttl": 3600,
+    "parallel_init": true,
+    "max_concurrent": 5
+  }
+}

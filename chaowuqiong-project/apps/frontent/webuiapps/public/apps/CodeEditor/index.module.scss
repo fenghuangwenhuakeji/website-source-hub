@@ -1,0 +1,1437 @@
+@use '../../styles/cyberpunk.module.scss' as cyber;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+// Neon Glow Effects
+@mixin neon-glow {
+  box-shadow: 
+    0 0 5px rgba(250, 234, 95, 0.3),
+    0 0 10px rgba(250, 234, 95, 0.2),
+    0 0 20px rgba(250, 234, 95, 0.1);
+}
+
+@mixin neon-text {
+  text-shadow: 
+    0 0 5px rgba(250, 234, 95, 0.5),
+    0 0 10px rgba(250, 234, 95, 0.3);
+}
+
+@mixin neon-border {
+  border: 1px solid rgba(250, 234, 95, 0.3);
+  box-shadow: 
+    inset 0 0 10px rgba(250, 234, 95, 0.05),
+    0 0 10px rgba(250, 234, 95, 0.1);
+}
+
+// Scanline Effect
+@mixin scanlines {
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: cyber.$color-bg;
+  color: cyber.$color-text;
+  font-family: cyber.$font-family;
+  font-size: cyber.$font-size-base;
+  overflow: hidden;
+  position: relative;
+  @include scanlines;
+}
+
+// Main IDE Layout
+.ideLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+// Task List Panel - Leftmost
+.taskPanel {
+  background: cyber.$color-surface;
+  border-right: 2px solid rgba(250, 234, 95, 0.2);
+  display: flex;
+  flex-direction: column;
+  @include neon-glow;
+}
+
+// Center Area - Editor + Terminal (垂直排列)
+.centerArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: cyber.$color-bg;
+}
+
+// Editor Section (70%)
+.editorSection {
+  flex: 7;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+
+// Terminal Section (30%)
+.terminalSection {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  min-height: 150px;
+  max-height: 40%;
+  border-top: 2px solid cyber.$color-accent;
+  background: cyber.$color-surface;
+  box-shadow: 0 -4px 16px rgba(250, 234, 95, 0.1);
+}
+
+.terminalHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 16px;
+  background: rgba(250, 234, 95, 0.1);
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+  color: cyber.$color-accent;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  svg {
+    color: cyber.$color-accent;
+  }
+}
+
+// Simple Editor (VS Code style but with cyberpunk colors)
+.simpleEditor {
+  width: 100%;
+  height: 100%;
+  background: #0a0a0f;
+  color: #e0e0e0;
+  border: none;
+  padding: 20px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  resize: none;
+  outline: none;
+  white-space: pre;
+  overflow: auto;
+  @include neon-border;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #0a0a0f;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 5px;
+    border: 2px solid #0a0a0f;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(250, 234, 95, 0.4);
+  }
+}
+
+// Panel Header (for AI Chat and Terminal)
+.panelHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  background: cyber.$color-accent;
+  color: #121214;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  transform: skewX(cyber.$skew-angle);
+  box-shadow: 0 2px 8px rgba(250, 234, 95, 0.3);
+
+  svg {
+    color: #121214;
+  }
+}
+
+// AI Chat Panel
+.chatPanel {
+  background: cyber.$color-surface;
+  border-right: 2px solid rgba(250, 234, 95, 0.2);
+  display: flex;
+  flex-direction: column;
+  @include neon-glow;
+}
+
+.terminalContent {
+  flex: 1;
+  overflow: hidden;
+}
+
+// Tab Bar
+.tabBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  background: cyber.$color-surface;
+  border-bottom: 2px solid cyber.$color-accent;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: 0 2px 8px rgba(250, 234, 95, 0.1);
+
+  &::-webkit-scrollbar {
+    height: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: cyber.$color-bg;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.3);
+  }
+}
+
+.tabsLeft {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  overflow-x: auto;
+}
+
+.tabsRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 12px;
+  border-left: 1px solid rgba(250, 234, 95, 0.1);
+}
+
+.viewBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: cyber.$color-text-muted;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+    border-color: rgba(250, 234, 95, 0.3);
+  }
+
+  &.active {
+    background: cyber.$color-accent;
+    color: #121214;
+    border-color: cyber.$color-accent;
+    @include neon-glow;
+  }
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 16px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: cyber.$color-text-muted;
+  background: transparent;
+  border-right: 1px solid rgba(250, 234, 95, 0.1);
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  white-space: nowrap;
+  max-width: 200px;
+  transform: skewX(cyber.$skew-angle);
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+  }
+
+  &.active {
+    background: rgba(250, 234, 95, 0.15);
+    color: cyber.$color-accent;
+    border-bottom: 2px solid cyber.$color-accent;
+    @include neon-text;
+  }
+
+  .tabName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .modified {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: cyber.$color-accent;
+    @include neon-glow;
+  }
+
+  .closeTab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: none;
+    border: none;
+    color: cyber.$color-text-muted;
+    cursor: pointer;
+    opacity: 0;
+    transition: all cyber.$duration-fast;
+
+    &:hover {
+      background: rgba(255, 63, 77, 0.2);
+      color: cyber.$color-red;
+    }
+  }
+
+  &:hover .closeTab,
+  &.active .closeTab {
+    opacity: 1;
+  }
+}
+
+// Editor Container
+.editorContainer {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  background: #0a0a0f;
+}
+
+// Split View
+.splitView {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.splitLeft {
+  flex: 1;
+  height: 100%;
+  border-right: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+.splitRight {
+  flex: 1;
+  height: 100%;
+}
+
+// Bottom Panel
+.bottomPanel {
+  height: 300px;
+  min-height: 200px;
+  max-height: 50%;
+  display: flex;
+  flex-direction: column;
+  border-top: 2px solid cyber.$color-accent;
+  background: cyber.$color-surface;
+  box-shadow: 0 -4px 16px rgba(250, 234, 95, 0.1);
+}
+
+.bottomTabs {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  background: rgba(250, 234, 95, 0.05);
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+  padding: 0 12px;
+  gap: 8px;
+}
+
+.bottomTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 16px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 0;
+  color: cyber.$color-text-muted;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  transform: skewX(cyber.$skew-angle);
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+    border-color: rgba(250, 234, 95, 0.3);
+  }
+
+  &.active {
+    background: cyber.$color-accent;
+    color: #121214;
+    border-color: cyber.$color-accent;
+    @include neon-glow;
+  }
+}
+
+.bottomContent {
+  flex: 1;
+  overflow: hidden;
+}
+
+// AI Chat Container - WebChat Style
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: cyber.$color-bg;
+}
+
+.chatMessages {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: cyber.$spacing-lg;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 3px;
+  }
+}
+
+.chatMessage {
+  display: flex;
+  gap: cyber.$spacing-md;
+  max-width: 90%;
+  animation: fadeIn 0.3s ease;
+
+  &.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+
+    .chatAvatar {
+      background: cyber.$color-accent;
+      color: #121214;
+      @include neon-glow;
+    }
+
+    .chatContent {
+      background: cyber.$color-accent;
+      color: #121214;
+      border-radius: 0;
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), 8px 100%);
+    }
+
+    .chatTime {
+      color: rgba(18, 18, 20, 0.6);
+    }
+  }
+
+  &.assistant {
+    align-self: flex-start;
+
+    .chatAvatar {
+      background: cyber.$color-surface-elevated;
+      border: 1px solid rgba(250, 234, 95, 0.3);
+      color: cyber.$color-accent;
+    }
+
+    .chatContent {
+      background: cyber.$color-surface;
+      border: 1px solid rgba(250, 234, 95, 0.2);
+      border-left: 3px solid cyber.$color-accent;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chatAvatar {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: cyber.$font-size-sm;
+  flex-shrink: 0;
+}
+
+.chatBody {
+  display: flex;
+  flex-direction: column;
+  gap: cyber.$spacing-xs;
+}
+
+.chatContent {
+  padding: cyber.$spacing-md;
+  font-size: cyber.$font-size-base;
+  line-height: 1.8;
+  word-break: break-word;
+  white-space: pre-wrap;
+  color: cyber.$color-text;
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 cyber.$spacing-md;
+}
+
+.chatRole {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: cyber.$color-accent;
+  transform: skewX(cyber.$skew-angle);
+}
+
+.chatTime {
+  font-size: 10px;
+  color: cyber.$color-text-muted;
+}
+
+.chatText {
+  font-size: 13px;
+  line-height: 1.6;
+
+  // 结构化展示 - 代码块
+  pre {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    border-radius: 4px;
+    padding: 12px;
+    margin: 8px 0;
+    overflow-x: auto;
+
+    code {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: 12px;
+      color: #e0e0e0;
+    }
+  }
+
+  // 行内代码
+  code {
+    background: rgba(250, 234, 95, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: cyber.$color-accent;
+  }
+
+  // 引用块
+  blockquote {
+    border-left: 3px solid cyber.$color-accent;
+    padding-left: 12px;
+    margin: 8px 0;
+    color: cyber.$color-text-secondary;
+    font-style: italic;
+  }
+
+  // 列表
+  ul, ol {
+    margin: 8px 0;
+    padding-left: 20px;
+  }
+
+  li {
+    margin: 4px 0;
+  }
+
+  // 链接
+  a {
+    color: cyber.$color-accent;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(250, 234, 95, 0.3);
+
+    &:hover {
+      border-bottom-color: cyber.$color-accent;
+    }
+  }
+
+  // 分隔线
+  hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, cyber.$color-accent, transparent);
+    margin: 16px 0;
+  }
+
+  // 表格
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid rgba(250, 234, 95, 0.2);
+      text-align: left;
+    }
+
+    th {
+      background: rgba(250, 234, 95, 0.1);
+      font-weight: 700;
+      color: cyber.$color-accent;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(250, 234, 95, 0.03);
+    }
+  }
+
+  // 工具调用结果样式
+  .toolResult {
+    background: rgba(118, 247, 255, 0.1);
+    border: 1px solid rgba(118, 247, 255, 0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+
+    &.success {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    &.error {
+      background: rgba(255, 71, 87, 0.1);
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+  }
+}
+
+.chatTyping {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px;
+
+  span {
+    width: 8px;
+    height: 8px;
+    background: cyber.$color-accent;
+    border-radius: 50%;
+    animation: bounce 1.4s ease-in-out infinite both;
+    @include neon-glow;
+
+    &:nth-child(1) {
+      animation-delay: -0.32s;
+    }
+
+    &:nth-child(2) {
+      animation-delay: -0.16s;
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+.chatInputArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: cyber.$color-surface;
+  border-top: 1px solid rgba(250, 234, 95, 0.2);
+
+  input {
+    flex: 1;
+    height: 40px;
+    padding: 0 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    border-radius: 0;
+    color: cyber.$color-text;
+    font-size: 14px;
+    outline: none;
+    transition: all cyber.$duration-fast;
+
+    &::placeholder {
+      color: cyber.$color-text-muted;
+    }
+
+    &:focus {
+      border-color: cyber.$color-accent;
+      box-shadow: 0 0 10px rgba(250, 234, 95, 0.2);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  button {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: cyber.$color-accent;
+    border: none;
+    border-radius: 0;
+    color: #121214;
+    cursor: pointer;
+    transition: all cyber.$duration-fast;
+    transform: skewX(cyber.$skew-angle);
+
+    &:hover:not(:disabled) {
+      background: #fff;
+      box-shadow: 0 0 16px rgba(250, 234, 95, 0.4);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// File Tree Panel - Rightmost
+.filePanel {
+  background: cyber.$color-surface;
+  border-left: 2px solid rgba(250, 234, 95, 0.2);
+  display: flex;
+  flex-direction: column;
+  @include neon-glow;
+}
+
+.filePanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 cyber.$spacing-lg;
+  background: cyber.$color-accent;
+  color: #121214;
+
+  .title {
+    font-size: cyber.$font-size-base;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: skewX(cyber.$skew-angle);
+  }
+
+  .actions {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  color: #121214;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all cyber.$duration-fast;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+}
+
+.searchBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.1);
+
+  svg {
+    color: cyber.$color-text-muted;
+    flex-shrink: 0;
+  }
+
+  input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: cyber.$color-text;
+    font-size: 12px;
+    outline: none;
+
+    &::placeholder {
+      color: cyber.$color-text-muted;
+    }
+  }
+}
+
+.fileTree {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-xs 0;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 3px;
+  }
+}
+
+.folderItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: cyber.$color-text-secondary;
+  transition: all cyber.$duration-fast;
+  font-size: 12px;
+  user-select: none;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+  }
+
+  svg {
+    flex-shrink: 0;
+    color: cyber.$color-text-muted;
+  }
+
+  .folderIcon {
+    color: cyber.$color-accent;
+  }
+
+  .folderName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+  }
+}
+
+.folderChildren {
+  // 子文件夹缩进通过 inline style 控制
+}
+
+.fileItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  color: cyber.$color-text-secondary;
+  transition: all cyber.$duration-fast;
+  border-left: 3px solid transparent;
+  font-size: 12px;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-text;
+  }
+
+  &.active {
+    background: rgba(250, 234, 95, 0.15);
+    color: cyber.$color-accent;
+    border-left-color: cyber.$color-accent;
+    @include neon-text;
+  }
+
+  .fileIcon {
+    color: cyber.$color-cyan;
+    flex-shrink: 0;
+  }
+
+  .fileName {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: 'Consolas', monospace;
+  }
+
+  .modified {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: cyber.$color-accent;
+    @include neon-glow;
+  }
+}
+
+// Status Bar
+.statusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 cyber.$spacing-lg;
+  background: cyber.$color-surface;
+  border-top: 2px solid cyber.$color-accent;
+  color: cyber.$color-text;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 -2px 8px rgba(250, 234, 95, 0.1);
+
+  .statusLeft,
+  .statusRight {
+    display: flex;
+    align-items: center;
+    gap: cyber.$spacing-xl;
+  }
+
+  .statusItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: cyber.$color-text-secondary;
+
+    svg {
+      color: cyber.$color-accent;
+    }
+  }
+}
+
+// Empty State
+.emptyState {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: cyber.$spacing-xl;
+  color: cyber.$color-text-muted;
+  background: cyber.$color-bg;
+
+  .emptyIcon {
+    font-size: 64px;
+    color: cyber.$color-accent;
+    opacity: 0.5;
+    @include neon-glow;
+  }
+
+  .emptyText {
+    font-size: cyber.$font-size-xl;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: cyber.$color-accent;
+    transform: skewX(cyber.$skew-angle);
+    @include neon-text;
+  }
+
+  .emptyHint {
+    font-size: cyber.$font-size-sm;
+    color: cyber.$color-text-muted;
+    transform: skewX(cyber.$skew-angle);
+  }
+}
+
+// Loading
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: cyber.$spacing-xl;
+  background: cyber.$color-bg;
+  color: cyber.$color-accent;
+
+  .spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(250, 234, 95, 0.2);
+    border-top-color: cyber.$color-accent;
+    animation: spin 0.8s linear infinite;
+    @include neon-glow;
+  }
+
+  span {
+    font-size: 14px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transform: skewX(cyber.$skew-angle);
+    @include neon-text;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// Resizer
+.resizer {
+  width: 4px;
+  background: transparent;
+  cursor: col-resize;
+  transition: all cyber.$duration-fast;
+  position: relative;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.3);
+    box-shadow: 0 0 10px rgba(250, 234, 95, 0.3);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 30px;
+    background: rgba(250, 234, 95, 0.5);
+    border-radius: 1px;
+    opacity: 0;
+    transition: opacity cyber.$duration-fast;
+  }
+
+  &:hover::after {
+    opacity: 1;
+  }
+}
+
+// Panel Header Extensions
+.panelHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.agentStatus {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  color: #121214;
+  animation: pulse 1.5s ease-in-out infinite;
+
+  .zapIcon {
+    animation: flash 0.5s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes flash {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+.settingsBtn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  color: #121214;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.4);
+  }
+}
+
+// Tool Calls Bar
+.toolCallsBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(250, 234, 95, 0.1);
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+  font-size: 11px;
+  color: cyber.$color-accent;
+
+  svg {
+    color: cyber.$color-accent;
+  }
+}
+
+.toolCallTag {
+  padding: 2px 8px;
+  background: rgba(250, 234, 95, 0.2);
+  border: 1px solid rgba(250, 234, 95, 0.3);
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &.pending {
+    background: rgba(250, 234, 95, 0.2);
+    border-color: rgba(250, 234, 95, 0.4);
+  }
+
+  &.executing {
+    background: rgba(46, 167, 255, 0.2);
+    border-color: rgba(46, 167, 255, 0.4);
+    color: cyber.$color-cyan;
+    animation: pulse 0.5s ease-in-out infinite;
+  }
+
+  &.completed {
+    background: rgba(74, 222, 128, 0.2);
+    border-color: rgba(74, 222, 128, 0.4);
+    color: cyber.$color-green;
+  }
+
+  &.error {
+    background: rgba(255, 63, 77, 0.2);
+    border-color: rgba(255, 63, 77, 0.4);
+    color: cyber.$color-red;
+  }
+}
+
+// Chat Message Tool Role
+.chatMessage.tool {
+  .chatAvatar {
+    background: cyber.$color-purple;
+    color: #fff;
+    border: 1px solid rgba(118, 96, 255, 0.5);
+  }
+
+  .chatContent {
+    background: rgba(118, 96, 255, 0.1);
+    border: 1px solid rgba(118, 96, 255, 0.2);
+    border-left: 3px solid cyber.$color-purple;
+    font-size: 12px;
+  }
+
+  .chatRole {
+    color: cyber.$color-purple;
+  }
+}
+
+// Streaming Cursor
+.streamingCursor {
+  display: inline-block;
+  color: cyber.$color-accent;
+  animation: blink 0.8s ease-in-out infinite;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+// API Key Warning
+.apiKeyWarning {
+  position: absolute;
+  bottom: 100%;
+  left: 16px;
+  right: 16px;
+  padding: 8px 12px;
+  background: rgba(255, 63, 77, 0.2);
+  border: 1px solid rgba(255, 63, 77, 0.4);
+  color: cyber.$color-red;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+// Modal Styles
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modalContent {
+  width: 480px;
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 24px;
+  background: cyber.$color-surface;
+  border: 2px solid cyber.$color-accent;
+  box-shadow: 0 0 40px rgba(250, 234, 95, 0.3);
+}
+
+.modalTitle {
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: cyber.$color-accent;
+  margin-bottom: 24px;
+  transform: skewX(cyber.$skew-angle);
+  @include neon-text;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: cyber.$color-text-muted;
+    margin-bottom: 8px;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    height: 36px;
+    padding: 0 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    color: cyber.$color-text;
+    font-size: 13px;
+    font-family: inherit;
+
+    &:focus {
+      outline: none;
+      border-color: cyber.$color-accent;
+      box-shadow: 0 0 10px rgba(250, 234, 95, 0.2);
+    }
+
+    &::placeholder {
+      color: cyber.$color-text-muted;
+    }
+  }
+
+  textarea {
+    height: auto;
+    padding: 12px;
+    resize: vertical;
+    font-family: 'Consolas', monospace;
+  }
+
+  input[type="range"] {
+    height: 4px;
+    padding: 0;
+    background: rgba(250, 234, 95, 0.2);
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: cyber.$color-accent;
+      cursor: pointer;
+      @include neon-glow;
+    }
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.testBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  background: cyber.$color-accent;
+  border: none;
+  color: #121214;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  transform: skewX(cyber.$skew-angle);
+
+  &:hover:not(:disabled) {
+    background: #fff;
+    box-shadow: 0 0 16px rgba(250, 234, 95, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .spin {
+    animation: spin 0.8s linear infinite;
+  }
+}
+
+.testResult {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 700;
+
+  &.success {
+    background: rgba(74, 222, 128, 0.1);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+    color: cyber.$color-green;
+  }
+
+  &.error {
+    background: rgba(255, 63, 77, 0.1);
+    border: 1px solid rgba(255, 63, 77, 0.3);
+    color: cyber.$color-red;
+  }
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+.cancelBtn, .saveBtn {
+  height: 36px;
+  padding: 0 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  transform: skewX(cyber.$skew-angle);
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid rgba(250, 234, 95, 0.3);
+  color: cyber.$color-text;
+
+  &:hover {
+    border-color: cyber.$color-accent;
+    background: rgba(250, 234, 95, 0.1);
+  }
+}
+
+.saveBtn {
+  background: cyber.$color-accent;
+  border: none;
+  color: #121214;
+
+  &:hover {
+    background: #fff;
+    box-shadow: 0 0 16px rgba(250, 234, 95, 0.4);
+  }
+}

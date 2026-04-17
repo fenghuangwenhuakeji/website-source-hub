@@ -1,0 +1,53 @@
+/* 年龄自适应主题系统 */
+
+:root {
+    /* 默认 (成人) */
+    --bg-color: #f5f7fa;
+    --text-color: #2c3e50;
+    --primary-color: #3498db;
+    --accent-color: #9b59b6;
+    --card-radius: 8px;
+    --font-family: 'Helvetica Neue', sans-serif;
+    --chat-bubble-self: #3498db;
+    --chat-bubble-ai: #ecf0f1;
+}
+
+/* 儿童模式 (6-12岁) - 高饱和度，圆润，卡通 */
+[data-theme="child"] {
+    --bg-color: #fff9c4; /* 暖黄背景 */
+    --text-color: #3e2723;
+    --primary-color: #ff9800; /* 橙色 */
+    --accent-color: #8bc34a; /* 绿色 */
+    --card-radius: 25px; /* 大圆角 */
+    --font-family: 'Comic Sans MS', 'YouYuan', cursive;
+    --chat-bubble-self: #ffb74d;
+    --chat-bubble-ai: #ffffff;
+}
+
+/* 青少年模式 (12-18岁) - 渐变，流行，个性 */
+[data-theme="teen"] {
+    --bg-color: #2c3e50; /* 深色酷炫模式 */
+    --text-color: #ecf0f1;
+    --primary-color: #e74c3c;
+    --accent-color: #3498db;
+    --card-radius: 12px;
+    --font-family: 'Segoe UI', sans-serif;
+    --chat-bubble-self: #e74c3c;
+    --chat-bubble-ai: #34495e;
+}
+
+/* 通用组件样式 */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    transition: all 0.5s ease;
+}
+
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    if [data-theme="child"] { background: #fff; }
+    border-radius: var(--card-radius);
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}

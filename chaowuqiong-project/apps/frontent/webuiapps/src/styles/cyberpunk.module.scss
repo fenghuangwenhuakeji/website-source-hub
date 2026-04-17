@@ -1,0 +1,219 @@
+// Cyberpunk Design System - Shared Variables
+// Based on CyberNews style
+
+// ============ Colors ============
+$color-bg: #121214;
+$color-surface: #1c1d20;
+$color-surface-elevated: #282a2a;
+
+// Primary - Yellow (Cyberpunk accent)
+$color-accent: #faea5f;
+$color-accent-hover: #fff;
+$color-accent-dim: rgba(250, 234, 95, 0.1);
+$color-accent-muted: rgba(250, 234, 95, 0.4);
+
+// Functional colors
+$color-cyan: #2ea7ff;
+$color-red: #ff3f4d;
+$color-purple: #7660ff;
+$color-green: #4ade80;
+
+// Text colors
+$color-text: rgba(255, 255, 255, 0.9);
+$color-text-secondary: rgba(255, 255, 255, 0.75);
+$color-text-tertiary: rgba(255, 255, 255, 0.6);
+$color-text-muted: rgba(255, 255, 255, 0.35);
+
+// ============ Typography ============
+$font-family: 'Rajdhani', 'Segoe UI', system-ui, sans-serif;
+$font-size-xs: 11px;
+$font-size-sm: 12px;
+$font-size-base: 14px;
+$font-size-lg: 16px;
+$font-size-xl: 20px;
+$font-size-2xl: 28px;
+$font-size-3xl: 36px;
+
+// ============ Spacing ============
+$spacing-2xs: 2px;
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 12px;
+$spacing-lg: 16px;
+$spacing-xl: 20px;
+$spacing-2xl: 24px;
+$spacing-3xl: 32px;
+
+// ============ Animation ============
+$duration-fast: 150ms;
+$duration-normal: 200ms;
+
+// ============ Skew Angles ============
+$skew-angle: -3deg;
+$skew-angle-strong: -5deg;
+
+// ============ Mixins ============
+@mixin cyber-card {
+  background: $color-surface;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all $duration-fast;
+  
+  &:hover {
+    border-color: rgba(250, 234, 95, 0.4);
+    box-shadow: 0 6px 24px rgba(250, 234, 95, 0.1);
+  }
+}
+
+@mixin cyber-button {
+  all: unset;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: $spacing-xs $spacing-lg;
+  background: $color-accent;
+  color: #121214;
+  transform: skewX($skew-angle-strong);
+  transition: all $duration-fast;
+  
+  &:hover {
+    background: #fff;
+    box-shadow: 0 0 16px rgba(250, 234, 95, 0.4);
+  }
+  
+  &:active {
+    transform: skewX($skew-angle-strong) scale(0.98);
+  }
+}
+
+@mixin cyber-button-secondary {
+  all: unset;
+  cursor: pointer;
+  font-size: $font-size-sm;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: $spacing-xs $spacing-lg;
+  background: transparent;
+  border: 1px solid $color-accent;
+  color: $color-accent;
+  transform: skewX($skew-angle-strong);
+  transition: all $duration-fast;
+  
+  &:hover {
+    background: $color-accent-dim;
+    box-shadow: 0 0 12px rgba(250, 234, 95, 0.2);
+  }
+}
+
+@mixin cyber-input {
+  background: $color-surface-elevated;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: $color-text;
+  font-size: $font-size-base;
+  padding: $spacing-sm $spacing-md;
+  outline: none;
+  transition: all $duration-fast;
+  
+  &:focus {
+    border-color: $color-accent;
+    box-shadow: 0 0 8px rgba(250, 234, 95, 0.2);
+  }
+  
+  &::placeholder {
+    color: $color-text-muted;
+  }
+}
+
+@mixin cyber-header {
+  background: $color-accent;
+  color: #121214;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  padding: $spacing-md $spacing-lg;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4px), 0 100%);
+}
+
+@mixin cyber-text-gradient {
+  background: linear-gradient(90deg, $color-accent, $color-cyan);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@mixin cyber-glow {
+  box-shadow: 0 0 20px rgba(250, 234, 95, 0.3),
+              0 0 40px rgba(250, 234, 95, 0.1);
+}
+
+@mixin cyber-border-glow {
+  border: 1px solid $color-accent;
+  box-shadow: 0 0 8px rgba(250, 234, 95, 0.3),
+              inset 0 0 8px rgba(250, 234, 95, 0.1);
+}
+
+// Scanline effect
+@mixin cyber-scanlines {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+}
+
+// ============ Module Exports ============
+// Export all variables for use with @use
+:export {
+  colorBg: $color-bg;
+  colorSurface: $color-surface;
+  colorSurfaceElevated: $color-surface-elevated;
+  colorAccent: $color-accent;
+  colorAccentHover: $color-accent-hover;
+  colorAccentDim: $color-accent-dim;
+  colorAccentMuted: $color-accent-muted;
+  colorCyan: $color-cyan;
+  colorRed: $color-red;
+  colorPurple: $color-purple;
+  colorGreen: $color-green;
+  colorText: $color-text;
+  colorTextSecondary: $color-text-secondary;
+  colorTextTertiary: $color-text-tertiary;
+  colorTextMuted: $color-text-muted;
+  fontFamily: $font-family;
+  fontSizeXs: $font-size-xs;
+  fontSizeSm: $font-size-sm;
+  fontSizeBase: $font-size-base;
+  fontSizeLg: $font-size-lg;
+  fontSizeXl: $font-size-xl;
+  fontSize2xl: $font-size-2xl;
+  fontSize3xl: $font-size-3xl;
+  spacing2xs: $spacing-2xs;
+  spacingXs: $spacing-xs;
+  spacingSm: $spacing-sm;
+  spacingMd: $spacing-md;
+  spacingLg: $spacing-lg;
+  spacingXl: $spacing-xl;
+  spacing2xl: $spacing-2xl;
+  spacing3xl: $spacing-3xl;
+  durationFast: $duration-fast;
+  durationNormal: $duration-normal;
+  skewAngle: $skew-angle;
+  skewAngleStrong: $skew-angle-strong;
+}

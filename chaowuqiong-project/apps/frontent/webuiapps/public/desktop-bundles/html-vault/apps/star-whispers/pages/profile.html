@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的 - 星语心伴</title>
+    <meta name="description" content="个人中心 - 星语心伴">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <style>
+        /* 页面特定样式 */
+        .page-container {
+            padding-top: 20px;
+        }
+        
+        .page-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-card);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .placeholder {
+            width: 36px;
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <!-- 星空背景 -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <!-- 主应用容器 -->
+    <div class="app-container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <a href="../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="page-title">我的</h1>
+            <div class="placeholder"></div>
+        </div>
+
+        <!-- 内容区域 -->
+        <main class="content-section page-container">
+            <!-- 用户信息卡片 -->
+            <section class="profile-card-section">
+                <div class="profile-card">
+                    <div class="profile-avatar">
+                        <span>👤</span>
+                    </div>
+                    <div class="profile-info">
+                        <h3>星语用户</h3>
+                        <p>点击登录享受更多服务</p>
+                    </div>
+                    <button class="login-btn">登录/注册</button>
+                </div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-value">0</span>
+                        <span class="stat-label">关注</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">0</span>
+                        <span class="stat-label">粉丝</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value">0</span>
+                        <span class="stat-label">获赞</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 我的服务 -->
+            <section class="mine-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-th-large"></i> 我的服务</h2>
+                </div>
+                <div class="service-grid">
+                    <a href="horoscope.html" class="service-item">
+                        <div class="service-icon">📊</div>
+                        <span>我的运势</span>
+                    </a>
+                    <a href="test.html" class="service-item">
+                        <div class="service-icon">📝</div>
+                        <span>测试记录</span>
+                    </a>
+                    <a href="tarot.html" class="service-item">
+                        <div class="service-icon">🃏</div>
+                        <span>塔罗记录</span>
+                    </a>
+                    <a href="chat.html" class="service-item">
+                        <div class="service-icon">💬</div>
+                        <span>聊天记录</span>
+                    </a>
+                    <a href="#" class="service-item">
+                        <div class="service-icon">⭐</div>
+                        <span>我的收藏</span>
+                    </a>
+                    <a href="#" class="service-item">
+                        <div class="service-icon">📌</div>
+                        <span>我的发帖</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- 我的星座 -->
+            <section class="mine-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-star"></i> 我的星座</h2>
+                    <a href="horoscope.html" class="section-more">设置 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="zodiac-info-card">
+                    <div class="zodiac-info-left">
+                        <span class="zodiac-big-symbol">♌</span>
+                    </div>
+                    <div class="zodiac-info-right">
+                        <h4>狮子座</h4>
+                        <p>7月23日 - 8月22日</p>
+                        <p>火象星座 · 守护星：太阳</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 我的测试结果 -->
+            <section class="mine-section">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-clipboard-check"></i> 我的测试</h2>
+                    <a href="test.html" class="section-more">更多 <i class="fas fa-chevron-right"></i></a>
+                </div>
+                <div class="test-result-card">
+                    <div class="result-item">
+                        <div class="result-icon">🧩</div>
+                        <div class="result-info">
+                            <h4>MBTI人格类型</h4>
+                            <p>尚未测试</p>
+                        </div>
+                        <a href="test.html?type=mbti" class="result-btn">去测试</a>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon">🎭</div>
+                        <div class="result-info">
+                            <h4>NPTI人格测评</h4>
+                            <p>尚未测试</p>
+                        </div>
+                        <a href="npti.html" class="result-btn">去测试</a>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-icon">❤️</div>
+                        <div class="result-info">
+                            <h4>情商EQ测试</h4>
+                            <p>尚未测试</p>
+                        </div>
+                        <a href="test.html?type=eq" class="result-btn">去测试</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 功能列表 -->
+            <section class="mine-section">
+                <div class="function-list">
+                    <a href="api-settings.html" class="function-item">
+                        <i class="fas fa-plug"></i>
+                        <span>API设置</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#" class="function-item">
+                        <i class="fas fa-cog"></i>
+                        <span>设置</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#" class="function-item">
+                        <i class="fas fa-bell"></i>
+                        <span>消息通知</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#" class="function-item">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>隐私设置</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#" class="function-item">
+                        <i class="fas fa-question-circle"></i>
+                        <span>帮助与反馈</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    <a href="#" class="function-item">
+                        <i class="fas fa-info-circle"></i>
+                        <span>关于我们</span>
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="horoscope.html" class="nav-item">
+                <i class="fas fa-star"></i>
+                <span>星座</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>AI聊天</span>
+            </a>
+            <a href="tarot.html" class="nav-item">
+                <i class="fas fa-hat-wizard"></i>
+                <span>占卜</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <style>
+        /* 测试结果卡片 */
+        .test-result-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+
+        .result-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-right: 12px;
+        }
+
+        .result-info {
+            flex: 1;
+        }
+
+        .result-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .result-info p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .result-btn {
+            padding: 6px 16px;
+            background: var(--primary-gradient);
+            border-radius: 16px;
+            color: white;
+            font-size: 12px;
+            text-decoration: none;
+            transition: var(--transition-fast);
+        }
+
+        .result-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+
+    <script>
+        // 生成星空背景
+        function generateStars() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            generateStars();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,277 @@
+/* 
+=================================================================================================
+  DungeonSpire - Components Styles
+  Version: 1.0.0
+  Description: Styles for reusable UI components like buttons, cards, tooltips, etc.
+=================================================================================================
+*/
+
+/* -----------------------------------------------------------------------------------------
+   Buttons
+   ----------------------------------------------------------------------------------------- */
+button {
+    font-family: var(--font-main);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-primary {
+    background-color: var(--accent-primary);
+    color: var(--text-highlight);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--size-lg);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(255,255,255,0.1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--text-main);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--size-md);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--border-radius-md);
+}
+
+.btn-secondary:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-highlight);
+    border-color: var(--accent-secondary);
+}
+
+/* -----------------------------------------------------------------------------------------
+   Cards (In-Game)
+   ----------------------------------------------------------------------------------------- */
+.card {
+    width: 160px;
+    height: 220px;
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-sm);
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, z-index 0s;
+    transform-origin: center bottom;
+    user-select: none;
+    border: 2px solid #333;
+    z-index: 10;
+    margin: 0 -30px; /* Overlap effect */
+}
+
+.card:hover {
+    transform: scale(1.2) translateY(-40px) !important;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    border-color: var(--accent-primary);
+}
+
+.card.dragging {
+    opacity: 0.8;
+    cursor: grabbing;
+    transform: scale(1.1);
+    z-index: 1000;
+    pointer-events: none; /* Let events pass through to drop targets */
+}
+
+.card-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-cost {
+    width: 24px;
+    height: 24px;
+    background-color: var(--accent-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: var(--text-highlight);
+    font-size: var(--size-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.card-type {
+    font-size: var(--size-xs);
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.card-image {
+    width: 100%;
+    height: 90px;
+    background-color: #222;
+    margin-bottom: var(--spacing-sm);
+    border: 1px solid #444;
+    /* Placeholder for actual image */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #555;
+    font-size: 30px;
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: var(--size-sm);
+    color: var(--text-highlight);
+    text-align: center;
+    margin-bottom: var(--spacing-xs);
+}
+
+.card-description {
+    font-size: 11px;
+    text-align: center;
+    color: var(--text-main);
+    line-height: 1.3;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card Rarities */
+.card.common { border-color: var(--rarity-common); }
+.card.uncommon { border-color: var(--rarity-uncommon); }
+.card.rare { border-color: var(--rarity-rare); }
+.card.legendary { border-color: var(--rarity-legendary); }
+.card.curse { border-color: var(--rarity-curse); }
+
+/* -----------------------------------------------------------------------------------------
+   Entities (Enemies/Player)
+   ----------------------------------------------------------------------------------------- */
+.entity {
+    position: relative;
+    transition: transform 0.1s;
+}
+
+.entity-sprite {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+.entity-hp-bar {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 8px;
+    background-color: #333;
+    border: 1px solid #000;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.entity-hp-fill {
+    height: 100%;
+    background-color: var(--text-danger);
+    transition: width 0.2s;
+}
+
+.entity-intent {
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 32px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.intent-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.intent-damage {
+    position: absolute;
+    bottom: -15px;
+    font-weight: bold;
+    color: var(--text-main);
+    font-size: var(--size-sm);
+    text-shadow: 1px 1px 2px black;
+}
+
+/* -----------------------------------------------------------------------------------------
+   Tooltips
+   ----------------------------------------------------------------------------------------- */
+.tooltip {
+    position: absolute;
+    background-color: var(--bg-tooltip);
+    border: 1px solid var(--bg-tertiary);
+    padding: var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    color: var(--text-main);
+    font-size: var(--size-sm);
+    pointer-events: none;
+    z-index: var(--z-index-tooltip);
+    box-shadow: var(--shadow-lg);
+    max-width: 250px;
+}
+
+.tooltip-title {
+    font-weight: bold;
+    color: var(--text-highlight);
+    margin-bottom: 4px;
+    border-bottom: 1px solid #444;
+    padding-bottom: 2px;
+}
+
+/* -----------------------------------------------------------------------------------------
+   Relics
+   ----------------------------------------------------------------------------------------- */
+.relic {
+    width: 48px;
+    height: 48px;
+    background-color: #222;
+    border-radius: 50%;
+    border: 2px solid #444;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: help;
+    transition: transform 0.2s;
+}
+
+.relic:hover {
+    transform: scale(1.1);
+    border-color: var(--text-gold);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.relic img {
+    width: 32px;
+    height: 32px;
+}

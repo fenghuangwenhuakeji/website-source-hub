@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0f17" />
+    <title>OpenCode CLI 工作台</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #05070c;
+        --panel: rgba(13, 18, 28, 0.94);
+        --line: rgba(148, 163, 184, 0.18);
+        --text: #e5eefc;
+        --muted: #8da0b7;
+        --accent: #63e6c8;
+        --accent-2: #81a6ff;
+        --warn: #ffbf69;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Consolas", "SFMono-Regular", "PingFang SC", monospace;
+        background:
+          radial-gradient(circle at top left, rgba(99, 230, 200, 0.14), transparent 28%),
+          radial-gradient(circle at 90% 15%, rgba(129, 166, 255, 0.15), transparent 24%),
+          linear-gradient(180deg, #05070c, #0a111f 65%, #111827);
+        color: var(--text);
+      }
+      .wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 22px;
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+      }
+      .header {
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+      }
+      .title {
+        margin: 0;
+        font-size: 24px;
+      }
+      .sub {
+        margin: 6px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .badge {
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid rgba(99, 230, 200, 0.25);
+        background: rgba(99, 230, 200, 0.08);
+        color: var(--accent);
+        font-size: 12px;
+      }
+      .terminal {
+        padding: 18px;
+        min-height: 540px;
+        display: flex;
+        flex-direction: column;
+      }
+      .log {
+        flex: 1;
+        overflow: auto;
+        padding-right: 6px;
+      }
+      .line {
+        margin: 0 0 10px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.8;
+      }
+      .line .prompt { color: var(--accent); }
+      .line .path { color: var(--accent-2); }
+      .line .warn { color: var(--warn); }
+      .inputRow {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+        align-items: center;
+        margin-top: 14px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+      .cmdLabel {
+        color: var(--accent);
+      }
+      input {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 13px 14px;
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+        font: inherit;
+      }
+      button {
+        border: 0;
+        border-radius: 14px;
+        padding: 12px 14px;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 700;
+      }
+      .run {
+        background: linear-gradient(135deg, var(--accent), #8ef1dd);
+        color: #041017;
+      }
+      .secondary {
+        background: rgba(148, 163, 184, 0.12);
+        color: var(--text);
+        border: 1px solid var(--line);
+      }
+      .side {
+        padding: 18px;
+      }
+      .cards {
+        display: grid;
+        gap: 12px;
+      }
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+      }
+      .card h3 { margin: 0 0 8px; font-size: 16px; }
+      .card p { margin: 0; color: var(--muted); line-height: 1.7; }
+      .tagRow {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .tag {
+        padding: 7px 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-size: 12px;
+      }
+      .quickActions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .quickActions button {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid var(--line);
+        color: var(--text);
+      }
+      .status {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+      @media (max-width: 960px) {
+        .wrap { grid-template-columns: 1fr; padding: 16px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="panel terminal">
+        <div class="header">
+          <div>
+            <h1 class="title">OpenCode CLI 工作台</h1>
+            <p class="sub">这是一个前端可交互的终端式入口，用来承载命令、状态、启动提示和后续 CLI 工作流。</p>
+          </div>
+          <div class="badge">CLI / Terminal View</div>
+        </div>
+
+        <div class="log" id="log"></div>
+
+        <div class="inputRow">
+          <span class="cmdLabel">opencode&gt;</span>
+          <input id="command" type="text" placeholder="输入 help / status / gui / clawx / clear" autocomplete="off" />
+          <button class="run" id="runBtn">执行</button>
+        </div>
+      </section>
+
+      <aside class="panel side">
+        <div class="cards">
+          <article class="card">
+            <h3>命令速查</h3>
+            <p>支持帮助、状态、清屏、切换 GUI 门户和打开 ClawX 工作台。</p>
+            <div class="tagRow">
+              <span class="tag">help</span>
+              <span class="tag">status</span>
+              <span class="tag">gui</span>
+              <span class="tag">clawx</span>
+            </div>
+          </article>
+          <article class="card">
+            <h3>桌面定位</h3>
+            <p>CLI 版适合查看命令、状态和系统输出；GUI 版适合浏览、导航和快速操作。</p>
+          </article>
+          <article class="card">
+            <h3>快捷操作</h3>
+            <div class="quickActions">
+              <button onclick="runPreset('help')">帮助</button>
+              <button onclick="runPreset('status')">状态</button>
+              <button onclick="runPreset('gui')">回到 GUI</button>
+              <button onclick="runPreset('clawx')">打开 ClawX</button>
+            </div>
+            <div class="status" id="status">等待命令输入。</div>
+          </article>
+          <article class="card">
+            <h3>说明</h3>
+            <p>这里先用纯前端把 CLI 形态接进桌面系统，后续可以再替换为真实终端桥接层。</p>
+          </article>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const log = document.getElementById('log');
+      const input = document.getElementById('command');
+      const runBtn = document.getElementById('runBtn');
+      const status = document.getElementById('status');
+
+      const append = (content) => {
+        const p = document.createElement('p');
+        p.className = 'line';
+        p.innerHTML = content;
+        log.appendChild(p);
+        log.scrollTop = log.scrollHeight;
+      };
+
+      const promptLine = (cmd) => `<span class="prompt">opencode&gt;</span> ${cmd}`;
+
+      const execute = (raw) => {
+        const cmd = raw.trim().toLowerCase();
+        if (!cmd) return;
+        append(promptLine(raw));
+
+        if (cmd === 'clear' || cmd === 'cls') {
+          log.innerHTML = '';
+          status.textContent = '终端已清空。';
+          return;
+        }
+
+        if (cmd === 'help') {
+          append('可用命令：help、status、gui、clawx、clear');
+          append('说明：这是 OpenCode CLI 的桌面前端工作台。');
+          status.textContent = '已输出帮助。';
+          return;
+        }
+
+        if (cmd === 'status') {
+          append('系统状态：桌面已接管，CLI 工作台在线，前端入口可用。');
+          append('模式：纯前端 / 静态页面 / 可交互');
+          status.textContent = '状态正常。';
+          return;
+        }
+
+        if (cmd === 'gui') {
+          location.href = '../opencode-gui/index.html';
+          return;
+        }
+
+        if (cmd === 'clawx') {
+          location.href = '../clawx-gui/index.html';
+          return;
+        }
+
+        if (cmd === 'copy') {
+          navigator.clipboard.writeText('pnpm dev').then(() => {
+            append('已复制默认启动命令：pnpm dev');
+            status.textContent = '命令已复制。';
+          });
+          return;
+        }
+
+        append(`未知命令：${raw}`);
+        append('输入 help 查看可用命令。');
+        status.textContent = '命令未识别。';
+      };
+
+      const runPreset = (value) => {
+        input.value = value;
+        execute(value);
+        input.focus();
+      };
+
+      runBtn.addEventListener('click', () => {
+        const value = input.value;
+        input.value = '';
+        execute(value);
+      });
+
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          runBtn.click();
+        }
+      });
+
+      append('<span class="path">/桌面/CLI</span> OpenCode CLI 工作台已启动。');
+      append('输入 help 查看命令，输入 gui 返回图形界面。');
+    </script>
+  </body>
+</html>

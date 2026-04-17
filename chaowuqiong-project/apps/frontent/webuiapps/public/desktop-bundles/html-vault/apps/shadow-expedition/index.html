@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>暗影征途 - 卡牌Roguelike</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-dark:#0d1117;--bg-card:#161b22;--bg-input:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f0883e;--accent-light:#ffa657;--success:#3fb950;--danger:#f85149;--step-active:#388bfd;--purple:#a371f7}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
+.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.header-actions{display:flex;gap:0.75rem}
+.btn{padding:0.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);cursor:pointer;font-size:0.875rem;transition:all 0.2s}
+.btn:hover{background:var(--border)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+.btn-primary:hover{background:var(--accent-light)}
+.main-container{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:270px;background:var(--bg-card);border-right:1px solid var(--border);padding:1.25rem;flex-shrink:0;display:flex;flex-direction:column;gap:0.75rem;overflow-y:auto}
+.card{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.card h3{font-size:0.95rem;margin-bottom:0.65rem;color:var(--accent)}
+.stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;font-size:0.85rem}
+.stat-label{color:var(--text-muted)}
+.stat-val{font-weight:700}
+.stat-val.red{color:var(--danger)}
+.stat-val.blue{color:var(--step-active)}
+.stat-val.orange{color:var(--accent)}
+.stat-val.green{color:var(--success)}
+.stat-val.purple{color:var(--purple)}
+.bar-wrap{height:8px;background:var(--bg-card);border-radius:4px;overflow:hidden;margin-bottom:0.6rem}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.4s}
+.bar-fill.hp{background:linear-gradient(90deg,#f85149,#ff7b72)}
+.bar-fill.armor{background:linear-gradient(90deg,#388bfd,#79c0ff)}
+.bar-fill.energy{background:linear-gradient(90deg,#f0883e,#ffa657)}
+.intent-box{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.7rem;background:var(--bg-card);border-radius:6px;font-size:0.8rem;margin-bottom:0.5rem;border:1px solid var(--border)}
+.intent-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0}
+.intent-icon.atk{background:rgba(248,81,73,0.2);color:var(--danger)}
+.intent-icon.def{background:rgba(56,139,253,0.2);color:var(--step-active)}
+.intent-icon.buff{background:rgba(163,113,247,0.2);color:var(--purple)}
+.deck-info{font-size:0.8rem;color:var(--text-muted);display:flex;flex-direction:column;gap:0.3rem}
+.deck-info span{display:flex;justify-content:space-between}
+.log-list{display:flex;flex-direction:column;gap:0.2rem;max-height:180px;overflow-y:auto}
+.log-item{font-size:0.72rem;color:var(--text-muted);padding:0.2rem 0;border-bottom:1px solid var(--border)}
+.log-item:last-child{border-bottom:none}
+.log-item .lt{display:inline-block;padding:0 3px;border-radius:2px;font-size:0.65rem;font-weight:600;margin-right:3px}
+.lt.p{background:rgba(248,81,73,0.2);color:var(--danger)}
+.lt.d{background:rgba(56,139,253,0.2);color:var(--step-active)}
+.lt.s{background:rgba(163,113,247,0.2);color:var(--purple)}
+.lt.g{background:rgba(63,185,80,0.2);color:var(--success)}
+.lt.i{background:rgba(240,136,62,0.2);color:var(--accent)}
+.tip-box{background:rgba(56,139,253,0.1);border:1px solid rgba(56,139,253,0.3);border-radius:8px;padding:0.75rem;font-size:0.78rem;color:var(--text-muted)}
+.content-area{flex:1;display:flex;flex-direction:column;padding:1.5rem;overflow-y:auto}
+/* 战场布局 */
+.battlefield{max-width:860px;margin:0 auto;width:100%;flex:1;display:flex;flex-direction:column;gap:1rem}
+/* 敌人区域 */
+.enemy-zone{display:flex;justify-content:center;align-items:flex-start;gap:1.5rem;padding:1rem 0}
+.enemy-card{background:var(--bg-card);border:2px solid var(--border);border-radius:16px;padding:1.5rem;width:200px;text-align:center;position:relative;transition:border-color 0.3s}
+.enemy-card.hit{border-color:var(--danger);animation:shake 0.3s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.enemy-icon{font-size:3rem;margin-bottom:0.5rem;display:block}
+.enemy-name{font-size:1rem;font-weight:600;margin-bottom:0.3rem}
+.enemy-hp-bar{height:10px;background:var(--bg-input);border-radius:5px;overflow:hidden;margin-bottom:0.3rem}
+.enemy-hp-fill{height:100%;background:linear-gradient(90deg,#f85149,#ff7b72);transition:width 0.3s;border-radius:5px}
+.enemy-hp-text{font-size:0.8rem;color:var(--text-muted)}
+.enemy-buffs{margin-top:0.5rem;display:flex;justify-content:center;gap:0.3rem;flex-wrap:wrap}
+.buff-tag{padding:0.15rem 0.5rem;border-radius:10px;font-size:0.7rem;font-weight:600}
+.buff-tag.poison{background:rgba(63,185,80,0.2);color:var(--success)}
+.buff-tag.strength{background:rgba(248,81,73,0.2);color:var(--danger)}
+.buff-tag.weak{background:rgba(139,148,158,0.2);color:var(--text-muted)}
+/* 中间信息 */
+.mid-info{display:flex;justify-content:center;align-items:center;gap:2rem;padding:0.5rem 0}
+.player-status{text-align:center}
+.player-status .ps-hp{font-size:1.1rem;font-weight:700}
+.player-status .ps-armor{font-size:0.85rem;color:var(--step-active);font-weight:600}
+.player-status .ps-energy{font-size:0.85rem;color:var(--accent);font-weight:600}
+.turn-badge{padding:0.4rem 1rem;background:var(--bg-input);border:1px solid var(--border);border-radius:20px;font-size:0.8rem;color:var(--text-muted)}
+/* 手牌区 */
+.hand-zone{min-height:200px;display:flex;justify-content:center;align-items:flex-end;gap:0.6rem;padding:1rem 0;flex-wrap:wrap}
+/* 卡牌样式 */
+.game-card{width:130px;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;user-select:none}
+.game-card:hover{transform:translateY(-12px);border-color:var(--accent);box-shadow:0 8px 24px rgba(0,0,0,0.4)}
+.game-card.disabled{opacity:0.4;cursor:not-allowed}
+.game-card.disabled:hover{transform:none;border-color:var(--border);box-shadow:none}
+.gc-cost{position:absolute;top:6px;left:6px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:800}
+.gc-icon{height:52px;display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+.gc-name{padding:0 8px;font-size:0.75rem;font-weight:600;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gc-desc{padding:0 8px 4px;font-size:0.65rem;color:var(--text-muted);text-align:center;line-height:1.3}
+.gc-type-bar{height:3px}
+.gc-type-bar.attack{background:var(--danger)}
+.gc-type-bar.defend{background:var(--step-active)}
+.gc-type-bar.skill{background:var(--purple)}
+.game-card.type-attack .gc-icon{color:var(--danger)}
+.game-card.type-defend .gc-icon{color:var(--step-active)}
+.game-card.type-skill .gc-icon{color:var(--purple)}
+/* 操作栏 */
+.action-bar{display:flex;justify-content:center;gap:1rem;padding:0.5rem 0}
+/* 奖励卡 */
+.reward-zone{display:flex;justify-content:center;gap:1rem;padding:2rem 0;flex-wrap:wrap}
+.reward-card{width:160px;background:var(--bg-card);border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.2s;overflow:hidden}
+.reward-card:hover{border-color:var(--success);transform:translateY(-8px);box-shadow:0 8px 24px rgba(63,185,80,0.2)}
+.reward-card .gc-cost{width:30px;height:30px;font-size:0.95rem}
+.reward-card .gc-icon{height:64px;font-size:2.2rem}
+.reward-card .gc-name{font-size:0.85rem;padding:0.3rem 8px}
+.reward-card .gc-desc{font-size:0.75rem;padding:0 8px 6px}
+/* 遮罩 */
+.overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(13,17,23,0.92);display:flex;align-items:center;justify-content:center;z-index:200}
+.overlay.hidden{display:none}
+.overlay-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:480px;width:90%;text-align:center}
+.overlay-box h2{font-size:2rem;margin-bottom:0.5rem}
+.overlay-box p{color:var(--text-muted);margin-bottom:1.25rem;line-height:1.7;font-size:0.9rem}
+.overlay-box .stats{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.25rem;text-align:left}
+.os{padding:0.5rem 0.7rem;background:var(--bg-input);border-radius:8px;border:1px solid var(--border);font-size:0.8rem}
+.os .ol{color:var(--text-muted)}
+.os .ov{font-weight:700;color:var(--accent)}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.35s ease}
+@keyframes cardPlay{from{opacity:1;transform:translateY(0) scale(1)}to{opacity:0;transform:translateY(-40px) scale(0.7)}}
+.card-playing{animation:cardPlay 0.35s ease forwards;pointer-events:none}
+@keyframes floatDmg{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-30px)}}
+.float-dmg{position:absolute;font-weight:800;font-size:1.2rem;pointer-events:none;z-index:50;animation:floatDmg 0.7s ease forwards}
+@media(max-width:900px){.main-container{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:0.75rem;flex-direction:row;flex-wrap:wrap}.sidebar .card{flex:1;min-width:180px}.sidebar .card.hide-m{display:none}.game-card{width:110px}.gc-icon{height:42px;font-size:1.4rem}.reward-card{width:135px}}
+@media(max-width:600px){.game-card{width:95px}.gc-icon{height:36px;font-size:1.2rem}.gc-name{font-size:0.65rem}.gc-desc{font-size:0.58rem}.enemy-card{width:160px;padding:1rem}.enemy-icon{font-size:2.2rem}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">暗影征途</div>
+<div class="header-actions">
+<button class="btn" onclick="showRules()">规则说明</button>
+<button class="btn btn-primary" onclick="startNewGame()">新游戏</button>
+</div>
+</header>
+<div class="main-container">
+<nav class="sidebar">
+<div class="card">
+<h3>玩家状态</h3>
+<div class="stat-row"><span class="stat-label">生命值</span><span class="stat-val red" id="pHp">60/60</span></div>
+<div class="bar-wrap"><div class="bar-fill hp" id="pHpBar" style="width:100%"></div></div>
+<div class="stat-row"><span class="stat-label">护甲</span><span class="stat-val blue" id="pArmor">0</span></div>
+<div class="bar-wrap"><div class="bar-fill armor" id="pArmorBar" style="width:0%"></div></div>
+<div class="stat-row"><span class="stat-label">能量</span><span class="stat-val orange" id="pEnergy">3/3</span></div>
+<div class="bar-wrap"><div class="bar-fill energy" id="pEnergyBar" style="width:100%"></div></div>
+<div class="stat-row"><span class="stat-label">中毒</span><span class="stat-val green" id="pPoison">0</span></div>
+</div>
+<div class="card">
+<h3>敌人信息</h3>
+<div id="enemyIntent"></div>
+<div class="stat-row"><span class="stat-label">敌人HP</span><span class="stat-val red" id="eHp">-</span></div>
+<div class="stat-row"><span class="stat-label">力量</span><span class="stat-val" id="eStr">0</span></div>
+<div class="stat-row"><span class="stat-label">脆弱</span><span class="stat-val" id="eWeak">0</span></div>
+</div>
+<div class="card">
+<h3>牌组信息</h3>
+<div class="deck-info">
+<span><span>牌组总数</span><span id="deckTotal">10</span></span>
+<span><span>抽牌堆</span><span id="drawPile">10</span></span>
+<span><span>弃牌堆</span><span id="discardPile">0</span></span>
+<span><span>手牌</span><span id="handCount">0</span></span>
+</div>
+</div>
+<div class="card hide-m">
+<h3>战斗日志</h3>
+<div class="log-list" id="logList"><div class="log-item" style="color:var(--text-muted)">等待开始...</div></div>
+</div>
+</nav>
+<main class="content-area">
+<div class="battlefield" id="battlefield"></div>
+</main>
+</div>
+<div class="overlay" id="menuOverlay">
+<div class="overlay-box">
+<h2 style="color:var(--accent)">暗影征途</h2>
+<p>在黑暗的地牢中，你手持卡牌的力量，<br>一步步击败挡路的暗影生物。<br><br>每场战斗胜利后，可以从三张卡牌中选择一张加入牌组。<br>合理构建你的牌组，挑战五层地牢深处的暗影领主。</p>
+<div class="stats" style="margin-bottom:1.25rem">
+<div class="os"><span class="ol">层数</span><span class="ov">5 层</span></div>
+<div class="os"><span class="ol">初始生命</span><span class="ov">60</span></div>
+<div class="os"><span class="ol">每回合能量</span><span class="ov">3</span></div>
+<div class="os"><span class="ol">手牌上限</span><span class="ov">7 张</span></div>
+</div>
+<button class="btn btn-primary" style="padding:0.75rem 2.5rem;font-size:1rem" onclick="startNewGame()">开始征途</button>
+</div>
+</div>
+<div class="overlay hidden" id="rewardOverlay">
+<div class="overlay-box">
+<h2 style="color:var(--success)">战斗胜利</h2>
+<p id="rewardText">选择一张卡牌加入你的牌组</p>
+<div class="reward-zone" id="rewardZone"></div>
+</div>
+</div>
+<div class="overlay hidden" id="deathOverlay">
+<div class="overlay-box">
+<h2 style="color:var(--danger)">你倒下了</h2>
+<p id="deathText">黑暗吞噬了你...</p>
+<div class="stats" id="deathStats"></div>
+<button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem" onclick="startNewGame()">重新挑战</button>
+</div>
+</div>
+<div class="overlay hidden" id="victoryOverlay">
+<div class="overlay-box">
+<h2 style="color:var(--accent)">征服暗影</h2>
+<p>你击败了暗影领主，地牢恢复了光明。<br>你的名字将被铭刻在英雄碑上。</p>
+<div class="stats" id="victoryStats"></div>
+<button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem" onclick="startNewGame()">再来一次</button>
+</div>
+</div>
+<div class="overlay hidden" id="rulesOverlay">
+<div class="overlay-box" style="text-align:left;max-width:540px">
+<h2 style="color:var(--accent);text-align:center">游戏规则</h2>
+<p style="text-align:center;margin-bottom:1rem">卡牌Roguelike 地牢探索</p>
+<div style="font-size:0.85rem;color:var(--text-muted);line-height:1.8">
+<strong style="color:var(--text)">基本流程：</strong><br>
+每回合获得 3 点能量，从牌堆抽 1 张牌。打出卡牌消耗能量。结束回合后敌人执行意图。<br><br>
+<strong style="color:var(--text)">卡牌类型：</strong><br>
+<span style="color:var(--danger)">攻击牌</span> — 对敌人造成伤害<br>
+<span style="color:var(--step-active)">防御牌</span> — 获得护甲，抵挡下次受击<br>
+<span style="color:var(--purple)">技能牌</span> — 各种特殊效果<br><br>
+<strong style="color:var(--text)">护甲机制：</strong><br>
+护甲可以抵消伤害，受到攻击时先扣护甲再扣生命。护甲在你回合开始时清零。<br><br>
+<strong style="color:var(--text)">敌人意图：</strong><br>
+左侧面板显示敌人下回合的行动：攻击（红）、防御（蓝）、强化（紫），帮助你提前规划。<br><br>
+<strong style="color:var(--text)">关键词：</strong><br>
+<span style="color:var(--success)">中毒</span> — 回合开始时损失生命<br>
+<span style="color:var(--danger)">力量</span> — 攻击牌额外造成等量伤害<br>
+<span style="color:var(--text-muted)">脆弱</span> — 攻击牌额外造成25%伤害
+</p>
+<div style="text-align:center;margin-top:1rem">
+<button class="btn" onclick="document.getElementById('rulesOverlay').classList.add('hidden')">关闭</button>
+</div>
+</div>
+</div>
+<script>
+// ========== 卡牌数据库 ==========
+var ALL_CARDS = [
+  // 攻击牌
+  {id:'strike',name:'打击',cost:1,type:'attack',value:6,desc:'造成 6 点伤害',icon:'⚔'},
+  {id:'heavy',name:'重击',cost:2,type:'attack',value:10,desc:'造成 10 点伤害',icon:'🗡'},
+  {id:'twin',name:'连斩',cost:1,type:'attack',value:4,desc:'造成 4x2 点伤害',icon:'⚡'},
+  {id:'upper',name:'上挑',cost:2,type:'attack',value:8,desc:'造成 8 点伤害，获得 3 护甲',icon:'🔼',extra:'armor:3'},
+  {id:'pierce',name:'穿刺',cost:1,type:'attack',value:5,desc:'造成 5 点伤害，无视护甲',icon:'➤',extra:'pierce'},
+  {id:'drain',name:'吸血斩',cost:2,type:'attack',value:7,desc:'造成 7 点伤害，回复等量生命',icon:'🩸',extra:'drain'},
+  {id:'fireball',name:'火球术',cost:3,type:'attack',value:14,desc:'造成 14 点伤害',icon:'🔥'},
+  {id:'rage',name:'怒斩',cost:0,type:'attack',value:8,desc:'造成 8 点伤害，本回合受伤+3',icon:'💢',extra:'selfDmg:3'},
+  // 防御牌
+  {id:'block',name:'格挡',cost:1,type:'defend',value:5,desc:'获得 5 点护甲',icon:'🛡'},
+  {id:'iron',name:'铁壁',cost:2,type:'defend',value:9,desc:'获得 9 点护甲',icon:'🏰'},
+  {id:'barrier',name:'屏障',cost:3,type:'defend',value:15,desc:'获得 15 点护甲',icon:'🧱'},
+  {id:'heal',name:'治愈',cost:1,type:'defend',value:0,desc:'恢复 6 点生命',icon:'💚',extra:'heal:6'},
+  {id:'shield',name:'反击盾',cost:2,type:'defend',value:6,desc:'获得 6 护甲，反弹 3 伤害',icon:'🔱',extra:'reflect:3'},
+  // 技能牌
+  {id:'poison',name:'淬毒',cost:1,type:'skill',value:3,desc:'施加 3 层中毒',icon:'☠',extra:'poison:3'},
+  {id:'weaken',name:'虚弱',cost:1,type:'skill',value:2,desc:'施加 2 层脆弱',icon:'👁',extra:'weak:2'},
+  {id:'enfeeble',name:'衰弱',cost:0,type:'skill',value:1,desc:'敌人失去 2 点力量',icon:'📉',extra:'strDown:2'},
+  {id:'draw2',name:'战备',cost:1,type:'skill',value:2,desc:'抽 2 张牌',icon:'📜',extra:'draw:2'},
+  {id:'energize',name:'蓄能',cost:0,type:'skill',value:2,desc:'本回合获得 2 点能量',icon:'⚡',extra:'energy:2'},
+  {id:'cleanse',name:'净化',cost:1,type:'skill',value:0,desc:'清除自身所有中毒',icon:'✨',extra:'cleanse'}
+];
+
+// 初始牌组
+var STARTER_DECK = ['strike','strike','strike','strike','block','block','block','twin','heal','shield'];
+
+// 敌人数据
+var ENEMIES = [
+  {name:'哥布林',icon:'👺',hp:22,intents:[{t:'attack',v:6},{t:'attack',v:8},{t:'attack',v:5}]},
+  {name:'骷髅兵',icon:'💀',hp:36,intents:[{t:'attack',v:8},{t:'defend',v:6},{t:'attack',v:11}]},
+  {name:'暗影法师',icon:'🧙',hp:32,intents:[{t:'attack',v:6},{t:'buff',v:3},{t:'attack',v:9}],buffIntent:{stat:'strength',val:2}},
+  {name:'石像鬼',icon:'🗿',hp:52,intents:[{t:'defend',v:8},{t:'attack',v:12},{t:'attack',v:15}]},
+  {name:'暗影领主',icon:'👿',hp:75,intents:[{t:'attack',v:9},{t:'buff',v:3},{t:'attack',v:14},{t:'attack',v:11}],buffIntent:{stat:'strength',val:3}}
+];
+
+// ========== 游戏状态 ==========
+var G = {};
+var bf = document.getElementById('battlefield');
+
+function initGame() {
+  G = {
+    state:'battle', floor:0, turn:0,
+    player:{hp:60,maxHp:60,armor:0,energy:3,maxEnergy:3,poison:0,deck:[],hand:[],draw:[],discard:[]},
+    enemy:null, enemyIntent:null,
+    log:[], rewardCards:[]
+  };
+  // 构建初始牌组
+  G.player.deck = STARTER_DECK.map(function(id){ return getCardById(id); });
+  shuffle(G.player.deck);
+}
+
+function getCardById(id) {
+  for(var i=0;i<ALL_CARDS.length;i++){ if(ALL_CARDS[i].id===id) return JSON.parse(JSON.stringify(ALL_CARDS[i])); }
+  return null;
+}
+
+function shuffle(arr) {
+  for(var i=arr.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=arr[i];arr[i]=arr[j];arr[j]=t; }
+}
+
+// ========== 战斗流程 ==========
+function startBattle() {
+  var eData = ENEMIES[G.floor];
+  G.enemy = {
+    name:eData.name, icon:eData.icon,
+    hp:eData.hp, maxHp:eData.hp,
+    strength:0, weak:0, poison:0,
+    intents:eData.intents, buffIntent:eData.buffIntent||null
+  };
+  G.player.armor = 0;
+  G.player.draw = G.player.deck.slice();
+  G.player.discard = [];
+  G.player.hand = [];
+  shuffle(G.player.draw);
+  G.turn = 0;
+  startTurn();
+}
+
+function startTurn() {
+  G.turn++;
+  // 清护甲
+  G.player.armor = 0;
+  // 恢复能量
+  G.player.energy = G.player.maxEnergy;
+  // 中毒扣血
+  if(G.player.poison > 0) {
+    G.player.hp -= G.player.poison;
+    addLog('中毒造成 '+G.player.poison+' 点伤害','p');
+    G.player.poison--;
+  }
+  // 敌人中毒
+  if(G.enemy.poison > 0) {
+    G.enemy.hp -= G.enemy.poison;
+    addLog(G.enemy.name+' 中毒损失 '+G.enemy.poison+' HP','g');
+    G.enemy.poison--;
+  }
+  // 抽牌
+  drawCards(5);
+  // 敌人意图
+  rollEnemyIntent();
+  // 检查死亡
+  if(G.player.hp <= 0) { playerDeath(); return; }
+  if(G.enemy.hp <= 0) { battleWin(); return; }
+  G.state = 'battle';
+  render();
+}
+
+function drawCards(n) {
+  for(var i=0;i<n;i++) {
+    if(G.player.hand.length >= 7) break;
+    if(G.player.draw.length === 0) {
+      if(G.player.discard.length === 0) break;
+      G.player.draw = G.player.discard.slice();
+      G.player.discard = [];
+      shuffle(G.player.draw);
+    }
+    G.player.hand.push(G.player.draw.pop());
+  }
+}
+
+function rollEnemyIntent() {
+  var pool = G.enemy.intents;
+  G.enemyIntent = pool[Math.floor(Math.random()*pool.length)];
+}
+
+function playCard(index) {
+  if(G.state !== 'battle') return;
+  var card = G.player.hand[index];
+  if(!card || card.cost > G.player.energy) return;
+
+  G.player.energy -= card.cost;
+  G.player.hand.splice(index, 1);
+  G.player.discard.push(card);
+
+  // 卡牌动画
+  animateCardPlay(card);
+
+  setTimeout(function(){
+    // 执行效果
+    if(card.type === 'attack') { resolveAttack(card); }
+    else if(card.type === 'defend') { resolveDefend(card); }
+    else if(card.type === 'skill') { resolveSkill(card); }
+
+    if(G.enemy.hp <= 0) { G.enemy.hp = 0; battleWin(); return; }
+    if(G.player.hp <= 0) { G.player.hp = 0; playerDeath(); return; }
+    render();
+  }, 200);
+}
+
+function resolveAttack(card) {
+  var dmg = card.value;
+  // 力量加成
+  if(G.enemy.strength > 0) dmg += G.enemy.strength;
+  // 脆弱加成
+  if(G.enemy.weak > 0) dmg = Math.floor(dmg * (1 + G.enemy.weak * 0.25));
+  // 穿刺
+  var pierce = card.extra === 'pierce';
+  if(!pierce) {
+    if(G.enemy.armor > 0) {
+      var blocked = Math.min(G.enemy.armor, dmg);
+      G.enemy.armor -= blocked;
+      dmg -= blocked;
+    }
+  }
+  G.enemy.hp -= Math.max(0, dmg);
+  addLog(card.name+' 造成 '+dmg+' 点伤害','p');
+  showEnemyHit(dmg);
+
+  // 额外效果
+  if(card.extra === 'armor:3') { G.player.armor += 3; addLog('获得 3 护甲','i'); }
+  if(card.extra === 'drain') { G.player.hp = Math.min(G.player.maxHp, G.player.hp + card.value); addLog('回复 '+card.value+' 生命','g'); }
+  if(card.extra === 'selfDmg:3') { G.player.hp -= 3; addLog('自损 3 生命','p'); }
+}
+
+function resolveDefend(card) {
+  if(card.extra === 'heal:6') {
+    G.player.hp = Math.min(G.player.maxHp, G.player.hp + 6);
+    addLog(card.name+' 回复 6 生命','g');
+  } else {
+    G.player.armor += card.value;
+    addLog(card.name+' 获得 '+card.value+' 护甲','d');
+  }
+  if(card.extra === 'reflect:3') { addLog('设置反弹 3 伤害','i'); }
+}
+
+function resolveSkill(card) {
+  var ex = card.extra;
+  if(!ex) return;
+  if(ex.startsWith('poison:')) {
+    var amt = parseInt(ex.split(':')[1]);
+    G.enemy.poison += amt;
+    addLog(card.name+' 施加 '+amt+' 中毒','s');
+  }
+  if(ex.startsWith('weak:')) {
+    var amt = parseInt(ex.split(':')[1]);
+    G.enemy.weak += amt;
+    addLog(card.name+' 施加 '+amt+' 脆弱','s');
+  }
+  if(ex.startsWith('strDown:')) {
+    var amt = parseInt(ex.split(':')[1]);
+    G.enemy.strength = Math.max(0, G.enemy.strength - amt);
+    addLog(card.name+' 降低敌人 '+amt+' 力量','s');
+  }
+  if(ex.startsWith('draw:')) {
+    var amt = parseInt(ex.split(':')[1]);
+    drawCards(amt);
+    addLog(card.name+' 抽 '+amt+' 张牌','i');
+  }
+  if(ex.startsWith('energy:')) {
+    var amt = parseInt(ex.split(':')[1]);
+    G.player.energy += amt;
+    addLog(card.name+' 获得 '+amt+' 能量','i');
+  }
+  if(ex === 'cleanse') {
+    var cleared = G.player.poison;
+    G.player.poison = 0;
+    addLog(card.name+' 清除 '+cleared+' 中毒','g');
+  }
+}
+
+function endTurn() {
+  if(G.state !== 'battle') return;
+  G.state = 'enemy';
+  render();
+
+  setTimeout(function(){
+    // 敌人执行意图
+    if(G.enemyIntent.t === 'attack') {
+      var dmg = G.enemyIntent.v;
+      if(G.enemy.strength > 0) dmg += G.enemy.strength;
+      // 检查反击盾
+      var reflect = 0;
+      for(var i=0;i<G.player.discard.length;i++){
+        var c = G.player.discard[i];
+        if(c.extra === 'reflect:3') reflect += 3;
+      }
+      if(reflect > 0) {
+        G.enemy.hp -= reflect;
+        addLog('反弹 '+reflect+' 伤害给 '+G.enemy.name,'d');
+      }
+      // 脆弱减伤
+      if(G.player.weak > 0) {
+        // 玩家没有脆弱，但留着逻辑以防
+      }
+      if(G.player.armor > 0) {
+        var blocked = Math.min(G.player.armor, dmg);
+        G.player.armor -= blocked;
+        dmg -= blocked;
+      }
+      G.player.hp -= Math.max(0, dmg);
+      addLog(G.enemy.name+' 攻击造成 '+dmg+' 点伤害','p');
+    }
+    else if(G.enemyIntent.t === 'defend') {
+      G.enemy.armor += G.enemyIntent.v;
+      addLog(G.enemy.name+' 获得 '+G.enemyIntent.v+' 护甲','d');
+    }
+    else if(G.enemyIntent.t === 'buff') {
+      if(G.enemy.buffIntent) {
+        if(G.enemy.buffIntent.stat === 'strength') {
+          G.enemy.strength += G.enemy.buffIntent.val;
+          addLog(G.enemy.name+' 力量 +'+G.enemy.buffIntent.val,'s');
+        }
+      }
+    }
+
+    // 清敌人物理buff（简化：脆弱和中毒持续，护甲每回合开始不清因为是敌人回合结束）
+    // 敌人护甲不清零（等敌人自己回合开始时清）
+    G.enemy.weak = 0;
+
+    if(G.player.hp <= 0) { G.player.hp = 0; playerDeath(); return; }
+    if(G.enemy.hp <= 0) { G.enemy.hp = 0; battleWin(); return; }
+    startTurn();
+  }, 600);
+}
+
+// ========== 胜利/失败 ==========
+function battleWin() {
+  G.state = 'reward';
+  addLog('击败了 '+G.enemy.name+'！','g');
+
+  // 生成奖励卡（3张随机）
+  var pool = ALL_CARDS.filter(function(c){
+    return c.id !== 'strike' && c.id !== 'block';
+  });
+  shuffle(pool);
+  G.rewardCards = pool.slice(0,3);
+  renderReward();
+}
+
+function pickReward(index) {
+  var card = G.rewardCards[index];
+  G.player.deck.push(JSON.parse(JSON.stringify(card)));
+  addLog('获得卡牌：'+card.name,'g');
+  document.getElementById('rewardOverlay').classList.add('hidden');
+
+  G.floor++;
+  if(G.floor >= 5) {
+    showVictory();
+  } else {
+    G.state = 'battle';
+    startBattle();
+  }
+}
+
+function skipReward() {
+  document.getElementById('rewardOverlay').classList.add('hidden');
+  G.floor++;
+  if(G.floor >= 5) { showVictory(); }
+  else { G.state = 'battle'; startBattle(); }
+}
+
+function playerDeath() {
+  G.state = 'dead';
+  document.getElementById('deathText').textContent = '你在第 '+(G.floor+1)+' 层倒下了...';
+  document.getElementById('deathStats').innerHTML =
+    '<div class="os"><span class="ol">到达层数</span><span class="ov">'+(G.floor+1)+'/5</span></div>'+
+    '<div class="os"><span class="ol">总回合数</span><span class="ov">'+G.turn+'</span></div>'+
+    '<div class="os"><span class="ol">牌组大小</span><span class="ov">'+G.player.deck.length+'</span></div>'+
+    '<div class="os"><span class="ol">击杀敌人</span><span class="ov">'+G.floor+'</span></div>';
+  document.getElementById('deathOverlay').classList.remove('hidden');
+}
+
+function showVictory() {
+  G.state = 'victory';
+  document.getElementById('victoryStats').innerHTML =
+    '<div class="os"><span class="ol">通过层数</span><span class="ov">5/5</span></div>'+
+    '<div class="os"><span class="ol">总回合数</span><span class="ov">'+G.turn+'</span></div>'+
+    '<div class="os"><span class="ol">剩余生命</span><span class="ov">'+G.player.hp+'/'+G.player.maxHp+'</span></div>'+
+    '<div class="os"><span class="ol">牌组大小</span><span class="ov">'+G.player.deck.length+'</span></div>';
+  document.getElementById('victoryOverlay').classList.remove('hidden');
+}
+
+// ========== 渲染 ==========
+function render() {
+  var html = '';
+  // 敌人区域
+  html += '<div class="enemy-zone">';
+  html += '<div class="enemy-card" id="enemyCard">';
+  html += '<span class="enemy-icon">'+G.enemy.icon+'</span>';
+  html += '<div class="enemy-name">'+G.enemy.name+'</div>';
+  html += '<div class="enemy-hp-bar"><div class="enemy-hp-fill" style="width:'+Math.max(0,G.enemy.hp/G.enemy.maxHp*100)+'%"></div></div>';
+  html += '<div class="enemy-hp-text">'+Math.max(0,G.enemy.hp)+'/'+G.enemy.maxHp+'</div>';
+  // buff标签
+  var buffs = '';
+  if(G.enemy.poison > 0) buffs += '<span class="buff-tag poison">中毒 '+G.enemy.poison+'</span>';
+  if(G.enemy.strength > 0) buffs += '<span class="buff-tag strength">力量 +'+G.enemy.strength+'</span>';
+  if(G.enemy.weak > 0) buffs += '<span class="buff-tag weak">脆弱 '+G.enemy.weak+'</span>';
+  if(G.enemy.armor > 0) buffs += '<span class="buff-tag" style="background:rgba(56,139,253,0.2);color:var(--step-active)">护甲 '+G.enemy.armor+'</span>';
+  html += '<div class="enemy-buffs">'+buffs+'</div>';
+  html += '</div></div>';
+
+  // 中间状态
+  html += '<div class="mid-info">';
+  html += '<div class="turn-badge">第 '+G.floor+' 层 · 回合 '+G.turn+'</div>';
+  html += '<div class="player-status">';
+  html += '<div class="ps-hp" style="color:'+(G.player.hp<=20?'var(--danger)':'var(--text)')+'">HP '+G.player.hp+'/'+G.player.maxHp+'</div>';
+  if(G.player.armor > 0) html += '<div class="ps-armor">护甲 '+G.player.armor+'</div>';
+  html += '<div class="ps-energy">能量 '+G.player.energy+'/'+G.player.maxEnergy+'</div>';
+  if(G.player.poison > 0) html += '<div style="font-size:0.8rem;color:var(--success);margin-top:2px">中毒 '+G.player.poison+'</div>';
+  html += '</div></div>';
+
+  // 手牌区
+  html += '<div class="hand-zone" id="handZone">';
+  for(var i=0;i<G.player.hand.length;i++){
+    var c = G.player.hand[i];
+    var disabled = c.cost > G.player.energy ? ' disabled' : '';
+    html += '<div class="game-card type-'+c.type+disabled+'" onclick="playCard('+i+')" id="card-'+i+'">';
+    html += '<div class="gc-cost">'+c.cost+'</div>';
+    html += '<div class="gc-icon">'+c.icon+'</div>';
+    html += '<div class="gc-name">'+c.name+'</div>';
+    html += '<div class="gc-desc">'+c.desc+'</div>';
+    html += '<div class="gc-type-bar '+c.type+'"></div>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  // 操作栏
+  if(G.state === 'battle') {
+    html += '<div class="action-bar">';
+    html += '<button class="btn btn-primary" style="padding:0.6rem 2rem;font-size:0.95rem" onclick="endTurn()">结束回合</button>';
+    html += '</div>';
+  }
+
+  bf.innerHTML = html;
+  updateSidebar();
+}
+
+function renderReward() {
+  var zone = document.getElementById('rewardZone');
+  document.getElementById('rewardText').textContent = '选择一张卡牌加入你的牌组（当前 '+G.player.deck.length+' 张）';
+  var html = '';
+  for(var i=0;i<G.rewardCards.length;i++){
+    var c = G.rewardCards[i];
+    html += '<div class="reward-card type-'+c.type+'" onclick="pickReward('+i+')">';
+    html += '<div class="gc-cost">'+c.cost+'</div>';
+    html += '<div class="gc-icon">'+c.icon+'</div>';
+    html += '<div class="gc-name">'+c.name+'</div>';
+    html += '<div class="gc-desc">'+c.desc+'</div>';
+    html += '<div class="gc-type-bar '+c.type+'"></div>';
+    html += '</div>';
+  }
+  html += '<div style="display:flex;align-items:flex-end"><button class="btn" onclick="skipReward()" style="margin-left:0.5rem">跳过</button></div>';
+  zone.innerHTML = html;
+  document.getElementById('rewardOverlay').classList.remove('hidden');
+}
+
+function updateSidebar() {
+  document.getElementById('pHp').textContent = G.player.hp+'/'+G.player.maxHp;
+  document.getElementById('pHpBar').style.width = Math.max(0,G.player.hp/G.player.maxHp*100)+'%';
+  document.getElementById('pArmor').textContent = G.player.armor;
+  document.getElementById('pArmorBar').style.width = Math.min(100,G.player.armor*5)+'%';
+  document.getElementById('pEnergy').textContent = G.player.energy+'/'+G.player.maxEnergy;
+  document.getElementById('pEnergyBar').style.width = (G.player.energy/G.player.maxEnergy*100)+'%';
+  document.getElementById('pPoison').textContent = G.player.poison;
+
+  if(G.enemy) {
+    document.getElementById('eHp').textContent = Math.max(0,G.enemy.hp)+'/'+G.enemy.maxHp;
+    document.getElementById('eStr').textContent = G.enemy.strength;
+    document.getElementById('eWeak').textContent = G.enemy.weak;
+
+    var intentHtml = '';
+    if(G.enemyIntent) {
+      var it = G.enemyIntent;
+      var iconClass = it.t === 'attack' ? 'atk' : it.t === 'defend' ? 'def' : 'buff';
+      var iconText = it.t === 'attack' ? '⚔' : it.t === 'defend' ? '🛡' : '▲';
+      var desc = it.t === 'attack' ? '攻击 '+(it.v+(G.enemy.strength>0?'+'+G.enemy.strength:'') ) : it.t === 'defend' ? '防御 +'+it.v : '强化';
+      if(it.t === 'buff' && G.enemy.buffIntent) desc += ' ('+G.enemy.buffIntent.stat+' +'+G.enemy.buffIntent.val+')';
+      intentHtml = '<div class="intent-box"><span class="intent-icon '+iconClass+'">'+iconText+'</span><span>'+desc+'</span></div>';
+    }
+    document.getElementById('enemyIntent').innerHTML = intentHtml;
+  }
+
+  document.getElementById('deckTotal').textContent = G.player.deck.length;
+  document.getElementById('drawPile').textContent = G.player.draw.length;
+  document.getElementById('discardPile').textContent = G.player.discard.length;
+  document.getElementById('handCount').textContent = G.player.hand.length;
+
+  // 日志
+  var logEl = document.getElementById('logList');
+  if(G.log.length === 0) {
+    logEl.innerHTML = '<div class="log-item" style="color:var(--text-muted)">等待开始...</div>';
+  } else {
+    var lh = '';
+    for(var i=0;i<Math.min(G.log.length,20);i++){
+      var l = G.log[i];
+      var tag = l.type === 'p' ? '你' : l.type === 'd' ? '防' : l.type === 's' ? '技' : l.type === 'g' ? '好' : '息';
+      lh += '<div class="log-item"><span class="lt '+l.type+'">'+tag+'</span>'+l.text+'</div>';
+    }
+    logEl.innerHTML = lh;
+  }
+}
+
+// ========== 动画效果 ==========
+function animateCardPlay(card) {
+  // 简单的视觉反馈
+}
+
+function showEnemyHit(dmg) {
+  var ec = document.getElementById('enemyCard');
+  if(!ec) return;
+  ec.classList.add('hit');
+  setTimeout(function(){ ec.classList.remove('hit'); }, 350);
+
+  // 浮动伤害数字
+  var el = document.createElement('div');
+  el.className = 'float-dmg';
+  el.textContent = '-' + dmg;
+  el.style.color = 'var(--danger)';
+  el.style.left = '50%';
+  el.style.top = '30px';
+  ec.appendChild(el);
+  setTimeout(function(){ if(el.parentNode) ec.removeChild(el); }, 750);
+}
+
+function addLog(text, type) {
+  G.log.unshift({text:text, type:type||'i'});
+  if(G.log.length > 40) G.log.length = 40;
+}
+
+// ========== 控制 ==========
+function startNewGame() {
+  document.getElementById('menuOverlay').classList.add('hidden');
+  document.getElementById('deathOverlay').classList.add('hidden');
+  document.getElementById('victoryOverlay').classList.add('hidden');
+  document.getElementById('rewardOverlay').classList.add('hidden');
+  initGame();
+  startBattle();
+}
+
+function showRules() {
+  document.getElementById('rulesOverlay').classList.remove('hidden');
+}
+
+// ========== 键盘快捷键 ==========
+document.addEventListener('keydown', function(e) {
+  if(G.state !== 'battle') return;
+  var num = parseInt(e.key);
+  if(num >= 1 && num <= 7) {
+    if(num <= G.player.hand.length) playCard(num - 1);
+  }
+  if(e.key === 'e' || e.key === 'E' || e.key === 'Enter') {
+    e.preventDefault();
+    endTurn();
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>灰烬之路 - 文字互动</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-dark: #0d1117;
+  --bg-card: #161b22;
+  --bg-input: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #f0883e;
+  --accent-light: #ffa657;
+  --success: #3fb950;
+  --danger: #f85149;
+  --step-active: #388bfd;
+  --purple: #a371f7;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.header-actions { display: flex; gap: 0.75rem; }
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+.btn:hover { background: var(--border); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+.btn-primary:hover { background: var(--accent-light); }
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  width: 280px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+.card {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+}
+.attr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+  font-size: 0.85rem;
+}
+.attr-label { color: var(--text-muted); }
+.attr-val { font-weight: 600; }
+.attr-val.red { color: var(--danger); }
+.attr-val.green { color: var(--success); }
+.attr-val.blue { color: var(--step-active); }
+.attr-val.orange { color: var(--accent); }
+.bar-wrap {
+  height: 8px;
+  background: var(--bg-card);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s;
+}
+.bar-fill.hp { background: var(--danger); }
+.bar-fill.hunger { background: var(--accent); }
+.bar-fill.trust { background: var(--step-active); }
+.item-list { display: flex; flex-direction: column; gap: 0.35rem; }
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+}
+.item-row .iname { color: var(--text); }
+.item-row .icount { color: var(--accent); font-weight: 600; }
+.log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.log-item {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.log-item:last-child { border-bottom: none; }
+.log-item .log-tag {
+  display: inline-block;
+  padding: 0 4px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.log-tag.get { background: rgba(63,185,80,0.2); color: var(--success); }
+.log-tag.lose { background: rgba(248,81,73,0.2); color: var(--danger); }
+.log-tag.go { background: rgba(56,139,253,0.2); color: var(--step-active); }
+.log-tag.event { background: rgba(163,113,247,0.2); color: var(--purple); }
+.tip-box {
+  background: rgba(56, 139, 253, 0.1);
+  border: 1px solid rgba(56, 139, 253, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.key-list { display: flex; flex-direction: column; gap: 0.35rem; }
+.key-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; color: var(--text-muted); }
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.story-container {
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.story-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.story-header h2 {
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin-bottom: 0.25rem;
+}
+.story-header .location {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.story-text {
+  flex: 1;
+  margin-bottom: 2rem;
+}
+.story-text p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--text);
+}
+.story-text .highlight {
+  color: var(--accent);
+  font-weight: 600;
+}
+.story-text .danger {
+  color: var(--danger);
+  font-weight: 600;
+}
+.story-text .blue {
+  color: var(--step-active);
+  font-weight: 600;
+}
+.story-text .green {
+  color: var(--success);
+  font-weight: 600;
+}
+.story-text .purple {
+  color: var(--purple);
+  font-weight: 600;
+}
+.story-text .muted {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+.choice-btn {
+  padding: 1rem 1.25rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+  text-align: left;
+  transition: all 0.2s;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  line-height: 1.5;
+  font-family: inherit;
+}
+.choice-btn:hover {
+  background: rgba(240, 136, 62, 0.1);
+  border-color: var(--accent);
+}
+.choice-btn:active {
+  background: rgba(240, 136, 62, 0.2);
+}
+.choice-btn .choice-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+.choice-btn:hover .choice-num {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.choice-btn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.choice-btn.disabled:hover {
+  background: var(--bg-input);
+  border-color: var(--border);
+}
+.choice-btn .req {
+  display: inline-block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(13, 17, 23, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+.overlay.hidden { display: none; }
+.overlay-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 3rem;
+  max-width: 520px;
+  width: 90%;
+  text-align: center;
+}
+.overlay-box h2 {
+  font-size: 2rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+.overlay-box .ending-tag {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.ending-tag.good { background: rgba(63,185,80,0.15); color: var(--success); border: 1px solid rgba(63,185,80,0.3); }
+.ending-tag.bad { background: rgba(248,81,73,0.15); color: var(--danger); border: 1px solid rgba(248,81,73,0.3); }
+.ending-tag.neutral { background: rgba(240,136,62,0.15); color: var(--accent); border: 1px solid rgba(240,136,62,0.3); }
+.ending-tag.secret { background: rgba(163,113,247,0.15); color: var(--purple); border: 1px solid rgba(163,113,247,0.3); }
+.overlay-box p {
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  line-height: 1.8;
+  font-size: 0.95rem;
+}
+.overlay-box .final-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+.final-stat {
+  padding: 0.6rem 0.8rem;
+  background: var(--bg-input);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+}
+.final-stat .fl { color: var(--text-muted); }
+.final-stat .fv { font-weight: 700; color: var(--accent); }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.4s ease; }
+@media (max-width: 900px) {
+  .main-container { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sidebar .card { flex: 1; min-width: 200px; }
+  .sidebar .card.hide-mobile { display: none; }
+  .content-area { padding: 1.25rem; }
+  .story-header h2 { font-size: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">灰烬之路</div>
+  <div class="header-actions">
+    <button class="btn" onclick="saveGame()">保存进度</button>
+    <button class="btn" onclick="loadGame()">读取存档</button>
+    <button class="btn btn-primary" onclick="restartGame()">重新开始</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <nav class="sidebar">
+    <div class="card">
+      <h3>角色状态</h3>
+      <div class="attr-row">
+        <span class="attr-label">生命值</span>
+        <span class="attr-val red" id="hpText">100</span>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill hp" id="hpBar" style="width:100%"></div></div>
+      <div class="attr-row">
+        <span class="attr-label">饥饿值</span>
+        <span class="attr-val orange" id="hungerText">80</span>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill hunger" id="hungerBar" style="width:80%"></div></div>
+      <div class="attr-row">
+        <span class="attr-label">信任度</span>
+        <span class="attr-val blue" id="trustText">50</span>
+      </div>
+      <div class="bar-wrap"><div class="bar-fill trust" id="trustBar" style="width:50%"></div></div>
+      <div class="attr-row">
+        <span class="attr-label">已探索</span>
+        <span class="attr-val green" id="exploredText">0 处</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>背包</h3>
+      <div class="item-list" id="itemList">
+        <div class="item-row"><span class="iname" style="color:var(--text-muted);">空空如也</span></div>
+      </div>
+    </div>
+
+    <div class="card hide-mobile">
+      <h3>事件记录</h3>
+      <div class="log-list" id="logList">
+        <div class="log-item"><span style="color:var(--text-muted);">游戏尚未开始</span></div>
+      </div>
+    </div>
+
+    <div class="card hide-mobile">
+      <h3>操作提示</h3>
+      <div class="key-list">
+        <div class="key-row"><span class="key">1-4</span><span>快速选择选项</span></div>
+        <div class="key-row"><span class="key">鼠标</span><span>点击选项推进剧情</span></div>
+      </div>
+      <div class="tip-box" style="margin-top:0.75rem;">
+        你的每一个选择都会影响后续剧情走向。注意管理生命值和饥饿值，某些选项需要特定物品才能解锁。
+      </div>
+    </div>
+  </nav>
+
+  <main class="content-area">
+    <div class="story-container">
+      <div class="story-header">
+        <h2 id="sceneTitle">灰烬之路</h2>
+        <div class="location" id="sceneLocation">末日废土生存文字冒险</div>
+      </div>
+      <div class="story-text" id="storyText"></div>
+      <div class="choices" id="choicesArea"></div>
+    </div>
+  </main>
+</div>
+
+<div class="overlay hidden" id="startOverlay">
+  <div class="overlay-box">
+    <h2>灰烬之路</h2>
+    <p style="margin-top:1rem;">核战三十年后的废土世界，文明已成灰烬。<br>你在一片废墟中醒来，记忆支离破碎。<br>生存，探索，寻找真相——或在此沉沦。<br><br>游戏包含 <span style="color:var(--accent);font-weight:600;">4种结局</span>，你的每个选择都至关重要。</p>
+    <button class="btn btn-primary" style="padding:0.75rem 2.5rem;font-size:1rem;" onclick="beginGame()">踏上旅途</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="endOverlay">
+  <div class="overlay-box">
+    <div class="ending-tag" id="endingTag">结局</div>
+    <h2 id="endingTitle">结局标题</h2>
+    <p id="endingText">结局描述</p>
+    <div class="final-stats" id="finalStats"></div>
+    <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;" onclick="restartGame()">重新开始</button>
+  </div>
+</div>
+
+<div class="overlay hidden" id="deathOverlay">
+  <div class="overlay-box">
+    <h2 style="color:var(--danger);">你倒下了</h2>
+    <p id="deathText">在废土中，死亡只是另一种归宿。</p>
+    <div class="final-stats" id="deathStats"></div>
+    <button class="btn btn-primary" style="padding:0.75rem 2rem;font-size:1rem;" onclick="restartGame()">重新开始</button>
+  </div>
+</div>
+
+<script>
+// ========== 游戏状态 ==========
+var state = {
+  hp: 100,
+  hunger: 80,
+  trust: 50,
+  items: {},
+  explored: [],
+  logs: [],
+  flags: {},
+  steps: 0,
+  scene: 'start'
+};
+
+// ========== 场景定义 ==========
+var SCENES = {
+  start: {
+    title: '废墟中醒来',
+    location: '未知废墟 · 第1天',
+    text: [
+      '你睁开眼睛，头顶是断裂的天花板，灰色的天空透过裂缝洒下微弱的光。',
+      '周围是坍塌的建筑残骸，空气中弥漫着灰尘和铁锈的味道。你不记得自己是谁，也不记得为什么会在这里。',
+      '你的身体很虚弱，<span class="danger">胃里空空如也</span>。不远处有两条路——一条通向一栋半塌的商店，另一条延伸向更深的废墟深处。',
+      '你注意到地上有一根<span class="highlight">生锈的铁管</span>，也许能派上用场。'
+    ],
+    choices: [
+      { text: '捡起铁管，然后去商店搜索物资', next: 'shop', action: function(){ addItem('铁管',1); addLog('捡起了一根铁管','get'); } },
+      { text: '不捡铁管，直接去商店搜索', next: 'shop' },
+      { text: '捡起铁管，往废墟深处走', next: 'deep_ruins', action: function(){ addItem('铁管',1); addLog('捡起了一根铁管','get'); } },
+      { text: '什么都不管，往废墟深处走', next: 'deep_ruins' }
+    ]
+  },
+
+  shop: {
+    title: '废弃商店',
+    location: '废墟商店 · 第1天',
+    text: [
+      '你推开歪斜的店门，里面一片狼藉。货架倒了大半，地上散落着碎玻璃和发霉的包装。',
+      '在柜台后面，你找到了<span class="green">半瓶矿泉水</span>和<span class="green">一包压缩饼干</span>。虽然看起来不太新鲜，但在这种地方已经是珍宝了。',
+      '突然，你听到角落里传来细微的响动。一个<span class="blue">年轻女人</span>蜷缩在柜台后面，手里紧紧攥着一把小刀，惊恐地看着你。'
+    ],
+    choices: [
+      { text: '举起双手表示没有恶意，慢慢接近她', next: 'meet_woman_peaceful', action: function(){ state.trust += 10; addLog('试图和平接触陌生女人','event'); } },
+      { text: '保持距离，把找到的食物分她一半', next: 'meet_woman_share', action: function(){ state.trust += 25; removeItem('矿泉水',1); removeItem('压缩饼干',1); addLog('分享了食物给陌生女人','event'); } },
+      { text: '握紧铁管，警告她不要过来', next: 'meet_woman_threat', req: { item: '铁管' }, action: function(){ state.trust -= 20; addLog('用铁管威胁了陌生女人','lose'); } },
+      { text: '不理会她，拿上东西直接离开', next: 'leave_shop_alone', action: function(){ state.trust -= 5; addLog('无视了陌生女人离开','go'); } }
+    ]
+  },
+
+  deep_ruins: {
+    title: '废墟深处',
+    location: '废墟深处 · 第1天',
+    text: [
+      '你沿着碎石路往深处走。周围越来越暗，建筑越来越残破。空气中有一股奇怪的味道，像是化学品。',
+      '转过一个拐角，你看到地上有几具<span class="danger">干枯的尸骨</span>，旁边散落着一些装备。其中一具尸体旁有<span class="green">一把匕首</span>和一个<span class="green">急救包</span>。',
+      '再往前走，你发现了一扇半掩的金属门，门上用红色油漆写着：<span class="danger">"生人勿进——避难所"</span>。门缝里透出微弱的灯光。'
+    ],
+    choices: [
+      { text: '搜刮尸体上的装备', next: 'deep_ruins_loot', action: function(){ addItem('匕首',1); addItem('急救包',1); addLog('搜刮到了匕首和急救包','get'); state.hunger -= 5; } },
+      { text: '直接推开金属门进入避难所', next: 'shelter_enter', action: function(){ addLog('闯入了避难所','go'); } },
+      { text: '先搜刮装备，再进入避难所', next: 'shelter_enter', action: function(){ addItem('匕首',1); addItem('急救包',1); addLog('搜刮到装备后进入避难所','get'); state.hunger -= 5; } },
+      { text: '不想冒险，原路返回去商店', next: 'shop' }
+    ]
+  },
+
+  deep_ruins_loot: {
+    title: '废墟深处',
+    location: '废墟深处 · 第1天',
+    text: [
+      '你蹲下身检查尸体。从装备来看，这些人应该是某个组织的成员。臂章上有一个<span class="purple">黑色太阳</span>的标志。',
+      '你拿到了匕首和急救包。翻找时还发现了一张<span class="blue">皱巴巴的纸条</span>，上面写着："避难所的入口在地下三层，密码是 0815"。'
+    ],
+    choices: [
+      { text: '记下密码，推开金属门进入', next: 'shelter_enter', action: function(){ state.flags.know_code = true; addLog('记下了避难所密码','event'); } },
+      { text: '不关心密码，直接推门进去', next: 'shelter_enter' },
+      { text: '觉得太危险，返回去商店方向', next: 'shop' }
+    ]
+  },
+
+  meet_woman_peaceful: {
+    title: '陌生女人',
+    location: '废墟商店 · 第1天',
+    text: [
+      '你慢慢举起双手，轻声说："我没有恶意。"'
+    ],
+    onEnter: function(){
+      if(hasItem('铁管')){
+        SCENES.meet_woman_peaceful.text.push('她看到你手里的铁管，身体缩了一下，但没有攻击。');
+      }
+      SCENES.meet_woman_peaceful.text.push('女人犹豫了很久，终于放下了小刀。她说她叫<span class="blue">林薇</span>，是一个流浪者的队伍打散后幸存下来的。');
+      SCENES.meet_woman_peaceful.text.push('"我已经两天没吃东西了……你愿意带上我吗？我可以帮忙，我懂一些医疗知识。"她的眼神里有恐惧，也有希望。');
+    },
+    choices: [
+      { text: '同意带她一起走', next: 'with_woman', action: function(){ state.flags.with_woman = true; state.flags.woman_name = '林薇'; addLog('林薇加入了队伍','event'); } },
+      { text: '给她留些食物，但各走各的', next: 'alone_after_woman', action: function(){ removeItem('矿泉水',1); removeItem('压缩饼干',1); addLog('给了林薇食物后分开','go'); } },
+      { text: '拒绝，独自离开', next: 'alone_road', action: function(){ state.trust -= 10; addLog('拒绝了林薇的请求','lose'); } }
+    ]
+  },
+
+  meet_woman_share: {
+    title: '分享食物',
+    location: '废墟商店 · 第1天',
+    text: [
+      '你把水和饼干分成两份，轻轻放在地上，然后后退几步。',
+      '女人愣了一下，眼眶泛红。她拿起食物，小口小口地吃着，然后放下小刀站起来。',
+      '"我叫<span class="blue">林薇</span>，"她说，"你是我三天来遇到的第一个好人。我……我能跟着你吗？我懂医疗，能帮上忙。"'
+    ],
+    choices: [
+      { text: '当然可以，一起走吧', next: 'with_woman', action: function(){ state.flags.with_woman = true; state.flags.woman_name = '林薇'; state.trust += 10; addLog('林薇带着感激加入了队伍','event'); } },
+      { text: '吃完就各自上路吧', next: 'alone_after_woman', action: function(){ addLog('与林薇告别','go'); } }
+    ]
+  },
+
+  meet_woman_threat: {
+    title: '对峙',
+    location: '废墟商店 · 第1天',
+    text: [
+      '你握紧铁管，沉声说："别动。"',
+      '女人脸色煞白，但手没有松开小刀。你们僵持了很久。',
+      '最终她开口了，声音发抖："我不想打架……我叫<span class="blue">林薇</span>，只是想找个安全的地方……"'
+    ],
+    choices: [
+      { text: '放下铁管，答应让她跟着', next: 'with_woman_reluctant', action: function(){ state.flags.with_woman = true; state.flags.woman_name = '林薇'; state.trust += 5; addLog('勉强同意林薇跟随','event'); } },
+      { text: '让她交出小刀才能走', next: 'take_knife_alone', action: function(){ addItem('小刀',1); state.trust -= 10; addLog('强行收走了林薇的小刀','lose'); } },
+      { text: '直接离开，不管她', next: 'alone_road', action: function(){ addLog('丢下林薇独自离开','go'); } }
+    ]
+  },
+
+  leave_shop_alone: {
+    title: '独自前行',
+    location: '废墟边缘 · 第1天',
+    text: [
+      '你把食物塞进口袋，头也不回地走了出去。身后传来一声很轻的叹息。',
+      '夜幕降临，废土的夜晚格外寒冷。你找了一个避风的角落坐下，啃着压缩饼干，听着远处不知名的声响。',
+      '第二天天亮后，你看到远处有一缕<span class="highlight">炊烟</span>升起。'
+    ],
+    choices: [
+      { text: '朝炊烟的方向走去', next: 'camp_approach', action: function(){ state.hunger -= 15; addLog('独自过夜，消耗了食物','lose'); } },
+      { text: '避开炊烟，绕路探索', next: 'bypass_camp', action: function(){ state.hunger -= 15; addLog('独自过夜，绕路前行','go'); } }
+    ]
+  },
+
+  alone_after_woman: {
+    title: '分道扬镳',
+    location: '废墟边缘 · 第1天',
+    text: [
+      '林薇看着你留下的食物，嘴唇动了动，最终只说了一句："谢谢你。"',
+      '你转身离开。走了一段路后回头，她还站在商店门口，朝你挥了挥手。',
+      '夜晚独自度过，冷风刺骨。天亮后你继续前行，不久发现地面上有<span class="blue">一串新鲜的脚印</span>，通向一个山洞方向。'
+    ],
+    choices: [
+      { text: '沿着脚印追过去', next: 'cave_footprints', action: function(){ state.hunger -= 15; addLog('独自过夜后追踪脚印','go'); } },
+      { text: '无视脚印，继续走自己的路', next: 'camp_approach', action: function(){ state.hunger -= 15; addLog('独自过夜后继续前行','go'); } }
+    ]
+  },
+
+  alone_road: {
+    title: '孤独的旅途',
+    location: '废土荒野 · 第1天',
+    text: [
+      '你拒绝了林薇，她的眼神暗淡下去，没有再说什么。',
+      '独自走在废土上，风沙打在脸上。黄昏时分你发现了一个<span class="highlight">破旧的加油站</span>，里面似乎还有东西。'
+    ],
+    choices: [
+      { text: '进去搜索', next: 'gas_station', action: function(){ state.hunger -= 10; addLog('独自来到加油站','go'); } },
+      { text: '天快黑了，找个地方过夜', next: 'camp_approach', action: function(){ state.hunger -= 15; addLog('在荒野中过夜','lose'); } }
+    ]
+  },
+
+  with_woman: {
+    title: '结伴同行',
+    location: '废墟边缘 · 第1天',
+    text: [
+      '林薇跟在你身后，走得有些吃力但始终没有掉队。她告诉你，核战后幸存者分成了很多派系，最大的两个是<span class="purple">"黑日军团"</span>和<span class="blue">"黎明阵线"</span>。',
+      '"黑日军团"靠掠夺为生，"黎明阵线"试图重建秩序但内部腐败严重。',
+      '天黑后，你们在一段废弃的高速公路桥下过夜。林薇从口袋里掏出<span class="green">一小块干肉</span>递给你。'
+    ],
+    choices: [
+      { text: '收下干肉，和她聊天了解更多信息', next: 'camp_with_woman', action: function(){ addItem('干肉',1); state.hunger += 10; state.trust += 5; addLog('林薇分享了干肉','get'); state.hunger -= 10; } },
+      { text: '不收，让她自己留着', next: 'camp_with_woman', action: function(){ state.trust += 10; addLog('拒绝了林薇的干肉','event'); state.hunger -= 10; } }
+    ]
+  },
+
+  with_woman_reluctant: {
+    title: '勉强的同伴',
+    location: '废墟边缘 · 第1天',
+    text: [
+      '林薇小心翼翼地跟在你身后，保持着距离。她不太敢和你说话，但偶尔会指出哪些路不能走。',
+      '"前面那片区域有辐射，"她小声说，"绕道会多走两个小时，但安全得多。"'
+    ],
+    choices: [
+      { text: '听她的，绕道走', next: 'detour_safe', action: function(){ state.trust += 10; state.hunger -= 20; addLog '听了林薇的建议绕道','go'); } },
+      { text: '不信她，直接穿过去', next: 'radiation_zone', action: function(){ state.trust -= 15; addLog('无视林薇警告闯入辐射区','lose'); } }
+    ]
+  },
+
+  take_knife_alone: {
+    title: '冷酷的选择',
+    location: '废墟商店 · 第1天',
+    text: [
+      '林薇颤抖着把小刀放在地上。你拿起来检查了一下——刀刃还算锋利。',
+      '她蹲在地上，不敢看你。你转身离开时，听到她低声说了一句什么，但没听清。',
+      '夜晚，你用小刀削了根木棍当手杖，在废墟中找了个相对安全的地方过夜。远处传来狼嚎声。'
+    ],
+    choices: [
+      { text: '警惕地度过一夜，天亮继续走', next: 'camp_approach', action: function(){ state.hunger -= 15; addLog('独自警戒过夜','go'); } },
+      { text: '往狼嚎相反方向走，试图找到安全区', next: 'bypass_camp', action: function(){ state.hunger -= 15; addLog('远离狼嚎声前行','go'); } }
+    ]
+  },
+
+  shelter_enter: {
+    title: '避难所',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你推开金属门，一股霉味扑面而来。里面是向下延伸的楼梯，墙壁上有应急灯发出昏黄的光。',
+      '楼梯走到尽头是一条走廊，两边有几扇门。走廊尽头有个<span class="highlight">电子门锁</span>，旁边有一个数字键盘。',
+    ],
+    onEnter: function(){
+      if(state.flags.know_code){
+        SCENES.shelter_enter.text.push('你想起纸条上的密码：<span class="green">0815</span>。');
+      } else {
+        SCENES.shelter_enter.text.push('门锁需要<span class="danger">四位密码</span>，你不知道密码。');
+      }
+      SCENES.shelter_enter.text.push('左边第一扇门虚掩着，里面传来滴水声。右边的门上写着"物资储备室"。');
+    },
+    choices: [
+      { text: '输入密码打开电子门', next: 'shelter_secret', req: { flag: 'know_code' }, action: function(){ addLog('用密码打开了避难所密室','event'); } },
+      { text: '进入虚掩的门', next: 'shelter_room' },
+      { text: '试图撬开物资储备室的门', next: 'shelter_supply', req: { item: '匕首' } },
+      { text: '觉得太危险，原路返回', next: 'camp_approach', action: function(){ addLog('离开避难所返回地面','go'); } }
+    ]
+  },
+
+  shelter_room: {
+    title: '避难所房间',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你推门进去，是一间不大的宿舍。几张铁床，柜子里有一些旧衣服和日用品。',
+      '在一本笔记本里，你发现了避难所最后几个人的记录。他们提到了一个叫<span class="purple">"方舟"</span>的地方——据说是一个大型地下城市，有干净的水源和食物。',
+      '记录的最后一页写着：<span class="danger">"方舟的入口在旧城区的水处理厂地下。不要相信黎明阵线的人，他们知道方舟的存在，但不会带外人去。"</span>'
+    ],
+    choices: [
+      { text: '记下方舟的信息，离开避难所去寻找', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_ark_distrust = true; addLog('发现了"方舟"的线索','event'); } },
+      { text: '继续在避难所探索其他房间', next: 'shelter_explore' },
+      { text: '在房间里休息一晚再走', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_ark_distrust = true; state.hp += 15; state.hunger -= 10; addLog('在避难所休息恢复了体力','get'); } }
+    ]
+  },
+
+  shelter_supply: {
+    title: '物资储备室',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你用匕首花了十几分钟撬开了门锁。里面虽然大部分货架已经空了，但你还是找到了一些东西：'
+    ],
+    onEnter: function(){
+      SCENES.shelter_supply.text.push('<span class="green">两瓶水、三包压缩饼干、一盒抗生素</span>。这对废土生存来说简直是宝藏。');
+      SCENES.shelter_supply.text.push('角落里还有一个上锁的保险箱，但没有工具很难打开。');
+    },
+    choices: [
+      { text: '拿走所有物资离开', next: 'road_to_ark', action: function(){ addItem('矿泉水',2); addItem('压缩饼干',3); addItem('抗生素',1); state.flags.know_ark = false; addLog('搜刮了避难所物资储备室','get'); } },
+      { text: '拿走物资，再试试打开保险箱', next: 'shelter_safebox' },
+      { text: '去其他房间看看有没有更多线索', next: 'shelter_room', action: function(){ addItem('矿泉水',2); addItem('压缩饼干',3); addItem('抗生素',1); addLog('搜刮了物资后继续探索','get'); } }
+    ]
+  },
+
+  shelter_secret: {
+    title: '避难所密室',
+    location: '地下避难所 · 第1天',
+    text: [
+      '密码正确，门缓缓打开。里面是一个小型指挥室，墙上挂着一幅巨大的<span class="purple">废土地图</span>，上面标注了各种据点和资源点。',
+      '地图上用红色圈出了<span class="highlight">"方舟"的位置</span>——在旧城区水处理厂的地下深处。还标注了沿途的危险区域和安全路线。',
+      '桌上有一台还能用的无线电，你试着打开，里面传出断断续续的人声：<span class="blue">"……黎明阵线……招募……水处理厂……集合……"</span>'
+    ],
+    choices: [
+      { text: '记下地图信息，按安全路线前往方舟', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_safe_route = true; addLog('获得了方舟的详细路线','event'); } },
+      { text: '用无线电回应黎明阵线', next: 'dawn_contact', action: function(){ state.flags.know_ark = true; state.flags.know_safe_route = true; state.flags.contact_dawn = true; addLog('通过无线电联系了黎明阵线','event'); } },
+      { text: '拿走地图，不信任任何组织，独自行动', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_safe_route = true; state.trust -= 10; addLog '拿走地图独自行动','go'); } }
+    ]
+  },
+
+  shelter_safebox: {
+    title: '保险箱',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你用匕首撬了一阵，保险箱纹丝不动。不过你在它下面发现了一块松动的地板，掀开后里面有一个铁盒。',
+      '铁盒里有一张<span class="blue">旧照片</span>和一个<span class="green"> Geiger 计数器</span>（辐射检测仪）。照片上是一群穿白大褂的人，背景是一座巨大的地下设施，写着"方舟计划"。'
+    ],
+    choices: [
+      { text: '带上所有东西离开避难所', next: 'road_to_ark', action: function(){ addItem('矿泉水',2); addItem('压缩饼干',3); addItem('抗生素',1); addItem('辐射检测仪',1); state.flags.know_ark = true; addLog('发现了方舟计划的线索和辐射检测仪','get'); } }
+    ]
+  },
+
+  shelter_explore: {
+    title: '继续探索',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你沿着走廊继续走。大部分房间都空了，但在一间类似医务室的房间里，你找到了<span class="green">一套完整的医疗包</span>。',
+      '在走廊尽头，你发现一扇门上写着"<span class="danger">危险品存放处</span>"，门上贴着生物危害标志。'
+    ],
+    choices: [
+      { text: '拿走医疗包，离开避难所', next: 'road_to_ark', action: function(){ addItem('医疗包',1); state.flags.know_ark = true; state.flags.know_ark_distrust = true; addLog '在医务室找到医疗包后离开','get'); } },
+      { text: '打开危险品存放处的门', next: 'danger_room' }
+    ]
+  },
+
+  danger_room: {
+    title: '危险品室',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你推开门，一股刺鼻的气味涌出。里面的容器大部分已经破碎，地上有不明液体的痕迹。',
+      '你突然感到一阵<span class="danger">眩晕</span>。这里的空气可能有毒。你必须在晕倒之前离开。',
+    ],
+    choices: [
+      { text: '立刻转身跑出去', next: 'road_to_ark', action: function(){ state.hp -= 20; state.flags.know_ark = true; state.flags.know_ark_distrust = true; addLog('在危险品室吸入毒气，身体受损','lose'); } },
+      { text: '屏住呼吸快速扫视，看看有没有有用的东西', next: 'danger_room_rush', action: function(){ state.hp -= 30; addLog('冒险在毒气中搜索','lose'); } }
+    ]
+  },
+
+  danger_room_rush: {
+    title: '毒气中的赌注',
+    location: '地下避难所 · 第1天',
+    text: [
+      '你强忍着眩晕快速扫视房间。在一个密封柜里，你看到了<span class="green">三支抗辐射药剂</span>和一把<span class="highlight">手枪</span>。',
+      '你抓起东西冲出房间，在大口喘气中听到身后的门"砰"地关上了。你剧烈咳嗽了好一会儿，但东西到手了。'
+    ],
+    choices: [
+      { text: '带着战利品离开', next: 'road_to_ark', action: function(){ addItem('抗辐射药剂',3); addItem('手枪',1); state.flags.know_ark = true; state.flags.know_ark_distrust = true; addLog('冒死获得了抗辐射药剂和手枪','get'); } }
+    ]
+  },
+
+  detour_safe: {
+    title: '安全绕道',
+    location: '废土荒野 · 第2天',
+    text: [
+      '绕道走了两个小时，路确实安全。林薇在路上给你指认了一些可食用的野生植物，补充了一些食物。',
+      '你们来到了一个<span class="highlight">十字路口</span>。左边有一条宽阔的路通向远处的建筑群，右边的小路通向山区。路上有一块路牌写着："旧城区 → 8km"。'
+    ],
+    onEnter: function(){
+      if(!state.flags.with_woman){
+        SCENES.detour_safe.text = ['你绕道走了两个小时，路确实安全，但更饿了。','你来到一个<span class="highlight">十字路口</span>。左边通向远处建筑群，右边小路通向山区。路牌写着："旧城区 → 8km"。'];
+      }
+    },
+    choices: [
+      { text: '走大路去旧城区', next: 'old_city_approach', action: function(){ addLog('前往旧城区','go'); } },
+      { text: '走小路进山区', next: 'mountain_path', action: function(){ addLog('绕道山区','go'); } }
+    ]
+  },
+
+  radiation_zone: {
+    title: '辐射区',
+    location: '辐射污染区 · 第2天',
+    text: [
+      '你无视林薇的警告径直走了过去。走了十几分钟后，皮肤开始发痒，嘴里有金属味。'
+    ],
+    onEnter: function(){
+      if(hasItem('辐射检测仪')){
+        SCENES.radiation_zone.text.push('你的辐射检测仪开始<span class="danger">疯狂报警</span>，读数远超安全值！');
+      } else {
+        SCENES.radiation_zone.text.push('你隐约觉得不对劲，但看不到任何异常。');
+      }
+    },
+    choices: [
+      { text: '立即服用抗辐射药剂（如有）', next: 'radiation_save', req: { item: '抗辐射药剂' }, action: function(){ removeItem('抗辐射药剂',1); state.hp -= 15; addLog('服用了抗辐射药剂','get'); } },
+      { text: '硬扛着继续走', next: 'radiation_hurt', action: function(){ state.hp -= 45; addLog('在辐射区受到严重伤害','lose'); } },
+      { text: '赶紧退回去', next: 'detour_safe', action: function(){ state.hp -= 15; state.trust -= 5; addLog('从辐射区退回','lose'); } }
+    ]
+  },
+
+  radiation_save: {
+    title: '药剂生效',
+    location: '废土荒野 · 第2天',
+    text: [
+      '你迅速注射了药剂。几分钟后，身体的不适感减轻了不少，但仍然很虚弱。',
+      '你安全通过了辐射区，前方就是旧城区的边缘。'
+    ],
+    choices: [
+      { text: '继续前往旧城区', next: 'old_city_approach', action: function(){ addLog('穿过辐射区到达旧城区','go'); } }
+    ]
+  },
+
+  radiation_hurt: {
+    title: '辐射病',
+    location: '辐射污染区 · 第2天',
+    text: [
+      '你硬撑着走出了辐射区，但身体已经严重受损。皮肤出现红斑，持续头痛，浑身无力。',
+      '你跌跌撞撞地走了很远，终于看到了前方的建筑群。'
+    ],
+    choices: [
+      { text: '咬牙继续走', next: 'old_city_sick', action: function(){ addLog('带伤到达旧城区','lose'); } }
+    ]
+  },
+
+  camp_with_woman: {
+    title: '桥下夜话',
+    location: '废弃公路桥下 · 第1天 夜',
+    text: [
+      '篝火（用废木头生的）噼啪作响。林薇在火光中说起了她的过去——她曾是黎明阵线的一名医疗兵，但因为目睹了内部的黑暗交易而逃了出来。',
+      '"他们口口声声说重建秩序，"她苦笑，"但高层把最好的物资留给自己，普通成员连干净水都喝不上。"',
+      '"不过……"她犹豫了一下，"我听说他们藏着一个秘密——一个叫<span class="purple">方舟</span>的地方。据说那里有完整的生活设施。"'
+    ],
+    choices: [
+      { text: '详细询问方舟的信息', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_ark_from_woman = true; state.trust += 5; addLog('从林薇口中得知方舟的消息','event'); } },
+      { text: '不感兴趣，明天继续赶路', next: 'road_to_ark', action: function(){ addLog('结束了夜谈，继续前行','go'); } }
+    ]
+  },
+
+  camp_approach: {
+    title: '炊烟的方向',
+    location: '废土荒野 · 第2天',
+    text: [
+      '你朝炊烟的方向走了大约一个小时，终于看到了一个<span class="highlight">营地</span>。几顶破旧的帐篷围成一圈，中间有人在烤什么东西。',
+      '营地的入口有两个持枪的人看守。看到你走近，其中一人喊道："站住！你是谁？是来加入的还是路过的？"'
+    ],
+    choices: [
+      { text: '说自己是路过的旅行者，只想换点水', next: 'camp_trade' },
+      { text: '表示想加入他们', next: 'camp_join', action: function(){ state.trust += 5; addLog('试图加入营地','event'); } },
+      { text: '不想接触陌生人，绕路走', next: 'bypass_camp', action: function(){ addLog('避开了营地','go'); } }
+    ]
+  },
+
+  bypass_camp: {
+    title: '绕路而行',
+    location: '废土荒野 · 第2天',
+    text: [
+      '你选择了绕路。又走了大半天，饥饿和疲惫不断加剧。',
+      '傍晚时分，你发现了一个<span class="highlight">废弃的加油站</span>，里面似乎还有东西。'
+    ],
+    choices: [
+      { text: '进去搜索物资', next: 'gas_station', action: function(){ state.hunger -= 10; addLog('在加油站搜索物资','go'); } },
+      { text: '太累了，在这里过夜', next: 'road_to_ark', action: function(){ state.hunger -= 15; state.hp += 5; addLog('在加油站过夜','go'); } }
+    ]
+  },
+
+  gas_station: {
+    title: '废弃加油站',
+    location: '废土公路旁 · 第2天',
+    text: [
+      '加油站的便利店被洗劫过了，但在收银台下面你找到了<span class="green">一瓶水和一包过期的巧克力</span>。',
+      '加油机旁边的工具箱里有一把<span class="highlight">扳手</span>，可能有用。后院停着一辆报废的皮卡，但引擎已经被拆走了。'
+    ],
+    choices: [
+      { text: '拿上所有东西继续走', next: 'road_to_ark', action: function(){ addItem('矿泉水',1); addItem('巧克力',1); addItem('扳手',1); addLog('在加油站搜刮到物资','get'); } },
+      { text: '仔细检查皮卡，看看有没有遗漏的东西', next: 'gas_station_search', action: function(){ addItem('矿泉水',1); addItem('巧克力',1); addLog('搜刮后检查皮卡','get'); } }
+    ]
+  },
+
+  gas_station_search: {
+    title: '皮卡的发现',
+    location: '废弃加油站 · 第2天',
+    text: [
+      '你翻遍了皮卡的每一个角落。在副驾驶座垫下面，你找到了一张折叠的<span class="blue">地图</span>和一个<span class="green">满弹匣的手枪</span>。',
+      '地图上用红笔标注了一个位置——旧城区水处理厂，旁边写着"<span class="purple">方舟入口</span>"。'
+    ],
+    choices: [
+      { text: '带上地图和枪，前往水处理厂', next: 'road_to_ark', action: function(){ addItem('手枪',1); state.flags.know_ark = true; addLog '发现了方舟入口地图和手枪','get'); } }
+    ]
+  },
+
+  cave_footprints: {
+    title: '追踪脚印',
+    location: '山脚洞穴 · 第2天',
+    text: [
+      '脚印通向一个不太深的山洞。洞里比外面暖和，地上有篝火的灰烬，说明最近有人在这里待过。',
+      '在洞壁的一个缝隙里，你发现了一个藏起来的<span class="green">包裹</span>——里面有几瓶水、压缩饼干和一封信。'
+    ],
+    choices: [
+      { text: '拿走物资，读信', next: 'cave_letter' },
+      { text: '只拿物资，不读信', next: 'road_to_ark', action: function(){ addItem('矿泉水',3); addItem('压缩饼干',2); addLog('在山洞发现物资','get'); } }
+    ]
+  },
+
+  cave_letter: {
+    title: '山洞中的信',
+    location: '山脚洞穴 · 第2天',
+    text: [
+      '信上写着：'
+    ],
+    onEnter: function(){
+      SCENES.cave_letter.text.push('"如果你看到这封信，说明我已经不在了。方舟是真实存在的，入口在旧城区水处理厂地下三层。密码是我女儿的生日——<span class="green">0523</span>。不要信任黎明阵线的陈指挥官，他是出卖我们的人。——老周"');
+    },
+    choices: [
+      { text: '记下密码，前往水处理厂', next: 'road_to_ark', action: function(){ addItem('矿泉水',3); addItem('压缩饼干',2); state.flags.know_ark = true; state.flags.know_ark_code = true; addLog('获得了方舟的入口密码','event'); } }
+    ]
+  },
+
+  mountain_path: {
+    title: '山间小路',
+    location: '废土山区 · 第2天',
+    text: [
+      '山路崎岖难行，但沿途偶尔能找到一些野果和山泉水，饥饿感有所缓解。',
+      '翻过一座山头后，你看到了山谷里的旧城区全貌——一片灰蒙蒙的建筑群，中央有一座<span class="highlight">高耸的水塔</span>，那应该就是水处理厂。'
+    ],
+    choices: [
+      { text: '下山直奔水处理厂', next: 'old_city_approach', action: function(){ state.hunger += 10; addLog('翻山到达旧城区外围','go'); } }
+    ]
+  },
+
+  dawn_contact: {
+    title: '黎明阵线',
+    location: '无线电通讯 · 第1天',
+    text: [
+      '你按下通话键："这里是……幸存者，收到了你们的消息。"',
+      '对面沉默了几秒，然后一个沙哑的声音说："你是独自一人？位置在哪？我们明天会在旧城区水处理厂集合，如果你能到达那里，我们可以带你进方舟。"'
+    ],
+    choices: [
+      { text: '答应前往集合', next: 'road_to_ark', action: function(){ state.flags.dawn_promise = true; state.flags.know_ark = true; state.flags.know_safe_route = true; addLog('答应了与黎明阵线集合','event'); } },
+      { text: '不置可否，关掉无线电自己走', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_safe_route = true; addLog '关掉无线电独自行动','go'); } }
+    ]
+  },
+
+  camp_trade: {
+    title: '营地交易',
+    location: '幸存者营地 · 第2天',
+    text: [
+      '守卫打量了你一番，让你进去了。营地里有十几个人，看起来大多是普通幸存者。',
+      '一个中年男人走过来，自称是营地的"交易官"。你可以用物品换取食物或信息。'
+    ],
+    choices: [
+      { text: '用铁管换一瓶水和一份食物', next: 'camp_trade_water', req: { item: '铁管' }, action: function(){ removeItem('铁管',1); addItem('矿泉水',1); addItem('烤肉',1); addLog('用铁管换到了食物和水','event'); } },
+      { text: '询问方舟的消息', next: 'camp_info_ark', action: function(){ addLog('在营地打听方舟消息','event'); } },
+      { text: '休息一晚，明天继续走', next: 'road_to_ark', action: function(){ state.hp += 10; state.hunger -= 5; addLog('在营地休息了一晚','get'); } }
+    ]
+  },
+
+  camp_trade_water: {
+    title: '交易完成',
+    location: '幸存者营地 · 第2天',
+    text: [
+      '交易官递给你水和烤肉。"你运气不错，最近路过的人不多。对了，你要是往旧城区走，小心黎明阵线的人，他们最近在拉人。"'
+    ],
+    choices: [
+      { text: '追问黎明阵线的情况', next: 'camp_info_dawn', action: function(){ addLog('打听黎明阵线情报','event'); } },
+      { text: '谢过他，离开营地', next: 'road_to_ark', action: function(){ addLog('离开营地继续前行','go'); } }
+    ]
+  },
+
+  camp_join: {
+    title: '加入营地',
+    location: '幸存者营地 · 第2天',
+    text: [
+      '守卫带你见了营地的领导者——一个独眼的老兵，大家都叫他<span class="highlight">老胡</span>。',
+      '"欢迎加入，"老胡说，"我们这里不搞什么大组织，就是互相帮忙活下去。你有什么本事？"'
+    ],
+    choices: [
+      { text: '说自己会打架，可以负责守夜', next: 'camp_joined', action: function(){ state.flags.camp_role = 'guard'; addLog('加入了营地负责守夜','event'); } },
+      { text: '说自己擅长搜索物资', next: 'camp_joined', action: function(){ state.flags.camp_role = 'scavenger'; addLog('加入了营地负责搜索','event'); } },
+      { text: '问这里知不知道方舟的事', next: 'camp_info_ark', action: function(){ addLog('在营地打听方舟','event'); } }
+    ]
+  },
+
+  camp_joined: {
+    title: '营地生活',
+    location: '幸存者营地 · 第2-3天',
+    text: [
+      '你在营地待了两天，帮忙做事换取食物。营地的人对你还算友好。'
+    ],
+    onEnter: function(){
+      if(state.flags.camp_role === 'guard'){
+        SCENES.camp_joined.text.push('守夜时你发现营地北面偶尔有武装人员巡逻——像是黎明阵线的哨兵。老胡说他们一直在监视这个营地。');
+      } else {
+        SCENES.camp_joined.text.push('搜索时你在废墟里发现了一些有用的零件，老胡很满意。不过你也注意到了营地周围不时有陌生的脚印。');
+      }
+      SCENES.camp_joined.text.push('第三天早上，老胡找到你："我想和你谈谈方舟的事。我知道入口在哪里，但我们需要更多人手才能到达。你要不要和我一起去？"');
+    },
+    choices: [
+      { text: '同意和老胡一起去方舟', next: 'road_to_ark', action: function(){ state.flags.with_laohu = true; state.flags.know_ark = true; state.flags.know_safe_route = true; state.trust += 15; state.hp += 10; addLog('与老胡结伴前往方舟','event'); } },
+      { text: '谢绝好意，独自去方舟', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; addLog('独自前往方舟','go'); } },
+      { text: '留在营地不走了', next: 'ending_camp', action: function(){ addLog('选择留在营地','event'); } }
+    ]
+  },
+
+  camp_info_ark: {
+    title: '方舟的消息',
+    location: '幸存者营地 · 第2天',
+    text: [
+      '交易官的表情变了变："方舟？你怎么知道方舟？……算了，知道的人不少。据说在旧城区的水处理厂下面。但入口有密码，而且黎明阵线已经派人守在那里了。"',
+      '"如果你想进去，要么加入他们，要么……"他压低声音，"要么找到另一条路。听说水处理厂的排水系统连着地下通道，但那里可能有变异生物。"'
+    ],
+    choices: [
+      { text: '记下排水系统的信息，前往水处理厂', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_drain = true; addLog('得知了方舟的替代入口','event'); } },
+      { text: '继续在营地待着', next: 'camp_join', action: function(){ addLog('留在营地了解更多','go'); } }
+    ]
+  },
+
+  camp_info_dawn: {
+    title: '黎明阵线情报',
+    location: '幸存者营地 · 第2天',
+    text: [
+      '"黎明阵线？"交易官冷笑一声，"他们说是重建秩序，其实跟黑日军团半斤八两。他们控制了旧城区，打着方舟的旗号招揽人，但真正能进方舟的只有他们高层。"',
+      '"不过我听说，水处理厂底下还有一条老排水通道，也许能绕过他们直接进入地下。"'
+    ],
+    choices: [
+      { text: '记下排水通道的信息，前往水处理厂', next: 'road_to_ark', action: function(){ state.flags.know_ark = true; state.flags.know_drain = true; addLog('得知了排水通道信息','event'); } },
+      { text: '离开营地', next: 'road_to_ark', action: function(){ addLog('离开营地','go'); } }
+    ]
+  },
+
+  old_city_approach: {
+    title: '旧城区外围',
+    location: '旧城区边缘 · 第3天',
+    text: [
+      '经过三天的跋涉，你终于到达了旧城区。这里的建筑比之前经过的废墟保存得更完整，但也更危险。',
+      '水处理厂在城区中央，一座灰色的混凝土建筑，旁边是那座标志性的<span class="highlight">水塔</span>。'
+    ],
+    onEnter: function(){
+      if(state.flags.know_safe_route){
+        SCENES.old_city_approach.text.push('你按照地图上的安全路线前进，避开了大部分危险区域。');
+      }
+      if(state.flags.with_woman){
+        SCENES.old_city_approach.text.push('林薇紧张地看着前方："我以前跟黎明阵线的人来过这里……正门肯定有守卫。"');
+      }
+      if(state.flags.with_laohu){
+        SCENES.old_city_approach.text.push('老胡拍了拍你的肩膀："我来过一次，正门走不通。听我的。"');
+      }
+    },
+    choices: [
+      { text: '从正门接近，试图交涉进入', next: 'factory_front' },
+      { text: '绕到侧面找排水通道入口', next: 'factory_drain', req: { flag: 'know_drain' }, action: function(){ addLog('绕到侧面寻找排水通道','go'); } },
+      { text: '找隐蔽的位置观察一下情况', next: 'factory_observe', action: function(){ addLog('在水处理厂外观察','go'); } }
+    ]
+  },
+
+  old_city_sick: {
+    title: '带伤到达',
+    location: '旧城区边缘 · 第3天',
+    text: [
+      '你拖着受伤的身体终于看到了水处理厂。视线有些模糊，但还能辨认方向。',
+      '你已经快要撑不住了，必须尽快做出决定。'
+    ],
+    choices: [
+      { text: '从正门走过去求救', next: 'factory_front_sick' },
+      { text: '绕到侧面找其他入口', next: 'factory_drain', action: function(){ addLog('带伤寻找侧门','go'); } }
+    ]
+  },
+
+  factory_observe: {
+    title: '观察情况',
+    location: '水处理厂外 · 第3天',
+    text: [
+      '你蹲在一栋废弃建筑的二楼，用视线搜索水处理厂的情况。',
+      '正门有两个持枪守卫，穿着有<span class="blue">黎明阵线</span>标志的制服。厂区右侧有一条排水沟，通向一扇锈迹斑斑的铁门——那就是排水通道的入口。',
+      '你还注意到厂区后方有一小队人在巡逻，大概四五个人。'
+    ],
+    choices: [
+      { text: '趁巡逻队走远时，从排水通道潜入', next: 'factory_drain', action: function(){ addLog('趁巡逻间隙潜入排水通道','go'); } },
+      { text: '尝试从正门混进去', next: 'factory_front' },
+      { text: '等天黑再行动', next: 'factory_night', action: function(){ state.hunger -= 10; addLog('等到天黑再行动','go'); } }
+    ]
+  },
+
+  factory_night: {
+    title: '夜色掩护',
+    location: '水处理厂外 · 第3天 夜',
+    text: [
+      '天黑后，守卫减少了一半，巡逻队也回到了室内。这是最好的机会。'
+    ],
+    choices: [
+      { text: '从排水通道潜入', next: 'factory_drain', action: function(){ addLog('趁夜色潜入排水通道','go'); } },
+      { text: '翻墙进入厂区', next: 'factory_wall', action: function(){ addLog('翻墙进入水处理厂','go'); } }
+    ]
+  },
+
+  factory_wall: {
+    title: '翻墙',
+    location: '水处理厂内 · 第3天 夜',
+    text: [
+      '你翻过了围墙，落在厂区内。借着月光你快速移动到主建筑旁边。一扇窗户虚掩着，里面有微弱的光。'
+    ],
+    choices: [
+      { text: '从窗户翻进去', next: 'factory_inside' },
+      { text: '继续找排水通道入口', next: 'factory_drain', action: function(){ addLog('在厂区内寻找排水通道','go'); } }
+    ]
+  },
+
+  factory_front: {
+    title: '正门交涉',
+    location: '水处理厂正门 · 第3天',
+    text: [
+      '你走到正门，举起双手示意自己没有武器。守卫用枪指着你，喝令你停下。',
+      '"什么人！报上名来！"'
+    ],
+    onEnter: function(){
+      if(state.flags.contact_dawn || state.flags.dawn_promise){
+        SCENES.factory_front.text.push('你报出了无线电通讯的暗号。守卫的表情变了，互相看了一眼，其中一个拿起对讲机说了几句。');
+        SCENES.factory_front.text.push('片刻后，一个穿军官制服的人走过来——<span class="blue">陈指挥官</span>，四十多岁，目光锐利。"你就是无线电里那个人？跟我来。"');
+      } else {
+        SCENES.factory_front.text.push('你表明自己是来寻求庇护的幸存者。守卫搜了你的身，没收了武器。');
+        SCENES.factory_front.text.push('一个<span class="blue">军官</span>走过来审视着你："想进方舟？可以，但你需要先为我们做件事。"');
+      }
+    },
+    choices: [
+      { text: '跟他们进去', next: 'factory_inside_dawn', action: function(){ addLog('跟随黎明阵线进入水处理厂','go'); } },
+      { text: '拒绝，转身离开去找其他入口', next: 'factory_drain', action: function(){ state.trust -= 10; addLog('拒绝黎明阵线，寻找其他入口','go'); } }
+    ]
+  },
+
+  factory_front_sick: {
+    title: '求救',
+    location: '水处理厂正门 · 第3天',
+    text: [
+      '你跌跌撞撞走到正门就倒下了。守卫看到你的状况，把你抬了进去。你隐约听到有人说："辐射病……先送去医疗室……"'
+    ],
+    choices: [
+      { text: '在意识模糊中被带走', next: 'ending_rescued', action: function(){ addLog('在水处理厂前倒下被救','lose'); } }
+    ]
+  },
+
+  factory_drain: {
+    title: '排水通道',
+    location: '水处理厂地下 · 第3天',
+    text: [
+      '排水通道的铁门锈得厉害，你用力推了几下才打开。里面是黑暗潮湿的隧道，污水已经干涸，但气味令人作呕。',
+      '走了大约十分钟，隧道分成了两条岔路。左边传来微弱的水声，右边似乎更宽敞一些。'
+    ],
+    onEnter: function(){
+      if(state.flags.with_woman){
+        SCENES.factory_drain.text.push('林薇打开了她从营地带的小手电："我走前面。"');
+      }
+      if(state.flags.with_laohu){
+        SCENES.factory_drain.text.push('老胡低声说："我以前走过右边那条，但不太确定。你选吧。"');
+      }
+    },
+    choices: [
+      { text: '走左边有水声的路', next: 'drain_water' },
+      { text: '走右边宽敞的路', next: 'drain_wide' },
+      { text: '如果有人同行，让同伴先探路', next: 'drain_wide', req: { flag: 'with_woman' }, action: function(){ addLog('让林薇先探路','event'); } }
+    ]
+  },
+
+  drain_water: {
+    title: '水路',
+    location: '地下通道 · 第3天',
+    text: [
+      '你沿着有水声的路走，水越来越深，很快没过了脚踝。空气也越来越冷。',
+      '突然，水面下有什么东西<span class="danger">碰了你的腿</span>——一下，又一下。'
+    ],
+    choices: [
+      { text: '快速跑过去', next: 'drain_water_run', action: function(){ state.hp -= 10; addLog('在水中奔跑，被不明生物刮伤','lose'); } },
+      { text: '慢慢后退，换另一条路', next: 'drain_wide', action: function(){ addLog('退回来换了路线','go'); } },
+      { text: '用手中的武器试探水面', next: 'drain_water_fight', req: { item: '手枪' }, action: function(){ addLog('向水中开枪','event'); } }
+    ]
+  },
+
+  drain_water_run: {
+    title: '冲过水路',
+    location: '地下通道 · 第3天',
+    text: [
+      '你拼命奔跑，水下的东西追了几步就放弃了。你冲到了通道尽头——一扇铁门，上面有一个电子密码锁。',
+      '密码是四位数字。'
+    ],
+    onEnter: function(){
+      if(state.flags.know_ark_code){
+        SCENES.drain_water_run.text.push('你想起了老周信中的密码：<span class="green">0523</span>。');
+      } else {
+        SCENES.drain_water_run.text.push('你不知道密码。');
+      }
+    },
+    choices: [
+      { text: '输入密码 0523', next: 'ark_entrance', req: { flag: 'know_ark_code' }, action: function(){ addLog('用密码打开了方舟入口','event'); } },
+      { text: '尝试其他密码', next: 'ark_entrance', req: { flag: 'know_code' }, action: function(){ addLog('用避难所密码打开了门','event'); } },
+      { text: '不知道密码，原路返回找正门', next: 'factory_front', action: function(){ addLog('没有密码，返回正门','go'); } }
+    ]
+  },
+
+  drain_water_fight: {
+    title: '水中激战',
+    location: '地下通道 · 第3天',
+    text: [
+      '你朝水面开了两枪，水中传来一声尖厉的嘶叫。一个<span class="danger">变异生物</span>跃出水面——像是一条巨大的盲鱼，长满了畸形鳞片。',
+      '中弹后它疯狂挣扎，然后沉入水中不再动弹。水面恢复了平静。'
+    ],
+    choices: [
+      { text: '继续前进', next: 'drain_water_run' }
+    ]
+  },
+
+  drain_wide: {
+    title: '宽敞通道',
+    location: '地下通道 · 第3天',
+    text: [
+      '这条路确实宽敞，地面上有旧推车的痕迹。走了不久，你看到了一个<span class="highlight">地下枢纽</span>——几条通道交汇的地方，中间有一个小型控制台。',
+      '控制台上有一盏灯还亮着，旁边有一本操作手册。墙上用喷漆写着大大的箭头：<span class="accent">方舟 →</span>'
+    ],
+    choices: [
+      { text: '按箭头方向走', next: 'ark_entrance', action: function(){ addLog '沿标记找到方舟入口','go'); } },
+      { text: '查看操作手册', next: 'drain_manual', action: function(){ addLog('阅读了操作手册','event'); } },
+      { text: '在枢纽休息一下再走', next: 'ark_entrance', action: function(){ state.hp += 5; state.hunger -= 5; addLog('在地下枢纽短暂休息','get'); } }
+    ]
+  },
+
+  drain_manual: {
+    title: '操作手册',
+    location: '地下枢纽 · 第3天',
+    text: [
+      '手册上记录了方舟的基本情况：这是一个战前建造的地下避难设施，可容纳约2000人，有完整的水循环系统、农业区和能源系统。',
+      '最后一页用笔写着："方舟入口密码已更改为 <span class="green">0523</span>。——安全主管 周明远"'
+    ],
+    choices: [
+      { text: '记下密码，前往方舟入口', next: 'ark_entrance', action: function(){ state.flags.know_ark_code = true; addLog('从手册中获得了方舟密码','get'); } }
+    ]
+  },
+
+  factory_inside: {
+    title: '潜入厂区',
+    location: '水处理厂内 · 第3天',
+    text: [
+      '你进入了主建筑的内部。走廊里有昏暗的灯光，两边是各种管道和阀门。',
+      '你找到了通往地下的楼梯，但楼梯口有一个<span class="danger">武装守卫</span>。'
+    ],
+    choices: [
+      { text: '如果有人同行，让同伴引开守卫', next: 'ark_entrance', req: { flag: 'with_woman' }, action: function(){ addLog('林薇引开了守卫','event'); } },
+      { text: '如果有枪，尝试偷偷解决', next: 'ark_entrance', req: { item: '手枪' }, action: function(){ state.trust -= 10; addLog('悄悄制服了守卫','lose'); } },
+      { text: '找其他路下去', next: 'factory_drain', action: function(){ addLog('寻找其他入口','go'); } }
+    ]
+  },
+
+  factory_inside_dawn: {
+    title: '黎明阵线内部',
+    location: '水处理厂内 · 第3天',
+    text: [
+      '陈指挥官带你穿过几道门，来到了一间办公室。墙上挂着方舟的平面图。',
+      '"方舟确实存在，"陈指挥官说，"而且已经启动了。但资源有限，我们不能让所有人都进去。你需要证明自己的价值。"'
+    ],
+    choices: [
+      { text: '问需要做什么', next: 'dawn_mission' },
+      { text: '质疑他凭什么决定谁能进去', next: 'dawn_confront', action: function(){ state.trust -= 15; addLog('与陈指挥官对峙','lose'); } },
+      { text: '假装同意，找机会自己行动', next: 'dawn_fake', action: function(){ addLog('假装配合黎明阵线','event'); } }
+    ]
+  },
+
+  dawn_mission: {
+    title: '任务',
+    location: '水处理厂 · 第3天',
+    text: [
+      '"厂区北面的仓库里有一批被黑日军团抢走的物资，"陈指挥官说，"把它夺回来，你就有资格进方舟。"'
+    ],
+    choices: [
+      { text: '接受任务', next: 'dawn_raid', action: function(){ addLog('接受了黎明阵线的任务','event'); } },
+      { text: '拒绝，说自己去找其他入口', next: 'factory_drain', action: function(){ addLog('拒绝任务离开','go'); } }
+    ]
+  },
+
+  dawn_confront: {
+    title: '对峙',
+    location: '水处理厂 · 第3天',
+    text: [
+      '陈指挥官的脸色沉了下来。"你不了解情况就别乱说话。方舟的资源只够养活有限的人，我们不筛选，最后所有人都得死。"'
+    ],
+    choices: [
+      { text: '沉默，找机会离开', next: 'factory_drain', action: function(){ addLog('沉默后找机会离开','go'); } },
+      { text: '继续争辩', next: 'ending_exiled', action: function(){ addLog('与陈指挥官激烈争吵','lose'); } }
+    ]
+  },
+
+  dawn_fake: {
+    title: '伪装配合',
+    location: '水处理厂 · 第3天',
+    text: [
+      '你假装顺从。趁陈指挥官不注意时，你记下了墙上方舟平面图上的入口位置——原来除了正门的电梯，还有一个<span class="highlight">货运通道</span>连着地下二层。'
+    ],
+    choices: [
+      { text: '找机会偷偷前往货运通道', next: 'ark_entrance', action: function(){ addLog('发现了货运通道，偷偷前往','event'); } },
+      { text: '先接受任务获取信任', next: 'dawn_raid', action: function(){ addLog('假装接受任务','event'); } }
+    ]
+  },
+
+  dawn_raid: {
+    title: '夺回物资',
+    location: '旧城区仓库 · 第3天',
+    text: [
+      '你跟着黎明阵线的小队来到仓库。门口有两个黑日军团的人把守。',
+      '战斗很短暂，对方人不多。你冲进去后发现仓库里不仅有物资，还有<span class="green">几箱未开封的医疗用品和食物</span>。'
+    ],
+    choices: [
+      { text: '把物资搬回去交差', next: 'dawn_reward', action: function(){ state.trust += 10; addLog('完成了任务','event'); } },
+      { text: '偷偷藏一些在自己包里', next: 'dawn_reward', action: function(){ addItem('医疗包',1); addItem('压缩饼干',3); state.trust += 5; addLog('完成任务并私藏了物资','get'); } }
+    ]
+  },
+
+  dawn_reward: {
+    title: '回报',
+    location: '水处理厂 · 第3天',
+    text: [
+      '"不错，"陈指挥官露出满意的笑容，"你明天就可以进方舟了。先去休息吧。"'
+    ],
+    onEnter: function(){
+      if(state.flags.with_woman){
+        SCENES.dawn_reward.text.push('林薇在你耳边低声说："不要信他。我以前见过这种人，他们会先把你骗进去，然后……"她没有说完。');
+      }
+    },
+    choices: [
+      { text: '按计划等明天进方舟', next: 'ending_dawn_ark' },
+      { text: '今晚就找机会自己去方舟入口', next: 'ark_entrance', action: function(){ addLog('决定不信任黎明阵线，独自行动','event'); } },
+      { text: '如果有同伴，和她商量', next: 'woman_plan', req: { flag: 'with_woman' } }
+    ]
+  },
+
+  woman_plan: {
+    title: '密谋',
+    location: '水处理厂 · 第3天 夜',
+    text: [
+      '"我有一个办法，"林薇说，"我以前在这里工作时知道一条维修通道，可以绕过电梯直接到地下三层。入口在锅炉房后面。但只能通过一个人，而且不知道通道有没有塌方。"'
+    ],
+    choices: [
+      { text: '走维修通道，让林薇在外面接应', next: 'ark_entrance', action: function(){ state.flags.used_maintenance = true; state.trust += 10; addLog('通过维修通道潜入方舟','event'); } },
+      { text: '还是等明天跟黎明阵线进去比较安全', next: 'ending_dawn_ark', action: function(){ addLog('选择跟随黎明阵线进入方舟','go'); } }
+    ]
+  },
+
+  ark_entrance: {
+    title: '方舟入口',
+    location: '方舟入口 · 第3天',
+    text: [
+      '你站在方舟的大门前。这是一扇厚重的气密门，旁边有一个控制面板。门上的指示灯显示：系统运行中。'
+    ],
+    onEnter: function(){
+      if(state.flags.used_maintenance){
+        SCENES.ark_entrance.text.push('你从维修通道爬了出来，身上全是灰尘。但面前就是方舟的主入口了。');
+      }
+      if(state.flags.know_ark_code){
+        SCENES.ark_entrance.text.push('你输入密码 <span class="green">0523</span>。');
+      } else if(state.flags.know_code){
+        SCENES.ark_entrance.text.push('你输入密码 <span class="green">0815</span>。');
+      } else {
+        SCENES.ark_entrance.text.push('你不知道密码，但控制面板上有一个<span class="highlight">紧急开启按钮</span>——只能用一次，会触发警报。');
+      }
+    },
+    choices: [
+      { text: '输入密码开门', next: 'ending_ark', req: { flag: 'know_ark_code' }, action: function(){ addLog('输入密码进入方舟','event'); } },
+      { text: '输入密码开门（避难所密码）', next: 'ending_ark', req: { flag: 'know_code' }, action: function(){ addLog('用避难所密码进入方舟','event'); } },
+      { text: '按下紧急开启按钮', next: 'ending_ark_alert', action: function(){ addLog('触发警报强行进入方舟','event'); } }
+    ]
+  },
+
+  // ========== 结局 ==========
+  ending_ark: {
+    title: '方舟',
+    location: '方舟内部 · 第3天',
+    text: [
+      '气密门缓缓打开，一股温暖的空气涌出。你走进了方舟——',
+      '明亮的人工照明照亮了一个巨大的地下空间。你能看到绿色的农田区域、整洁的居住舱、闪烁的能源装置。这里就像另一个世界。',
+      '几个穿着白大褂的人惊讶地看着你。其中一个走过来："你是怎么找到这里的？……算了，先进来吧。"'
+    ],
+    onEnter: function(){
+      if(state.flags.with_woman){
+        SCENES.ending_ark.text.push('林薇跟在你身后走进来，眼眶泛红："我们……真的到了。"');
+      }
+      if(state.flags.with_laohu){
+        SCENES.ending_ark.text.push('老胡环顾四周，吹了声口哨："这才是人该住的地方啊。"');
+      }
+      SCENES.ending_ark.text.push('不管外面是怎样的废土，至少在这里，你看到了希望的火种。');
+    },
+    ending: { type: 'good', title: '方舟之门', desc: '你成功进入了方舟——人类文明最后的火种。在这片地下绿洲中，你或许能找到重新开始的勇气。' },
+    choices: []
+  },
+
+  ending_ark_alert: {
+    title: '警报',
+    location: '方舟入口 · 第3天',
+    text: [
+      '你按下紧急按钮，刺耳的警报声响彻整个通道。气密门打开了，但同时你听到了远处传来急促的脚步声。',
+      '你冲进方舟，身后的门缓缓关闭。但几个全副武装的人已经追到了门口——是黎明阵线的人。',
+      '"关闭方舟外门！不能让他们进来！"白大褂中有人喊道。',
+      '外门关上了。你和追兵被隔在了两个世界。你安全了，但你也知道，方舟和外面的世界之间的桥梁，可能就此断裂。'
+    ],
+    ending: { type: 'neutral', title: '断裂的桥梁', desc: '你进入了方舟，但代价是彻底切断了方舟与外界的联系。外面的幸存者再也无法到达这里。你安全了，但这份安全带着沉重的代价。' },
+    choices: []
+  },
+
+  ending_dawn_ark: {
+    title: '黎明之约',
+    location: '方舟内部 · 第4天',
+    text: [
+      '第二天，陈指挥官信守承诺带你进了方舟。但当你进入后才发现，所谓"进方舟"不过是被安排在最外层的临时营区——和外面没什么区别。',
+      '方舟的核心区域只有"高级成员"才能进入。你只是从一片废土被转移到了另一片更小的废土。'
+    ],
+    onEnter: function(){
+      if(state.flags.with_woman){
+        SCENES.ending_dawn_ark.text.push('林薇拉了拉你的袖子，低声说："我说了吧……"');
+      }
+    },
+    ending: { type: 'bad', title: '虚假的黎明', desc: '黎明阵线并没有带你进入真正的方舟，只是把你当作廉价劳动力。你活了下来，但失去了自由和尊严。或许有一天你能找到真正的出路。' },
+    choices: []
+  },
+
+  ending_rescued: {
+    title: '被救',
+    location: '方舟医疗室 · 第3天',
+    text: [
+      '你醒来时躺在一张干净的病床上。白色的天花板，明亮的灯光，还有消毒水的味道——这些你已经很久没有感受过的东西。',
+      '一个医生告诉你，你因为严重辐射病被送进了方舟的医疗区。经过治疗你已经脱离了危险，但辐射的长期影响还不好说。',
+      '"你很幸运，"医生说，"不是每个倒在门口的人都能被救回来。"'
+    ],
+    ending: { type: 'neutral', title: '侥幸生还', desc: '你被方舟的人救了，但辐射的后遗症将伴随你余生。你活下来了，却永远无法像正常人一样生活。这是废土给每个人的馈赠。' },
+    choices: []
+  },
+
+  ending_exiled: {
+    title: '驱逐',
+    location: '水处理厂外 · 第3天',
+    text: [
+      '"把他赶出去！"陈指挥官一声令下，两个士兵把你架了出去。',
+      '你被扔在了水处理厂外面，身上只有原来携带的物资。身后的铁门"哐"地关上了。',
+      '你站在废土中，看着头顶灰蒙蒙的天空。路还在脚下。'
+    ],
+    ending: { type: 'bad', title: '被驱逐者', desc: '你因为直言不讳被黎明阵线驱逐。但你还活着，路还在脚下。也许有一天你能找到属于自己的出路。' },
+    choices: []
+  },
+
+  ending_camp: {
+    title: '营地',
+    location: '幸存者营地 · 第7天',
+    text: [
+      '你选择留在了营地。日子虽然艰苦，但至少有人陪伴。',
+      '一周后，老胡在一次搜索任务中受了伤。林薇——不知什么时候也来到了营地——用她的医术治好了老胡。营地的人越来越多了。',
+      '你偶尔会想，方舟到底是什么样的。但看着篝火旁人们的笑脸，你觉得也许答案没那么重要。'
+    ],
+    ending: { type: 'good', title: '篝火与星光', desc: '你没有找到方舟，但你找到了另一个"方舟"——人与人之间的信任和温暖。在废土上，也许这才是最珍贵的东西。这是只有选择留下的人才能看到的结局。' },
+    choices: []
+  }
+};
+
+// ========== 工具函数 ==========
+function hasItem(name) { return state.items[name] && state.items[name] > 0; }
+function addItem(name, count) { state.items[name] = (state.items[name] || 0) + count; }
+function removeItem(name, count) {
+  if (state.items[name]) {
+    state.items[name] -= count;
+    if (state.items[name] <= 0) delete state.items[name];
+  }
+}
+function addLog(text, type) {
+  state.logs.unshift({ text: text, type: type || 'go' });
+  if (state.logs.length > 30) state.logs.length = 30;
+}
+
+function canChoose(choice) {
+  if (choice.req) {
+    if (choice.req.item && !hasItem(choice.req.item)) return false;
+    if (choice.req.flag && !state.flags[choice.req.flag]) return false;
+  }
+  return true;
+}
+
+// ========== 场景渲染 ==========
+function renderScene(id) {
+  var scene = SCENES[id];
+  if (!scene) return;
+  state.scene = id;
+  state.steps++;
+
+  // 记录探索
+  if (state.explored.indexOf(id) === -1) {
+    state.explored.push(id);
+  }
+
+  // 标题和位置
+  document.getElementById('sceneTitle').textContent = scene.title;
+  document.getElementById('sceneLocation').textContent = scene.location;
+
+  // 动态文本（onEnter）
+  if (scene.onEnter) {
+    scene.text = scene.onEnter();
+  }
+
+  // 文本内容
+  var textHtml = '';
+  for (var i = 0; i < scene.text.length; i++) {
+    textHtml += '<p>' + scene.text[i] + '</p>';
+  }
+  var storyEl = document.getElementById('storyText');
+  storyEl.innerHTML = textHtml;
+  storyEl.className = 'story-text fade-in';
+
+  // 选项
+  var choicesHtml = '';
+  for (var j = 0; j < scene.choices.length; j++) {
+    var c = scene.choices[j];
+    var disabled = !canChoose(c);
+    var reqText = '';
+    if (c.req) {
+      if (c.req.item && !hasItem(c.req.item)) reqText = '需要：' + c.req.item;
+      if (c.req.flag && !state.flags[c.req.flag]) reqText = '需要：特定线索';
+    }
+    choicesHtml += '<button class="choice-btn' + (disabled ? ' disabled' : '') + '" '
+      + (disabled ? '' : 'onclick="makeChoice(' + j + ')"') + '>'
+      + '<span class="choice-num">' + (j + 1) + '</span>'
+      + '<span><span>' + c.text + '</span>'
+      + (reqText ? '<div class="req">' + reqText + '</div>' : '')
+      + '</span></button>';
+  }
+  document.getElementById('choicesArea').innerHTML = choicesHtml;
+
+  // 结局判断
+  if (scene.ending) {
+    setTimeout(function(){ showEnding(scene.ending); }, 800);
+  }
+
+  // 饥饿自然消耗
+  state.hunger -= 2;
+  if (state.hunger < 0) state.hunger = 0;
+  if (state.hunger <= 0) { state.hp -= 5; }
+
+  // 死亡判断
+  if (state.hp <= 0) {
+    setTimeout(function(){ showDeath(); }, 500);
+  }
+
+  updateSidebar();
+  window.scrollTo(0, 0);
+}
+
+function makeChoice(index) {
+  var scene = SCENES[state.scene];
+  var choice = scene.choices[index];
+  if (!choice || !canChoose(choice)) return;
+  if (choice.action) choice.action();
+  if (choice.next) renderScene(choice.next);
+}
+
+// ========== 结局 ==========
+function showEnding(ending) {
+  var tagClass = ending.type;
+  var tagText = ending.type === 'good' ? '好结局' : ending.type === 'bad' ? '坏结局' : ending.type === 'secret' ? '隐藏结局' : '中性结局';
+  document.getElementById('endingTag').className = 'ending-tag ' + tagClass;
+  document.getElementById('endingTag').textContent = tagText;
+  document.getElementById('endingTitle').textContent = ending.title;
+  document.getElementById('endingText').textContent = ending.desc;
+  document.getElementById('finalStats').innerHTML =
+    '<div class="final-stat"><span class="fl">探索场景</span><span class="fv">' + state.explored.length + ' 处</span></div>'
+    + '<div class="final-stat"><span class="fl">总步数</span><span class="fv">' + state.steps + ' 步</span></div>'
+    + '<div class="final-stat"><span class="fl">信任度</span><span class="fv">' + state.trust + '</span></div>'
+    + '<div class="final-stat"><span class="fl">剩余生命</span><span class="fv">' + state.hp + '</span></div>';
+  document.getElementById('endOverlay').classList.remove('hidden');
+}
+
+function showDeath() {
+  document.getElementById('deathText').textContent = state.hunger <= 0 ? '你在饥饿中倒下了。废土不会怜悯任何人。' : '你的伤势过重，再也无法继续前行。';
+  document.getElementById('deathStats').innerHTML =
+    '<div class="final-stat"><span class="fl">探索场景</span><span class="fv">' + state.explored.length + ' 处</span></div>'
+    + '<div class="final-stat"><span class="fl">总步数</span><span class="fv">' + state.steps + ' 步</span></div>'
+    + '<div class="final-stat"><span class="fl">死亡原因</span><span class="fv">' + (state.hunger <= 0 ? '饥饿' : '伤势过重') + '</span></div>'
+    + '<div class="final-stat"><span class="fl">携带物品</span><span class="fv">' + Object.keys(state.items).length + ' 种</span></div>';
+  document.getElementById('deathOverlay').classList.remove('hidden');
+}
+
+// ========== 侧栏更新 ==========
+function updateSidebar() {
+  document.getElementById('hpText').textContent = state.hp;
+  document.getElementById('hpBar').style.width = Math.max(0, state.hp) + '%';
+  document.getElementById('hungerText').textContent = state.hunger;
+  document.getElementById('hungerBar').style.width = Math.max(0, state.hunger) + '%';
+  document.getElementById('trustText').textContent = state.trust;
+  document.getElementById('trustBar').style.width = Math.max(0, Math.min(100, state.trust)) + '%';
+  document.getElementById('exploredText').textContent = state.explored.length + ' 处';
+
+  // 生命值颜色
+  var hpEl = document.getElementById('hpText');
+  hpEl.className = 'attr-val ' + (state.hp <= 30 ? 'red' : state.hp <= 60 ? 'orange' : 'red');
+
+  // 背包
+  var itemKeys = Object.keys(state.items);
+  var listEl = document.getElementById('itemList');
+  if (itemKeys.length === 0) {
+    listEl.innerHTML = '<div class="item-row"><span class="iname" style="color:var(--text-muted);">空空如也</span></div>';
+  } else {
+    var html = '';
+    for (var i = 0; i < itemKeys.length; i++) {
+      html += '<div class="item-row"><span class="iname">' + itemKeys[i] + '</span><span class="icount">x' + state.items[itemKeys[i]] + '</span></div>';
+    }
+    listEl.innerHTML = html;
+  }
+
+  // 日志
+  var logEl = document.getElementById('logList');
+  if (state.logs.length === 0) {
+    logEl.innerHTML = '<div class="log-item"><span style="color:var(--text-muted);">暂无记录</span></div>';
+  } else {
+    var logHtml = '';
+    for (var j = 0; j < Math.min(state.logs.length, 15); j++) {
+      var log = state.logs[j];
+      var tagHtml = '<span class="log-tag ' + (log.type || 'go') + '">' + (log.type === 'get' ? '获得' : log.type === 'lose' ? '失去' : log.type === 'event' ? '事件' : '移动') + '</span>';
+      logHtml += '<div class="log-item">' + tagHtml + log.text + '</div>';
+    }
+    logEl.innerHTML = logHtml;
+  }
+}
+
+// ========== 存取 ==========
+function saveGame() {
+  localStorage.setItem('ashRoad_save', JSON.stringify(state));
+  alert('进度已保存');
+}
+function loadGame() {
+  var saved = localStorage.getItem('ashRoad_save');
+  if (saved) {
+    state = JSON.parse(saved);
+    // 重建场景文本
+    rebuildSceneText(state.scene);
+    renderScene(state.scene);
+    alert('存档已读取');
+  } else {
+    alert('没有找到存档');
+  }
+}
+function rebuildSceneText(id) {
+  var scene = SCENES[id];
+  if (!scene) return;
+  // 对于有onEnter的场景，重置默认文本让onEnter重新生成
+  if (id === 'meet_woman_peaceful') {
+    scene.text = ['你慢慢举起双手，轻声说："我没有恶意。"'];
+  } else if (id === 'shelter_enter') {
+    scene.text = [
+      '你推开金属门，一股霉味扑面而来。里面是向下延伸的楼梯，墙壁上有应急灯发出昏黄的光。',
+      '楼梯走到尽头是一条走廊，两边有几扇门。走廊尽头有个<span class="highlight">电子门锁</span>，旁边有一个数字键盘。'
+    ];
+  } else if (id === 'shelter_supply') {
+    scene.text = ['你用匕首花了十几分钟撬开了门锁。里面虽然大部分货架已经空了，但你还是找到了一些东西：'];
+  } else if (id === 'shelter_secret') {
+    scene.text = [
+      '密码正确，门缓缓打开。里面是一个小型指挥室，墙上挂着一幅巨大的<span class="purple">废土地图</span>，上面标注了各种据点和资源点。',
+      '地图上用红色圈出了<span class="highlight">"方舟"的位置</span>——在旧城区水处理厂的地下深处。还标注了沿途的危险区域和安全路线。',
+      '桌上有一台还能用的无线电，你试着打开，里面传出断断续续的人声：<span class="blue">"……黎明阵线……招募……水处理厂……集合……"</span>'
+    ];
+  } else if (id === 'danger_room') {
+    scene.text = [
+      '你推开门，一股刺鼻的气味涌出。里面的容器大部分已经破碎，地上有不明液体的痕迹。',
+      '你突然感到一阵<span class="danger">眩晕</span>。这里的空气可能有毒。你必须在晕倒之前离开。'
+    ];
+  } else if (id === 'radiation_zone') {
+    scene.text = ['你无视林薇的警告径直走了过去。走了十几分钟后，皮肤开始发痒，嘴里有金属味。'];
+  } else if (id === 'detour_safe') {
+    if (state.flags.with_woman) {
+      scene.text = [
+        '绕道走了两个小时，路确实安全。林薇在路上给你指认了一些可食用的野生植物，补充了一些食物。',
+        '你们来到了一个<span class="highlight">十字路口</span>。左边有一条宽阔的路通向远处的建筑群，右边的小路通向山区。路上有一块路牌写着："旧城区 → 8km"。'
+      ];
+    } else {
+      scene.text = [
+        '你绕道走了两个小时，路确实安全，但更饿了。',
+        '你来到一个<span class="highlight">十字路口</span>。左边通向远处建筑群，右边小路通向山区。路牌写着："旧城区 → 8km"。'
+      ];
+    }
+  } else if (id === 'old_city_approach') {
+    scene.text = [
+      '经过三天的跋涉，你终于到达了旧城区。这里的建筑比之前经过的废墟保存得更完整，但也更危险。',
+      '水处理厂在城区中央，一座灰色的混凝土建筑，旁边是那座标志性的<span class="highlight">水塔</span>。'
+    ];
+  } else if (id === 'factory_front') {
+    scene.text = [
+      '你走到正门，举起双手示意自己没有武器。守卫用枪指着你，喝令你停下。',
+      '"什么人！报上名来！"'
+    ];
+  } else if (id === 'drain_water_run') {
+    scene.text = [
+      '你拼命奔跑，水下的东西追了几步就放弃了。你冲到了通道尽头——一扇铁门，上面有一个电子密码锁。',
+      '密码是四位数字。'
+    ];
+  } else if (id === 'dawn_reward') {
+    scene.text = ['"不错，"陈指挥官露出满意的笑容，"你明天就可以进方舟了。先去休息吧。"'];
+  } else if (id === 'cave_letter') {
+    scene.text = ['信上写着：'];
+  } else if (id === 'camp_joined') {
+    scene.text = ['你在营地待了两天，帮忙做事换取食物。营地的人对你还算友好。'];
+  } else if (id === 'ending_ark') {
+    scene.text = [
+      '气密门缓缓打开，一股温暖的空气涌出。你走进了方舟——',
+      '明亮的人工照明照亮了一个巨大的地下空间。你能看到绿色的农田区域、整洁的居住舱、闪烁的能源装置。这里就像另一个世界。',
+      '几个穿着白大褂的人惊讶地看着你。其中一个走过来："你是怎么找到这里的？……算了，先进来吧。"'
+    ];
+  }
+}
+
+// ========== 控制 ==========
+function beginGame() {
+  document.getElementById('startOverlay').classList.add('hidden');
+  renderScene('start');
+}
+
+function restartGame() {
+  document.getElementById('startOverlay').classList.add('hidden');
+  document.getElementById('endOverlay').classList.add('hidden');
+  document.getElementById('deathOverlay').classList.add('hidden');
+  state = {
+    hp: 100, hunger: 80, trust: 50,
+    items: {}, explored: [], logs: [], flags: {},
+    steps: 0, scene: 'start'
+  };
+  // 重建所有场景文本
+  SCENES.meet_woman_peaceful.text = ['你慢慢举起双手，轻声说："我没有恶意。"'];
+  SCENES.shelter_enter.text = [
+    '你推开金属门，一股霉味扑面而来。里面是向下延伸的楼梯，墙壁上有应急灯发出昏黄的光。',
+    '楼梯走到尽头是一条走廊，两边有几扇门。走廊尽头有个<span class="highlight">电子门锁</span>，旁边有一个数字键盘。'
+  ];
+  renderScene('start');
+}
+
+// 键盘快捷键
+document.addEventListener('keydown', function(e) {
+  var num = parseInt(e.key);
+  if (num >= 1 && num <= 4) {
+    var btns = document.querySelectorAll('.choice-btn:not(.disabled)');
+    if (btns[num - 1]) btns[num - 1].click();
+  }
+});
+
+// ========== 启动 ==========
+updateSidebar();
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: cyber.$color-surface;
+  border-right: 1px solid rgba(250, 234, 95, 0.1);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 cyber.$spacing-md;
+  background: rgba(250, 234, 95, 0.1);
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+
+  .title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: cyber.$color-accent;
+  }
+
+  .count {
+    font-size: 10px;
+    padding: 2px 6px;
+    background: rgba(250, 234, 95, 0.2);
+    color: cyber.$color-accent;
+    border-radius: 10px;
+  }
+}
+
+.taskList {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-xs 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  color: cyber.$color-text-muted;
+  font-size: 12px;
+}
+
+.taskItem {
+  padding: cyber.$spacing-sm cyber.$spacing-md;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.05);
+  }
+
+  &.completed {
+    border-left-color: #4ade80;
+    opacity: 0.7;
+  }
+
+  &.inProgress {
+    border-left-color: cyber.$color-accent;
+    background: rgba(250, 234, 95, 0.05);
+  }
+
+  &.error {
+    border-left-color: #ef4444;
+  }
+
+  &.pending {
+    border-left-color: cyber.$color-text-muted;
+  }
+}
+
+.taskHeader {
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  margin-bottom: 4px;
+}
+
+.taskTitle {
+  flex: 1;
+  font-size: 12px;
+  color: cyber.$color-text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.taskDesc {
+  display: block;
+  font-size: 10px;
+  color: cyber.$color-text-muted;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-left: 22px;
+}
+
+.iconCompleted {
+  color: #4ade80;
+}
+
+.iconProgress {
+  color: cyber.$color-accent;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.iconError {
+  color: #ef4444;
+}
+
+.iconPending {
+  color: cyber.$color-text-muted;
+}
+
+.startBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(250, 234, 95, 0.2);
+  border: none;
+  border-radius: 3px;
+  color: cyber.$color-accent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: cyber.$color-accent;
+    color: #000;
+  }
+}
+
+.progressBar {
+  height: 2px;
+  background: rgba(250, 234, 95, 0.1);
+  margin-top: 6px;
+  margin-left: 22px;
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: cyber.$color-accent;
+  transition: width 0.3s ease;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}

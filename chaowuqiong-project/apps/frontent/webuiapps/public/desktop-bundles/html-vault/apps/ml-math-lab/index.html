@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 原理探索 - 互动学习</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg-dark:#0d1117;--bg-card:#161b22;--bg-input:#21262d;--border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent:#f0883e;--accent-light:#ffa657;--success:#3fb950;--danger:#f85149;--step-active:#388bfd;--purple:#a371f7;--teal:#2dd4bf}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg-dark);color:var(--text);min-height:100vh;line-height:1.6}
+.header{background:var(--bg-card);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-size:1.5rem;font-weight:700;color:var(--accent)}
+.header-actions{display:flex;gap:0.75rem;align-items:center}
+.btn{padding:0.5rem 1rem;border-radius:6px;border:1px solid var(--border);background:var(--bg-input);color:var(--text);cursor:pointer;font-size:0.875rem;transition:all 0.2s}
+.btn:hover{background:var(--border)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#000;font-weight:600}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.8rem}
+.main-container{display:flex;min-height:calc(100vh - 57px)}
+.sidebar{width:280px;background:var(--bg-card);border-right:1px solid var(--border);padding:1.25rem;flex-shrink:0;display:flex;flex-direction:column;gap:0.7rem;overflow-y:auto}
+.card{background:var(--bg-input);border:1px solid var(--border);border-radius:12px;padding:1.1rem}
+.card h3{font-size:0.95rem;margin-bottom:0.6rem;color:var(--accent)}
+.stat-row{display:flex;justify-content:space-between;font-size:0.82rem;margin-bottom:0.4rem}
+.stat-label{color:var(--text-muted)}
+.stat-val{font-weight:700}
+.stat-val.orange{color:var(--accent)}
+.stat-val.green{color:var(--success)}
+.stat-val.blue{color:var(--step-active)}
+.stat-val.red{color:var(--danger)}
+.bar-wrap{height:8px;background:var(--bg-card);border-radius:4px;overflow:hidden;margin-bottom:0.6rem}
+.bar-fill{height:100%;border-radius:4px;transition:width 0.5s}
+.ach-list{display:flex;flex-direction:column;gap:0.3rem}
+.ach-item{display:flex;align-items:center;gap:0.5rem;font-size:0.78rem;padding:0.3rem 0.5rem;border-radius:4px;background:var(--bg-card)}
+.ach-item.locked{opacity:0.4}
+.ach-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.tip-box{background:rgba(56,139,253,0.1);border:1px solid rgba(56,139,253,0.3);border-radius:8px;padding:0.85rem;margin-bottom:1.25rem;font-size:0.85rem;color:var(--text-muted)}
+.tip-box strong{color:var(--step-active)}
+.content-area{flex:1;padding:1.5rem;overflow-y:auto}
+.step-panel{display:none;max-width:920px;margin:0 auto}
+.step-panel.active{display:block;animation:fadeIn 0.3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.panel-header{margin-bottom:1.5rem}
+.panel-header h2{font-size:1.5rem;margin-bottom:0.3rem;color:var(--accent)}
+.panel-header p{color:var(--text-muted);font-size:0.9rem}
+.step-item{display:flex;align-items:center;gap:0.7rem;padding:0.8rem 1rem;border-radius:8px;cursor:pointer;transition:all 0.2s;margin-bottom:0.4rem;border:1px solid transparent}
+.step-item:hover{background:var(--bg-input)}
+.step-item.active{background:rgba(240,136,62,0.15);border-color:var(--accent)}
+.step-item.completed .step-number{background:var(--success)}
+.step-number{width:26px;height:26px;border-radius:50%;background:var(--bg-input);display:flex;align-items:center;justify-content:center;font-size:0.78rem;font-weight:600;flex-shrink:0}
+.step-item.active .step-number{background:var(--accent);color:#000}
+.step-info h4{font-size:0.88rem;font-weight:500}
+.step-info p{font-size:0.72rem;color:var(--text-muted)}
+.progress-bar{height:4px;background:var(--bg-input);border-radius:2px;margin-bottom:1rem;overflow:hidden}
+.progress-bar .fill{height:100%;background:var(--accent);transition:width 0.3s}
+.canvas-wrap{background:#0a0e14;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:1rem;position:relative}
+.canvas-wrap canvas{display:block;width:100%}
+.canvas-label{position:absolute;top:8px;left:12px;font-size:0.72rem;color:var(--text-muted);pointer-events:none}
+.interact-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.interact-card h3{font-size:1rem;color:var(--accent);margin-bottom:0.75rem}
+.quiz-q{font-size:0.95rem;margin-bottom:0.75rem;line-height:1.7}
+.quiz-opts{display:flex;flex-direction:column;gap:0.4rem}
+.quiz-opt{padding:0.6rem 0.9rem;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all 0.2s;font-size:0.88rem}
+.quiz-opt:hover{border-color:var(--accent)}
+.quiz-opt.correct{border-color:var(--success);background:rgba(63,185,80,0.12);color:var(--success)}
+.quiz-opt.wrong{border-color:var(--danger);background:rgba(248,81,73,0.12);color:var(--danger)}
+.quiz-opt.disabled{pointer-events:none;opacity:0.6}
+.quiz-opt.disabled.correct{opacity:1}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.form-group{margin-bottom:0.75rem}
+.form-group label{display:block;font-size:0.82rem;color:var(--text-muted);margin-bottom:0.3rem}
+.form-group input,.form-group select{width:100%;padding:0.5rem 0.8rem;background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.88rem}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+.slider-row{display:flex;align-items:center;gap:0.75rem}
+.slider-row label{min-width:80px;font-size:0.82rem;color:var(--text-muted)}
+.slider-row input[type=range]{flex:1;padding:0;background:transparent;-webkit-appearance:none;height:6px;border-radius:3px;background:var(--bg-card);outline:none}
+.slider-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer}
+.slider-row .sv{min-width:45px;text-align:right;font-size:0.82rem;color:var(--accent);font-weight:600}
+.matrix-grid{display:inline-grid;gap:2px;margin:0.5rem 0}
+.matrix-cell{width:48px;height:36px;text-align:center;background:var(--bg-input);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:0.85rem;font-family:monospace}
+.matrix-cell input{width:100%;height:100%;text-align:center;background:transparent;border:none;color:var(--text);font-size:0.85rem;font-family:monospace;outline:none;padding:0 2px}
+.result-box{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;padding:0.8rem;margin-top:0.75rem;font-family:monospace;font-size:0.88rem;line-height:1.7;min-height:40px}
+.result-box .good{color:var(--success)}
+.result-box .bad{color:var(--danger)}
+.tag{display:inline-block;padding:0.2rem 0.55rem;border-radius:999px;font-size:0.72rem;margin:0.15rem;font-weight:600}
+.tag.t-orange{background:rgba(240,136,62,0.15);color:var(--accent-light);border:1px solid rgba(240,136,62,0.3)}
+.tag.t-green{background:rgba(63,185,80,0.15);color:var(--success);border:1px solid rgba(63,185,80,0.3)}
+.tag.t-blue{background:rgba(56,139,253,0.15);color:var(--step-active);border:1px solid rgba(56,139,253,0.3)}
+.tag.t-red{background:rgba(248,81,73,0.15);color:var(--danger);border:1px solid rgba(248,81,73,0.3)}
+.tag.t-teal{background:rgba(45,212,191,0.15);color:var(--teal);border:1px solid rgba(45,212,191,0.3)}
+.panel-nav{display:flex;justify-content:space-between;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border)}
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border);color:var(--text);padding:0.65rem 1.5rem;border-radius:8px;font-size:0.9rem;z-index:999;box-shadow:0 4px 16px rgba(0,0,0,0.4)}
+.nn-layer{display:flex;align-items:center;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin:0.75rem 0}
+.nn-node{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;border:2px solid var(--border);transition:all 0.3s}
+.nn-node.active{border-color:var(--accent);background:rgba(240,136,62,0.2)}
+.nn-arrow{width:24px;height:2px;background:var(--border);position:relative}
+.nn-arrow::after{content:'';position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left:6px solid var(--border)}
+.func-chart{display:flex;align-items:flex-end;gap:0.5rem;height:140px;padding:0.5rem 0;border-bottom:1px solid var(--border);margin:0.5rem 0}
+.func-bar{flex:1;border-radius:4px 4px 0 0;transition:height 0.3s;position:relative;min-height:4px}
+.func-bar .fl{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--text-muted);white-space:nowrap}
+@media(max-width:900px){.main-container{flex-direction:column}.sidebar{width:100%;border-right:none;border-bottom:1px solid var(--border);padding:0.75rem;flex-direction:row;flex-wrap:wrap}.sidebar .card{flex:1;min-width:180px}.sidebar .card.hide-m{display:none}.form-grid{grid-template-columns:1fr}.matrix-cell{width:40px;height:32px}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">AI 原理探索</div>
+<div class="header-actions">
+<span style="font-size:0.82rem;color:var(--accent);font-weight:700" id="scoreDisplay">0 分</span>
+<button class="btn" onclick="saveProgress()">保存</button>
+<button class="btn" onclick="loadProgress()">加载</button>
+</div>
+</header>
+<div class="main-container">
+<nav class="sidebar">
+<div class="progress-bar"><div class="fill" id="progressFill" style="width:16.6%"></div></div>
+<div class="step-item active" onclick="goTo(0)"><div class="step-number">1</div><div class="step-info"><h4>数学基石</h4><p>向量、矩阵、概率</p></div></div>
+<div class="step-item" onclick="goTo(1)"><div class="step-number">2</div><div class="step-info"><h4>梯度下降</h4><p>损失函数、优化</p></div></div>
+<div class="step-item" onclick="goTo(2)"><div class="step-number">3</div><div class="step-info"><h4>神经网络</h4><p>感知机、激活函数</p></div></div>
+<div class="step-item" onclick="goTo(3)"><div class="step-number">4</div><div class="step-info"><h4>深度学习</h4><p>CNN、RNN、注意力</p></div></div>
+<div class="step-item" onclick="goTo(4)"><div class="step-number">5</div><div class="step-info"><h4>实战实验室</h4><p>调参、训练模拟</p></div></div>
+<div class="step-item" onclick="goTo(5)"><div class="step-number">6</div><div class="step-info"><h4>知识挑战</h4><p>问答、积分</p></div></div>
+<div class="card hide-m">
+<h3>学习进度</h3>
+<div class="stat-row"><span class="stat-label">总分</span><span class="stat-val orange" id="sTotalScore">0</span></div>
+<div class="stat-row"><span class="stat-label">已完成</span><span class="stat-val green" id="sCompleted">0/12</span></div>
+<div class="stat-row"><span class="stat-label">正确率</span><span class="stat-val blue" id="sAccuracy">-</span></div>
+</div>
+<div class="card hide-m">
+<h3>成就</h3>
+<div class="ach-list" id="achList"></div>
+</div>
+</nav>
+<main class="content-area">
+<!-- 1 数学基石 -->
+<div class="step-panel active" id="p0">
+<div class="panel-header"><h2>数学基石</h2><p>AI 的语言是数学：向量表示一切，矩阵批量计算，概率量化不确定性</p></div>
+<div class="tip-box"><strong>互动方式：</strong>在画布上拖拽向量端点，实时观察向量运算结果。然后完成下方练习。</div>
+<div class="canvas-wrap"><span class="canvas-label">拖拽橙色/蓝色端点改变向量</span><canvas id="vecCanvas" height="320"></canvas></div>
+<div class="interact-card">
+<h3>向量运算结果</h3>
+<div class="form-grid">
+<div><span style="color:var(--accent)">A =</span> <span id="vecA">[3, 2]</span></div>
+<div><span style="color:var(--step-active)">B =</span> <span id="vecB">[1, 4]</span></div>
+<div><span style="color:var(--teal)">A+B =</span> <span id="vecAdd">[4, 6]</span></div>
+<div><span style="color:var(--purple)">A.B =</span> <span id="vecDot">11</span></div>
+<div><span style="color:var(--accent)">|A| =</span> <span id="vecMagA">3.61</span></div>
+<div><span style="color:var(--step-active)">|B| =</span> <span id="vecMagB">4.12</span></div>
+</div>
+<div class="result-box" id="vecAngleBox">夹角 = 45.6 度，cos相似度 = 0.70</div>
+</div>
+<div class="interact-card">
+<h3>练习：计算向量点积</h3>
+<p class="quiz-q">A = [2, 3, 1]，B = [4, -1, 2]，求 A . B = ?</p>
+<div class="quiz-opts" id="vecQuiz"></div>
+</div>
+<div class="interact-card">
+<h3>练习：矩阵乘法</h3>
+<p class="quiz-q">计算 2x2 矩阵乘法结果：</p>
+<div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;justify-content:center;margin:0.5rem 0">
+<div><div style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-bottom:4px">A</div><div class="matrix-grid" style="grid-template-columns:1fr 1fr"><div class="matrix-cell">2</div><div class="matrix-cell">1</div><div class="matrix-cell">3</div><div class="matrix-cell">4</div></div></div>
+<span style="font-size:1.2rem;color:var(--text-muted)">x</span>
+<div><div style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-bottom:4px">B</div><div class="matrix-grid" style="grid-template-columns:1fr 1fr"><div class="matrix-cell">1</div><div class="matrix-cell">2</div><div class="matrix-cell">0</div><div class="matrix-cell">3</div></div></div>
+<span style="font-size:1.2rem;color:var(--text-muted)">=</span>
+<div><div style="font-size:0.75rem;color:var(--text-muted);text-align:center;margin-bottom:4px">?</div><div class="matrix-grid" style="grid-template-columns:1fr 1fr"><div class="matrix-cell"><input type="number" id="m00"></div></div><div class="matrix-cell"><input type="number" id="m01"></div></div><div class="matrix-cell"><input type="number" id="m10"></div></div><div class="matrix-cell"><input type="number" id="m11"></div></div></div></div>
+<button class="btn btn-primary btn-sm" style="margin-top:0.5rem" onclick="checkMatrix()">验证答案</button>
+<div class="result-box" id="matResult"></div>
+</div>
+<div class="panel-nav"><div></div><button class="btn btn-primary" onclick="goTo(1)">下一步：梯度下降 →</button></div>
+</div>
+<!-- 2 梯度下降 -->
+<div class="step-panel" id="p1">
+<div class="panel-header"><h2>梯度下降</h2><p>机器学习的核心优化算法：沿梯度的反方向，一步一步走向损失最低点</p></div>
+<div class="tip-box"><strong>互动方式：</strong>调整学习率，观察小球如何沿曲面滚落。学习率太大会震荡，太小会缓慢。</div>
+<div class="form-group">
+<div class="slider-row"><label>学习率</label><input type="range" id="lrSlider" min="1" max="100" value="15"><span class="sv" id="lrVal">0.15</span></div>
+</div>
+<div class="form-group">
+<div class="slider-row"><label>损失函数</label><select id="lossType" style="width:150px"><option value="bowl">碗形 f=x²+y²</option><option value="valley">鞍形 f=x²-y²</option><option value="ripple">波浪 f=cos(x)+sin(y)+x²+y²</option></select></div>
+</div>
+<div style="display:flex;gap:0.5rem;margin-bottom:0.75rem"><button class="btn btn-primary btn-sm" onclick="startGD()">开始下降</button><button class="btn btn-sm" onclick="resetGD()">重置</button></div>
+<div class="canvas-wrap"><span class="canvas-label" id="gdLabel">等高线图 + 梯度下降路径</span><canvas id="gdCanvas" height="360"></canvas></div>
+<div class="interact-card">
+<h3>实时数据</h3>
+<div class="form-grid">
+<div class="stat-row"><span class="stat-label">当前步数</span><span class="stat-val orange" id="gdStep">0</span></div>
+<div class="stat-row"><span class="stat-label">当前位置</span><span class="stat-val" id="gdPos">(3, 3)</span></div>
+<div class="stat-row"><span class="stat-label">损失值</span><span class="stat-val red" id="gdLoss">18</span></div>
+<div class="stat-row"><span class="stat-label">梯度大小</span><span class="stat-val blue" id="gdGrad">-</span></div>
+</div>
+</div>
+<div class="interact-card">
+<h3>练习：梯度计算</h3>
+<p class="quiz-q">损失函数 f(w) = 3w² - 6w + 5，在 w=2 处的梯度（导数）是多少？</p>
+<div class="quiz-opts" id="gdQuiz"></div>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(0)">← 上一步</button><button class="btn btn-primary" onclick="goTo(2)">下一步：神经网络 →</button></div>
+</div>
+<!-- 3 神经网络 -->
+<div class="step-panel" id="p2">
+<div class="panel-header"><h2>神经网络基础</h2><p>感知机是最简单的神经网络：输入加权求和，通过激活函数输出</p></div>
+<div class="tip-box"><strong>互动方式：</strong>调整输入值和权重，观察感知机如何做出分类决策。尝试不同激活函数看区别。</div>
+<div class="interact-card">
+<h3>感知机模拟器</h3>
+<div class="nn-layer"><span style="font-size:0.75rem;color:var(--text-muted)">输入</span>
+<div class="nn-node" id="nnI0" style="border-color:var(--step-active)">x1</div>
+<div class="nn-node" id="nnI1" style="border-color:var(--step-active)">x2</div>
+<div class="nn-node" id="nnI2" style="border-color:var(--step-active)">x3</div>
+</div>
+<div class="nn-arrow"></div>
+<div class="nn-layer"><span style="font-size:0.75rem;color:var(--text-muted)">权重+偏置</span>
+<div class="nn-node" style="border-color:var(--accent)">w1</div>
+<div class="nn-node" style="border-color:var(--accent)">w2</div>
+<div class="nn-node" style="border-color:var(--accent)">w3</div>
+<div class="nn-node" style="border-color:var(--text-muted)">b</div>
+</div>
+<div class="nn-arrow"></div>
+<div class="nn-layer"><span style="font-size:0.75rem;color:var(--text-muted)">激活函数</span>
+<div class="nn-node" id="nnOut" style="width:50px;height:50px;font-size:0.8rem;border-color:var(--teal)">out</div>
+</div>
+<div class="form-grid" style="margin-top:0.75rem">
+<div class="form-group"><label>x1</label><input type="range" id="nnX1" min="0" max="100" value="80" oninput="updateNN()"></div>
+<div class="form-group"><label>x2</label><input type="range" id="nnX2" min="0" max="100" value="30" oninput="updateNN()"></div>
+<div class="form-group"><label>x3</label><input type="range" id="nnX3" min="0" max="100" value="60" oninput="updateNN()"></div>
+<div class="form-group"><label>偏置 b</label><input type="range" id="nnB" min="-50" max="50" value="-10" oninput="updateNN()"></div>
+</div>
+<div class="form-group"><label>激活函数</label>
+<div style="display:flex;gap:0.5rem;margin-top:0.3rem">
+<button class="btn btn-sm" id="afSig" onclick="setAF('sigmoid')" style="border-color:var(--accent)">Sigmoid</button>
+<button class="btn btn-sm" id="afRelu" onclick="setAF('relu')">ReLU</button>
+<button class="btn btn-sm" id="afTan" onclick="setAF('tanh')">Tanh</button>
+</div></div>
+<div class="result-box" id="nnResult"></div>
+</div>
+<div class="interact-card">
+<h3>激活函数对比</h3>
+<div class="canvas-wrap"><canvas id="afCanvas" height="200"></canvas></div>
+</div>
+<div class="interact-card">
+<h3>练习：反向传播直觉</h3>
+<p class="quiz-q">在反向传播中，梯度从输出层向输入层传播。如果输出层某个权重需要减小（梯度为正），该权重应该：</p>
+<div class="quiz-opts" id="bpQuiz"></div>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(1)">← 上一步</button><button class="btn btn-primary" onclick="goTo(3)">下一步：深度学习 →</button></div>
+</div>
+<!-- 4 深度学习 -->
+<div class="step-panel" id="p3">
+<div class="panel-header"><h2>深度学习架构</h2><p>CNN 擅长图像，RNN 擅长序列，Transformer 用注意力机制处理一切</p></div>
+<div class="interact-card">
+<h3>CNN 卷积可视化</h3>
+<p class="quiz-q" style="font-size:0.85rem">卷积核在输入图像上滑动，提取局部特征。下面是一个 3x3 边缘检测卷积核在 6x6 图像上的运算过程。</p>
+<div class="canvas-wrap"><canvas id="cnnCanvas" height="380"></canvas></div>
+</div>
+<div class="interact-card">
+<h3>RNN 序列处理</h3>
+<p class="quiz-q" style="font-size:0.85rem">RNN 在每个时间步接收输入，并结合上一时刻的隐藏状态。这使得它能处理变长序列。</p>
+<div class="canvas-wrap"><canvas id="rnnCanvas" height="200"></canvas></div>
+</div>
+<div class="interact-card">
+<h3>Transformer 注意力机制</h3>
+<p class="quiz-q" style="font-size:0.85rem">注意力权重决定每个位置对其他位置的关注程度。高亮连线越粗 = 注意力越强。</p>
+<div class="canvas-wrap"><canvas id="attCanvas" height="260"></canvas></div>
+</div>
+<div class="interact-card">
+<h3>练习：架构选择</h3>
+<p class="quiz-q">需要理解一句话中词与词之间的关系（如"猫坐在垫子上"，"坐"和"猫"有关），最适合用哪种架构？</p>
+<div class="quiz-opts" id="archQuiz"></div>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(2)">← 上一步</button><button class="btn btn-primary" onclick="goTo(4)">下一步：实验室 →</button></div>
+</div>
+<!-- 5 实战实验室 -->
+<div class="step-panel" id="p4">
+<div class="panel-header"><h2>实战实验室</h2><p>调整超参数，观察训练过程，理解过拟合与欠拟合</p></div>
+<div class="tip-box"><strong>互动方式：</strong>调整学习率、模型复杂度、数据噪声，点击"训练"观察损失曲线变化。</div>
+<div class="form-grid">
+<div class="form-group"><label>学习率</label><div class="slider-row"><input type="range" id="labLR" min="1" max="50" value="10"><span class="sv" id="labLRV">0.10</span></div></div>
+<div class="form-group"><label>模型复杂度</label><div class="slider-row"><input type="range" id="labComp" min="1" max="10" value="5"><span class="sv" id="labCompV">5</span></div></div>
+<div class="form-group"><label>数据噪声</label><div class="slider-row"><input type="range" id="labNoise" min="0" max="50" value="5"><span class="sv" id="labNoiseV">0.05</span></div></div>
+<div class="form-group"><label>训练轮数</label><div class="slider-row"><input type="range" id="labEpoch" min="20" max="200" value="80"><span class="sv" id="labEpochV">80</span></div></div>
+</div>
+<button class="btn btn-primary" style="margin-bottom:0.75rem" onclick="runLab()">训练模型</button>
+<div class="canvas-wrap"><span class="canvas-label" id="labLabel">训练损失曲线</span><canvas id="labCanvas" height="300"></canvas></div>
+<div class="interact-card">
+<h3>诊断</h3>
+<div class="result-box" id="labDiag">点击"训练模型"查看分析结果</div>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(3)">← 上一步</button><button class="btn btn-primary" onclick="goTo(5)">下一步：知识挑战 →</button></div>
+</div>
+<!-- 6 知识挑战 -->
+<div class="step-panel" id="p5">
+<div class="panel-header"><h2>知识挑战</h2><p>综合测试你对 AI 底层原理的理解</p></div>
+<div class="tip-box"><strong>规则：</strong>共 8 题，每题 15 分，总分 120 分。答对加分，答错不扣分。</div>
+<div id="quizArea"></div>
+<div class="interact-card" style="margin-top:1rem">
+<h3>最终得分</h3>
+<div style="font-size:2rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem" id="finalScore">0 / 120</div>
+<div id="finalTags"></div>
+</div>
+<div class="panel-nav"><button class="btn" onclick="goTo(4)">← 上一步</button><button class="btn btn-primary" onclick="resetAll()">重新开始</button></div>
+</div>
+</main>
+</div>
+<script>
+/* ========== 全局状态 ========== */
+var G={score:0,total:0,correct:0,done:{},af:'sigmoid',curStep:0};
+var quizes={
+  vec:[{q:'A=[2,3,1], B=[4,-1,2]，A.B = ?',opts:['8','7','9','6'],ans:0},{q:'向量 [1,0] 和 [0,1] 的夹角是多少度？',opts:['45','60','90','180'],ans:2}],
+  gd:[{q:'f(w)=3w²-6w+5，w=2处梯度？',opts:['6','12','18','0'],ans:0}],
+  bp:[{q:'反向传播中权重梯度为正，权重应该？',opts:['增大','减小','不变','随机'],ans:1}],
+  arch:[{q:'理解词与词之间的关系，最适合？',opts:['CNN','RNN','Transformer','全连接'],ans:2}],
+  final:[
+    {q:'梯度下降的方向是？',opts:['梯度的正方向','梯度的反方向','随机方向','垂直方向'],ans:1},
+    {q:'Sigmoid 函数的输出范围是？',opts:['[0, +inf]','[-1, 1]','[0, 1]','(-inf, +inf)'],ans:2},
+    {q:'过拟合的典型表现是？',opts:['训练集和测试集都差','训练集好测试集差','训练集差测试集好','两者都好'],ans:1},
+    {q:'CNN 中池化层的主要作用是？',opts:['增加参数','降低维度','改变通道数','添加非线性'],ans:1},
+    {q:'Transformer 中 Self-Attention 的核心计算是？',opts:['矩阵乘法','卷积','递归','排序'],ans:0},
+    {q:'Batch Normalization 的目的是？',opts:['增加模型大小','加速训练、稳定梯度','减少数据量','改变损失函数'],ans:1},
+    {q:'Dropout 的作用是？',opts:['增加参数','防止过拟合','加速训练','改变激活函数'],ans:1},
+    {q:'交叉熵损失常用于什么任务？',opts:['回归','分类','聚类','降维'],ans:1}
+  ]
+};
+
+/* ========== 导航 ========== */
+function goTo(s){saveCurStep();G.curStep=s;updateUI();window.scrollTo(0,0)}
+function updateUI(){
+  document.querySelectorAll('.step-panel').forEach(function(p,i){p.classList.toggle('active',i===s)});
+  document.querySelectorAll('.step-item').forEach(function(it,i){it.classList.remove('active');it.classList.remove('completed');if(i===s)it.classList.add('active');if(i<s)it.classList.add('completed')});
+  document.getElementById('progressFill').style.width=((s+1)/6*100)+'%';
+  document.getElementById('scoreDisplay').textContent=G.score+' 分';
+  document.getElementById('sTotalScore').textContent=G.score;
+  var dc=Object.keys(G.done).length;
+  document.getElementById('sCompleted').textContent=dc+'/12';
+  document.getElementById('sAccuracy').textContent=G.total>0?Math.round(G.correct/G.total*100)+'%':'-';
+  renderAch();
+  if(s===0)initVecCanvas();
+  if(s===1)initGDCanvas();
+  if(s===2){updateNN();drawAFCurves();}
+  if(s===3){drawCNN();drawRNN();drawAttention();}
+}
+function saveCurStep(){}
+function addScore(n){G.score+=n;G.total++;if(n>0)G.correct++;document.getElementById('scoreDisplay').textContent=G.score+' 分';}
+
+/* ========== 成就 ========== */
+var achs=[
+  {id:'vec',name:'向量达人',desc:'完成向量练习',icon:'var(--teal)'},
+  {id:'mat',name:'矩阵高手',desc:'正确计算矩阵乘法',icon:'var(--purple)'},
+  {id:'gd',name:'优化师',desc:'完成梯度下降练习',icon:'var(--accent)'},
+  {id:'nn',name:'网络搭建者',desc:'完成感知机实验',icon:'var(--step-active)'},
+  {id:'dl',name:'深度探索者',desc:'完成深度学习练习',icon:'var(--teal)'},
+  {id:'lab',name:'实验科学家',desc:'完成训练实验',icon:'var(--success)'},
+  {id:'quiz60',name:'及格线',desc:'知识挑战60分以上',icon:'var(--accent)'},
+  {id:'quiz100',name:'满分大师',desc:'知识挑战满分',icon:'var(--danger)'}
+];
+function unlock(id){G.done[id]=true;renderAch()}
+function renderAch(){
+  var h='';for(var i=0;i<achs.length;i++){var a=achs[i];var ok=!!G.done[a.id];h+='<div class="ach-item'+(ok?'':' locked')+'"><span class="ach-dot" style="background:'+a.icon+'"></span><span>'+(ok?a.name:'???')+'</span></div>';}
+  document.getElementById('achList').innerHTML=h;
+}
+
+/* ========== 通用问答渲染 ========== */
+function renderQuiz(containerId,items,prefix){
+  var el=document.getElementById(containerId);if(!el)return;
+  var h='';for(var i=0;i<items.length;i++){
+    var it=items[i];var uid=prefix+'_'+i;
+    h+='<div class="quiz-opt" id="'+uid+'" onclick="answerQuiz(\''+uid+'\','+it.ans+','+prefix+')">'+it.q+'</div>';
+  }
+  el.innerHTML=h;
+}
+function answerQuiz(uid,ans,prefix){
+  var el=document.getElementById(uid);if(!el||el.classList.contains('disabled'))return;
+  var opts=el.parentNode.children;
+  for(var i=0;i<opts.length;i++){opts[i].classList.add('disabled');}
+  var idx=Array.prototype.indexOf.call(opts,el);
+  if(idx===ans){el.classList.add('correct');addScore(15);unlock(prefix);toast('正确 +15 分');}
+  else{el.classList.add('wrong');addScore(0);toast('错误，正确答案已标出');if(ans<opts.length)opts[ans].classList.add('correct');}
+}
+
+/* ========== 1 向量Canvas ========== */
+var vecA={x:3,y:2},vecB={x:1,y:4},dragging=null;
+function initVecCanvas(){
+  var c=document.getElementById('vecCanvas');c.width=c.offsetWidth;
+  drawVec();c.onmousedown=function(e){startVecDrag(e)};c.onmousemove=function(e){moveVecDrag(e)};c.onmouseup=function(){dragging=null};c.onmouseleave=function(){dragging=null};
+  renderQuiz('vecQuiz',quizes.vec,'vec');
+}
+function getCanvasPos(c,e){var r=c.getBoundingClientRect();var sx=c.width/r.width;var sy=c.height/r.height;return{x:(e.clientX-r.left)*sx-c.width/2,y:-(e.clientY-r.top)*sy+c.height/2}}
+function startVecDrag(e){var p=getCanvasPos(document.getElementById('vecCanvas'),e);if(Math.hypot(p.x-vecA.x,p.y-vecA.y)<25)dragging='A';else if(Math.hypot(p.x-vecB.x,p.y-vecB.y)<25)dragging='B';}
+function moveVecDrag(e){if(!dragging)return;var p=getCanvasPos(document.getElementById('vecCanvas'),e);if(dragging==='A'){vecA.x=Math.round(p.x);vecA.y=Math.round(p.y);}else{vecB.x=Math.round(p.x);vecB.y=Math.round(p.y);}drawVec();updateVecInfo();}
+function drawVec(){
+  var c=document.getElementById('vecCanvas');var ctx=c.getContext('2d');var w=c.width,h=c.height,cx=w/2,cy=h/2;var sc=Math.min(w,h)/12;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle='#21262d';ctx.lineWidth=1;
+  for(var i=-6;i<=6;i++){ctx.beginPath();ctx.moveTo(cx+i*sc,0);ctx.lineTo(cx+i*sc,h);ctx.stroke();ctx.beginPath();ctx.moveTo(0,cy+i*sc);ctx.lineTo(w,cy+i*sc);ctx.stroke();}
+  ctx.fillStyle='#8b949e';ctx.font='11px monospace';ctx.textAlign='center';for(var i=-6;i<=6;i++){ctx.fillText(i,cx+i*sc,cy+14);}
+  ctx.textAlign='right';for(var i=-6;i<=6;i++){if(i===0)continue;ctx.fillText(i,cx-6,cy-i*sc+4);}
+  drawArrow(ctx,cx,cy,cx+vecA.x*sc,cy-vecA.y*sc,'#f0883e',3);
+  drawArrow(ctx,cx,cy,cx+vecB.x*sc,cy-vecB.y*sc,'#388bfd',3);
+  var sx=vecA.x+vecB.x,sy=vecA.y+vecB.y;
+  drawArrow(ctx,cx,cy,cx+sx*sc,cy-sy*sc,'#2dd4bf',2);
+  ctx.fillStyle='#f0883e';ctx.font='bold 13px monospace';ctx.textAlign='left';ctx.fillText('A',cx+vecA.x*sc+8,cy-vecA.y*sc);
+  ctx.fillStyle='#388bfd';ctx.fillText('B',cx+vecB.x*sc+8,cy-vecB.y*sc);
+  ctx.fillStyle='#2dd4bf';ctx.fillText('A+B',cx+sx*sc+8,cy-sy*sc);
+}
+function drawArrow(ctx,x1,y1,x2,y2,color,lw){var a=Math.atan2(y2-y1,x2-x1);var hl=10;ctx.strokeStyle=color;ctx.lineWidth=lw;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();ctx.fillStyle=color;ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-hl*Math.cos(a-0.4),y2-hl*Math.sin(a-0.4));ctx.lineTo(x2-hl*Math.cos(a+0.4),y2-hl*Math.sin(a+0.4));ctx.fill();}
+function updateVecInfo(){
+  document.getElementById('vecA').textContent='['+vecA.x+', '+vecA.y+']';
+  document.getElementById('vecB').textContent='['+vecB.x+', '+vecB.y+']';
+  var add=[vecA.x+vecB.x,vecA.y+vecB.y];
+  document.getElementById('vecAdd').textContent='['+add[0]+', '+add[1]+']';
+  var dot=vecA.x*vecB.x+vecA.y*vecB.y;
+  document.getElementById('vecDot').textContent=dot;
+  var mA=Math.sqrt(vecA.x*vecA.x+vecA.y*vecA.y);
+  var mB=Math.sqrt(vecB.x*vecB.x+vecB.y*vecB.y);
+  document.getElementById('vecMagA').textContent=mA.toFixed(2);
+  document.getElementById('vecMagB').textContent=mB.toFixed(2);
+  var cos=mA*mB>0?dot/(mA*mB):0;
+  cos=Math.max(-1,Math.min(1,cos));
+  var angle=Math.acos(cos)*180/Math.PI;
+  document.getElementById('vecAngleBox').innerHTML='夹角 = '+angle.toFixed(1)+' 度，cos相似度 = '+cos.toFixed(3);
+}
+
+/* ========== 矩阵练习 ========== */
+function checkMatrix(){
+  var m00=parseInt(document.getElementById('m00').value)||0;
+  var m01=parseInt(document.getElementById('m01').value)||0;
+  var m10=parseInt(document.getElementById('m10').value)||0;
+  var m11=parseInt(document.getElementById('m11').value)||0;
+  var a0=2*m00+1*m01,a1=2*m10+1*m11,b0=3*m00+4*m01,b1=3*m10+4*m11;
+  var ok=(m00===2&&m01===4&&m10===3&&m11===10);
+  document.getElementById('matResult').innerHTML=ok?'<span class="good">正确！ 2x1+1x0 = 2, 2x3+1x4 = 10 ...</span>':'<span class="bad">不正确。正确答案是 [[2,4],[3,10]]</span>';
+  if(ok){unlock('mat');addScore(20);}
+}
+
+/* ========== 2 梯度下降Canvas ========== */
+var gdPath=[],gdRunning=false,gdPos={x:3,y:3},gdTimer=null;
+function initGDCanvas(){
+  var c=document.getElementById('gdCanvas');c.width=c.offsetWidth;drawGD();
+  renderQuiz('gdQuiz',quizes.gd,'gd');
+  document.getElementById('lrSlider').oninput=function(){document.getElementById('lrVal').textContent=(this.value/100).toFixed(2)};
+}
+function lossFunc(x,y,type){
+  if(type==='bowl')return x*x+y*y;
+  if(type==='valley')return x*x-y*y+5;
+  return Math.cos(x)+Math.sin(y)+0.1*(x*x+y*y)+10;
+}
+function gradFunc(x,y,type){
+  var e=0.001;
+  return{x:(lossFunc(x+e,y,type)-lossFunc(x-e,y,type))/(2*e),y:(lossFunc(x,y+e,type)-lossFunc(x,y-e,type))/(2*e)};
+}
+function drawGD(){
+  var c=document.getElementById('gdCanvas');var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  var type=document.getElementById('lossType').value;
+  var img=ctx.createImageData(w,h);var d=img.data;
+  for(var py=0;py<h;py++){for(var px=0;px<w;px++){
+    var x=(px/w*8-4),y=(py/h*8-4);
+    var v=lossFunc(x,y,type);
+    var norm=Math.min(1,v/20);
+    var idx=(py*w+px)*4;
+    d[idx]=Math.floor(norm*40+10);d[idx+1]=Math.floor(norm*60+15);d[idx+2]=Math.floor(norm*120+30);d[idx+3]=255;
+  }}
+  ctx.putImageData(img,0,0);
+  ctx.strokeStyle='rgba(240,136,62,0.3)';ctx.lineWidth=1;
+  for(var lv=1;lv<20;lv+=3){ctx.beginPath();for(var a=0;a<64;a++){var r=(a/64)*8-4;var cv=lv;var xv;if(type==='valley'){xv=r*r-cv*cv;}else{xv=r*r+cv*cv-4*lv;}if(xv<0)continue;var yy=Math.sqrt(xv);var sx=(r+4)/8*w,sy=(4-yy)/8*h;var ex=(-r+4)/8*w,ey=(4+yy)/8*h;if(a===0)ctx.moveTo(sx,sy);else ctx.lineTo(sx,sy);if(a===0)ctx.moveTo(ex,ey);else ctx.lineTo(ex,ey);}ctx.stroke();}
+  if(gdPath.length>1){ctx.strokeStyle='#f0883e';ctx.lineWidth=2.5;ctx.beginPath();for(var i=0;i<gdPath.length;i++){var sx=(gdPath[i].x+4)/8*w,sy=(4-gdPath[i].y)/8*h;if(i===0)ctx.moveTo(sx,sy);else ctx.lineTo(sx,sy);}ctx.stroke();}
+  if(gdPath.length>0){var last=gdPath[gdPath.length-1];var sx=(last.x+4)/8*w,sy=(4-last.y)/8*h;ctx.fillStyle='#f0883e';ctx.beginPath();ctx.arc(sx,sy,6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#0d1117';ctx.beginPath();ctx.arc(sx,sy,3,0,Math.PI*2);ctx.fill();}
+}
+function startGD(){
+  if(gdRunning)return;gdRunning=true;gdPath=[{x:gdPos.x,y:gdPos.y}];gdStepLoop();
+}
+function gdStepLoop(){
+  var lr=parseInt(document.getElementById('lrSlider').value)/100;
+  var type=document.getElementById('lossType').value;
+  var g=gradFunc(gdPos.x,gdPos.y,type);
+  gdPos.x-=lr*g.x;gdPos.y-=lr*g.y;
+  gdPath.push({x:gdPos.x,y:gdPos.y});
+  var loss=lossFunc(gdPos.x,gdPos.y,type);
+  var gMag=Math.sqrt(g.x*g.x+g.y*g.y);
+  document.getElementById('gdStep').textContent=gdPath.length-1;
+  document.getElementById('gdPos').textContent='('+gdPos.x.toFixed(2)+', '+gdPos.y.toFixed(2)+')';
+  document.getElementById('gdLoss').textContent=loss.toFixed(3);
+  document.getElementById('gdGrad').textContent=gMag.toFixed(3);
+  drawGD();
+  if(gdPath.length<300&&gMag>0.01)gdTimer=setTimeout(gdStepLoop,50);
+  else{gdRunning=false;if(gdPath.length>=50)unlock('gd');}
+}
+function resetGD(){gdRunning=false;clearTimeout(gdTimer);gdPos={x:3,y:3};gdPath=[];document.getElementById('gdStep').textContent='0';drawGD();}
+
+/* ========== 3 神经网络 ========== */
+function updateNN(){
+  var x1=parseInt(document.getElementById('nnX1').value)/100;
+  var x2=parseInt(document.getElementById('nnX2').value)/100;
+  var x3=parseInt(document.getElementById('nnX3').value)/100;
+  var b=parseInt(document.getElementById('nnB').value)/100;
+  var z=x1*0.5+x2*0.3+x3*0.2+b;
+  var out=activate(z);
+  document.getElementById('nnResult').innerHTML='z = '+x1.toFixed(2)+'x0.5 + '+x2.toFixed(2)+'x0.3 + '+x3.toFixed(2)+'x0.2 + '+b.toFixed(2)+' = <span style="color:var(--accent)">'+z.toFixed(3)+'</span><br>激活后输出 = <span style="color:var(--teal);font-size:1.1rem;font-weight:700">'+out.toFixed(4)+'</span>'+(out>0.5?' → 分类为正类':' → 分类为负类');
+  document.querySelectorAll('.nn-node')[0].style.background=x1>0.5?'rgba(56,139,253,0.3)':'transparent';
+  document.querySelectorAll('.nn-node')[1].style.background=x2>0.5?'rgba(56,139,253,0.3)':'transparent';
+  document.querySelectorAll('.nn-node')[2].style.background=x3>0.5?'rgba(56,139,253,0.3)':'transparent';
+  var outNode=document.getElementById('nnOut');outNode.classList.add('active');outNode.style.background=out>0.5?'rgba(63,185,80,0.3)':'rgba(248,81,73,0.3)';
+  unlock('nn');
+}
+function activate(z){if(G.af==='sigmoid')return 1/(1+Math.exp(-z));if(G.af==='relu')return Math.max(0,z);return Math.tanh(z);}
+function setAF(t){G.af=t;document.getElementById('afSig').style.borderColor=t==='sigmoid'?'var(--accent)':'';document.getElementById('afRelu').style.borderColor=t==='relu'?'var(--accent)':'';document.getElementById('afTan').style.borderColor=t==='tanh'?'var(--accent)':'';drawAFCurves();updateNN();}
+function drawAFCurves(){
+  var c=document.getElementById('afCanvas');c.width=c.offsetWidth;var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);ctx.strokeStyle='#30363d';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(40,20);ctx.lineTo(40,h-20);ctx.lineTo(w-20,h-20);ctx.stroke();
+  ctx.fillStyle='#8b949e';ctx.font='10px monospace';ctx.textAlign='center';
+  for(var i=-2;i<=2;i+=0.5){var py=h-20-((i+2)/4)*(h-40);ctx.fillText(i.toFixed(1),35,py+3);}
+  for(var i=-4;i<=4;i+=1){var px=40+((i+4)/8)*(w-60);ctx.fillText(i,px,h-8);}
+  var funcs=[{name:'sigmoid',fn:function(z){return 1/(1+Math.exp(-z))},color:'#f0883e'},{name:'relu',fn:function(z){return Math.max(0,z)},color:'#3fb950'},{name:'tanh',fn:function(z){return Math.tanh(z)},color:'#388bfd'}];
+  for(var f=0;f<funcs.length;f++){ctx.strokeStyle=funcs[f].color;ctx.lineWidth=f===({sigmoid:0,relu:1,tanh:2}[G.af])?3:1.5;ctx.beginPath();for(var i=-4;i<=4;i+=0.1){var x=40+((i+4)/8)*(w-60);var y=h-20-((funcs[f].fn(i)+1)/2)*(h-40);if(i===-4)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();}
+  var legend=[['sigmoid','#f0883e'],['ReLU','#3fb950'],['Tanh','#388bfd']];
+  for(var i=0;i<legend.length;i++){ctx.fillStyle=legend[i][1];ctx.fillRect(w-100+i*0+w/3,10,12,12);ctx.fillStyle='#e6edf3';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText(legend[i][0],w-100+i*0+w/3+16,21);}
+}
+
+/* ========== 4 深度学习可视化 ========== */
+function drawCNN(){
+  var c=document.getElementById('cnnCanvas');c.width=c.offsetWidth;var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var cs=Math.min(w,h)/10;
+  var input=[[1,2,1,0,2,0],[3,1,0,1,0,2],[0,0,1,2,1,3],[2,1,3,0,1,0],[1,0,0,1,2,1],[0,2,1,0,0,3]];
+  var kernel=[[1,0,1],[0,1,0],[1,0,1]];
+  var ox=20,oy=20;
+  ctx.fillStyle='#8b949e';ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillText('输入图像 6x6',ox+3*cs,oy-8);
+  for(var r=0;r<6;r++)for(var c2=0;c2<6;c2++){var v=input[r][c2];ctx.fillStyle=v?'rgba(240,136,62,'+(0.3+v*0.15)+')':'rgba(33,38,45,0.8)';ctx.fillRect(ox+c2*cs,oy+r*cs,cs-1,cs-1);ctx.fillStyle='#e6edf3';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText(v,ox+c2*cs+cs/2-1,oy+r*cs+cs/2+3);}
+  var kox=ox+6*cs+15;ctx.fillStyle='#8b949e';ctx.font='bold 11px sans-serif';ctx.fillText('卷积核 3x3',kox+1.5*cs,oy-8);
+  for(var r=0;r<3;r++)for(var c2=0;c2<3;c2++){var v=kernel[r][c2];ctx.fillStyle=v?'rgba(56,139,253,'+(0.3+v*0.25)+')':'rgba(33,38,45,0.8)';ctx.fillRect(kox+c2*cs,oy+r*cs,cs-1,cs-1);ctx.fillStyle='#e6edf3';ctx.font='10px monospace';ctx.textAlign='center';ctx.fillText(v,kox+c2*cs+cs/2-1,oy+r*cs+cs/2+3);}
+  var rox=kox+3*cs+25;ctx.fillStyle='#8b949e';ctx.font='bold 11px sans-serif';ctx.fillText('特征图 4x4',rox+2*cs,oy-8);
+  for(var r=0;r<4;r++)for(var c2=0;c2<4;c2++){var sum=0;for(var kr=0;kr<3;kr++)for(var kc=0;kc<3;kc++)sum+=input[r+kr][c2+kc]*kernel[kr][kc];ctx.fillStyle='rgba(45,212,191,'+(0.15+Math.min(sum/6,0.5))+')';ctx.fillRect(rox+c2*cs,oy+r*cs,cs-1,cs-1);ctx.fillStyle='#e6edf3';ctx.font='9px monospace';ctx.textAlign='center';ctx.fillText(sum,rox+c2*cs+cs/2-1,oy+r*cs+cs/2+3);}
+  ctx.strokeStyle='rgba(240,136,62,0.3)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  for(var r=0;r<3;r++){ctx.strokeRect(ox+(r)*cs-0.5,oy+(r)*cs-0.5,3*cs+2,3*cs+2);}
+  ctx.setLineDash([]);
+  var iy=oy+6*cs+20;ctx.fillStyle='#8b949e';ctx.font='12px sans-serif';ctx.textAlign='left';
+  ctx.fillText('卷积运算：滑动卷积核，对应位置相乘求和',ox,iy);
+  ctx.fillText('输出尺寸 = 输入尺寸 - 卷积核尺寸 + 1 = 6 - 3 + 1 = 4',ox,iy+18);
+  ctx.fillStyle='var(--accent)';ctx.fillText('特点：局部连接 + 参数共享 → 大幅减少参数量',ox,iy+36);
+}
+function drawRNN(){
+  var c=document.getElementById('rnnCanvas');c.width=c.offsetWidth;var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var words=['我','爱','AI'];var xs=w/(words.length+2);
+  for(var t=0;t<words.length;t++){
+    var x=xs*(t+1)+xs/2,y=h/2;
+    ctx.fillStyle='#21262d';ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#f0883e';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x,y,22,0,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#e6edf3';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(words[t],x,y);
+    ctx.fillStyle='#8b949e';ctx.font='10px sans-serif';ctx.fillText('h'+(t+1),x,y-32);
+    if(t>0){ctx.strokeStyle='rgba(240,136,62,0.5)';ctx.lineWidth=2;var px=xs*t+xs/2;ctx.beginPath();ctx.moveTo(px+22,y);ctx.quadraticCurveTo((px+x)/2,y-20,x-22,y);ctx.stroke();ctx.fillStyle='#f0883e';ctx.font='9px sans-serif';ctx.textAlign='center';ctx.fillText('h'+t,px+x/2,y-25);}
+    var ix=x,yi=y;
+    ctx.strokeStyle='#388bfd';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(ix,yi-22);ctx.lineTo(ix,yi+22);ctx.stroke();
+  }
+  ctx.fillStyle='#8b949e';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('输入',xs+xs/2,h/2+36);ctx.fillText('输出',xs*(words.length)+xs/2,h/2+36);
+}
+function drawAttention(){
+  var c=document.getElementById('attCanvas');c.width=c.offsetWidth;var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var words=['我','喜欢','在','深夜','写','代码'];
+  var n=words.length;var cs=Math.min(w/(n+1),60);var sx=(w-n*cs)/(n+1);var cy=h*0.35;
+  var attn=[[0,0.6,0.1,0.05,0.15,0.1],[0.4,0,0.2,0.1,0.15,0.15],[0.1,0.3,0,0.5,0.05,0.05],[0.05,0.15,0.6,0,0.1,0.1],[0.2,0.1,0.05,0.1,0,0.55],[0.3,0.2,0.1,0.15,0.7,0]];
+  for(var i=0;i<n;i++){var x=sx*(i+1)+cs*i+cs/2;ctx.fillStyle='#161b22';ctx.strokeStyle='#f0883e';ctx.lineWidth=2;ctx.beginPath();ctx.roundRect(x-cs/2,cy-cs/2,cs,cs,6);ctx.fill();ctx.stroke();ctx.fillStyle='#e6edf3';ctx.font='bold 14px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(words[i],x,cy);}
+  for(var i=0;i<n;i++){for(var j=i+1;j<n;j++){var x1=sx*(i+1)+cs*i+cs/2,x2=sx*(j+1)+cs*j+cs/2;var a=attn[i][j]+attn[j][i];if(a<0.1)continue;ctx.strokeStyle='rgba(240,136,62,'+(0.3+a)+')';ctx.lineWidth=Math.max(1,a*6);ctx.beginPath();ctx.moveTo(x1,cy+cs/2);ctx.quadraticCurveTo((x1+x2)/2,cy+cs/2+40,x2,cy+cs/2);ctx.stroke();}}
+  ctx.fillStyle='#8b949e';ctx.font='11px sans-serif';ctx.textAlign='center';ctx.fillText('Self-Attention: 每个词关注所有词，权重越大关注越强',w/2,h-10);
+  var ay=cy+cs/2+50;ctx.fillStyle='#e6edf3';ctx.font='10px monospace';ctx.textAlign='left';
+  ctx.fillText('Attention矩阵:',sx,ay);
+  for(var i=0;i<n;i++){for(var j=0;j<n;j++){var bx=sx+30+j*38,by=ay+14+i*18;ctx.fillStyle=attn[i][j]>0.3?'rgba(240,136,62,'+(attn[i][j])+')':'rgba(33,38,45,0.8)';ctx.fillRect(bx,by,34,14);ctx.fillStyle='#e6edf3';ctx.font='8px monospace';ctx.textAlign='center';ctx.fillText(attn[i][j].toFixed(1),bx+17,by+10);}}
+  if(typeof ctx.roundRect==='undefined'){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.closePath()};}
+}
+
+/* ========== 5 实验室 ========== */
+function runLab(){
+  var lr=parseInt(document.getElementById('labLR').value)/100;
+  var comp=parseInt(document.getElementById('labComp').value);
+  var noise=parseInt(document.getElementById('labNoise').value)/100;
+  var epochs=parseInt(document.getElementById('labEpoch').value);
+  document.getElementById('labLRV').textContent=lr.toFixed(2);
+  document.getElementById('labCompV').textContent=comp;
+  document.getElementById('labNoiseV').textContent=noise.toFixed(2);
+  document.getElementById('labEpochV').textContent=epochs;
+  var trainLoss=[];var testLoss=[];var w0=Math.random()*2-1;
+  var trueW=1.5;for(var e=0;e<epochs;e++){
+    var tl=0;var grad=0;for(var d=0;d<20;d++){var x=d/20;var y=trueW*x+(Math.random()-0.5)*noise*4;var pred=w0*x;var err=pred-y;tl+=err*err;grad+=2*err*x;}
+    tl/=20;grad/=20;
+    var reg=comp*0.01*w0*w0;
+    w0-=lr*(grad+reg*0.01*w0);
+    trainLoss.push(tl+reg);
+    var testE=0;for(var d=0;d<20;d++){var x=d/20;var y=trueW*x+(Math.random()-0.5)*noise*4;testE+=(w0*x-y)*(w0*x-y);}testLoss.push(testE/20);
+  }
+  drawLabChart(trainLoss,testLoss);
+  var overfit=trainLoss[trainLoss.length-1]<testLoss[testLoss.length-1]*0.7;
+  var underfit=trainLoss[trainLoss.length-1]>3;
+  var diag='';
+  if(overfit)diag='<span class="bad">过拟合倾向：</span>训练损失远低于测试损失，模型复杂度可能过高。建议降低模型复杂度或增加数据量。';
+  else if(underfit)diag='<span class="bad">欠拟合倾向：</span>训练损失仍然很高，模型未能学习数据规律。建议增加模型复杂度或调整学习率。';
+  else diag='<span class="good">拟合良好：</span>训练损失与测试损失接近，模型泛化能力较好。当前超参数设置合理。';
+  diag+='<br><br>学习率 <span style="color:var(--accent)">'+lr.toFixed(2)+'</span> | 复杂度 <span style="color:var(--teal)">'+comp+'</span> | 噪声 <span style="color:var(--text-muted)">'+noise.toFixed(2)+'</span>';
+  document.getElementById('labDiag').innerHTML=diag;
+  unlock('lab');
+}
+function drawLabChart(train,test){
+  var c=document.getElementById('labCanvas');c.width=c.offsetWidth;var ctx=c.getContext('2d');var w=c.width,h=c.height;
+  ctx.clearRect(0,0,w,h);
+  var n=train.length;var maxV=0;for(var i=0;i<n;i++){maxV=Math.max(maxV,train[i],test[i]);}
+  var pw=w-80,ph=h-50;var ox=60,oy=20;
+  ctx.strokeStyle='#30363d';ctx.lineWidth=1;
+  for(var i=0;i<=5;i++){var y=oy+ph-i*(ph/5);ctx.beginPath();ctx.moveTo(ox,y);ctx.lineTo(ox+pw,y);ctx.stroke();ctx.fillStyle='#8b949e';ctx.font='10px monospace';ctx.textAlign='right';ctx.fillText((maxV*i/5).toFixed(1),ox-5,y+3);}
+  for(var i=0;i<=5;i++){var x=ox+i*(pw/5);ctx.beginPath();ctx.moveTo(x,oy);ctx.lineTo(x,oy+ph);ctx.stroke();ctx.fillStyle='#8b949e';ctx.font='10px sans-serif';ctx.textAlign='center';ctx.fillText(Math.round(n*i/5),x,oy+ph+14);}
+  function drawLine(data,color){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();for(var i=0;i<n;i++){var x=ox+i/n*pw;var y=oy+ph-Math.min(data[i]/maxV,1)*ph;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();}
+  drawLine(train,'#f0883e');drawLine(test,'#3fb950');
+  ctx.fillStyle='#f0883e';ctx.font='11px sans-serif';ctx.textAlign='left';ctx.fillText('训练损失',ox+pw+8,oy+ph-Math.min(train[train.length-1]/maxV,1)*ph);
+  ctx.fillStyle='#3fb950';ctx.fillText('测试损失',ox+pw+8,oy+ph-Math.min(test[test.length-1]/maxV,1)*ph-16);
+}
+
+/* ========== 6 知识挑战 ========== */
+function initFinalQuiz(){
+  var h='';for(var i=0;i<quizes.final.length;i++){var it=quizes.final[i];h+='<div class="interact-card" style="margin-bottom:0.75rem"><p class="quiz-q">'+(i+1)+'. '+it.q+'</p><div class="quiz-opts" id="fq_'+i+'"></div></div>';}
+  document.getElementById('quizArea').innerHTML=h;
+  for(var i=0;i<quizes.final.length;i++){(function(idx){var el=document.getElementById('fq_'+idx);var items=quizes.final[idx].opts;var hh='';for(var j=0;j<items.length;j++){hh+='<div class="quiz-opt" id="fo_'+idx+'_'+j+'" onclick="answerFinal('+idx+','+j+')">'+items[j]+'</div>';}el.innerHTML=hh;})(i);}
+}
+function answerFinal(qi,oi){
+  var el=document.getElementById('fo_'+qi+'_'+oi);if(!el||el.classList.contains('disabled'))return;
+  var container=document.getElementById('fq_'+qi);
+  var opts=container.children;for(var i=0;i<opts.length;i++)opts[i].classList.add('disabled');
+  var ans=quizes.final[qi].ans;
+  if(oi===ans){el.classList.add('correct');addScore(15);toast('正确 +15 分');}
+  else{el.classList.add('wrong');opts[ans].classList.add('correct');toast('错误');}
+  checkFinalDone();
+}
+function checkFinalDone(){
+  var allDone=true;for(var i=0;i<quizes.final.length;i++){var el=document.getElementById('fo_'+i+'_'+quizes.final[i].ans);if(!el||!el.classList.contains('correct')){allDone=false;break;}}
+  var score=G.score;document.getElementById('finalScore').textContent=score+' / 120';
+  var tags='';if(score>=100)tags+='<span class="tag t-green">AI原理大师</span>';
+  if(score>=80)tags+='<span class="tag t-teal">功底扎实</span>';
+  if(score>=60)tags+='<span class="tag t-orange">初窥门径</span>';
+  if(score<60)tags+='<span class="tag t-red">继续努力</span>';
+  document.getElementById('finalTags').innerHTML=tags;
+  if(score>=60)unlock('quiz60');if(score>=120)unlock('quiz100');
+}
+
+/* ========== 工具 ========== */
+function toast(msg){var el=document.createElement('div');el.className='toast';el.textContent=msg;document.body.appendChild(el);setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el);},2000);}
+function saveProgress(){localStorage.setItem('ai_explore',JSON.stringify(G));toast('已保存');}
+function loadProgress(){var s=localStorage.getItem('ai_explore');if(s){G=JSON.parse(s);toast('已加载');}}
+function resetAll(){G={score:0,total:0,correct:0,done:{},af:'sigmoid',curStep:0};goTo(0);initFinalQuiz();toast('已重置');}
+
+/* ========== 初始化 ========== */
+document.addEventListener('DOMContentLoaded',function(){
+  loadProgress();updateUI();initFinalQuiz();
+  window.addEventListener('resize',function(){if(G.curStep===0)initVecCanvas();if(G.curStep===1)drawGD();if(G.curStep===2)drawAFCurves();if(G.curStep===3){drawCNN();drawRNN();drawAttention();}if(G.curStep===4){var c=document.getElementById('labCanvas');c.width=c.offsetWidth;}});
+});
+</script>
+</body>
+</html>

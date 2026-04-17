@@ -1,0 +1,519 @@
+/* ========== Round 2 系统样式 ========== */
+
+/* 天气系统样式 */
+.weather-display {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(22, 33, 62, 0.9);
+    border: 2px solid #e94560;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.weather-icon {
+    font-size: 40px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.weather-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.weather-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.weather-timer {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+/* 天气粒子容器 */
+.weather-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+}
+
+/* 雨滴效果 */
+.raindrop {
+    position: absolute;
+    top: -20px;
+    width: 2px;
+    height: 20px;
+    background: linear-gradient(to bottom, transparent, rgba(174, 194, 224, 0.8));
+    animation: rain 0.5s linear infinite;
+}
+
+@keyframes rain {
+    0% {
+        transform: translateY(-20px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh);
+        opacity: 0.3;
+    }
+}
+
+/* 雪花效果 */
+.snowflake {
+    position: absolute;
+    top: -20px;
+    color: #fff;
+    text-shadow: 0 0 5px #fff;
+    animation: snow 5s linear infinite;
+}
+
+@keyframes snow {
+    0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0.3;
+    }
+}
+
+/* 雾气效果 */
+.fog-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.3) 100%);
+    pointer-events: none;
+}
+
+@keyframes fog-move {
+    0%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+}
+
+/* 闪电效果 */
+.lightning-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0);
+    pointer-events: none;
+}
+
+@keyframes flash {
+    0%, 95%, 100% {
+        background: rgba(255, 255, 255, 0);
+    }
+    96% {
+        background: rgba(255, 255, 255, 0.8);
+    }
+}
+
+/* 时间系统样式 */
+.time-display {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    background: rgba(22, 33, 62, 0.9);
+    border: 2px solid #e94560;
+    border-radius: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.time-icon {
+    font-size: 35px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.time-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.time-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+}
+
+.day-count {
+    font-size: 12px;
+    color: #a0a0a0;
+}
+
+/* 成就系统样式 */
+.achievement-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    max-height: 80vh;
+    background: rgba(22, 33, 62, 0.95);
+    border: 2px solid #e94560;
+    border-radius: 10px;
+    padding: 20px;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.achievement-categories {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px;
+    background: rgba(15, 52, 96, 0.5);
+    border-radius: 8px;
+}
+
+.category-btn {
+    padding: 8px 16px;
+    background: rgba(233, 69, 96, 0.2);
+    border: 1px solid #e94560;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 12px;
+}
+
+.category-btn:hover {
+    background: rgba(233, 69, 96, 0.4);
+    transform: translateY(-2px);
+}
+
+.category-btn.active {
+    background: #e94560;
+    color: white;
+}
+
+.achievement-list {
+    flex: 1;
+    overflow-y: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 15px;
+    padding: 10px;
+}
+
+.achievement-card {
+    background: rgba(15, 52, 96, 0.5);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    gap: 15px;
+    transition: all 0.3s;
+}
+
+.achievement-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.achievement-card.unlocked {
+    opacity: 1;
+}
+
+.achievement-card.locked {
+    opacity: 0.6;
+    filter: grayscale(0.5);
+}
+
+.achievement-card-icon {
+    font-size: 50px;
+    flex-shrink: 0;
+}
+
+.achievement-card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.achievement-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.achievement-card-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.achievement-card-rarity {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.achievement-card-description {
+    font-size: 13px;
+    color: #a0a0a0;
+    line-height: 1.4;
+}
+
+.achievement-card-reward {
+    font-size: 12px;
+    color: #4CAF50;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.reward-item {
+    background: rgba(76, 175, 80, 0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.achievement-card-unlocked-at {
+    font-size: 11px;
+    color: #666;
+    margin-top: auto;
+}
+
+.achievement-card-locked {
+    font-size: 12px;
+    color: #f44336;
+    font-style: italic;
+}
+
+.achievement-summary {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px;
+    background: rgba(15, 52, 96, 0.5);
+    border-radius: 8px;
+    gap: 20px;
+}
+
+/* 成就通知 */
+.achievement-notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(22, 33, 62, 0.95), rgba(15, 52, 96, 0.95));
+    border: 2px solid;
+    border-radius: 10px;
+    padding: 20px 30px;
+    display: flex;
+    gap: 20px;
+    z-index: 3000;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.achievement-notification.common {
+    border-color: #9e9e9e;
+}
+
+.achievement-notification.uncommon {
+    border-color: #4CAF50;
+}
+
+.achievement-notification.rare {
+    border-color: #2196F3;
+}
+
+.achievement-notification.epic {
+    border-color: #9C27B0;
+}
+
+.achievement-notification.legendary {
+    border-color: #FFD700;
+}
+
+.achievement-icon {
+    font-size: 50px;
+    animation: achievementPop 0.5s ease-out;
+}
+
+@keyframes achievementPop {
+    0% {
+        transform: scale(0) rotate(-180deg);
+    }
+    100% {
+        transform: scale(1) rotate(0deg);
+    }
+}
+
+.achievement-content {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.achievement-name {
+    font-size: 14px;
+    color: #e94560;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.achievement-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+}
+
+.achievement-description {
+    font-size: 14px;
+    color: #a0a0a0;
+}
+
+@keyframes achievementPopup {
+    0% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-50px);
+    }
+}
+
+/* 关闭按钮 */
+.close-btn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.close-btn:hover {
+    color: #e94560;
+    transform: rotate(90deg);
+}
+
+/* 通用动画 */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .weather-display,
+    .time-display {
+        right: 10px;
+        padding: 10px;
+        font-size: 12px;
+    }
+
+    .weather-icon,
+    .time-icon {
+        font-size: 25px;
+    }
+
+    .achievement-panel {
+        width: 95%;
+        max-height: 90vh;
+    }
+
+    .achievement-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 滚动条样式 */
+.achievement-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.achievement-list::-webkit-scrollbar-track {
+    background: rgba(22, 33, 62, 0.5);
+    border-radius: 4px;
+}
+
+.achievement-list::-webkit-scrollbar-thumb {
+    background: #e94560;
+    border-radius: 4px;
+}
+
+.achievement-list::-webkit-scrollbar-thumb:hover {
+    background: #ff6b8a;
+}
+
+/* 隐藏类 */
+.hidden {
+    display: none !important;
+}

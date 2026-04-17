@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>融合画像 - MBTI·八字·塔罗·SBTI</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-dark: #0d1117; --bg-card: #161b22; --bg-input: #21262d; --border: #30363d;
+  --text: #e6edf3; --text-muted: #8b949e; --accent: #f0883e; --accent-light: #ffa657;
+  --success: #3fb950; --danger: #f85149; --step-active: #388bfd;
+}
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-dark); color: var(--text); min-height: 100vh; line-height: 1.6; }
+.header { background: var(--bg-card); border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center;
+  position: sticky; top: 0; z-index: 100; }
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.header-actions { display: flex; gap: 0.75rem; }
+.btn { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--bg-input); color: var(--text); cursor: pointer;
+  font-size: 0.875rem; transition: all 0.2s; }
+.btn:hover { background: var(--border); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
+.btn-primary:hover { background: var(--accent-light); }
+.main-container { display: flex; min-height: calc(100vh - 60px); }
+.steps-nav { width: 280px; background: var(--bg-card); border-right: 1px solid var(--border);
+  padding: 1.5rem; flex-shrink: 0; }
+.step-item { display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.875rem 1rem; border-radius: 8px; cursor: pointer;
+  transition: all 0.2s; margin-bottom: 0.5rem; border: 1px solid transparent; }
+.step-item:hover { background: var(--bg-input); }
+.step-item.active { background: rgba(240,136,62,0.15); border-color: var(--accent); }
+.step-item.completed { opacity: 0.7; }
+.step-item.completed .step-number { background: var(--success); }
+.step-number { width: 28px; height: 28px; border-radius: 50%;
+  background: var(--bg-input); display: flex; align-items: center; justify-content: center;
+  font-size: 0.8rem; font-weight: 600; flex-shrink: 0; }
+.step-item.active .step-number { background: var(--accent); color: #000; }
+.step-info h4 { font-size: 0.9rem; font-weight: 500; }
+.step-info p { font-size: 0.75rem; color: var(--text-muted); }
+.content-area { flex: 1; padding: 2rem; overflow-y: auto; }
+.step-panel { display: none; max-width: 900px; margin: 0 auto; }
+.step-panel.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.panel-header { margin-bottom: 2rem; }
+.panel-header h2 { font-size: 1.75rem; margin-bottom: 0.5rem; color: var(--accent); }
+.panel-header p { color: var(--text-muted); }
+.form-group { margin-bottom: 1.5rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; }
+.form-group .hint { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+input, textarea, select { width: 100%; padding: 0.75rem 1rem;
+  background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); font-size: 0.95rem; transition: border-color 0.2s; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+textarea { resize: vertical; min-height: 100px; font-family: inherit; }
+.form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+.card { background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.card-header h3 { font-size: 1.1rem; }
+.progress-bar { height: 4px; background: var(--bg-input); border-radius: 2px;
+  margin-bottom: 1.5rem; overflow: hidden; }
+.progress-bar .fill { height: 100%; background: var(--accent); transition: width 0.3s ease; }
+.tip-box { background: rgba(56,139,253,0.1); border: 1px solid rgba(56,139,253,0.3);
+  border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.9rem; }
+.tip-box strong { color: var(--step-active); }
+.panel-nav { display: flex; justify-content: space-between; margin-top: 2rem;
+  padding-top: 1.5rem; border-top: 1px solid var(--border); }
+.tag { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 999px;
+  font-size: 0.75rem; margin: 0.15rem; background: rgba(240,136,62,0.12);
+  border: 1px solid rgba(240,136,62,0.25); color: var(--accent-light); }
+.report-section { margin-bottom: 2rem; }
+.report-section h3 { font-size: 1.1rem; color: var(--accent); margin-bottom: 0.75rem; }
+.disclaimer { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.25);
+  border-radius: 8px; padding: 1rem; margin-top: 2rem; font-size: 0.85rem; color: var(--text-muted); }
+@media (max-width: 900px) {
+  .main-container { flex-direction: column; }
+  .steps-nav { width: 100%; border-right: none; border-bottom: 1px solid var(--border); padding: 1rem; }
+  .step-item { padding: 0.5rem; }
+  .form-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo">融合画像</div>
+  <div class="header-actions">
+    <button class="btn" onclick="saveProject()">💾 保存</button>
+    <button class="btn" onclick="loadProject()">📂 加载</button>
+    <button class="btn btn-primary" onclick="exportReport()">📄 导出报告</button>
+  </div>
+</header>
+<div class="main-container">
+  <nav class="steps-nav">
+    <div class="progress-bar"><div class="fill" id="progressFill" style="width:16.6%"></div></div>
+
+    <div class="step-item active" onclick="goToStep(0)">
+      <div class="step-number">1</div>
+      <div class="step-info"><h4>基础画像</h4><p>出生信息、议题</p></div>
+    </div>
+    <div class="step-item" onclick="goToStep(1)">
+      <div class="step-number">2</div>
+      <div class="step-info"><h4>MBTI 测试</h4><p>四维度、16 型</p></div>
+    </div>
+    <div class="step-item" onclick="goToStep(2)">
+      <div class="step-number">3</div>
+      <div class="step-info"><h4>八字排盘</h4><p>四柱、五行、十神</p></div>
+    </div>
+    <div class="step-item" onclick="goToStep(3)">
+      <div class="step-number">4</div>
+      <div class="step-info"><h4>塔罗牌阵</h4><p>牌阵、解读</p></div>
+    </div>
+    <div class="step-item" onclick="goToStep(4)">
+      <div class="step-number">5</div>
+      <div class="step-info"><h4>SBTI 测试</h4><p>15 维度、人格类型</p></div>
+    </div>
+    <div class="step-item" onclick="goToStep(5)">
+      <div class="step-number">6</div>
+      <div class="step-info"><h4>融合报告</h4><p>综合解读</p></div>
+    </div>
+  </nav>
+
+  <main class="content-area">
+    <!-- 1 基础画像 -->
+    <div class="step-panel active" id="panel-0">
+      <div class="panel-header">
+        <h2>1. 基础画像</h2>
+        <p>填写出生信息与当前关注的议题，用于排盘与解读</p>
+      </div>
+      <div class="tip-box">
+        <strong>提示：</strong>八字排盘需要精确的出生时间。塔罗解读更偏向「当下议题」，可以在步骤 4 描述你想问的问题。
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>性别</label>
+          <select id="gender">
+            <option value="">请选择</option>
+            <option value="male">男</option>
+            <option value="female">女</option>
+            <option value="other">其他</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>公历出生日期</label>
+          <input type="date" id="birthDate">
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>出生时间（时:分，尽量精确）</label>
+          <input type="time" id="birthTime">
+        </div>
+        <div class="form-group">
+          <label>出生地（省市，用于时区估算）</label>
+          <input type="text" id="birthPlace" placeholder="例如：广东 广州">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>当前最关注的议题（可选）</label>
+        <textarea id="focusIssue" rows="3" placeholder="例如：事业方向、感情关系、自我成长…"></textarea>
+        <p class="hint">用于在塔罗环节给出更贴合的牌阵建议</p>
+      </div>
+      <div class="form-group">
+        <label>生活状态（可选）</label>
+        <select id="lifeStage">
+          <option value="">请选择</option>
+          <option value="student">学生</option>
+          <option value="work">职场人</option>
+          <option value="freelance">自由职业/创业</option>
+          <option value="gap">空窗期/转行</option>
+          <option value="retire">退休</option>
+        </select>
+      </div>
+      <div class="panel-nav">
+        <div></div>
+        <button class="btn btn-primary" onclick="nextStep()">下一步：MBTI →</button>
+      </div>
+    </div>
+
+    <!-- 2 MBTI -->
+    <div class="step-panel" id="panel-1">
+      <div class="panel-header">
+        <h2>2. MBTI 测试</h2>
+        <p>四维度：能量来源、信息收集、决策方式、生活态度</p>
+      </div>
+      <div class="tip-box">
+        <strong>说明：</strong>MBTI 来源于荣格心理类型，用于理解个人在认知与决策上的偏好，并不是完整的心理学诊断。请尽量按照「第一反应」作答。
+      </div>
+      <div id="mbtiQuizArea">
+        <p style="color:var(--text-muted);">（此处放置 MBTI 题目 UI，示例：单选题列表）</p>
+      </div>
+      <div id="mbtiResultArea" style="display:none;">
+        <div class="card">
+          <div class="card-header"><h3>你的 MBTI 类型</h3></div>
+          <div style="font-size:1.4rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem;" id="mbtiTypeLabel">-</div>
+          <div style="color:var(--text-muted);font-size:0.9rem;" id="mbtiTypeDesc">-</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>四维度偏好</h3></div>
+          <div id="mbtiDims"></div>
+        </div>
+      </div>
+      <div class="panel-nav">
+        <button class="btn" onclick="prevStep()">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextStep()">下一步：八字 →</button>
+      </div>
+    </div>
+
+    <!-- 3 八字排盘 -->
+    <div class="step-panel" id="panel-2">
+      <div class="panel-header">
+        <h2>3. 八字排盘</h2>
+        <p>四柱、五行、十神与意象式解读</p>
+      </div>
+      <div class="tip-box">
+        <strong>注意：</strong>八字命理是中国传统文化体系，本产品仅做意象式、启发式解读，不构成命理预测或保证。
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>四柱八字</h3></div>
+        <div id="baziPillarArea" style="font-family:monospace;font-size:1.1rem;color:var(--text);">
+          <p style="color:var(--text-muted);">（根据步骤 1 的出生时间自动生成）</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>五行与十神概览</h3></div>
+        <div id="baziWuxingArea">
+          <p style="color:var(--text-muted);">（根据四柱计算）</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>意象式描述</h3></div>
+        <div id="baziDescArea">
+          <p style="color:var(--text-muted);">（仅作意象启发，不作命理断语）</p>
+        </div>
+      </div>
+      <div class="panel-nav">
+        <button class="btn" onclick="prevStep()">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextStep()">下一步：塔罗 →</button>
+      </div>
+    </div>
+
+    <!-- 4 塔罗 -->
+    <div class="step-panel" id="panel-3">
+      <div class="panel-header">
+        <h2>4. 塔罗牌阵</h2>
+        <p>选择牌阵，抽取塔罗牌，获取意象启发式解读</p>
+      </div>
+      <div class="tip-box">
+        <strong>免责：</strong>塔罗解读为「意象启发」，旨在帮助你从不同角度思考当下议题，不具备预测性质。重大决策请咨询专业人士。
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>牌阵选择</h3></div>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;">
+          <button class="btn" onclick="selectSpread(1)">单牌</button>
+          <button class="btn" onclick="selectSpread(3)">三牌（过去–现在–未来）</button>
+          <button class="btn" onclick="selectSpread(5)">五牌（十字扩展）</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h3>抽牌区</h3>
+          <button class="btn btn-primary" onclick="drawCards()">洗牌 & 抽牌</button>
+        </div>
+        <div id="tarotCardsArea">
+          <p style="color:var(--text-muted);">点击上方按钮开始抽牌</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3>塔罗解读</h3></div>
+        <div id="tarotReadingArea">
+          <p style="color:var(--text-muted);">（根据牌面生成）</p>
+        </div>
+      </div>
+      <div class="panel-nav">
+        <button class="btn" onclick="prevStep()">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextStep()">下一步：SBTI →</button>
+      </div>
+    </div>
+
+    <!-- 5 SBTI -->
+    <div class="step-panel" id="panel-4">
+      <div class="panel-header">
+        <h2>5. SBTI 测试</h2>
+        <p>15 个维度、行为与社交状态画像</p>
+      </div>
+      <div class="tip-box">
+        <strong>说明：</strong>SBTI（Silly Big Personality Test）是互联网文化向的玩梗人格测试，使用 15 个维度、25+ 种人格类型，更多是「当下行为状态」的趣味描绘<span data-allow-html class='source-item source-aggregated' data-group-key='source-group-6' data-url='https://sbti.dev/en/about' data-id='turn0fetch0'><span data-allow-html class='source-item-num' data-group-key='source-group-6' data-id='turn0fetch0'><span class='source-item-num-name' data-allow-html>sbti.dev</span><span data-allow-html class='source-item-num-count'>+1</span></span></span>。
+      </div>
+      <div id="sbtiQuizArea">
+        <p style="color:var(--text-muted);">（此处放置 SBTI 题目 UI）</p>
+      </div>
+      <div id="sbtiResultArea" style="display:none;">
+        <div class="card">
+          <div class="card-header"><h3>你的 SBTI 人格类型</h3></div>
+          <div style="font-size:1.3rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem;" id="sbtiTypeLabel">-</div>
+          <div style="color:var(--text-muted);font-size:0.9rem;" id="sbtiTypeDesc">-</div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>15 维度雷达概览</h3></div>
+          <div id="sbtiDimsArea">
+            <p style="color:var(--text-muted);">（用柱状/雷达图展示 15 维度）</p>
+          </div>
+        </div>
+      </div>
+      <div class="panel-nav">
+        <button class="btn" onclick="prevStep()">← 上一步</button>
+        <button class="btn btn-primary" onclick="nextStep()">下一步：融合报告 →</button>
+      </div>
+    </div>
+
+    <!-- 6 融合报告 -->
+    <div class="step-panel" id="panel-5">
+      <div class="panel-header">
+        <h2>6. 融合报告</h2>
+        <p>MBTI·八字·塔罗·SBTI 四维整合解读</p>
+      </div>
+      <div id="reportArea">
+        <div class="report-section">
+          <h3>灵魂底色（MBTI + 八字）</h3>
+          <div id="reportSoul" style="color:var(--text-muted);">-</div>
+        </div>
+        <div class="report-section">
+          <h3>当下状态（SBTI + 基础画像）</h3>
+          <div id="reportState" style="color:var(--text-muted);">-</div>
+        </div>
+        <div class="report-section">
+          <h3>议题与启发（塔罗 + 议题）</h3>
+          <div id="reportTarot" style="color:var(--text-muted);">-</div>
+        </div>
+        <div class="report-section">
+          <h3>综合标签</h3>
+          <div id="reportTags">
+            <p style="color:var(--text-muted);">（生成如：<span class="tag">内耗型浪漫主义者</span> 等）</p>
+          </div>
+        </div>
+        <div class="report-section">
+          <h3>温和建议（非建议处方）</h3>
+          <div id="reportSuggestions" style="color:var(--text-muted);">-</div>
+        </div>
+        <div class="disclaimer">
+          <strong>免责声明：</strong>本融合画像仅供娱乐与自我探索参考，不构成心理学诊断或命理预测。MBTI 与 SBTI 为人格/行为倾向的描述工具，塔罗与八字为传统文化与符号体系，其解读均为意象启发式，不具备预测或保证效果。重大决策请咨询专业人士。
+        </div>
+      </div>
+      <div class="panel-nav">
+        <button class="btn" onclick="prevStep()">← 上一步</button>
+        <button class="btn btn-primary" onclick="finishAndShare()">完成 & 分享</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ========== 数据模型 ==========
+let D = {
+  gender: '',
+  birthDate: '',
+  birthTime: '',
+  birthPlace: '',
+  focusIssue: '',
+  lifeStage: '',
+  mbti: { type: '', dims: {} },
+  bazi: { pillars: {}, wuxing: {}, desc: '' },
+  tarot: { spread: 0, cards: [], reading: '' },
+  sbti: { type: '', dims: {} }
+};
+
+let currentStep = 0;
+const totalSteps = 6;
+
+// ========== 步骤导航（复用你的剧本系统逻辑） ==========
+function goToStep(step) {
+  saveCurrentStep();
+  currentStep = step;
+  updateUI();
+}
+function nextStep() {
+  if (currentStep < totalSteps - 1) {
+    saveCurrentStep();
+    currentStep++;
+    updateUI();
+    window.scrollTo(0, 0);
+  }
+}
+function prevStep() {
+  if (currentStep > 0) {
+    saveCurrentStep();
+    currentStep--;
+    updateUI();
+    window.scrollTo(0, 0);
+  }
+}
+function updateUI() {
+  document.querySelectorAll('.step-panel').forEach((panel, index) => {
+    panel.classList.toggle('active', index === currentStep);
+  });
+  document.querySelectorAll('.step-item').forEach((item, index) => {
+    item.classList.remove('active');
+    if (index === currentStep) item.classList.add('active');
+    if (index < currentStep) item.classList.add('completed');
+    else item.classList.remove('completed');
+  });
+  const progress = ((currentStep + 1) / totalSteps) * 100;
+  document.getElementById('progressFill').style.width = progress + '%';
+  if (currentStep === 5) {
+    generateFusionReport();
+  }
+}
+
+// ========== 保存当前步骤数据 ==========
+function saveCurrentStep() {
+  switch (currentStep) {
+    case 0:
+      D.gender = document.getElementById('gender').value;
+      D.birthDate = document.getElementById('birthDate').value;
+      D.birthTime = document.getElementById('birthTime').value;
+      D.birthPlace = document.getElementById('birthPlace').value;
+      D.focusIssue = document.getElementById('focusIssue').value;
+      D.lifeStage = document.getElementById('lifeStage').value;
+      break;
+    case 1:
+      // 此处写入 MBTI 计分结果到 D.mbti
+      break;
+    case 2:
+      // 此处写入八字排盘结果到 D.bazi
+      break;
+    case 3:
+      // 此处写入塔罗结果到 D.tarot
+      break;
+    case 4:
+      // 此处写入 SBTI 结果到 D.sbti
+      break;
+    case 5:
+      // 最后一步只读展示，可略
+      break;
+  }
+}
+
+// ========== 按钮占位逻辑 ==========
+function selectSpread(n) {
+  D.tarot.spread = n;
+  document.getElementById('tarotCardsArea').innerHTML = '<p style="color:var(--text-muted);">已选择 ' + n + ' 张牌阵，请点击「洗牌 & 抽牌」</p>';
+}
+function drawCards() {
+  // 占位：实际应随机选取 78 张塔罗牌并生成解读文案
+  document.getElementById('tarotCardsArea').innerHTML = '<p style="color:var(--text-muted);">（抽牌 UI 占位）</p>';
+}
+function generateFusionReport() {
+  // 占位：实际应根据 D 的四个模块结果生成报告
+  document.getElementById('reportSoul').textContent = '（根据 MBTI + 八字生成「灵魂底色」描述）';
+  document.getElementById('reportState').textContent = '（根据 SBTI + 基础画像生成「当下状态」描述）';
+  document.getElementById('reportTarot').textContent = '（根据塔罗牌阵 + 议题生成「议题与启发」）';
+  document.getElementById('reportTags').innerHTML = '<span class="tag">示例标签</span><span class="tag">第二个标签</span>';
+  document.getElementById('reportSuggestions').textContent = '（生成 3–5 条温和建议）';
+}
+function finishAndShare() {
+  alert('你可以在此实现导出长图/复制文案等分享功能');
+}
+function exportReport() {
+  alert('你可以在此实现导出 TXT/JSON/长图等功能');
+}
+
+function saveProject() {
+  saveCurrentStep();
+  localStorage.setItem('fusionProfile', JSON.stringify(D));
+  alert('已保存到浏览器');
+}
+function loadProject() {
+  const s = localStorage.getItem('fusionProfile');
+  if (s) {
+    D = JSON.parse(s);
+    alert('已加载');
+  } else {
+    alert('未找到存档');
+  }
+}
+
+// ========== 初始化 ==========
+document.addEventListener('DOMContentLoaded', () => {
+  const s = localStorage.getItem('fusionProfile');
+  if (s) {
+    if (confirm('发现未完成的项目，是否继续编辑？')) {
+      D = JSON.parse(s);
+      // 回填基础画像（其他模块回填可类似实现）
+      document.getElementById('gender').value = D.gender || '';
+      document.getElementById('birthDate').value = D.birthDate || '';
+      document.getElementById('birthTime').value = D.birthTime || '';
+      document.getElementById('birthPlace').value = D.birthPlace || '';
+      document.getElementById('focusIssue').value = D.focusIssue || '';
+      document.getElementById('lifeStage').value = D.lifeStage || '';
+    }
+  }
+  updateUI();
+});
+</script>
+</body>
+</html>

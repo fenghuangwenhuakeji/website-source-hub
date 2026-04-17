@@ -1,0 +1,5363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>纵横论文写作 - 学术论文写作助手</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg-primary:#0f1117;--bg-secondary:#1a1d27;--bg-tertiary:#242736;
+  --bg-card:#1e2130;--bg-hover:#2a2d3e;--bg-active:#333750;
+  --text-primary:#e4e6f0;--text-secondary:#9ca3b8;--text-muted:#6b7280;
+  --accent:#6366f1;--accent-hover:#818cf8;--accent-dim:rgba(99,102,241,.15);
+  --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#3b82f6;
+  --border:#2d3048;--border-light:#3d4060;
+  --radius:8px;--radius-lg:12px;--radius-xl:16px;
+  --shadow:0 4px 24px rgba(0,0,0,.3);
+  --font-sans:'Segoe UI',system-ui,-apple-system,sans-serif;
+  --font-mono:'Cascadia Code','Fira Code',monospace;
+  --sidebar-w:280px;--chat-w:570px;
+}
+[data-theme="light"]{
+  --bg-primary:#f5f6fa;--bg-secondary:#ffffff;--bg-tertiary:#eef0f6;
+  --bg-card:#ffffff;--bg-hover:#eef0f6;--bg-active:#dde0ec;
+  --text-primary:#1a1d27;--text-secondary:#4b5068;--text-muted:#8b90a5;
+  --border:#dde0ec;--border-light:#c8ccd8;
+  --shadow:0 4px 24px rgba(0,0,0,.08);
+}
+html,body{height:100%;font-family:var(--font-sans);background:var(--bg-primary);color:var(--text-primary);overflow:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+.app{display:flex;height:100vh;flex-direction:column}
+.toolbar{display:flex;align-items:center;justify-content:space-between;height:48px;padding:0 16px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
+.toolbar-left{display:flex;align-items:center;gap:12px}
+.toolbar-center{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--text-secondary)}
+.toolbar-right{display:flex;align-items:center;gap:8px}
+.logo{font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--accent),#a78bfa);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.logo-sub{font-size:11px;color:var(--text-muted);margin-left:4px}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border:1px solid var(--border);border-radius:var(--radius);background:var(--bg-tertiary);color:var(--text-primary);font-size:13px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn:hover{background:var(--bg-hover);border-color:var(--border-light)}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover);border-color:var(--accent-hover)}
+.btn-danger{border-color:var(--danger);color:var(--danger)}
+.btn-danger:hover{background:rgba(239,68,68,.1)}
+.btn-lock{position:relative;overflow:hidden;transition:all 0.3s ease}
+.btn-lock::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);transform:translateX(-100%);transition:transform 0.5s ease}
+.btn-lock:hover::before{transform:translateX(100%)}
+.btn-lock.locked{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-lock.locked:hover{background:var(--accent-hover)}
+.btn-lock.animating{animation:lockPulse 0.5s ease,lockGlow 0.5s ease}
+@keyframes lockPulse{0%{transform:scale(1)}50%{transform:scale(1.1)}100%{transform:scale(1)}}
+@keyframes lockGlow{0%{box-shadow:0 0 0 0 rgba(59,130,246,0.4)}50%{box-shadow:0 0 20px 5px rgba(59,130,246,0.8)}100%{box-shadow:0 0 0 0 rgba(59,130,246,0)}}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-icon{padding:6px;border:none;background:transparent;color:var(--text-secondary);cursor:pointer;border-radius:var(--radius);display:flex;align-items:center;justify-content:center}
+.btn-icon:hover{background:var(--bg-hover);color:var(--text-primary)}
+
+.main-area{display:flex;flex:1;overflow:hidden}
+
+.sidebar{width:var(--sidebar-w);background:var(--bg-secondary);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden;position:relative}
+.sidebar.collapsed{width:0;border:none}
+.sidebar-resize-handle{position:absolute;right:-3px;top:0;bottom:0;width:6px;cursor:col-resize;background:transparent;z-index:10;transition:background 0.2s}
+.sidebar-resize-handle:hover,.sidebar-resize-handle.active{background:var(--accent)}
+.sidebar-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-header h3{font-size:13px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.sidebar-content{flex:1;overflow-y:auto;padding:8px;padding-right:12px}
+
+.chapter-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:var(--radius);cursor:pointer;transition:all .15s;font-size:13px;color:var(--text-secondary);position:relative}
+.chapter-item:hover{background:var(--bg-hover);color:var(--text-primary)}
+.chapter-item.active{background:var(--accent-dim);color:var(--accent-hover);font-weight:500}
+.chapter-item.completed .ch-icon{color:var(--success)}
+.chapter-item .ch-icon{width:20px;text-align:center;flex-shrink:0;font-size:12px}
+.chapter-item .ch-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.chapter-item .ch-status{font-size:10px;padding:2px 6px;border-radius:10px;flex-shrink:0}
+.chapter-item .ch-words-inline{font-size:9px;color:var(--text-muted);flex-shrink:0;margin-left:auto;padding-left:8px}
+.chapter-item .ch-words-inline .word-expected{color:var(--info)}
+.chapter-item .ch-words-inline .word-actual{color:var(--success)}
+.ch-status.pending{background:var(--bg-tertiary);color:var(--text-muted)}
+.ch-status.writing{background:rgba(59,130,246,.15);color:var(--info)}
+.ch-status.done{background:rgba(34,197,94,.15);color:var(--success)}
+.ch-status.review{background:rgba(245,158,11,.15);color:var(--warning)}
+
+.editor-area{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg-primary)}
+.editor-tabs{display:flex;align-items:center;height:36px;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 8px;gap:2px;flex-shrink:0}
+.editor-tab{padding:6px 14px;font-size:12px;color:var(--text-muted);cursor:pointer;border-radius:var(--radius) var(--radius) 0 0;transition:all .15s;border-bottom:2px solid transparent}
+.editor-tab:hover{color:var(--text-primary)}
+.editor-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--bg-primary)}
+.editor-content{flex:1;overflow-y:auto;padding:32px 48px;max-width:900px;margin:0 auto;width:100%}
+.editor-content .paper-title{font-size:24px;font-weight:700;margin-bottom:24px;text-align:center;line-height:1.4}
+.editor-content .chapter-title{font-size:20px;font-weight:700;margin:28px 0 16px;color:var(--text-primary)}
+.editor-content .section-title{font-size:16px;font-weight:600;margin:20px 0 12px;color:var(--text-primary)}
+.editor-content .subsection-title{font-size:14px;font-weight:600;margin:16px 0 8px;color:var(--text-secondary)}
+.editor-content p{font-size:14.5px;line-height:1.85;margin-bottom:12px;text-indent:2em;color:var(--text-primary)}
+.editor-content .placeholder-text{color:var(--text-muted);font-style:italic;text-indent:0}
+.ai-trace-highlight{background:rgba(255,193,7,0.15);border-bottom:1px dashed rgba(255,193,7,0.6);cursor:help}
+.ai-trace-highlight:hover{background:rgba(255,193,7,0.25);border-bottom-color:rgba(255,193,7,0.8)}
+.ai-trace-highlight::after{content:attr(data-label);position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:4px 8px;border-radius:4px;font-size:11px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.ai-trace-highlight:hover::after{opacity:1}
+.editable-content{min-height:300px;padding:16px;border:1px solid transparent;border-radius:var(--radius);transition:all 0.2s;outline:none}
+.editable-content:focus{border-color:var(--accent);background:var(--bg-secondary)}
+.editable-content:hover{border-color:var(--border)}
+
+.welcome-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:48px;text-align:center}
+.welcome-icon{font-size:64px;margin-bottom:24px}
+.welcome-title{font-size:28px;font-weight:700;margin-bottom:12px}
+.welcome-desc{font-size:15px;color:var(--text-secondary);max-width:500px;line-height:1.7;margin-bottom:32px}
+.welcome-steps{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.welcome-step{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px 24px;text-align:left;width:200px;cursor:pointer;transition:all .2s}
+.welcome-step:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow)}
+.welcome-step .step-num{font-size:24px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.welcome-step .step-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.welcome-step .step-desc{font-size:12px;color:var(--text-muted)}
+
+.chat-panel{width:var(--chat-w);background:var(--bg-secondary);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:relative}
+.chat-panel.collapsed{display:none!important}
+.chat-expand-btn{position:fixed;right:0;top:50%;transform:translateY(-50%);width:32px;height:64px;background:var(--bg-secondary);border:1px solid var(--border);border-right:none;border-radius:var(--radius) 0 0 var(--radius);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:99}
+.chat-expand-btn:hover{background:var(--bg-hover)}
+.chat-expand-btn.hidden{display:none}
+.chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.chat-header h3{font-size:13px;font-weight:600;color:var(--text-secondary)}
+.chat-messages{flex:1;overflow-y:auto;padding:12px}
+.chat-msg{margin-bottom:12px;animation:fadeIn .3s}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.chat-msg .msg-role{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase}
+.chat-msg .msg-content{font-size:13px;line-height:1.7;color:var(--text-primary);background:var(--bg-tertiary);padding:10px 14px;border-radius:var(--radius);white-space:pre-wrap;word-break:break-word}
+.chat-msg.user .msg-content{background:var(--accent-dim);border:1px solid rgba(99,102,241,.3)}
+.chat-msg.assistant .msg-content{background:var(--bg-card);border:1px solid var(--border)}
+.chat-msg.system .msg-content{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);font-size:12px;color:var(--warning)}
+.chat-input-area{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.chat-input-row{display:flex;gap:8px}
+.chat-input{flex:1;padding:10px 14px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);resize:none;outline:none;min-height:40px;max-height:120px}
+.chat-input:focus{border-color:var(--accent)}
+.chat-actions{display:flex;gap:6px;flex-wrap:wrap}
+.quick-action{padding:4px 10px;font-size:11px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:20px;color:var(--text-secondary);cursor:pointer;transition:all .15s}
+.quick-action:hover{background:var(--accent-dim);color:var(--accent);border-color:var(--accent)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius-xl);width:90%;max-width:640px;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 24px 48px rgba(0,0,0,.4);animation:modalIn .25s}
+@keyframes modalIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-header{padding:20px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.modal-header h2{font-size:18px;font-weight:700}
+.modal-body{padding:20px 24px;overflow-y:auto;flex:1}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.form-group .hint{font-size:11px;color:var(--text-muted);margin-top:4px}
+.form-input,.form-select,.form-textarea{width:100%;padding:10px 14px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:13px;font-family:var(--font-sans);outline:none;transition:border-color .2s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239ca3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+
+.template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px}
+.template-card{background:var(--bg-tertiary);border:2px solid var(--border);border-radius:var(--radius);padding:12px;cursor:pointer;transition:all .2s;text-align:center}
+.template-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.template-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.template-card .template-name{font-size:13px;font-weight:600;margin-bottom:4px}
+.template-card .template-info{font-size:11px;color:var(--text-muted)}
+
+.template-preview{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);max-height:200px;overflow-y:auto}
+
+.api-card{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:all .2s}
+.api-card:hover{border-color:var(--accent)}
+.api-card.selected{border-color:var(--accent);background:var(--accent-dim)}
+.api-card .api-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.api-card .api-desc{font-size:12px;color:var(--text-muted)}
+
+.progress-bar{height:3px;background:var(--bg-tertiary);border-radius:2px;overflow:hidden;margin:8px 16px}
+.progress-bar .progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#a78bfa);border-radius:2px;transition:width .3s}
+
+.status-bar{height:28px;background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;font-size:11px;color:var(--text-muted);gap:16px;flex-shrink:0}
+.status-item{display:flex;align-items:center;gap:4px}
+.status-dot{width:6px;height:6px;border-radius:50%}
+.status-dot.connected{background:var(--success)}
+.status-dot.disconnected{background:var(--danger)}
+.status-dot.working{background:var(--warning);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.toast-container{position:fixed;top:70px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:500;animation:toastIn .3s forwards;box-shadow:0 4px 12px rgba(0,0,0,.3);max-width:360px;pointer-events:auto}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast.success{background:rgba(34,197,94,.2);border:1px solid rgba(34,197,94,.5);color:#22c55e}
+.toast.error{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.5);color:#ef4444}
+.toast.info{background:rgba(59,130,246,.2);border:1px solid rgba(59,130,246,.5);color:#3b82f6}
+
+.typing-indicator{display:flex;gap:4px;padding:8px 14px}
+.typing-indicator span{width:6px;height:6px;border-radius:50%;background:var(--text-muted);animation:typing 1.4s infinite}
+.typing-indicator span:nth-child(2){animation-delay:.2s}
+.typing-indicator span:nth-child(3){animation-delay:.4s}
+@keyframes typing{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+.outline-tree{padding:4px 0}
+.outline-node{padding:6px 12px;font-size:13px;cursor:pointer;border-radius:var(--radius);margin:1px 0;display:flex;align-items:center;gap:6px;transition:all .15s}
+.outline-node:hover{background:var(--bg-hover)}
+.outline-node.level-1{font-weight:600;padding-left:12px}
+.outline-node.level-2{padding-left:28px;color:var(--text-secondary)}
+.outline-node.level-3{padding-left:44px;font-size:12px;color:var(--text-muted)}
+.outline-node .node-actions{margin-left:auto;display:none;gap:4px}
+.outline-node:hover .node-actions{display:flex}
+
+.memory-panel{padding:12px}
+.memory-section{margin-bottom:16px}
+.memory-section h4{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.memory-item{background:var(--bg-tertiary);padding:8px 12px;border-radius:var(--radius);font-size:12px;line-height:1.6;margin-bottom:4px;color:var(--text-secondary)}
+
+.export-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.export-option{background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+.export-option:hover{border-color:var(--accent);transform:translateY(-2px)}
+.export-option .export-icon{font-size:32px;margin-bottom:8px}
+.export-option .export-name{font-size:14px;font-weight:600;margin-bottom:4px}
+.export-option .export-desc{font-size:11px;color:var(--text-muted)}
+
+.tab-bar{display:flex;gap:2px;padding:4px;background:var(--bg-tertiary);border-radius:var(--radius);margin-bottom:12px}
+.tab-item{flex:1;padding:6px 12px;text-align:center;font-size:12px;border-radius:6px;cursor:pointer;color:var(--text-muted);transition:all .15s}
+.tab-item.active{background:var(--accent);color:#fff}
+
+.loading-shimmer{background:linear-gradient(90deg,var(--bg-tertiary) 25%,var(--bg-hover) 50%,var(--bg-tertiary) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.word-count-badge{font-size:11px;padding:2px 8px;background:var(--bg-tertiary);border-radius:10px;color:var(--text-muted)}
+
+.toggle-switch{position:relative;display:inline-block;width:50px;height:26px}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--bg-hover);border-radius:13px;transition:0.3s}
+.toggle-switch input:checked + .toggle-slider{background:var(--accent)}
+.toggle-switch input:focus + .toggle-slider{box-shadow:0 0 1px var(--accent)}
+.toggle-knob{position:absolute;content:'';height:20px;width:20px;left:3px;bottom:3px;background:white;border-radius:50%;transition:0.3s}
+.toggle-switch input:checked + .toggle-slider .toggle-knob{left:27px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="logo">纵横论文</span>
+      <span class="logo-sub">学术写作助手</span>
+      <button class="btn-icon" onclick="toggleSidebar()" title="切换侧边栏">☰</button>
+    </div>
+    <div class="toolbar-center">
+      <span id="projectName" style="color:var(--text-primary);font-weight:500">未创建项目</span>
+      <span class="word-count-badge" id="totalWordCount">0 字</span>
+    </div>
+    <div class="toolbar-right">
+      <button class="btn btn-sm btn-primary" onclick="createNewProject()">✨ 新建论文</button>
+      <button class="btn btn-sm" onclick="openModal('apiSettings')">⚙ API设置</button>
+      <button class="btn btn-sm" onclick="openModal('projectSettings')">📋 项目设置</button>
+      <button class="btn btn-sm" onclick="importProject()">📂 导入</button>
+      <button class="btn btn-sm" onclick="openModal('exportModal')">📥 导出</button>
+      <button class="btn btn-sm btn-danger" onclick="clearAllData()">🗑 清空所有数据</button>
+      <button class="btn-icon" onclick="toggleTheme()" title="切换主题" id="themeBtn">🌙</button>
+      <button class="btn-icon" onclick="toggleChat()" title="切换对话面板">💬</button>
+    </div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+  <div class="main-area">
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h3>论文结构</h3>
+        <button class="btn-icon btn-sm" onclick="openModal('outlineModal')" title="编辑大纲">✏</button>
+      </div>
+      <div class="sidebar-content" id="chapterList">
+        <div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">
+          请先创建论文项目
+        </div>
+      </div>
+      <div style="padding:12px;border-top:1px solid var(--border)">
+        <div class="sidebar-header" style="padding:0 0 8px 0;border:none">
+          <h3>全局记忆库</h3>
+          <button class="btn-icon btn-sm" onclick="openModal('memoryModal')" title="查看完整记忆">📋</button>
+        </div>
+        <div id="memorySummary" style="font-size:11px;color:var(--text-muted);line-height:1.5">
+          暂无记忆数据
+        </div>
+      </div>
+      <div class="sidebar-resize-handle" id="sidebarResizeHandle"></div>
+    </div>
+
+    <div class="editor-area" id="editorArea">
+      <div class="editor-tabs" id="editorTabs">
+        <div class="editor-tab active" data-tab="content" onclick="switchEditorTab('content')">内容</div>
+        <div class="editor-tab" data-tab="outline" onclick="switchEditorTab('outline')">大纲</div>
+        <div class="editor-tab" data-tab="memory" onclick="switchEditorTab('memory')">记忆库</div>
+      </div>
+      <div class="editor-content" id="editorContent">
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-icon">🎓</div>
+          <div class="welcome-title">欢迎使用 纵横论文写作</div>
+          <div class="welcome-desc">AI驱动的学术论文写作助手，支持多平台API调用，提供从大纲到成稿的完整写作工作流</div>
+          <div class="welcome-steps">
+            <div class="welcome-step" onclick="openModal('apiSettings')">
+              <div class="step-num">01</div>
+              <div class="step-title">配置API</div>
+              <div class="step-desc">选择AI平台并设置密钥</div>
+            </div>
+            <div class="welcome-step" onclick="openModal('projectSettings')">
+              <div class="step-num">02</div>
+              <div class="step-title">创建项目</div>
+              <div class="step-desc">填写论文基本信息</div>
+            </div>
+            <div class="welcome-step" onclick="startOutlineGeneration()">
+              <div class="step-num">03</div>
+              <div class="step-title">生成大纲</div>
+              <div class="step-desc">AI自动生成论文大纲</div>
+            </div>
+            <div class="welcome-step" onclick="startChapterGeneration()">
+              <div class="step-num">04</div>
+              <div class="step-title">逐小节写作</div>
+              <div class="step-desc">按小节逐步生成论文</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-header">
+        <h3>AI 对话</h3>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn-icon btn-sm" onclick="clearChat()" title="清空对话">🗑</button>
+          <button class="btn-icon btn-sm" onclick="toggleChatPanel()" title="收起面板">◀</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-msg system">
+          <div class="msg-role">系统</div>
+          <div class="msg-content">欢迎使用纵横论文写作助手！请先配置API并创建项目，然后我们可以开始生成论文大纲。</div>
+        </div>
+      </div>
+      <div class="chat-input-area">
+        <div class="chat-actions" id="quickActions">
+          <button class="quick-action" onclick="quickAction('auto_write_all')" style="background:linear-gradient(135deg,var(--accent),#a78bfa);color:#fff;border:none;font-weight:600">🚀 一键生成论文</button>
+          <button class="quick-action" onclick="quickAction('generate_outline')">生成大纲</button>
+          <button class="quick-action" onclick="quickAction('write_chapter')">撰写当前章节</button>
+          <button class="quick-action" onclick="quickAction('revise_chapter')">修改当前章节</button>
+          <button class="quick-action" onclick="quickAction('optimize_current')" style="border-color:#28a745;color:#28a745">🔧 优化当前章节</button>
+          <button class="quick-action" onclick="quickAction('expand_section')">扩写选中内容</button>
+          <button class="quick-action" onclick="quickAction('check_consistency')">一致性检查</button>
+          <button class="quick-action" onclick="quickAction('compile_all')">整合全文</button>
+          <button class="quick-action" onclick="quickAction('optimize_ai')" style="border-color:var(--warning);color:var(--warning)">🧹 去AI化优化</button>
+          <button class="quick-action" onclick="quickAction('continue_writing')">✏️ 续写选中</button>
+          <button class="quick-action" onclick="quickAction('polish_content')">💎 润色选中</button>
+          <button class="quick-action" onclick="quickAction('logic_check')">🔗 逻辑检查</button>
+          <button class="quick-action" onclick="quickAction('rewrite_selection')" style="border-color:#17a2b8;color:#17a2b8">✂️ 重构选中内容</button>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chatInput" placeholder="输入指令或问题..." rows="1" onkeydown="handleChatKeydown(event)"></textarea>
+          <button class="btn btn-primary btn-sm" onclick="sendChatMessage()" id="sendBtn">发送</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-expand-btn hidden" id="chatExpandBtn" onclick="toggleChatPanel()">▶</div>
+
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="status-dot" id="apiStatusDot"></span>
+      <span id="apiStatusText">未连接</span>
+    </div>
+    <div class="status-item" id="currentModelInfo">模型: 未选择</div>
+    <div class="status-item" id="currentChapterInfo">章节: -</div>
+    <div class="status-item" id="tokenUsageInfo">Token: 0</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContainer"></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const APP_STATE = {
+  project: null,
+  chapters: [],
+  currentChapterIndex: -1,
+  currentSectionId: null,
+  outlineLocked: false,
+  deepThinkingEnabled: false,
+  globalMemory: {
+    researchQuestions: [],
+    coreHypotheses: [],
+    frameworkDetails: [],
+    keyData: [],
+    literaturePositions: [],
+    completedChapterSummaries: [],
+    spineCodes: {}
+  },
+  chatHistory: [],
+  debugMessages: [],
+  apiConfig: {
+    apiKey: '',
+    model: '',
+    baseUrl: 'https://api.openai.com/v1'
+  },
+  totalTokens: 0,
+  isGenerating: false,
+  currentEditorTab: 'content',
+  userScrolled: false
+};
+
+const MEMORY_STORAGE = {};
+
+function safeLocalStorage() {
+  try {
+    const testKey = '__test__';
+    localStorage.setItem(testKey, testKey);
+    localStorage.removeItem(testKey);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function safeSetItem(key, value) {
+  try {
+    if (safeLocalStorage()) {
+      localStorage.setItem(key, value);
+    }
+    MEMORY_STORAGE[key] = value;
+    return true;
+  } catch (e) {
+    MEMORY_STORAGE[key] = value;
+    return false;
+  }
+}
+
+function safeGetItem(key) {
+  try {
+    if (safeLocalStorage()) {
+      return localStorage.getItem(key);
+    }
+    return MEMORY_STORAGE[key] || null;
+  } catch (e) {
+    return MEMORY_STORAGE[key] || null;
+  }
+}
+
+function safeRemoveItem(key) {
+  try {
+    if (safeLocalStorage()) {
+      localStorage.removeItem(key);
+    }
+    delete MEMORY_STORAGE[key];
+  } catch (e) {
+    delete MEMORY_STORAGE[key];
+  }
+}
+
+
+
+function generatePaperTemplate(degreeType, paperType) {
+  const baseSections = [
+    {id:'title',title:'标题页',level:1,children:[]},
+    {id:'abstract_cn',title:'摘要',level:1,children:[]},
+    {id:'abstract_en',title:'Abstract',level:1,children:[]},
+    {id:'toc',title:'目录',level:1,children:[]}
+  ];
+
+  const endSections = [
+    {id:'references',title:'参考文献',level:1,children:[]},
+    {id:'appendix',title:'附录',level:1,children:[]},
+    {id:'acknowledgement',title:'致谢',level:1,children:[]}
+  ];
+
+  let contentSections = [];
+  
+  const chapterCount = degreeType === 'phd' ? 7 : degreeType === 'undergraduate' ? 4 : 5;
+  
+  if (paperType === 'empirical') {
+    contentSections = generateEmpiricalSections(chapterCount);
+  } else if (paperType === 'theoretical') {
+    contentSections = generateTheoreticalSections(chapterCount);
+  } else if (paperType === 'review') {
+    contentSections = generateReviewSections(chapterCount);
+  } else if (paperType === 'applied') {
+    contentSections = generateAppliedSections(chapterCount);
+  } else if (paperType === 'case_study') {
+    contentSections = generateCaseStudySections(chapterCount);
+  } else {
+    contentSections = generateEmpiricalSections(chapterCount);
+  }
+
+  return {
+    name: getDegreeTypeName(degreeType) + '论文',
+    sections: [...baseSections, ...contentSections, ...endSections]
+  };
+}
+
+function generateEmpiricalSections(count) {
+  const sections = [
+    {id:'ch1',title:'第一章 绪论',level:1,children:[
+      {id:'ch1_1',title:'1.1 研究背景与问题提出',level:2},
+      {id:'ch1_2',title:'1.2 研究目的与意义',level:2},
+      {id:'ch1_3',title:'1.3 研究思路与论文结构',level:2}
+    ]},
+    {id:'ch2',title:'第二章 文献综述与理论框架',level:1,children:[
+      {id:'ch2_1',title:'2.1 文献综述',level:2},
+      {id:'ch2_2',title:'2.2 理论框架构建',level:2}
+    ]},
+    {id:'ch3',title:'第三章 研究设计与方法',level:1,children:[
+      {id:'ch3_1',title:'3.1 研究设计',level:2},
+      {id:'ch3_2',title:'3.2 研究方法与实施',level:2}
+    ]},
+    {id:'ch4',title:'第四章 研究结果与分析',level:1,children:[
+      {id:'ch4_1',title:'4.1 数据收集与处理',level:2},
+      {id:'ch4_2',title:'4.2 结果分析与讨论',level:2}
+    ]},
+    {id:'ch5',title:'第五章 结论与建议',level:1,children:[
+      {id:'ch5_1',title:'5.1 研究结论',level:2},
+      {id:'ch5_2',title:'5.2 建议与展望',level:2}
+    ]},
+    {id:'ch6',title:'第六章 进一步讨论',level:1,children:[
+      {id:'ch6_1',title:'6.1 理论发现深化',level:2},
+      {id:'ch6_2',title:'6.2 实践启示',level:2}
+    ]},
+    {id:'ch7',title:'第七章 总结与展望',level:1,children:[
+      {id:'ch7_1',title:'7.1 主要结论',level:2},
+      {id:'ch7_2',title:'7.2 研究展望',level:2}
+    ]}
+  ];
+  return sections.slice(0, count);
+}
+
+function generateTheoreticalSections(count) {
+  const sections = [
+    {id:'ch1',title:'第一章 绪论',level:1,children:[
+      {id:'ch1_1',title:'1.1 问题缘起与研究意义',level:2},
+      {id:'ch1_2',title:'1.2 研究问题与论文结构',level:2}
+    ]},
+    {id:'ch2',title:'第二章 文献批判与概念辨析',level:1,children:[
+      {id:'ch2_1',title:'2.1 文献回顾与批判',level:2},
+      {id:'ch2_2',title:'2.2 核心概念辨析',level:2}
+    ]},
+    {id:'ch3',title:'第三章 理论框架构建',level:1,children:[
+      {id:'ch3_1',title:'3.1 理论基础',level:2},
+      {id:'ch3_2',title:'3.2 理论框架设计',level:2}
+    ]},
+    {id:'ch4',title:'第四章 理论推演与论证',level:1,children:[
+      {id:'ch4_1',title:'4.1 理论假设提出',level:2},
+      {id:'ch4_2',title:'4.2 逻辑推演过程',level:2}
+    ]},
+    {id:'ch5',title:'第五章 理论验证与反思',level:1,children:[
+      {id:'ch5_1',title:'5.1 理论验证',level:2},
+      {id:'ch5_2',title:'5.2 理论反思与修正',level:2}
+    ]},
+    {id:'ch6',title:'第六章 理论贡献与局限',level:1,children:[
+      {id:'ch6_1',title:'6.1 理论贡献',level:2},
+      {id:'ch6_2',title:'6.2 理论局限',level:2}
+    ]},
+    {id:'ch7',title:'第七章 结论与展望',level:1,children:[
+      {id:'ch7_1',title:'7.1 主要结论',level:2},
+      {id:'ch7_2',title:'7.2 未来研究方向',level:2}
+    ]}
+  ];
+  return sections.slice(0, count);
+}
+
+function generateReviewSections(count) {
+  const sections = [
+    {id:'ch1',title:'第一章 引言',level:1,children:[
+      {id:'ch1_1',title:'1.1 研究背景与目的',level:2},
+      {id:'ch1_2',title:'1.2 研究问题与意义',level:2}
+    ]},
+    {id:'ch2',title:'第二章 文献检索策略',level:1,children:[
+      {id:'ch2_1',title:'2.1 检索方法与范围',level:2},
+      {id:'ch2_2',title:'2.2 文献筛选标准',level:2}
+    ]},
+    {id:'ch3',title:'第三章 主题分析',level:1,children:[
+      {id:'ch3_1',title:'3.1 主题一分析',level:2},
+      {id:'ch3_2',title:'3.2 主题二分析',level:2}
+    ]},
+    {id:'ch4',title:'第四章 研究评述',level:1,children:[
+      {id:'ch4_1',title:'4.1 研究现状评述',level:2},
+      {id:'ch4_2',title:'4.2 研究不足与空白',level:2}
+    ]},
+    {id:'ch5',title:'第五章 结论与展望',level:1,children:[
+      {id:'ch5_1',title:'5.1 主要结论',level:2},
+      {id:'ch5_2',title:'5.2 未来研究展望',level:2}
+    ]},
+    {id:'ch6',title:'第六章 深度讨论',level:1,children:[
+      {id:'ch6_1',title:'6.1 理论启示',level:2},
+      {id:'ch6_2',title:'6.2 实践意义',level:2}
+    ]},
+    {id:'ch7',title:'第七章 总结',level:1,children:[
+      {id:'ch7_1',title:'7.1 核心发现',level:2},
+      {id:'ch7_2',title:'7.2 研究建议',level:2}
+    ]}
+  ];
+  return sections.slice(0, count);
+}
+
+function generateAppliedSections(count) {
+  const sections = [
+    {id:'ch1',title:'第一章 绪论',level:1,children:[
+      {id:'ch1_1',title:'1.1 问题提出与现实背景',level:2},
+      {id:'ch1_2',title:'1.2 研究目的与意义',level:2}
+    ]},
+    {id:'ch2',title:'第二章 理论基础与需求分析',level:1,children:[
+      {id:'ch2_1',title:'2.1 理论基础',level:2},
+      {id:'ch2_2',title:'2.2 需求分析',level:2}
+    ]},
+    {id:'ch3',title:'第三章 方案设计',level:1,children:[
+      {id:'ch3_1',title:'3.1 设计原则与思路',level:2},
+      {id:'ch3_2',title:'3.2 方案内容',level:2}
+    ]},
+    {id:'ch4',title:'第四章 实施过程',level:1,children:[
+      {id:'ch4_1',title:'4.1 实施准备',level:2},
+      {id:'ch4_2',title:'4.2 实施步骤',level:2}
+    ]},
+    {id:'ch5',title:'第五章 效果评估与建议',level:1,children:[
+      {id:'ch5_1',title:'5.1 效果评估',level:2},
+      {id:'ch5_2',title:'5.2 改进建议',level:2}
+    ]},
+    {id:'ch6',title:'第六章 应用推广',level:1,children:[
+      {id:'ch6_1',title:'6.1 推广条件',level:2},
+      {id:'ch6_2',title:'6.2 注意事项',level:2}
+    ]},
+    {id:'ch7',title:'第七章 结论',level:1,children:[
+      {id:'ch7_1',title:'7.1 主要成果',level:2},
+      {id:'ch7_2',title:'7.2 应用价值',level:2}
+    ]}
+  ];
+  return sections.slice(0, count);
+}
+
+function generateCaseStudySections(count) {
+  const sections = [
+    {id:'ch1',title:'第一章 绪论',level:1,children:[
+      {id:'ch1_1',title:'1.1 研究背景与问题',level:2},
+      {id:'ch1_2',title:'1.2 研究目的与意义',level:2}
+    ]},
+    {id:'ch2',title:'第二章 理论框架与研究设计',level:1,children:[
+      {id:'ch2_1',title:'2.1 理论框架',level:2},
+      {id:'ch2_2',title:'2.2 案例选择依据',level:2}
+    ]},
+    {id:'ch3',title:'第三章 案例描述',level:1,children:[
+      {id:'ch3_1',title:'3.1 案例背景',level:2},
+      {id:'ch3_2',title:'3.2 案例详情',level:2}
+    ]},
+    {id:'ch4',title:'第四章 案例分析',level:1,children:[
+      {id:'ch4_1',title:'4.1 分析框架应用',level:2},
+      {id:'ch4_2',title:'4.2 深度剖析',level:2}
+    ]},
+    {id:'ch5',title:'第五章 理论对话与发现',level:1,children:[
+      {id:'ch5_1',title:'5.1 理论对话',level:2},
+      {id:'ch5_2',title:'5.2 研究发现',level:2}
+    ]},
+    {id:'ch6',title:'第六章 讨论与启示',level:1,children:[
+      {id:'ch6_1',title:'6.1 理论启示',level:2},
+      {id:'ch6_2',title:'6.2 实践启示',level:2}
+    ]},
+    {id:'ch7',title:'第七章 结论与展望',level:1,children:[
+      {id:'ch7_1',title:'7.1 主要结论',level:2},
+      {id:'ch7_2',title:'7.2 研究局限与展望',level:2}
+    ]}
+  ];
+  return sections.slice(0, count);
+}
+
+const PAPER_TEMPLATES = {
+  master_education: { name: '教育硕士论文', sections: [] },
+  master_science: { name: '理学/工学硕士论文', sections: [] },
+  master_social: { name: '人文社科硕士论文', sections: [] },
+  phd: { name: '博士学位论文', sections: [] },
+  undergraduate: { name: '本科毕业论文', sections: [] }
+};
+
+function buildSystemPrompt() {
+  const p = APP_STATE.project;
+  if (!p) return '你是一个友好的AI助手，请先帮助用户创建论文项目。';
+  
+  const degreeName = p.degreeType === 'phd' ? '博士' : p.degreeType === 'undergraduate' ? '学士' : '硕士';
+  const wordsPerChapter = p.degreeType === 'phd' ? '10000-15000字' : p.degreeType === 'undergraduate' ? '2000-4000字' : '6000-10000字';
+  
+  const paperType = p.paperType || 'empirical';
+  const paperTypeName = getPaperTypeName(paperType);
+  const paperTypeGuidance = getPaperTypeWritingGuidance(paperType);
+  
+  const spineInfo = buildSpineContext();
+  
+  return `你是一位专业的研究员，正在撰写一篇学术论文。你具备深厚的学术素养和丰富的写作经验。
+
+================================================================================
+                              核心理念：纵横之道
+================================================================================
+
+【纵：论文整体结构】
+从选题到结论，形成一条不可断裂的逻辑主轴。每一章都是有机生命体的器官，通过"逻辑血脉"相连。
+
+【横：每个板块的横向叙写】
+去AI书写痕迹，回归人文书写习惯，体现职业研究者素养。文章要有深度、有广度。
+
+【合纵连横：整文内容衔接】
+内容交织成密不透风的网，逻辑严密，内容深刻，符合专业研究员的写作能力和研究能力。
+
+================================================================================
+                              当前项目信息
+================================================================================
+
+- 论文题目：${p.title}
+- 学科/专业：${p.discipline}
+- 研究方向：${p.researchField || '未设置'}
+- 身份特征：${p.identity || '研究生'}
+- 学位类型：${degreeName}
+- 论文性质：${paperTypeName}
+- 写作风格：${p.writingStyle || '学术严谨但自然流畅'}
+- 目标字数：${p.totalWords || '40000-60000'}
+- 章节字数要求：${wordsPerChapter}
+
+================================================================================
+                              论文性质写作指导
+================================================================================
+
+${paperTypeGuidance}
+
+================================================================================
+                              去AI化书写规范
+================================================================================
+
+【禁止使用的AI惯用表达】
+- 禁止以"随着...的发展""在当今社会""近年来"开头
+- 禁止使用"综上所述""总而言之""由此可见"作为段落开头
+- 禁止使用"具有重要的理论意义和实践价值"作为段落结尾
+- 禁止使用"填补了研究空白"这类空话
+- 禁止文献罗列式写法（"张三研究了...李四研究了..."）
+
+【必须遵循的人文书写习惯】
+- 开篇从具体现象、数据或矛盾切入，而非宏大叙事
+- 必须包含第一人称判断："对此，笔者认为..."
+- 必须包含学术质疑："然而，这一观点忽视了..."
+- 长短句交替，避免均匀句长
+- 使用观点对话式评述，而非简单罗列
+- 包含"让步-转折"句式："诚然...但..."
+- 适当使用设问句、反问句增加思辨张力
+
+================================================================================
+                              纵向贯通要求
+================================================================================
+
+【绪论】
+- 问题锚定：从具体现象切入，建立"表象与实质"的张力
+- 矛盾预设：明确指出现有研究的"逻辑断裂"或"解释盲区"
+- 脉络预告：明确预告全文的纵横结构
+
+【文献综述】
+- 按"捍卫派"与"质疑派"两大阵营重述文献
+- 找到对立阵营共同的"前提假设"并攻击它
+- 指出文献之间的"对话缺失"
+
+【研究设计】
+- 每个方法选择必须回答：为什么能检验核心假设？
+- 数据来源必须与绪论中的"虚实结合"呼应
+- 主动承认方法的局限性
+
+【结果分析】
+- 展示表面规律 → 揭示异常矛盾 → 寻找深层机制
+- 每个分析纵向回扣绪论问题，横向与前人对话
+- 不得停留在"数据表明A与B正相关"
+
+【结论】
+- 升华而非重复摘要
+- 主动承认研究局限
+- 可使用问句结尾引发思考
+
+================================================================================
+                              专业研究者素养
+================================================================================
+
+【学术诚实】
+- 主动承认研究局限，不夸大发现
+- 区分"证明"与"提示"，使用"本研究初步表明..."
+
+【论证严谨】
+- 每个论点都有证据支撑
+- 区分相关性与因果性
+
+【批判思维】
+- 不盲从前人研究，敢于提出质疑
+- 善于发现矛盾和逻辑裂缝
+
+================================================================================
+                              记忆中枢
+================================================================================
+
+${spineInfo}
+
+================================================================================
+                              当前状态
+================================================================================
+
+${APP_STATE.chapters.length > 0 ? `已创建 ${APP_STATE.chapters.length} 个章节，${APP_STATE.chapters.filter(c => c.status === 'done').length} 个已完成` : '尚未创建章节'}
+${APP_STATE.currentChapterIndex >= 0 ? `当前选中：${APP_STATE.chapters[APP_STATE.currentChapterIndex]?.title}` : ''}
+${APP_STATE.outlineLocked ? '\n⚠️ **大纲已锁定**：必须严格按照现有章节结构写作，不得调整大纲！' : ''}
+
+================================================================================
+                              输出规范
+================================================================================
+
+- 正文：正式学术中文，段落首行缩进2字符
+- 图表：用"图X""表X"标注，附来源说明
+- 禁止：AI元语言、思考过程、解释性文字
+- 章节末尾：标注【本章已完成】+ 字数统计
+- 生成脊柱密文：在章节末尾输出 @[SPINE:章节名] 核心内容摘要
+
+请根据用户的输入，以专业研究员的身份进行回应。`;
+}
+
+function buildSpineContext() {
+  const memory = APP_STATE.globalMemory;
+  const parts = [];
+  
+  if (memory.researchQuestions && memory.researchQuestions.length > 0) {
+    parts.push(`【研究问题】\n${memory.researchQuestions.join('\n')}`);
+  }
+  
+  if (memory.coreHypotheses && memory.coreHypotheses.length > 0) {
+    parts.push(`【核心假设】\n${memory.coreHypotheses.join('\n')}`);
+  }
+  
+  if (memory.frameworkDetails && memory.frameworkDetails.length > 0) {
+    parts.push(`【理论框架】\n${memory.frameworkDetails.join('\n')}`);
+  }
+  
+  if (memory.completedChapterSummaries && memory.completedChapterSummaries.length > 0) {
+    parts.push(`【已完成章节摘要】\n${memory.completedChapterSummaries.map((s, i) => `第${i+1}章：${s}`).join('\n')}`);
+  }
+  
+  if (memory.spineCodes && Object.keys(memory.spineCodes).length > 0) {
+    const spineList = Object.entries(memory.spineCodes)
+      .map(([chapterId, code]) => code)
+      .join('\n');
+    parts.push(`【脊柱密文链】\n${spineList}`);
+  }
+  
+  return parts.length > 0 ? parts.join('\n\n') : '（暂无记忆信息，这是首次生成）';
+}
+
+async function callAPI(messages, onChunk) {
+  const config = APP_STATE.apiConfig;
+  if (!config.apiKey || !config.model || !config.baseUrl) {
+    showToast('请先配置API设置', 'error');
+    return null;
+  }
+
+  const baseUrl = config.baseUrl;
+  const model = config.model;
+
+  return await callOpenAICompatibleAPI(baseUrl, config.apiKey, model, messages, onChunk);
+}
+
+async function callOpenAICompatibleAPI(baseUrl, apiKey, model, messages, onChunk) {
+  const url = `${baseUrl}/chat/completions`;
+  const deepThinkingEnabled = localStorage.getItem('deepThinkingEnabled') === 'true';
+  
+  const requestBody = {
+    model: model,
+    messages: messages,
+    stream: true,
+    temperature: deepThinkingEnabled ? 0.7 : 0.75,
+    max_tokens: 8192
+  };
+  
+  if (deepThinkingEnabled) {
+    requestBody.enable_thinking = true;
+    console.log('🧠 深度思考模式已启用');
+  }
+
+  console.log('API调用:', { url, model, messageCount: messages.length, deepThinking: deepThinkingEnabled });
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    console.log('API响应状态:', response.status);
+
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('API错误响应:', err);
+      throw new Error(`API错误 (${response.status}): ${err}`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    console.log('响应Content-Type:', contentType);
+
+    if (!response.body || !contentType.includes('text/event-stream')) {
+      console.log('非流式响应，尝试按普通JSON处理');
+      const text = await response.text();
+      console.log('响应文本:', text.substring(0, 500));
+      try {
+        const json = JSON.parse(text);
+        const content = json.choices?.[0]?.message?.content || '';
+        if (content && onChunk) onChunk(content, content);
+        if (json.usage) {
+          APP_STATE.totalTokens += (json.usage.total_tokens || 0);
+          updateTokenDisplay();
+        }
+        return content;
+      } catch (e) {
+        console.error('JSON解析失败:', e);
+        return text || null;
+      }
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let fullContent = '';
+    let buffer = '';
+    let chunkCount = 0;
+    let rawData = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) {
+        console.log('流读取完成，总块数:', chunkCount, '总内容长度:', fullContent.length);
+        break;
+      }
+
+      const chunk = decoder.decode(value, { stream: true });
+      buffer += chunk;
+      rawData += chunk;
+      const lines = buffer.split('\n');
+      buffer = lines.pop() || '';
+
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed) continue;
+        if (!trimmed.startsWith('data:')) {
+          continue;
+        }
+        const data = trimmed.startsWith('data: ') ? trimmed.slice(6) : trimmed.slice(5);
+        if (data.trim() === '[DONE]') {
+          break;
+        }
+        try {
+          const json = JSON.parse(data);
+          
+          let delta = '';
+          if (json.choices && json.choices[0]) {
+            if (json.choices[0].delta && json.choices[0].delta.content) {
+              delta = json.choices[0].delta.content;
+            } else if (json.choices[0].text) {
+              delta = json.choices[0].text;
+            } else if (typeof json.choices[0] === 'string') {
+              delta = json.choices[0];
+            }
+          }
+          
+          if (delta) {
+            fullContent += delta;
+            chunkCount++;
+            if (onChunk) onChunk(delta, fullContent);
+          }
+          if (json.usage) {
+            APP_STATE.totalTokens += (json.usage.total_tokens || 0);
+            updateTokenDisplay();
+          }
+        } catch (e) {
+        }
+      }
+    }
+
+    if (!fullContent) {
+      try {
+        const retryResponse = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: messages,
+            stream: false,
+            temperature: 0.75,
+            max_tokens: 8192
+          })
+        });
+
+        if (retryResponse.ok) {
+          const retryText = await retryResponse.text();
+          try {
+            const json = JSON.parse(retryText);
+            fullContent = json.choices?.[0]?.message?.content || '';
+            if (fullContent && onChunk) onChunk(fullContent, fullContent);
+            if (json.usage) {
+              APP_STATE.totalTokens += (json.usage.total_tokens || 0);
+              updateTokenDisplay();
+            }
+          } catch (e) {
+            console.error('非流式JSON解析失败:', e);
+          }
+        }
+      } catch (retryErr) {
+        console.error('非流式重试失败:', retryErr);
+      }
+    }
+
+    if (!fullContent) {
+      console.warn('警告: API返回了空内容');
+    }
+
+    return fullContent;
+  } catch (error) {
+    console.error('API调用异常:', error);
+    showToast(`API调用失败: ${error.message}`, 'error');
+    return null;
+  }
+}
+
+
+
+function updateTokenDisplay() {
+  document.getElementById('tokenUsageInfo').textContent = `Token: ${APP_STATE.totalTokens.toLocaleString()}`;
+}
+
+function showToast(msg, type = 'info') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.textContent = msg;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('collapsed');
+}
+
+function toggleChat() {
+  const panel = document.getElementById('chatPanel');
+  const expandBtn = document.getElementById('chatExpandBtn');
+  panel.classList.toggle('collapsed');
+  if (panel.classList.contains('collapsed')) {
+    expandBtn.classList.remove('hidden');
+  } else {
+    expandBtn.classList.add('hidden');
+  }
+}
+
+function toggleChatPanel() {
+  toggleChat();
+}
+
+let showDebugSend = true;
+let showDebugReceive = true;
+let debugModeEnabled = true;
+
+function initDebugMode() {
+  try {
+    const stored = localStorage.getItem('debugMode');
+    if (stored === null) {
+      localStorage.setItem('debugMode', 'true');
+      debugModeEnabled = true;
+    } else {
+      debugModeEnabled = stored === 'true';
+    }
+  } catch (e) {
+    debugModeEnabled = true;
+  }
+}
+
+initDebugMode();
+initResizeHandles();
+
+function toggleDebugSend() {
+  showDebugSend = !showDebugSend;
+  const btn = document.getElementById('toggleSendBtn');
+  if (showDebugSend) {
+    btn.classList.add('debug-btn-active');
+  } else {
+    btn.classList.remove('debug-btn-active');
+  }
+  updateDebugMessagesVisibility();
+}
+
+function toggleDebugReceive() {
+  showDebugReceive = !showDebugReceive;
+  const btn = document.getElementById('toggleReceiveBtn');
+  if (showDebugReceive) {
+    btn.classList.add('debug-btn-active');
+  } else {
+    btn.classList.remove('debug-btn-active');
+  }
+  updateDebugMessagesVisibility();
+}
+
+function updateDebugMessagesVisibility() {
+  const messages = document.querySelectorAll('.chat-msg.debug-send');
+  messages.forEach(msg => {
+    msg.style.display = showDebugSend ? 'block' : 'none';
+  });
+  const receiveMessages = document.querySelectorAll('.chat-msg.debug-receive');
+  receiveMessages.forEach(msg => {
+    msg.style.display = showDebugReceive ? 'block' : 'none';
+  });
+}
+
+function initDebugButtons() {
+  const sendBtn = document.getElementById('toggleSendBtn');
+  const receiveBtn = document.getElementById('toggleReceiveBtn');
+  if (sendBtn && showDebugSend) sendBtn.classList.add('debug-btn-active');
+  if (receiveBtn && showDebugReceive) receiveBtn.classList.add('debug-btn-active');
+}
+
+function toggleDebugPanel() {
+  const panel = document.getElementById('debugPanel');
+  if (panel) {
+    panel.classList.toggle('collapsed');
+  }
+}
+
+function initResizeHandles() {
+  const sidebar = document.getElementById('sidebar');
+  const sidebarHandle = document.getElementById('sidebarResizeHandle');
+  const debugPanel = document.getElementById('debugPanel');
+  const debugHandle = document.getElementById('debugPanelResizeHandle');
+  
+  if (sidebarHandle && sidebar) {
+    let isResizingSidebar = false;
+    let startX = 0;
+    let startWidth = 0;
+    
+    sidebarHandle.addEventListener('mousedown', (e) => {
+      isResizingSidebar = true;
+      startX = e.clientX;
+      startWidth = sidebar.offsetWidth;
+      sidebarHandle.classList.add('active');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizingSidebar) return;
+      const diff = e.clientX - startX;
+      const newWidth = Math.max(200, Math.min(500, startWidth + diff));
+      sidebar.style.width = newWidth + 'px';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (isResizingSidebar) {
+        isResizingSidebar = false;
+        sidebarHandle.classList.remove('active');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    });
+  }
+  
+  if (debugHandle && debugPanel) {
+    let isResizingDebug = false;
+    let startY = 0;
+    let startHeight = 0;
+    
+    debugHandle.addEventListener('mousedown', (e) => {
+      isResizingDebug = true;
+      startY = e.clientY;
+      startHeight = debugPanel.offsetHeight;
+      debugHandle.classList.add('active');
+      document.body.style.cursor = 'row-resize';
+      document.body.style.userSelect = 'none';
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    
+    document.addEventListener('mousemove', (e) => {
+      if (!isResizingDebug) return;
+      const diff = e.clientY - startY;
+      const newHeight = Math.max(80, Math.min(window.innerHeight * 0.6, startHeight + diff));
+      debugPanel.style.height = newHeight + 'px';
+    });
+    
+    document.addEventListener('mouseup', () => {
+      if (isResizingDebug) {
+        isResizingDebug = false;
+        debugHandle.classList.remove('active');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    });
+  }
+}
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'light' ? '' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'light' ? '☀' : '🌙';
+  safeSetItem('theme', next);
+}
+
+function openModal(type) {
+  const overlay = document.getElementById('modalOverlay');
+  const container = document.getElementById('modalContainer');
+
+  switch (type) {
+    case 'apiSettings':
+      container.innerHTML = renderAPISettingsModal();
+      break;
+    case 'projectSettings':
+      container.innerHTML = renderProjectSettingsModal();
+      break;
+    case 'outlineModal':
+      container.innerHTML = renderOutlineModal();
+      break;
+    case 'memoryModal':
+      container.innerHTML = renderMemoryModal();
+      break;
+    case 'exportModal':
+      container.innerHTML = renderExportModal();
+      break;
+    default:
+      return;
+  }
+
+  overlay.classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function renderAPISettingsModal() {
+  const savedConfigs = getSavedAPIConfigs();
+  const currentConfigId = localStorage.getItem('currentAPIConfigId') || '';
+  const deepThinkingEnabled = localStorage.getItem('deepThinkingEnabled') === 'true';
+  
+  let configsHtml = '';
+  if (savedConfigs.length > 0) {
+    configsHtml = `
+      <div style="margin-bottom:16px">
+        <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px">已保存的API配置</label>
+        <div style="max-height:200px;overflow-y:auto">
+          ${savedConfigs.map(cfg => `
+            <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-tertiary);border-radius:var(--radius);margin-bottom:6px;border:2px solid ${currentConfigId === cfg.id ? 'var(--accent)' : 'transparent'}">
+              <span style="flex:1;cursor:pointer" onclick="selectAPIConfig('${cfg.id}')">
+                <span style="font-weight:600">${cfg.name}</span>
+                <span style="font-size:11px;color:var(--text-muted);margin-left:8px">${cfg.model}</span>
+              </span>
+              <button class="btn-icon btn-sm" onclick="editAPIConfig('${cfg.id}')" style="color:var(--info)" title="编辑">✏️</button>
+              <button class="btn-icon btn-sm" onclick="deleteAPIConfig('${cfg.id}')" style="color:var(--danger)" title="删除">🗑</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--border);margin:16px 0;padding-top:16px">
+        <label style="font-size:13px;font-weight:600;color:var(--text-secondary);display:block;margin-bottom:8px">添加/编辑配置</label>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="modal-header">
+      <h2>⚙ API 设置</h2>
+      <button class="btn-icon" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      ${configsHtml}
+      <input type="hidden" id="editingConfigId" value="">
+      <div class="form-group">
+        <label>配置名称</label>
+        <input type="text" class="form-input" id="configNameInput" placeholder="如：智谱GLM、OpenAI、本地模型">
+        <div class="hint">为这个API配置起一个便于识别的名称</div>
+      </div>
+      <div class="form-group">
+        <label>API Key</label>
+        <input type="password" class="form-input" id="apiKeyInput" placeholder="输入API密钥">
+        <div class="hint">密钥仅存储在本地浏览器中，不会上传到任何服务器</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>模型</label>
+          <input type="text" class="form-input" id="modelInput" placeholder="如 GLM-4.7-Flash、gpt-4o">
+          <div class="hint">直接填写模型名称</div>
+        </div>
+        <div class="form-group">
+          <label>API Endpoint</label>
+          <input type="text" class="form-input" id="baseUrlInput" value="https://api.openai.com/v1" placeholder="API端点">
+          <div class="hint">OpenAI兼容的API端点</div>
+        </div>
+      </div>
+      <div style="margin:16px 0;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div>
+            <span style="font-weight:600">🧠 深度思考模式</span>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:4px">启用后模型会进行更深入的推理分析（如智谱GLM-Z1、DeepSeek-R1等）</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="deepThinkingToggle" ${deepThinkingEnabled ? 'checked' : ''} onchange="toggleDeepThinking(this.checked)">
+            <span class="toggle-slider"><span class="toggle-knob"></span></span>
+          </label>
+        </div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveAPIConfig()">💾 保存配置</button>
+        <button class="btn" onclick="testAPIConnection()">测试连接</button>
+        <button class="btn" onclick="clearAPIForm()">清空表单</button>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">关闭</button>
+    </div>`;
+}
+
+function toggleDeepThinking(enabled) {
+  localStorage.setItem('deepThinkingEnabled', enabled ? 'true' : 'false');
+  APP_STATE.deepThinkingEnabled = enabled;
+  showToast(enabled ? '🧠 深度思考模式已启用' : '深度思考模式已关闭', 'info');
+}
+
+function toggleDebugMode(enabled) {
+  debugModeEnabled = enabled;
+  try {
+    localStorage.setItem('debugMode', enabled ? 'true' : 'false');
+  } catch (e) {}
+  showToast(enabled ? '🔧 调试模式已启用' : '调试模式已关闭', 'info');
+}
+
+function getSavedAPIConfigs() {
+  try {
+    const saved = localStorage.getItem('savedAPIConfigs');
+    return saved ? JSON.parse(saved) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function saveAPIConfigs(configs) {
+  localStorage.setItem('savedAPIConfigs', JSON.stringify(configs));
+}
+
+function selectAPIConfig(configId) {
+  const configs = getSavedAPIConfigs();
+  const config = configs.find(c => c.id === configId);
+  if (config) {
+    APP_STATE.apiConfig.apiKey = config.apiKey;
+    APP_STATE.apiConfig.model = config.model;
+    APP_STATE.apiConfig.baseUrl = config.baseUrl;
+    localStorage.setItem('currentAPIConfigId', configId);
+    localStorage.setItem('apiConfig', JSON.stringify(APP_STATE.apiConfig));
+    updateAPIStatus();
+    closeModal();
+    showToast(`已切换到: ${config.name}`, 'success');
+  }
+}
+
+function deleteAPIConfig(configId) {
+  const configs = getSavedAPIConfigs();
+  const config = configs.find(c => c.id === configId);
+  if (confirm(`确定删除配置"${config?.name}"吗？`)) {
+    const newConfigs = configs.filter(c => c.id !== configId);
+    saveAPIConfigs(newConfigs);
+    
+    if (localStorage.getItem('currentAPIConfigId') === configId) {
+      localStorage.removeItem('currentAPIConfigId');
+      APP_STATE.apiConfig = { apiKey: '', model: '', baseUrl: 'https://api.openai.com/v1' };
+    }
+    
+    renderAPISettingsModal();
+    openModal('apiSettings');
+    showToast('配置已删除', 'success');
+  }
+}
+
+function editAPIConfig(configId) {
+  const configs = getSavedAPIConfigs();
+  const config = configs.find(c => c.id === configId);
+  if (config) {
+    document.getElementById('editingConfigId').value = configId;
+    document.getElementById('configNameInput').value = config.name;
+    document.getElementById('apiKeyInput').value = config.apiKey;
+    document.getElementById('modelInput').value = config.model;
+    document.getElementById('baseUrlInput').value = config.baseUrl;
+    showToast(`正在编辑: ${config.name}`, 'info');
+  }
+}
+
+function clearAPIForm() {
+  document.getElementById('editingConfigId').value = '';
+  document.getElementById('configNameInput').value = '';
+  document.getElementById('apiKeyInput').value = '';
+  document.getElementById('modelInput').value = '';
+  document.getElementById('baseUrlInput').value = 'https://api.openai.com/v1';
+  showToast('表单已清空', 'info');
+}
+
+function saveAPIConfig() {
+  const editingId = document.getElementById('editingConfigId').value;
+  const name = document.getElementById('configNameInput').value.trim();
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const model = document.getElementById('modelInput').value.trim();
+  const baseUrl = document.getElementById('baseUrlInput').value.trim();
+
+  if (!name || !apiKey || !model || !baseUrl) {
+    showToast('请填写完整的配置信息', 'error');
+    return;
+  }
+
+  const configs = getSavedAPIConfigs();
+  
+  if (editingId) {
+    const idx = configs.findIndex(c => c.id === editingId);
+    if (idx >= 0) {
+      configs[idx] = { ...configs[idx], name, apiKey, model, baseUrl };
+      saveAPIConfigs(configs);
+      
+      if (localStorage.getItem('currentAPIConfigId') === editingId) {
+        APP_STATE.apiConfig.apiKey = apiKey;
+        APP_STATE.apiConfig.model = model;
+        APP_STATE.apiConfig.baseUrl = baseUrl;
+        localStorage.setItem('apiConfig', JSON.stringify(APP_STATE.apiConfig));
+        updateAPIStatus();
+      }
+      
+      renderAPISettingsModal();
+      openModal('apiSettings');
+      showToast(`配置"${name}"已更新`, 'success');
+    }
+  } else {
+    const newConfig = {
+      id: 'api_' + Date.now(),
+      name,
+      apiKey,
+      model,
+      baseUrl
+    };
+    
+    configs.push(newConfig);
+    saveAPIConfigs(configs);
+    
+    APP_STATE.apiConfig.apiKey = apiKey;
+    APP_STATE.apiConfig.model = model;
+    APP_STATE.apiConfig.baseUrl = baseUrl;
+    localStorage.setItem('currentAPIConfigId', newConfig.id);
+    localStorage.setItem('apiConfig', JSON.stringify(APP_STATE.apiConfig));
+    
+    updateAPIStatus();
+    closeModal();
+    showToast(`配置"${name}"已保存并启用`, 'success');
+  }
+}
+
+function saveAPISettings() {
+  try {
+    const apiKey = document.getElementById('apiKeyInput').value.trim();
+    const model = document.getElementById('modelInput').value.trim();
+    const baseUrl = document.getElementById('baseUrlInput').value.trim();
+
+    APP_STATE.apiConfig.apiKey = apiKey;
+    APP_STATE.apiConfig.model = model;
+    APP_STATE.apiConfig.baseUrl = baseUrl;
+    
+    localStorage.setItem('apiConfig', JSON.stringify(APP_STATE.apiConfig));
+    
+    closeModal();
+    
+    setTimeout(() => {
+      updateAPIStatus();
+      showToast('API设置已保存', 'success');
+    }, 100);
+  } catch (error) {
+    console.error('保存API设置失败:', error);
+    showToast('保存失败，请重试', 'error');
+  }
+}
+
+async function testAPIConnection() {
+  const apiKey = document.getElementById('apiKeyInput').value.trim();
+  const baseUrl = document.getElementById('baseUrlInput').value.trim();
+  const model = document.getElementById('modelInput').value.trim();
+
+  if (!apiKey || !baseUrl || !model) {
+    showToast('请填写完整的API设置', 'error');
+    return;
+  }
+
+  showToast('正在测试连接...', 'info');
+  const testMessages = [
+    { role: 'user', content: '请回复"连接成功"四个字' }
+  ];
+
+  const oldConfig = { ...APP_STATE.apiConfig };
+  APP_STATE.apiConfig.apiKey = apiKey;
+  APP_STATE.apiConfig.baseUrl = baseUrl;
+  APP_STATE.apiConfig.model = model;
+
+  const result = await callAPI(testMessages);
+  if (result) {
+    showToast('连接成功！模型响应: ' + result.substring(0, 50), 'success');
+  }
+
+  APP_STATE.apiConfig = oldConfig;
+}
+
+function updateAPIStatus() {
+  const dot = document.getElementById('apiStatusDot');
+  const text = document.getElementById('apiStatusText');
+  const modelInfo = document.getElementById('currentModelInfo');
+
+  const hasKey = !!APP_STATE.apiConfig.apiKey;
+  const hasModel = !!APP_STATE.apiConfig.model;
+  const hasBaseUrl = !!APP_STATE.apiConfig.baseUrl;
+
+  console.log('更新API状态:', { hasKey, hasModel, hasBaseUrl });
+
+  if (hasKey && hasModel && hasBaseUrl) {
+    dot.className = 'status-dot connected';
+    text.textContent = '已配置';
+    modelInfo.textContent = `模型: ${APP_STATE.apiConfig.model}`;
+  } else {
+    dot.className = 'status-dot disconnected';
+    text.textContent = '未连接';
+    modelInfo.textContent = '模型: 未选择';
+  }
+}
+
+function renderProjectSettingsModal() {
+  const p = APP_STATE.project || {};
+  const draft = getDraftProjectData();
+
+  const title = draft.title || p.title || '';
+  const discipline = draft.discipline || p.discipline || '';
+  const researchField = draft.researchField || p.researchField || '';
+  const degreeType = draft.degreeType || p.degreeType || 'master_education';
+  const degreeTypeCustom = draft.degreeTypeCustom || p.degreeTypeCustom || '';
+  const paperType = draft.paperType || p.paperType || 'empirical';
+  const paperTypeCustom = draft.paperTypeCustom || p.paperTypeCustom || '';
+  const identity = draft.identity || p.identity || '';
+  const totalWords = draft.totalWords || p.totalWords || '';
+  const writingStyle = draft.writingStyle || p.writingStyle || '';
+  const researchQuestions = draft.researchQuestions || p.researchQuestions || '';
+
+  return `
+    <div class="modal-header">
+      <h2>📋 创建新论文</h2>
+      <button class="btn-icon" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>论文题目</label>
+        <input type="text" class="form-input" id="projTitle" value="${title}" placeholder="输入论文题目" oninput="saveDraftProjectData()">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>学科/专业</label>
+          <input type="text" class="form-input" id="projDiscipline" value="${discipline}" placeholder="专业身份" oninput="saveDraftProjectData()">
+        </div>
+        <div class="form-group">
+          <label>研究方向</label>
+          <input type="text" class="form-input" id="projField" value="${researchField}" placeholder="主要研究内容、对象" oninput="saveDraftProjectData()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>学位类型</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="form-select" id="projDegreeType" onchange="saveDraftProjectData()" style="flex:1">
+              <option value="master_education" ${degreeType === 'master_education' && !degreeTypeCustom ? 'selected' : ''}>教育硕士</option>
+              <option value="master_science" ${degreeType === 'master_science' && !degreeTypeCustom ? 'selected' : ''}>理学/工学硕士</option>
+              <option value="master_social" ${degreeType === 'master_social' && !degreeTypeCustom ? 'selected' : ''}>人文社科硕士</option>
+              <option value="phd" ${degreeType === 'phd' && !degreeTypeCustom ? 'selected' : ''}>博士</option>
+              <option value="undergraduate" ${degreeType === 'undergraduate' && !degreeTypeCustom ? 'selected' : ''}>本科</option>
+              <option value="custom" ${degreeTypeCustom ? 'selected' : ''}>自定义...</option>
+            </select>
+            ${degreeTypeCustom ? `<input type="text" class="form-input" id="projDegreeTypeCustom" value="${degreeTypeCustom}" placeholder="自定义学位类型" style="flex:1" oninput="saveDraftProjectData()">` : '<input type="text" class="form-input" id="projDegreeTypeCustom" value="" placeholder="自定义学位类型" style="flex:1;display:none" oninput="saveDraftProjectData()">'}
+          </div>
+        </div>
+        <div class="form-group">
+          <label>论文性质</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="form-select" id="projPaperType" onchange="onPaperTypeChange()" style="flex:1">
+              <option value="empirical" ${paperType === 'empirical' && !paperTypeCustom ? 'selected' : ''}>📊 实证研究型</option>
+              <option value="theoretical" ${paperType === 'theoretical' && !paperTypeCustom ? 'selected' : ''}>📚 理论研究型</option>
+              <option value="review" ${paperType === 'review' && !paperTypeCustom ? 'selected' : ''}>📖 文献综述型</option>
+              <option value="applied" ${paperType === 'applied' && !paperTypeCustom ? 'selected' : ''}>🔧 应用研究型</option>
+              <option value="case_study" ${paperType === 'case_study' && !paperTypeCustom ? 'selected' : ''}>📋 案例研究型</option>
+              <option value="custom" ${paperTypeCustom ? 'selected' : ''}>自定义...</option>
+            </select>
+            ${paperTypeCustom ? `<input type="text" class="form-input" id="projPaperTypeCustom" value="${paperTypeCustom}" placeholder="自定义论文性质" style="flex:1" oninput="saveDraftProjectData()">` : '<input type="text" class="form-input" id="projPaperTypeCustom" value="" placeholder="自定义论文性质" style="flex:1;display:none" oninput="saveDraftProjectData()">'}
+          </div>
+          <div class="hint">选择或自定义论文性质将影响大纲结构和写作重点</div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>身份特征</label>
+          <input type="text" class="form-input" id="projIdentity" value="${identity}" placeholder="当前职业" oninput="saveDraftProjectData()">
+        </div>
+        <div class="form-group">
+          <label>写作风格</label>
+          <input type="text" class="form-input" id="projStyle" value="${writingStyle}" placeholder="如：学术严谨但自然流畅" oninput="saveDraftProjectData()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>目标字数</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <select class="form-select" id="projWordsSelect" onchange="onWordCountChange()" style="flex:1">
+              <option value="" ${!totalWords ? 'selected' : ''}>请选择...</option>
+              <option value="10000-20000" ${totalWords === '10000-20000' ? 'selected' : ''}>10000-20000（本科）</option>
+              <option value="20000-30000" ${totalWords === '20000-30000' ? 'selected' : ''}>20000-30000</option>
+              <option value="30000-40000" ${totalWords === '30000-40000' ? 'selected' : ''}>30000-40000</option>
+              <option value="40000-50000" ${totalWords === '40000-50000' ? 'selected' : ''}>40000-50000（硕士标准）</option>
+              <option value="50000-60000" ${totalWords === '50000-60000' ? 'selected' : ''}>50000-60000</option>
+              <option value="60000-80000" ${totalWords === '60000-80000' ? 'selected' : ''}>60000-80000</option>
+              <option value="70000-80000" ${totalWords === '70000-80000' ? 'selected' : ''}>70000-80000</option>
+              <option value="80000-100000" ${totalWords === '80000-100000' ? 'selected' : ''}>80000-100000（博士）</option>
+              <option value="100000-150000" ${totalWords === '100000-150000' ? 'selected' : ''}>100000-150000</option>
+              <option value="custom" ${totalWords && !['10000-20000','20000-30000','30000-40000','40000-50000','50000-60000','60000-80000','70000-80000','80000-100000','100000-150000'].includes(totalWords) ? 'selected' : ''}>自定义...</option>
+            </select>
+            <input type="text" class="form-input" id="projWords" value="${totalWords}" placeholder="如：70000-80000" style="flex:1" oninput="saveDraftProjectData()">
+          </div>
+          <div class="hint">AI将根据目标字数自动分配各章节字数</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>研究问题/核心内容</label>
+        <textarea class="form-textarea" id="projResearchQ" placeholder="描述你的核心研究问题、假设或关键内容" oninput="saveDraftProjectData()">${researchQuestions}</textarea>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:var(--radius)">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;font-weight:600;color:var(--text-secondary)">🤖 AI 智能填充</span>
+          <button class="btn btn-sm btn-primary" onclick="autoFillByAI()">✨ AI 帮我填写</button>
+        </div>
+        <div class="hint">填写论文题目、学科/专业和身份特征后，点击按钮让 AI 自动生成研究方向、写作风格、目标字数和研究问题</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveProjectSettings()">创建项目</button>
+    </div>`;
+}
+
+function getDraftProjectData() {
+  try {
+    const saved = localStorage.getItem('draftProjectData');
+    return saved ? JSON.parse(saved) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function onPaperTypeChange() {
+  const select = document.getElementById('projPaperType');
+  const customInput = document.getElementById('projPaperTypeCustom');
+  if (select.value === 'custom') {
+    customInput.style.display = 'block';
+    customInput.focus();
+  } else {
+    customInput.style.display = 'none';
+    customInput.value = '';
+  }
+  saveDraftProjectData();
+}
+
+function onDegreeTypeChange() {
+  const select = document.getElementById('projDegreeType');
+  const customInput = document.getElementById('projDegreeTypeCustom');
+  if (select.value === 'custom') {
+    customInput.style.display = 'block';
+    customInput.focus();
+  } else {
+    customInput.style.display = 'none';
+    customInput.value = '';
+  }
+  saveDraftProjectData();
+}
+
+function onWordCountChange() {
+  const select = document.getElementById('projWordsSelect');
+  const input = document.getElementById('projWords');
+  if (select.value === 'custom') {
+    input.style.display = 'block';
+    input.focus();
+  } else if (select.value) {
+    input.value = select.value;
+    input.style.display = 'none';
+  } else {
+    input.style.display = 'none';
+  }
+  saveDraftProjectData();
+}
+
+function saveDraftProjectData() {
+  const degreeTypeSelect = document.getElementById('projDegreeType');
+  const paperTypeSelect = document.getElementById('projPaperType');
+  const degreeTypeCustom = document.getElementById('projDegreeTypeCustom');
+  const paperTypeCustom = document.getElementById('projPaperTypeCustom');
+  
+  const draft = {
+    title: document.getElementById('projTitle')?.value || '',
+    discipline: document.getElementById('projDiscipline')?.value || '',
+    researchField: document.getElementById('projField')?.value || '',
+    degreeType: degreeTypeSelect?.value || 'master_education',
+    degreeTypeCustom: degreeTypeCustom?.value || '',
+    paperType: paperTypeSelect?.value || 'empirical',
+    paperTypeCustom: paperTypeCustom?.value || '',
+    identity: document.getElementById('projIdentity')?.value || '',
+    totalWords: document.getElementById('projWords')?.value || '',
+    writingStyle: document.getElementById('projStyle')?.value || '',
+    researchQuestions: document.getElementById('projResearchQ')?.value || ''
+  };
+  localStorage.setItem('draftProjectData', JSON.stringify(draft));
+}
+
+function clearDraftProjectData() {
+  localStorage.removeItem('draftProjectData');
+}
+
+function saveProjectSettings() {
+  try {
+    const title = document.getElementById('projTitle').value.trim();
+    const discipline = document.getElementById('projDiscipline').value.trim();
+    const researchField = document.getElementById('projField').value.trim();
+    const degreeType = document.getElementById('projDegreeType').value;
+    const paperType = document.getElementById('projPaperType').value;
+    const identity = document.getElementById('projIdentity').value.trim();
+    const totalWords = document.getElementById('projWords').value.trim();
+    const writingStyle = document.getElementById('projStyle').value.trim();
+    const researchQuestions = document.getElementById('projResearchQ').value.trim();
+
+    if (!title || !discipline) {
+      showToast('请填写论文题目和学科', 'error');
+      return;
+    }
+
+    if (!identity) {
+      showToast('请填写身份特征', 'error');
+      return;
+    }
+
+    finalizeProjectCreation(title, discipline, researchField, degreeType, paperType, identity, totalWords, writingStyle, researchQuestions);
+  } catch (error) {
+    console.error('创建项目失败:', error);
+    showToast('创建项目失败，请重试', 'error');
+  }
+}
+
+async function autoFillByAI() {
+  // 获取所有字段的当前值
+  const currentValues = {
+    title: document.getElementById('projTitle').value.trim(),
+    discipline: document.getElementById('projDiscipline').value.trim(),
+    researchField: document.getElementById('projField').value.trim(),
+    degreeType: document.getElementById('projDegreeType').value,
+    identity: document.getElementById('projIdentity').value.trim(),
+    totalWords: document.getElementById('projWords').value.trim(),
+    writingStyle: document.getElementById('projStyle').value.trim(),
+    researchQuestions: document.getElementById('projResearchQ').value.trim()
+  };
+
+  // 检查必填字段
+  if (!currentValues.discipline || !currentValues.identity) {
+    showToast('请先填写学科/专业和身份特征', 'error');
+    return;
+  }
+
+  // 构建用户已填写信息的描述
+  const filledFields = [];
+  if (currentValues.title) filledFields.push(`- 论文题目：${currentValues.title}`);
+  if (currentValues.discipline) filledFields.push(`- 学科/专业：${currentValues.discipline}`);
+  if (currentValues.researchField) filledFields.push(`- 研究方向：${currentValues.researchField}`);
+  if (currentValues.identity) filledFields.push(`- 身份特征：${currentValues.identity}`);
+  if (currentValues.writingStyle) filledFields.push(`- 写作风格：${currentValues.writingStyle}`);
+  if (currentValues.researchQuestions) filledFields.push(`- 研究问题：${currentValues.researchQuestions.replace(/\n/g, '; ')}`);
+
+  // 确定需要生成的字段
+  const fieldsToGenerate = [];
+  if (!currentValues.title) fieldsToGenerate.push('论文题目');
+  if (!currentValues.researchField) fieldsToGenerate.push('研究方向');
+  if (!currentValues.totalWords) fieldsToGenerate.push('目标字数');
+  if (!currentValues.writingStyle) fieldsToGenerate.push('写作风格');
+  if (!currentValues.researchQuestions) fieldsToGenerate.push('研究问题');
+
+  if (fieldsToGenerate.length === 0) {
+    showToast('所有字段已填写完毕', 'info');
+    return;
+  }
+
+  showToast(`🤖 AI 正在生成${fieldsToGenerate.join('、')}...`, 'info');
+
+  const degreeName = getDegreeTypeName(currentValues.degreeType);
+  const degreeRequirements = {
+    '教育硕士': '聚焦教育实践问题，采用行动研究或案例研究范式，强调理论与实践结合',
+    '理学/工学硕士': '聚焦技术创新或科学问题，采用实验研究或仿真验证，强调数据支撑',
+    '人文社科硕士': '聚焦社会现象或理论问题，采用质性或量化研究，强调理论深度',
+    '博士': '聚焦学科前沿问题，具有理论创新性，研究方法严谨，贡献明确',
+    '本科': '聚焦基础应用问题，研究范围适中，方法可行性强'
+  };
+
+  const prompt = `# 角色定位
+你是一位拥有 20 年以上经验的学术论文指导专家，精通中国高校各学科学位论文写作规范。你的任务是根据用户提供的基础信息，智能生成论文项目的缺失字段。
+
+# 用户提供的信息
+${filledFields.length > 0 ? filledFields.join('\n') : '（用户未填写任何信息）'}
+- 学位类型：${degreeName}
+- 学位要求：${degreeRequirements[degreeName] || '符合学位论文基本规范'}
+
+# 需要生成的字段
+${fieldsToGenerate.map((f, i) => `${i+1}. ${f}`).join('\n')}
+
+# 生成规范
+
+## 论文题目（title）- 重要！
+- 长度：20-30 字
+- 要求：具体、聚焦、可研究、有创新点
+- **多样性要求**：必须避免常见模板，要有独特性
+
+### 标题结构模板（随机选择一种，不要总是用同一个）：
+1. **问题导向型**：[领域]中[具体问题]的研究——以[研究对象]为例
+2. **方法导向型**：基于[方法/理论]的[研究对象][问题]研究
+3. **实践导向型**：[实践场景]下[问题]的[方法]研究
+4. **比较研究型**：[对象A]与[对象B][问题]的比较研究
+5. **发展研究型**：[研究对象][能力/素养]发展的[方法]研究
+6. **影响因素型**：[研究对象][结果]的影响因素及[方法]研究
+7. **效果研究型**：[方法]对[研究对象][结果]影响的实证研究
+8. **现状对策型**：[领域/场景][问题]现状与对策研究
+
+### 创新角度（随机选择）：
+- 新视角：从[独特角度]审视[问题]
+- 新方法：将[方法]应用于[领域]
+- 新对象：关注[被忽视的研究对象]
+- 新问题：探索[新兴问题/现象]
+
+### 示例（仅供参考结构，不要照搬）：
+- 问题导向：初中物理实验教学中学生科学探究能力培养研究——以XX地区为例
+- 方法导向：基于项目式学习的高中物理概念教学策略研究
+- 实践导向：农村初中物理课堂提问策略优化研究
+- 比较研究：线上线下混合式教学与传统教学效果比较研究
+
+**重要**：每次生成时随机选择不同的结构和角度，确保标题独特性！
+
+## 研究方向（researchField）
+- 长度：30-50 字
+- 要求：明确研究边界，体现学科特色
+- 内容：具体的研究领域+关键问题+研究视角
+
+## 写作风格（writingStyle）
+- 长度：20-30 字
+- 要求：符合身份特征，体现学术规范
+- 要素：语言特点+表达方式+学术立场
+
+## 目标字数（totalWords）
+- 格式：数字范围，如"4-5 万字"
+- 参考：本科 1-2 万、硕士 3-6 万、博士 8-15 万
+
+## 研究问题（researchQuestions）
+- 数量：3-5 个
+- 格式：用分号分隔，每个问题独立完整
+- 要求：层层递进，逻辑关联，可操作可验证
+- 结构：问题之间应有递进关系（背景问题→核心问题→延伸问题）
+
+# 核心原则
+1. **多样性优先**：每次生成都要有差异，避免重复模式
+2. **一致性**：所有生成内容必须与用户已填写信息高度一致
+3. **专业性**：符合学科规范和学位要求
+4. **可行性**：研究范围适中，方法可行
+5. **创新性**：体现一定的研究价值
+
+# 输出要求
+严格输出以下 JSON 格式，不要包含任何解释、Markdown 标记或额外文字：
+
+{"title":"","researchField":"","writingStyle":"","totalWords":"","researchQuestions":""}
+
+注意：用户已填写的字段，对应值留空字符串""；只填写用户未填写的字段。`;
+
+  const messages = [
+    { 
+      role: 'system', 
+      content: `你是纵横论文写作助手，专门帮助用户生成论文项目元数据。
+
+核心规则：
+1. 只生成用户未填写的字段，已填写的字段在 JSON 中留空字符串""
+2. 严格输出纯 JSON，不要任何 Markdown 标记或解释
+3. 所有内容必须为中文
+4. 内容必须符合中国高校学位论文规范
+5. 与用户已填写信息保持高度一致
+6. **每次生成都要有创意和差异，避免模板化**
+7. **标题必须独特，不要使用常见套路**` 
+    },
+    { role: 'user', content: prompt }
+  ];
+
+  try {
+    const result = await callAPI(messages);
+    if (result) {
+      let jsonStr = result.trim();
+      if (jsonStr.startsWith('```json')) {
+        jsonStr = jsonStr.replace(/```json/g, '').replace(/```/g, '').trim();
+      }
+      
+      try {
+        const data = JSON.parse(jsonStr);
+        
+        // 只填充空字段
+        if (data.title && !currentValues.title) {
+          document.getElementById('projTitle').value = data.title;
+        }
+        if (data.researchField && !currentValues.researchField) {
+          document.getElementById('projField').value = data.researchField;
+        }
+        if (data.writingStyle && !currentValues.writingStyle) {
+          document.getElementById('projStyle').value = data.writingStyle;
+        }
+        if (data.totalWords && !currentValues.totalWords) {
+          document.getElementById('projWords').value = data.totalWords;
+        }
+        if (data.researchQuestions && !currentValues.researchQuestions) {
+          document.getElementById('projResearchQ').value = data.researchQuestions.split(';').map(q => q.trim()).filter(q => q).join('\n');
+        }
+        
+        showToast(`✨ AI 填充完成！生成了${fieldsToGenerate.length}个字段`, 'success');
+      } catch (e) {
+        console.error('JSON 解析失败:', e);
+        showToast('AI 返回格式有误，请手动填写', 'error');
+      }
+    } else {
+      showToast('AI 生成失败，请手动填写', 'error');
+    }
+  } catch (e) {
+    console.error('AI 生成错误:', e);
+    showToast('AI 生成失败，请手动填写', 'error');
+  }
+}
+
+function getDegreeTypeName(degreeType) {
+  const names = {
+    'master_education': '教育硕士',
+    'master_science': '理学/工学硕士',
+    'master_social': '人文社科硕士',
+    'phd': '博士',
+    'undergraduate': '本科'
+  };
+  return names[degreeType] || '硕士';
+}
+
+function getChapterCountByDegree(degreeType) {
+  const counts = {
+    'master_education': 5,
+    'master_science': 5,
+    'master_social': 5,
+    'phd': 6,
+    'undergraduate': 4
+  };
+  return counts[degreeType] || 5;
+}
+
+function createNewProject() {
+  if (APP_STATE.project) {
+    const confirmed = confirm('创建新论文将清空当前项目数据，确定继续吗？\n\n建议先导出当前论文进行备份。');
+    if (!confirmed) return;
+    
+    APP_STATE.project = null;
+    APP_STATE.chapters = [];
+    APP_STATE.currentChapterIndex = -1;
+    APP_STATE.currentSectionId = null;
+    APP_STATE.outlineLocked = false;
+    APP_STATE.globalMemory = {
+      researchQuestions: [],
+      coreHypotheses: [],
+      frameworkDetails: [],
+      keyData: [],
+      literaturePositions: [],
+      completedChapterSummaries: [],
+      spineCodes: {}
+    };
+    APP_STATE.chatHistory = [];
+    APP_STATE.debugMessages = [];
+    APP_STATE.totalTokens = 0;
+    APP_STATE.selectedTemplate = null;
+    
+    document.getElementById('projectName').textContent = '未创建项目';
+    document.getElementById('chatMessages').innerHTML = '';
+    document.getElementById('totalWordCount').textContent = '0 字';
+    document.getElementById('progressFill').style.width = '0%';
+    
+    renderChapterList();
+    renderCurrentChapterContent();
+    
+    safeRemoveItem('academiWriteProject');
+    
+    showToast('已清空，请创建新项目', 'info');
+  }
+  
+  APP_STATE.selectedTemplate = null;
+  
+  openModal('projectSettings');
+}
+
+function clearAllData() {
+  const confirmed = confirm('确定要清空所有数据吗？\n\n此操作将清除论文项目和对话记录，但会保留API配置。\n\n建议先导出当前论文进行备份。');
+  if (!confirmed) return;
+  
+  APP_STATE.project = null;
+  APP_STATE.chapters = [];
+  APP_STATE.currentChapterIndex = -1;
+  APP_STATE.currentSectionId = null;
+  APP_STATE.outlineLocked = false;
+  APP_STATE.globalMemory = {
+    researchQuestions: [],
+    coreHypotheses: [],
+    frameworkDetails: [],
+    keyData: [],
+    literaturePositions: [],
+    completedChapterSummaries: [],
+    spineCodes: {}
+  };
+  APP_STATE.chatHistory = [];
+  APP_STATE.debugMessages = [];
+  APP_STATE.totalTokens = 0;
+  APP_STATE.selectedTemplate = null;
+  
+  document.getElementById('projectName').textContent = '未创建项目';
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('totalWordCount').textContent = '0 字';
+  document.getElementById('progressFill').style.width = '0%';
+  
+  const debugContainer = document.getElementById('debugMessagesContainer');
+  if (debugContainer) debugContainer.innerHTML = '';
+  
+  safeRemoveItem('academiWriteProject');
+  clearDraftProjectData();
+  
+  renderChapterList();
+  renderCurrentChapterContent();
+  
+  showToast('论文数据已清空，API配置已保留', 'success');
+}
+
+
+
+function finalizeProjectCreation(title, discipline, researchField, degreeType, paperType, identity, totalWords, writingStyle, researchQuestions) {
+  APP_STATE.project = {
+    title, discipline, researchField, degreeType, paperType,
+    identity, totalWords, writingStyle, researchQuestions
+  };
+
+  APP_STATE.chapters = [];
+  APP_STATE.currentChapterIndex = -1;
+  APP_STATE.currentSectionId = null;
+  APP_STATE.outlineLocked = false;
+  APP_STATE.chatHistory = [];
+  APP_STATE.globalMemory = {
+    researchQuestions: [],
+    coreHypotheses: [],
+    frameworkDetails: [],
+    keyData: [],
+    literaturePositions: [],
+    completedChapterSummaries: [],
+    spineCodes: {}
+  };
+
+  if (researchQuestions) {
+    APP_STATE.globalMemory.researchQuestions = researchQuestions.split('\n').filter(q => q.trim());
+  }
+
+  document.getElementById('projectName').textContent = title;
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('totalWordCount').textContent = '0 字';
+  document.getElementById('progressFill').style.width = '0%';
+  
+  safeSetItem('project', JSON.stringify(APP_STATE.project));
+  renderChapterList();
+  renderCurrentChapterContent();
+  
+  clearDraftProjectData();
+  
+  closeModal();
+  
+  setTimeout(() => {
+    showToast('项目已创建成功！AI上下文已重置，请点击"生成大纲"按钮来生成论文大纲', 'success');
+  }, 100);
+}
+
+function initChaptersFromTemplate(templateKey) {
+  const paperType = APP_STATE.project?.paperType || 'empirical';
+  const template = generatePaperTemplate(templateKey, paperType);
+  if (!template) return;
+
+  APP_STATE.chapters = template.sections.map((s, idx) => ({
+    id: s.id,
+    title: s.title,
+    level: s.level,
+    children: s.children || [],
+    content: '',
+    status: 'pending',
+    wordCount: 0,
+    index: idx
+  }));
+}
+
+function renderChapterList() {
+  const container = document.getElementById('chapterList');
+  if (APP_STATE.chapters.length === 0) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:13px">请先创建论文项目</div>';
+    return;
+  }
+
+  const isLocked = APP_STATE.outlineLocked;
+  
+  const totalExpected = isLocked ? APP_STATE.chapters.reduce((sum, ch) => {
+    const sectionTotal = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((s, sec) => s + (sec.expectedWords || 0), 0)
+      : (ch.expectedWords || 0);
+    return sum + sectionTotal;
+  }, 0) : 0;
+  
+  const totalActual = APP_STATE.chapters.reduce((sum, ch) => {
+    const sectionTotal = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((s, sec) => s + (sec.wordCount || 0), 0)
+      : (ch.wordCount || 0);
+    return sum + sectionTotal;
+  }, 0);
+  
+  const progress = totalExpected > 0 ? Math.round((totalActual / totalExpected) * 100) : 0;
+
+  let totalWordsHtml = '';
+  if (isLocked && totalExpected > 0) {
+    totalWordsHtml = `<div style="padding:10px 12px;margin-bottom:8px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:11px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <span style="color:var(--text-secondary)">总字数</span>
+      <span><span style="color:var(--success);font-weight:500">${totalActual.toLocaleString()}</span><span style="color:var(--text-muted)">/</span><span style="color:var(--info)">${totalExpected.toLocaleString()}</span></span>
+    </div>
+    <div style="height:4px;background:var(--bg-primary);border-radius:2px;overflow:hidden">
+      <div style="height:100%;width:${Math.min(progress, 100)}%;background:linear-gradient(90deg,var(--success),var(--info));border-radius:2px;transition:width .3s"></div>
+    </div>
+  </div>`;
+  } else if (totalActual > 0) {
+    totalWordsHtml = `<div style="padding:10px 12px;margin-bottom:8px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:11px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="color:var(--text-secondary)">已撰写</span>
+      <span style="color:var(--success);font-weight:500">${totalActual.toLocaleString()} 字</span>
+    </div>
+  </div>`;
+  } else {
+    totalWordsHtml = `<div style="padding:10px 12px;margin-bottom:8px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:11px;color:var(--text-muted)">
+    💡 锁定大纲后将显示字数分配
+  </div>`;
+  }
+
+  let html = totalWordsHtml;
+
+  APP_STATE.chapters.forEach((ch, idx) => {
+    const statusClass = ch.status;
+    const statusText = {pending:'待写',writing:'写作中',done:'已完成',review:'审阅中'}[ch.status] || '待写';
+    const icon = ch.status === 'done' ? '✓' : ch.status === 'writing' ? '●' : '○';
+    const isActive = idx === APP_STATE.currentChapterIndex;
+    
+    const expectedWords = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((sum, sub) => sum + (sub.expectedWords || 0), 0)
+      : 0;
+    const actualWords = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((sum, sub) => sum + (sub.wordCount || 0), 0)
+      : 0;
+    
+    let wordsDisplay = '';
+    if (isLocked && expectedWords > 0) {
+      wordsDisplay = `<span class="ch-words-inline"><span class="word-actual">${actualWords.toLocaleString()}</span><span style="color:var(--text-muted)">/</span><span class="word-expected">${expectedWords.toLocaleString()}</span></span>`;
+    } else if (actualWords > 0) {
+      wordsDisplay = `<span class="ch-words-inline"><span class="word-actual">${actualWords.toLocaleString()}</span><span style="color:var(--text-muted)">字</span></span>`;
+    }
+
+    html += `<div class="chapter-item ${isActive ? 'active' : ''} ${ch.status === 'done' ? 'completed' : ''}" onclick="selectChapter(${idx})">
+      <span class="ch-icon">${icon}</span>
+      <span class="ch-title">${ch.title}</span>
+      ${wordsDisplay}
+      <span class="ch-status ${statusClass}">${statusText}</span>
+    </div>`;
+
+    if (ch.children && ch.children.length > 0) {
+      ch.children.forEach((sub, subIdx) => {
+        const subStatus = sub.status || 'pending';
+        const subStatusText = {pending:'待写',writing:'写作中',done:'已完成',review:'审阅中'}[subStatus] || '待写';
+        const subIcon = subStatus === 'done' ? '✓' : subStatus === 'writing' ? '●' : '○';
+        const subExpected = sub.expectedWords || 0;
+        const subActual = sub.wordCount || 0;
+        
+        let subWordsDisplay = '';
+        if (isLocked && subExpected > 0) {
+          subWordsDisplay = `<span class="ch-words-inline" style="font-size:9px"><span class="word-actual">${subActual.toLocaleString()}</span><span style="color:var(--text-muted)">/</span><span class="word-expected">${subExpected.toLocaleString()}</span></span>`;
+        } else if (subActual > 0) {
+          subWordsDisplay = `<span class="ch-words-inline" style="font-size:9px"><span class="word-actual">${subActual.toLocaleString()}</span><span style="color:var(--text-muted)">字</span></span>`;
+        }
+        
+        const isSubActive = APP_STATE.currentSectionId === sub.id;
+        
+        html += `<div class="chapter-item ${isSubActive ? 'active' : ''}" style="padding-left:32px;font-size:12px" onclick="selectSection('${sub.id}', event)">
+          <span class="ch-icon" style="color:var(--text-muted);font-size:10px">${subIcon}</span>
+          <span class="ch-title">${sub.title}</span>
+          ${subWordsDisplay}
+          <span class="ch-status ${subStatus}" style="font-size:9px">${subStatusText}</span>
+        </div>`;
+      });
+    }
+  });
+
+  container.innerHTML = html;
+  updateProgress();
+}
+
+function selectSection(sectionId, event) {
+  if (event) event.stopPropagation();
+  
+  const chapterIdx = APP_STATE.chapters.findIndex(ch =>
+    ch.children && ch.children.some(sub => sub.id === sectionId)
+  );
+  
+  if (chapterIdx >= 0) {
+    APP_STATE.currentChapterIndex = chapterIdx;
+    APP_STATE.currentSectionId = sectionId;
+    renderChapterList();
+    renderCurrentSectionContent();
+    document.getElementById('currentChapterInfo').textContent = `小节: ${APP_STATE.chapters[chapterIdx].children.find(s => s.id === sectionId)?.title || '-'}`;
+  }
+}
+
+function selectChapter(idx) {
+  APP_STATE.currentChapterIndex = idx;
+  APP_STATE.currentSectionId = null;
+  renderChapterList();
+  renderCurrentChapterContent();
+  document.getElementById('currentChapterInfo').textContent = `章节: ${APP_STATE.chapters[idx]?.title || '-'}`;
+}
+
+function selectSubSection(id) {
+  const chIdx = APP_STATE.chapters.findIndex(ch =>
+    ch.children && ch.children.some(sub => sub.id === id)
+  );
+  if (chIdx >= 0) selectChapter(chIdx);
+}
+
+function renderCurrentChapterContent() {
+  const editor = document.getElementById('editorContent');
+  
+  if (APP_STATE.currentChapterIndex < 0 || !APP_STATE.chapters.length) {
+    editor.innerHTML = `
+      <div class="welcome-screen">
+        <div class="welcome-icon">🎓</div>
+        <div class="welcome-title">欢迎使用 纵横论文写作</div>
+        <div class="welcome-desc">AI驱动的学术论文写作助手，支持多平台API调用，提供从大纲到成稿的完整写作工作流</div>
+        <div class="welcome-steps">
+          <div class="welcome-step" onclick="openModal('apiSettings')">
+            <div class="step-num">01</div>
+            <div class="step-title">配置API</div>
+            <div class="step-desc">选择AI平台并设置密钥</div>
+          </div>
+          <div class="welcome-step" onclick="openModal('projectSettings')">
+            <div class="step-num">02</div>
+            <div class="step-title">创建项目</div>
+            <div class="step-desc">填写论文基本信息</div>
+          </div>
+          <div class="welcome-step" onclick="startOutlineGeneration()">
+            <div class="step-num">03</div>
+            <div class="step-title">生成大纲</div>
+            <div class="step-desc">AI自动生成论文大纲</div>
+          </div>
+          <div class="welcome-step" onclick="startChapterGeneration()">
+            <div class="step-num">04</div>
+            <div class="step-title">逐小节写作</div>
+            <div class="step-desc">按小节逐步生成论文</div>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!ch) return;
+
+  let html = '';
+  if (ch.children && ch.children.length > 0) {
+    html = `<div class="chapter-title">${ch.title}</div>`;
+    html += '<div style="font-size:13px;color:var(--text-muted);margin-bottom:16px">本章包含以下小节，请点击小节进行撰写：</div>';
+    ch.children.forEach(sub => {
+      const subStatus = sub.status || 'pending';
+      const subIcon = subStatus === 'done' ? '✓' : subStatus === 'writing' ? '●' : '○';
+      const subExpected = sub.expectedWords || 0;
+      const subActual = sub.wordCount || 0;
+      const progress = subExpected > 0 ? Math.round((subActual / subExpected) * 100) : 0;
+      html += `<div onclick="selectSection('${sub.id}')" style="padding:10px 12px;font-size:13px;color:var(--text-secondary);cursor:pointer;border-radius:var(--radius);transition:all .15s;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--border);margin-bottom:8px" onmouseover="this.style.background='var(--bg-hover)'" onmouseout="this.style.background='transparent'">
+        <span><span style="color:var(--text-muted);margin-right:8px">${subIcon}</span>${sub.title}</span>
+        <span style="font-size:11px;color:var(--text-muted)">${subActual}/${subExpected}字 (${progress}%)</span>
+      </div>`;
+    });
+  } else {
+    html = `<div class="chapter-title">${ch.title}</div>
+      <p class="placeholder-text">本章暂无小节，请先编辑大纲添加小节。</p>`;
+  }
+
+  const chapterWordCount = ch.children ? ch.children.reduce((sum, s) => sum + (s.wordCount || 0), 0) : 0;
+  const chapterExpectedWords = ch.children ? ch.children.reduce((sum, s) => sum + (s.expectedWords || 0), 0) : 0;
+
+  html += `<div style="margin-top:24px;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="color:var(--text-secondary)">本章字数（小节合计）</span>
+      <span><span style="color:var(--success);font-weight:500">${chapterWordCount.toLocaleString()}</span><span style="color:var(--text-muted)">/</span><span style="color:var(--info)">${chapterExpectedWords.toLocaleString()}</span></span>
+    </div>
+  </div>`;
+
+  editor.innerHTML = html;
+}
+
+function renderCurrentSectionContent() {
+  const editor = document.getElementById('editorContent');
+  
+  if (!APP_STATE.currentSectionId) {
+    renderCurrentChapterContent();
+    return;
+  }
+  
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) {
+    renderCurrentChapterContent();
+    return;
+  }
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section) {
+    renderCurrentChapterContent();
+    return;
+  }
+  
+  let html = `<div class="chapter-title" style="font-size:16px;color:var(--text-muted)">${chapter.title}</div>`;
+  html += `<div class="section-title">${section.title}</div>`;
+  
+  if (section.content) {
+    html += `<div class="editable-content" contenteditable="true" id="editableContent" onblur="saveEditedSectionContent()" oninput="updateSectionWordCount()">${formatPaperContent(section.content)}</div>`;
+  } else {
+    html += `<p class="placeholder-text">本小节尚未撰写。点击下方"撰写本小节"按钮开始写作。</p>`;
+  }
+  
+  const expectedWords = section.expectedWords || 0;
+  const actualWords = section.wordCount || 0;
+  const progress = expectedWords > 0 ? Math.round((actualWords / expectedWords) * 100) : 0;
+  
+  html += `<div style="margin-top:24px;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);font-size:12px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <span style="color:var(--text-secondary)">小节字数</span>
+      <span><span style="color:var(--success);font-weight:500">${actualWords.toLocaleString()}</span><span style="color:var(--text-muted)">/</span><span style="color:var(--info)">${expectedWords.toLocaleString()}</span></span>
+    </div>
+    <div style="height:4px;background:var(--bg-primary);border-radius:2px;overflow:hidden">
+      <div style="height:100%;width:${Math.min(progress, 100)}%;background:linear-gradient(90deg,var(--success),var(--info));border-radius:2px;transition:width .3s"></div>
+    </div>
+  </div>`;
+  
+  html += `<div style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-sm" onclick="startSectionGeneration()">✍ 撰写本小节</button>
+      <button class="btn btn-sm" onclick="reviseCurrentSection()">📝 修改本小节</button>
+      <button class="btn btn-sm" onclick="saveEditedSectionContent()" style="background:var(--success);color:#fff;border:none">💾 保存编辑</button>
+    </div>
+    <button class="btn btn-sm" onclick="backToChapter()">← 返回章节</button>
+  </div>`;
+
+  editor.innerHTML = html;
+}
+
+function backToChapter() {
+  APP_STATE.currentSectionId = null;
+  renderChapterList();
+  renderCurrentChapterContent();
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  document.getElementById('currentChapterInfo').textContent = `章节: ${ch?.title || '-'}`;
+}
+
+function updateSectionWordCount() {
+  const content = document.getElementById('editableContent')?.innerText || '';
+  const count = countWords(content);
+  const countEl = document.getElementById('currentWordCount');
+  if (countEl) countEl.textContent = count;
+}
+
+function saveEditedSectionContent() {
+  if (!APP_STATE.currentSectionId) return;
+  
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) return;
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section) return;
+  
+  const content = document.getElementById('editableContent')?.innerText || '';
+  section.content = content;
+  section.wordCount = countWords(content);
+  section.status = 'done';
+  
+  chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+  const allDone = chapter.children.every(s => s.status === 'done' || s.content);
+  if (allDone) {
+    chapter.status = 'done';
+    chapter.content = chapter.children.map(s => `### ${s.title}\n\n${s.content}`).join('\n\n');
+  }
+  
+  renderChapterList();
+  saveProjectToLocal();
+  showToast('小节内容已保存', 'success');
+}
+
+function countWords(text) {
+  if (!text) return 0;
+  let cleanText = text
+    .replace(/#{1,6}\s+/g, '')
+    .replace(/\*\*([^*]+)\*\*/g, '$1')
+    .replace(/\*([^*]+)\*/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/@\[SPINE:[^\]]+\][^\n]*/g, '')
+    .replace(/【本章已完成】[^\n]*/g, '')
+    .replace(/\s/g, '');
+  return cleanText.length;
+}
+
+function formatPaperContent(content) {
+  let html = content;
+  html = html.replace(/^#{1}\s+(.+)$/gm, '<div class="chapter-title">$1</div>');
+  html = html.replace(/^#{2}\s+(.+)$/gm, '<div class="section-title">$1</div>');
+  html = html.replace(/^#{3}\s+(.+)$/gm, '<div class="subsection-title">$1</div>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+  html = highlightAITraces(html);
+
+  const paragraphs = html.split('\n\n');
+  html = paragraphs.map(p => {
+    p = p.trim();
+    if (!p) return '';
+    if (p.startsWith('<div class="chapter-title">') ||
+        p.startsWith('<div class="section-title">') ||
+        p.startsWith('<div class="subsection-title">') ||
+        p.startsWith('<div style=') ||
+        p.startsWith('<table') ||
+        p.startsWith('<ul') ||
+        p.startsWith('<ol') ||
+        p.startsWith('<h')) return p;
+    return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+  }).join('\n');
+
+  return html;
+}
+
+function highlightAITraces(html) {
+  const aiPatterns = [
+    { pattern: /随着[^。]+的发展/g, label: 'AI惯用开头' },
+    { pattern: /在当今社会/g, label: 'AI惯用开头' },
+    { pattern: /近年来[^。]{0,20}/g, label: 'AI惯用开头' },
+    { pattern: /综上所述[，,。]/g, label: 'AI惯用过渡' },
+    { pattern: /总而言之[，,。]/g, label: 'AI惯用过渡' },
+    { pattern: /由此可见[，,。]/g, label: 'AI惯用过渡' },
+    { pattern: /具有重要的理论意义和实践价值/g, label: 'AI空话结尾' },
+    { pattern: /填补了研究空白/g, label: 'AI空话' },
+    { pattern: /本研究[旨在致力于]/g, label: 'AI惯用表达' },
+    { pattern: /本文[将从旨在]/g, label: 'AI惯用表达' }
+  ];
+
+  let highlightedHtml = html;
+  let hasWarnings = false;
+
+  aiPatterns.forEach(({ pattern, label }) => {
+    highlightedHtml = highlightedHtml.replace(pattern, match => {
+      hasWarnings = true;
+      return `<span class="ai-trace-highlight" data-label="${label}" title="检测到AI写作痕迹：${label}&#10;点击可使用'优化当前章节'功能修正">${match}</span>`;
+    });
+  });
+
+  if (hasWarnings && APP_STATE.currentChapterIndex >= 0) {
+    const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+    if (ch && ch.content && !ch.aiWarningShown) {
+      ch.aiWarningShown = true;
+      setTimeout(() => {
+        addChatMessage('system', `⚠️ 检测到当前章节存在AI写作痕迹！已用<span style="background:#fef3cd;padding:2px 6px;border-radius:4px">黄色高亮</span>标注。请点击右侧"优化当前章节"按钮进行修正。`);
+      }, 500);
+    }
+  }
+
+  return highlightedHtml;
+}
+
+function saveEditedContent() {
+  if (APP_STATE.currentChapterIndex < 0) return;
+  
+  const editableEl = document.getElementById('editableContent');
+  if (!editableEl) return;
+  
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!ch) return;
+  
+  const editedHtml = editableEl.innerHTML;
+  const editedText = htmlToText(editedHtml);
+  
+  ch.content = editedText;
+  ch.wordCount = countWords(editedText);
+  ch.status = 'review';
+  
+  renderChapterList();
+  updateProgress();
+  showToast('内容已保存', 'success');
+  saveProjectToLocal();
+}
+
+function htmlToText(html) {
+  let text = html;
+  text = text.replace(/<div class="chapter-title">([^<]+)<\/div>/g, '# $1');
+  text = text.replace(/<div class="section-title">([^<]+)<\/div>/g, '## $1');
+  text = text.replace(/<div class="subsection-title">([^<]+)<\/div>/g, '### $1');
+  text = text.replace(/<strong>([^<]+)<\/strong>/g, '**$1**');
+  text = text.replace(/<em>([^<]+)<\/em>/g, '*$1*');
+  text = text.replace(/<span[^>]*>([^<]+)<\/span>/g, '$1');
+  text = text.replace(/<br\s*\/?>/g, '\n');
+  text = text.replace(/<\/p>/g, '\n\n');
+  text = text.replace(/<p>/g, '');
+  text = text.replace(/<[^>]+>/g, '');
+  text = text.replace(/&nbsp;/g, ' ');
+  text = text.replace(/&lt;/g, '<');
+  text = text.replace(/&gt;/g, '>');
+  text = text.replace(/&amp;/g, '&');
+  text = text.replace(/\n{3,}/g, '\n\n');
+  text = text.trim();
+  
+  return text;
+}
+
+function updateWordCount() {
+  const editableEl = document.getElementById('editableContent');
+  if (!editableEl) return;
+  
+  const text = editableEl.innerText || '';
+  const wordCount = text.replace(/\s/g, '').length;
+  
+  const countEl = document.getElementById('currentWordCount');
+  if (countEl) {
+    countEl.textContent = wordCount;
+  }
+}
+
+function updateProgress() {
+  const contentChapters = APP_STATE.chapters.filter(ch => ch.id.startsWith('ch'));
+  const totalSections = contentChapters.reduce((sum, ch) => sum + (ch.children ? ch.children.length : 0), 0);
+  const doneSections = contentChapters.reduce((sum, ch) => {
+    if (ch.children) {
+      return sum + ch.children.filter(s => s.status === 'done').length;
+    }
+    return sum;
+  }, 0);
+  const pct = totalSections > 0 ? (doneSections / totalSections * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const totalWords = contentChapters.reduce((sum, ch) => {
+    if (ch.children) {
+      return sum + ch.children.reduce((s, sub) => s + (sub.wordCount || 0), 0);
+    }
+    return sum;
+  }, 0);
+  document.getElementById('totalWordCount').textContent = totalWords.toLocaleString() + ' 字';
+}
+
+function switchEditorTab(tab) {
+  APP_STATE.currentEditorTab = tab;
+  document.querySelectorAll('.editor-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+
+  const editor = document.getElementById('editorContent');
+
+  switch (tab) {
+    case 'content':
+      renderCurrentChapterContent();
+      break;
+    case 'outline':
+      renderOutlineView(editor);
+      break;
+    case 'memory':
+      renderMemoryView(editor);
+      break;
+  }
+}
+
+function renderOutlineView(container) {
+  if (!APP_STATE.chapters.length) {
+    container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted)">请先创建项目以查看大纲</div>';
+    return;
+  }
+
+  const isLocked = APP_STATE.outlineLocked;
+  
+  const lockStatus = isLocked 
+    ? '<span style="color:var(--warning);margin-left:8px">🔒 已锁定</span>' 
+    : '<span style="color:var(--text-muted);margin-left:8px">🔓 未锁定 - 点击锁定按钮分配字数</span>';
+  
+  const totalExpected = isLocked ? APP_STATE.chapters.reduce((sum, ch) => {
+    const sectionTotal = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((s, sec) => s + (sec.expectedWords || 0), 0)
+      : (ch.expectedWords || 0);
+    return sum + sectionTotal;
+  }, 0) : 0;
+  
+  const totalActual = APP_STATE.chapters.reduce((sum, ch) => {
+    const sectionTotal = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((s, sec) => s + (sec.wordCount || 0), 0)
+      : (ch.wordCount || 0);
+    return sum + sectionTotal;
+  }, 0);
+  
+  let totalWordsDisplay = '';
+  if (isLocked && totalExpected > 0) {
+    totalWordsDisplay = `总计: 预计 ${totalExpected.toLocaleString()} 字 / 实际 ${totalActual.toLocaleString()} 字`;
+  } else if (totalActual > 0) {
+    totalWordsDisplay = `已撰写: ${totalActual.toLocaleString()} 字`;
+  } else {
+    totalWordsDisplay = '尚未撰写内容';
+  }
+  
+  let html = `<div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+    <div style="display:flex;align-items:center">
+      <h2 style="font-size:18px;margin:0">论文大纲</h2>
+      ${lockStatus}
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <span style="font-size:12px;color:var(--text-secondary)">
+        ${totalWordsDisplay}
+      </span>
+    </div>
+  </div>
+  <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
+    <button class="btn btn-sm btn-primary" onclick="openModal('outlineModal')">✏️ 编辑大纲</button>
+    <button class="btn btn-sm btn-lock ${isLocked ? 'locked' : ''}" id="outlineLockBtn" onclick="toggleOutlineLockFromView()">
+      ${isLocked ? '🔒 已锁定' : '🔓 未锁定'}
+    </button>
+    <button class="btn btn-sm" onclick="startOutlineGeneration()">🔄 重写大纲</button>
+    <button class="btn btn-sm" onclick="clearAllContent()" style="color:var(--error)">🗑 清除所有内容</button>
+  </div>
+  ${!isLocked ? '<div style="margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.1);border-radius:var(--radius);font-size:12px;color:var(--info)">💡 提示：锁定大纲后，AI将为您自动分配字数并提供优化建议</div>' : ''}`;
+  html += '<div class="outline-tree">';
+
+  APP_STATE.chapters.forEach(ch => {
+    const expectedWords = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((sum, sub) => sum + (sub.expectedWords || 0), 0)
+      : 0;
+    const actualWords = ch.children && ch.children.length > 0 
+      ? ch.children.reduce((sum, sub) => sum + (sub.wordCount || 0), 0)
+      : 0;
+    const progressPercent = isLocked && expectedWords > 0 ? Math.min(100, Math.round(actualWords / expectedWords * 100)) : 0;
+    const progressColor = progressPercent >= 90 ? 'var(--success)' : progressPercent >= 50 ? 'var(--warning)' : 'var(--text-muted)';
+    
+    let wordInfo = '';
+    if (isLocked && expectedWords > 0) {
+      wordInfo = `<span style="margin-left:auto;font-size:11px;">
+        <span style="color:var(--text-muted)">预计${expectedWords.toLocaleString()}</span>
+        <span style="color:${progressColor};margin-left:4px">实际${actualWords.toLocaleString()}</span>
+        <span style="color:var(--text-muted);margin-left:4px">(${progressPercent}%)</span>
+      </span>`;
+    } else if (actualWords > 0) {
+      wordInfo = `<span style="margin-left:auto;font-size:11px;color:var(--text-muted)">${actualWords}字</span>`;
+    }
+    
+    html += `<div class="outline-node level-1" onclick="selectChapter(${ch.index})">
+      <span>${ch.status === 'done' ? '✓' : '○'}</span>
+      <span>${ch.title}</span>
+      ${wordInfo}
+    </div>`;
+    if (ch.children) {
+      ch.children.forEach(sub => {
+        const subExpected = sub.expectedWords || 0;
+        const subActual = sub.wordCount || 0;
+        const subProgress = isLocked && subExpected > 0 ? Math.min(100, Math.round(subActual / subExpected * 100)) : 0;
+        const subProgressColor = subProgress >= 90 ? 'var(--success)' : subProgress >= 50 ? 'var(--warning)' : 'var(--text-muted)';
+        const subStatus = sub.status || 'pending';
+        
+        let subWordInfo = '';
+        if (isLocked && subExpected > 0) {
+          subWordInfo = `<span style="margin-left:auto;font-size:10px;">
+            <span style="color:var(--text-muted)">${subExpected.toLocaleString()}</span>
+            <span style="color:${subProgressColor};margin-left:4px">${subActual.toLocaleString()}</span>
+            <span style="color:var(--text-muted);margin-left:2px">(${subProgress}%)</span>
+          </span>`;
+        } else if (subActual > 0) {
+          subWordInfo = `<span style="margin-left:auto;font-size:10px;color:var(--text-muted)">${subActual}字</span>`;
+        }
+        
+        html += `<div class="outline-node level-2" onclick="selectSection('${sub.id}')">
+          <span>${subStatus === 'done' ? '✓' : '·'}</span>
+          <span>${sub.title}</span>
+          ${subWordInfo}
+        </div>`;
+      });
+    }
+  });
+
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function renderMemoryView(container) {
+  const mem = APP_STATE.globalMemory;
+  let html = '<div style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center"><h2 style="font-size:18px">全局记忆库</h2><button class="btn btn-sm" onclick="openModal(\'memoryModal\')">编辑记忆</button></div>';
+
+  html += '<div class="memory-section"><h4>研究问题</h4>';
+  if (mem.researchQuestions.length) {
+    mem.researchQuestions.forEach(q => { html += `<div class="memory-item">${q}</div>`; });
+  } else {
+    html += '<div class="memory-item" style="color:var(--text-muted)">暂无</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="memory-section"><h4>核心假设</h4>';
+  if (mem.coreHypotheses.length) {
+    mem.coreHypotheses.forEach(h => { html += `<div class="memory-item">${h}</div>`; });
+  } else {
+    html += '<div class="memory-item" style="color:var(--text-muted)">暂无</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="memory-section"><h4>理论框架</h4>';
+  if (mem.frameworkDetails.length) {
+    mem.frameworkDetails.forEach(f => { html += `<div class="memory-item">${f}</div>`; });
+  } else {
+    html += '<div class="memory-item" style="color:var(--text-muted)">暂无</div>';
+  }
+  html += '</div>';
+
+  html += '<div class="memory-section"><h4>已完成章节摘要</h4>';
+  if (mem.completedChapterSummaries.length) {
+    mem.completedChapterSummaries.forEach(s => { html += `<div class="memory-item">${s}</div>`; });
+  } else {
+    html += '<div class="memory-item" style="color:var(--text-muted)">暂无</div>';
+  }
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function renderOutlineModal() {
+  if (!APP_STATE.chapters.length) {
+    return `<div class="modal-header"><h2>编辑大纲</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
+      <div class="modal-body"><p style="color:var(--text-muted)">请先创建项目</p></div>
+      <div class="modal-footer"><button class="btn" onclick="closeModal()">关闭</button></div>`;
+  }
+
+  const isLocked = APP_STATE.outlineLocked;
+  let html = `
+    <div style="margin-bottom:16px;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <span style="font-weight:600">${isLocked ? '🔒 大纲已锁定' : '🔓 大纲未锁定'}</span>
+        <span style="font-size:12px;color:var(--text-muted);margin-left:8px">${isLocked ? 'AI将严格按照此大纲写作' : 'AI可能会调整大纲结构'}</span>
+      </div>
+      <button class="btn btn-sm btn-lock ${isLocked ? 'locked' : ''}" onclick="toggleOutlineLock()">
+        ${isLocked ? '解锁大纲' : '锁定大纲'}
+      </button>
+    </div>
+    <div style="margin-bottom:12px;font-size:12px;color:var(--text-muted)">
+      提示：锁定大纲后，AI将严格按照您编辑的章节结构进行写作，不会自动调整大纲。
+    </div>
+    <div style="margin-bottom:16px">
+      <button class="btn btn-sm btn-primary" onclick="addNewChapter()">➕ 添加章节</button>
+    </div>
+    <div id="outlineEditorList">
+  `;
+
+  APP_STATE.chapters.forEach((ch, idx) => {
+    const expectedInfo = ch.expectedWords ? `预计${ch.expectedWords.toLocaleString()}字 / ` : '';
+    const actualInfo = `实际${ch.wordCount || 0}字`;
+    html += `<div class="form-group" style="position:relative;padding:12px;background:var(--bg-tertiary);border-radius:var(--radius);margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-weight:600;color:var(--accent)">第${idx + 1}章</span>
+        <span style="font-size:11px;color:var(--text-muted)">(${expectedInfo}${actualInfo})</span>
+        <button class="btn-icon btn-sm" onclick="addSubSection(${idx})" title="添加小节" style="margin-left:auto">➕</button>
+        <button class="btn-icon btn-sm" onclick="deleteChapter(${idx})" title="删除章节" style="color:var(--danger)">🗑</button>
+      </div>
+      <input type="text" class="form-input" id="outline_ch_${idx}" value="${ch.title}" placeholder="章节标题">
+    </div>`;
+    if (ch.children && ch.children.length > 0) {
+      ch.children.forEach((sub, subIdx) => {
+        html += `<div class="form-group" style="margin-left:20px;margin-bottom:6px;display:flex;align-items:center;gap:8px">
+          <span style="font-size:12px;color:var(--text-secondary)">└</span>
+          <input type="text" class="form-input" id="outline_sub_${idx}_${subIdx}" value="${sub.title}" style="font-size:13px;flex:1">
+          <button class="btn-icon btn-sm" onclick="deleteSubSection(${idx}, ${subIdx})" title="删除小节" style="color:var(--danger)">🗑</button>
+        </div>`;
+      });
+    }
+  });
+
+  html += '</div>';
+
+  return `<div class="modal-header"><h2>编辑大纲</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">${html}</div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveOutlineEdits()">保存修改</button>
+    </div>`;
+}
+
+function addNewChapter() {
+  const modalBody = document.querySelector('.modal-body');
+  const scrollPos = modalBody ? modalBody.scrollTop : 0;
+  
+  const newIdx = APP_STATE.chapters.length;
+  const newChapter = {
+    id: `ch_${newIdx}`,
+    title: `新章节 ${newIdx}`,
+    level: 1,
+    children: [],
+    content: '',
+    status: 'pending',
+    wordCount: 0,
+    expectedWords: 0,
+    index: newIdx
+  };
+  APP_STATE.chapters.push(newChapter);
+  saveProjectToLocal();
+  renderOutlineModal();
+  openModal('outlineModal');
+  
+  if (modalBody) {
+    setTimeout(() => {
+      const newModalBody = document.querySelector('.modal-body');
+      if (newModalBody) newModalBody.scrollTop = scrollPos;
+    }, 10);
+  }
+  showToast('已添加新章节', 'success');
+}
+
+function deleteChapter(idx) {
+  if (APP_STATE.chapters.length <= 1) {
+    showToast('至少保留一个章节', 'warning');
+    return;
+  }
+  if (confirm(`确定删除"${APP_STATE.chapters[idx].title}"吗？`)) {
+    const modalBody = document.querySelector('.modal-body');
+    const scrollPos = modalBody ? modalBody.scrollTop : 0;
+    
+    APP_STATE.chapters.splice(idx, 1);
+    APP_STATE.chapters.forEach((ch, i) => { ch.index = i; });
+    if (APP_STATE.currentChapterIndex >= APP_STATE.chapters.length) {
+      APP_STATE.currentChapterIndex = APP_STATE.chapters.length - 1;
+    }
+    saveProjectToLocal();
+    renderOutlineModal();
+    openModal('outlineModal');
+    
+    if (modalBody) {
+      setTimeout(() => {
+        const newModalBody = document.querySelector('.modal-body');
+        if (newModalBody) newModalBody.scrollTop = scrollPos;
+      }, 10);
+    }
+    showToast('章节已删除', 'success');
+  }
+}
+
+function addSubSection(chapterIdx) {
+  const modalBody = document.querySelector('.modal-body');
+  const scrollPos = modalBody ? modalBody.scrollTop : 0;
+  
+  const ch = APP_STATE.chapters[chapterIdx];
+  if (!ch.children) ch.children = [];
+  const newSubIdx = ch.children.length;
+  ch.children.push({
+    id: `${ch.id}_${newSubIdx}`,
+    title: `新小节 ${newSubIdx + 1}`,
+    level: 2
+  });
+  saveProjectToLocal();
+  renderOutlineModal();
+  openModal('outlineModal');
+  
+  if (modalBody) {
+    setTimeout(() => {
+      const newModalBody = document.querySelector('.modal-body');
+      if (newModalBody) newModalBody.scrollTop = scrollPos;
+    }, 10);
+  }
+  showToast('已添加新小节', 'success');
+}
+
+function deleteSubSection(chapterIdx, subIdx) {
+  const modalBody = document.querySelector('.modal-body');
+  const scrollPos = modalBody ? modalBody.scrollTop : 0;
+  
+  const ch = APP_STATE.chapters[chapterIdx];
+  if (ch.children && ch.children.length > subIdx) {
+    ch.children.splice(subIdx, 1);
+    saveProjectToLocal();
+    renderOutlineModal();
+    openModal('outlineModal');
+    
+    if (modalBody) {
+      setTimeout(() => {
+        const newModalBody = document.querySelector('.modal-body');
+        if (newModalBody) newModalBody.scrollTop = scrollPos;
+      }, 10);
+    }
+    showToast('小节已删除', 'success');
+  }
+}
+
+function toggleOutlineLock() {
+  APP_STATE.outlineLocked = !APP_STATE.outlineLocked;
+  saveProjectToLocal();
+  renderOutlineModal();
+  openModal('outlineModal');
+  showToast(APP_STATE.outlineLocked ? '大纲已锁定，AI将严格按照此大纲写作' : '大纲已解锁', 'success');
+}
+
+function clearAllContent() {
+  const hasContent = APP_STATE.chapters.some(ch => 
+    ch.children && ch.children.some(sub => sub.content && sub.content.length > 0)
+  );
+  
+  if (!hasContent) {
+    showToast('当前没有已生成的内容', 'info');
+    return;
+  }
+  
+  const confirmed = confirm('确定要清除所有已生成的论文内容吗？\n\n⚠️ 此操作将删除所有章节的撰写内容，但会保留大纲结构和字数分配。\n\n此操作不可撤销！');
+  if (!confirmed) return;
+  
+  APP_STATE.chapters.forEach(ch => {
+    ch.content = '';
+    ch.wordCount = 0;
+    ch.status = 'pending';
+    
+    if (ch.children && ch.children.length > 0) {
+      ch.children.forEach(sub => {
+        sub.content = '';
+        sub.wordCount = 0;
+        sub.status = 'pending';
+      });
+    }
+  });
+  
+  APP_STATE.chatHistory = [];
+  APP_STATE.globalMemory.completedChapterSummaries = [];
+  
+  const chatMessages = document.getElementById('chatMessages');
+  if (chatMessages) chatMessages.innerHTML = '';
+  
+  saveProjectToLocal();
+  renderChapterList();
+  
+  const editor = document.getElementById('editorContent');
+  if (editor) {
+    if (APP_STATE.currentEditorTab === 'outline') {
+      renderOutlineView(editor);
+    } else {
+      renderCurrentChapterContent();
+    }
+  }
+  
+  updateProgress();
+  showToast('所有论文内容已清除，大纲结构已保留', 'success');
+}
+
+function toggleOutlineLockFromView() {
+  const btn = document.getElementById('outlineLockBtn');
+  const wasLocked = APP_STATE.outlineLocked;
+  
+  if (btn) {
+    btn.classList.add('animating');
+    btn.style.pointerEvents = 'none';
+  }
+  
+  APP_STATE.outlineLocked = !APP_STATE.outlineLocked;
+  saveProjectToLocal();
+  
+  if (btn) {
+    btn.className = `btn btn-sm btn-lock ${APP_STATE.outlineLocked ? 'locked' : ''}`;
+    btn.innerHTML = APP_STATE.outlineLocked ? '🔒 已锁定' : '🔓 未锁定';
+  }
+  
+  const hasExistingContent = APP_STATE.chapters.some(ch => 
+    ch.children && ch.children.some(sub => sub.content && sub.content.length > 0)
+  );
+  
+  if (!wasLocked && APP_STATE.outlineLocked) {
+    if (hasExistingContent) {
+      showToast('大纲已锁定（保留现有字数分配）', 'success');
+    } else {
+      showToast('大纲已锁定，正在分配字数...', 'success');
+    }
+  } else {
+    showToast('大纲已解锁', 'success');
+  }
+  
+  setTimeout(() => {
+    if (btn) {
+      btn.style.pointerEvents = '';
+    }
+    if (!wasLocked && APP_STATE.outlineLocked && !hasExistingContent) {
+      allocateWordsAndOptimize();
+    } else {
+      const editor = document.getElementById('editorContent');
+      if (editor && APP_STATE.currentView === 'outline') {
+        renderOutlineView(editor);
+      }
+      renderChapterList();
+    }
+  }, 500);
+}
+
+async function allocateWordsAndOptimize() {
+  if (!APP_STATE.apiConfig.apiKey) {
+    showToast('大纲已锁定，但未配置API，无法自动分配字数', 'warning');
+    const editor = document.getElementById('editorContent');
+    if (editor && APP_STATE.currentView === 'outline') {
+      renderOutlineView(editor);
+    }
+    renderChapterList();
+    return;
+  }
+  
+  const contentChapters = APP_STATE.chapters.filter(ch => 
+    ch.id.startsWith('ch') || ch.id === 'abstract_cn' || ch.id === 'abstract_en'
+  );
+  
+  if (contentChapters.length === 0) {
+    showToast('大纲已锁定', 'success');
+    return;
+  }
+  
+  addChatMessage('system', '大纲已锁定，正在为您分配字数并提供优化建议...');
+  
+  const totalTargetWords = parseTotalWords(APP_STATE.project.totalWords);
+  
+  const outlineStructure = contentChapters.map(ch => {
+    let str = `## ${ch.title}`;
+    if (ch.children && ch.children.length > 0) {
+      ch.children.forEach(sub => {
+        str += `\n### ${sub.title}`;
+      });
+    }
+    return str;
+  }).join('\n\n');
+  
+  const systemPrompt = buildSystemPrompt();
+  const allocateRequest = `# 大纲字数分配与优化建议任务
+
+请根据以下论文大纲结构，为每个章节和小节分配合理的字数，并提供优化建议。
+
+## 论文信息
+- 论文题目：${APP_STATE.project.title}
+- 学科/专业：${APP_STATE.project.discipline}
+- **目标总字数：${APP_STATE.project.totalWords || '40000-60000'}（必须严格遵守）**
+- 论文性质：${getPaperTypeName(APP_STATE.project.paperType || 'empirical')}
+
+## 当前大纲结构
+${outlineStructure}
+
+## 任务要求
+
+### 1. 字数分配（必须完成）
+
+**重要：所有章节字数之和必须严格等于目标总字数 ${totalTargetWords} 字！**
+
+请按照以下格式为每个章节和小节分配字数：
+
+**字数分配方案：**
+
+**第一章 [章节名]：XXXX字**
+- 1.1 [小节名]：XXX字
+- 1.2 [小节名]：XXX字
+...
+
+### 2. 字数分配原则
+- 绪论章节：占总字数10-15%
+- 文献综述/理论章节：占总字数15-20%
+- 核心分析章节：占总字数40-50%
+- 结论章节：占总字数10-15%
+- **各章节字数之和必须等于 ${totalTargetWords} 字**
+
+### 3. 优化建议（如有需要）
+如果大纲存在以下问题，请提出具体优化建议：
+- 章节结构是否合理
+- 小节划分是否恰当
+- 逻辑顺序是否正确
+- 是否缺少必要章节
+- 章节之间是否衔接
+
+### 4. 输出格式
+请按以下格式输出：
+
+\`\`\`
+【字数分配】
+第一章：XXXX字（1.1:XXX字, 1.2:XXX字, ...）
+第二章：XXXX字（2.1:XXX字, 2.2:XXX字, ...）
+...
+总字数：${totalTargetWords}字
+
+【优化建议】
+1. [具体建议1]
+2. [具体建议2]
+...
+
+【整体评价】
+[对大纲整体质量的评价]
+\`\`\`
+
+**再次强调：各章节字数总和必须严格等于目标字数 ${totalTargetWords} 字！**`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: allocateRequest }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    
+    parseWordAllocation(result);
+    
+    const editor = document.getElementById('editorContent');
+    if (editor && APP_STATE.currentView === 'outline') {
+      renderOutlineView(editor);
+    }
+    renderChapterList();
+    saveProjectToLocal();
+    
+    addChatMessage('system', '✅ 大纲已锁定，字数分配完成！请查看AI的优化建议。');
+  }
+}
+
+function parseWordAllocation(result) {
+  const contentChapters = APP_STATE.chapters.filter(ch => ch.id.startsWith('ch'));
+  const totalTarget = parseTotalWords(APP_STATE.project.totalWords);
+  
+  const chapterWords = {};
+  
+  const patterns = [
+    /第([一二三四五六七八九十]+)章[^：:\d]*[：:\s]*(\d+)\s*字?/g,
+    /第([一二三四五六七八九十]+)章[^\d]*(\d+)/g,
+    /【字数分配】[\s\S]*?第([一二三四五六七八九十]+)章[：:\s]*(\d+)/g
+  ];
+  
+  for (const pattern of patterns) {
+    let match;
+    while ((match = pattern.exec(result)) !== null) {
+      const chapterNum = match[1];
+      const words = parseInt(match[2]);
+      if (words > 0 && !chapterWords[chapterNum]) {
+        chapterWords[chapterNum] = words;
+      }
+    }
+  }
+  
+  console.log('解析到的章节字数:', chapterWords);
+  
+  const chineseNums = ['一', '二', '三', '四', '五', '六', '七', '八', '九', '十'];
+  
+  contentChapters.forEach((ch, idx) => {
+    const chineseNum = chineseNums[idx];
+    
+    if (ch.children && ch.children.length > 0) {
+      const sectionPatterns = [
+        new RegExp(`${idx + 1}\\.(\\d+)[^：:\\d]*[：:\\s]*(\\d+)\\s*字?`, 'g'),
+        new RegExp(`${idx + 1}\\.(\\d+)[^\\d]*(\\d+)`, 'g')
+      ];
+      
+      const sectionWords = {};
+      
+      for (const secPattern of sectionPatterns) {
+        let secMatch;
+        while ((secMatch = secPattern.exec(result)) !== null) {
+          const secNum = parseInt(secMatch[1]);
+          const secWords = parseInt(secMatch[2]);
+          if (secWords > 0 && !sectionWords[secNum]) {
+            sectionWords[secNum] = secWords;
+          }
+        }
+      }
+      
+      console.log(`章节${idx + 1}小节字数:`, sectionWords);
+      
+      const chapterTotal = chapterWords[chineseNum] || 0;
+      
+      ch.children.forEach((sub, subIdx) => {
+        if (sectionWords[subIdx + 1]) {
+          sub.expectedWords = sectionWords[subIdx + 1];
+        } else if (chapterTotal > 0) {
+          const perSection = Math.floor(chapterTotal / ch.children.length);
+          sub.expectedWords = subIdx === ch.children.length - 1 
+            ? chapterTotal - perSection * (ch.children.length - 1)
+            : perSection;
+        }
+      });
+    }
+  });
+  
+  let totalAllocated = contentChapters.reduce((sum, ch) => {
+    if (ch.children && ch.children.length > 0) {
+      return sum + ch.children.reduce((s, sub) => s + (sub.expectedWords || 0), 0);
+    }
+    return sum;
+  }, 0);
+  
+  console.log(`AI分配总字数: ${totalAllocated}, 目标字数: ${totalTarget}`);
+  
+  if (totalAllocated === 0 || totalAllocated < totalTarget * 0.3) {
+    console.log('AI字数分配严重不足，使用默认分配');
+    const weights = [0.12, 0.18, 0.25, 0.25, 0.15, 0.05];
+    contentChapters.forEach((ch, idx) => {
+      const weight = weights[idx] || 0.15;
+      const chapterTotal = Math.floor(totalTarget * weight);
+      
+      if (ch.children && ch.children.length > 0) {
+        const perSection = Math.floor(chapterTotal / ch.children.length);
+        ch.children.forEach((sub, subIdx) => {
+          sub.expectedWords = subIdx === ch.children.length - 1 
+            ? chapterTotal - perSection * (ch.children.length - 1)
+            : perSection;
+        });
+      }
+    });
+    
+    totalAllocated = contentChapters.reduce((sum, ch) => {
+      if (ch.children && ch.children.length > 0) {
+        return sum + ch.children.reduce((s, sub) => s + (sub.expectedWords || 0), 0);
+      }
+      return sum;
+    }, 0);
+  }
+  
+  const diff = Math.abs(totalAllocated - totalTarget);
+  const diffPercent = Math.round((diff / totalTarget) * 100);
+  
+  if (diffPercent > 5) {
+    console.log(`字数差距${diffPercent}%，按比例调整到目标字数`);
+    
+    const ratio = totalTarget / totalAllocated;
+    let adjustedTotal = 0;
+    
+    contentChapters.forEach((ch, chIdx) => {
+      if (ch.children && ch.children.length > 0) {
+        const originalChapterTotal = ch.children.reduce((s, sub) => s + (sub.expectedWords || 0), 0);
+        let chapterAdjustedTotal = 0;
+        
+        ch.children.forEach((sub, subIdx) => {
+          const originalSectionWords = sub.expectedWords || 0;
+          let adjustedSectionWords = Math.round(originalSectionWords * ratio);
+          
+          if (chIdx === contentChapters.length - 1 && subIdx === ch.children.length - 1) {
+            adjustedSectionWords = totalTarget - adjustedTotal;
+          }
+          
+          sub.expectedWords = adjustedSectionWords;
+          chapterAdjustedTotal += adjustedSectionWords;
+          adjustedTotal += adjustedSectionWords;
+        });
+      }
+    });
+    
+    console.log(`调整后总字数: ${adjustedTotal}`);
+  }
+  
+  contentChapters.forEach(ch => {
+    if (ch.children && ch.children.length > 0) {
+      ch.expectedWords = ch.children.reduce((sum, sub) => sum + (sub.expectedWords || 0), 0);
+    }
+  });
+  
+  const finalTotal = contentChapters.reduce((sum, ch) => {
+    if (ch.children && ch.children.length > 0) {
+      return sum + ch.children.reduce((s, sub) => s + (sub.expectedWords || 0), 0);
+    }
+    return sum;
+  }, 0);
+  console.log(`字数分配完成，最终总计${finalTotal}字（仅小节）`);
+}
+
+function saveOutlineEdits() {
+  APP_STATE.chapters.forEach((ch, idx) => {
+    const input = document.getElementById(`outline_ch_${idx}`);
+    if (input) ch.title = input.value.trim();
+    
+    if (ch.children && ch.children.length > 0) {
+      ch.children.forEach((sub, subIdx) => {
+        const subInput = document.getElementById(`outline_sub_${idx}_${subIdx}`);
+        if (subInput) sub.title = subInput.value.trim();
+      });
+    }
+  });
+  renderChapterList();
+  renderCurrentChapterContent();
+  closeModal();
+  saveProjectToLocal();
+  showToast('大纲已更新', 'success');
+}
+
+function renderMemoryModal() {
+  const mem = APP_STATE.globalMemory;
+  return `<div class="modal-header"><h2>全局记忆库</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>研究问题（每行一个）</label>
+        <textarea class="form-textarea" id="memQuestions" rows="4">${mem.researchQuestions.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>核心假设（每行一个）</label>
+        <textarea class="form-textarea" id="memHypotheses" rows="4">${mem.coreHypotheses.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>理论框架细节（每行一个）</label>
+        <textarea class="form-textarea" id="memFramework" rows="4">${mem.frameworkDetails.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>关键数据/案例（每行一个）</label>
+        <textarea class="form-textarea" id="memKeyData" rows="4">${mem.keyData.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>文献立场（每行一个）</label>
+        <textarea class="form-textarea" id="memLiterature" rows="4">${mem.literaturePositions.join('\n')}</textarea>
+      </div>
+      <div class="form-group">
+        <label>已完成章节摘要（每行一个）</label>
+        <textarea class="form-textarea" id="memSummaries" rows="4">${mem.completedChapterSummaries.join('\n')}</textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal()">取消</button>
+      <button class="btn btn-primary" onclick="saveMemoryEdits()">保存</button>
+    </div>`;
+}
+
+function saveMemoryEdits() {
+  APP_STATE.globalMemory.researchQuestions = document.getElementById('memQuestions').value.split('\n').filter(s => s.trim());
+  APP_STATE.globalMemory.coreHypotheses = document.getElementById('memHypotheses').value.split('\n').filter(s => s.trim());
+  APP_STATE.globalMemory.frameworkDetails = document.getElementById('memFramework').value.split('\n').filter(s => s.trim());
+  APP_STATE.globalMemory.keyData = document.getElementById('memKeyData').value.split('\n').filter(s => s.trim());
+  APP_STATE.globalMemory.literaturePositions = document.getElementById('memLiterature').value.split('\n').filter(s => s.trim());
+  APP_STATE.globalMemory.completedChapterSummaries = document.getElementById('memSummaries').value.split('\n').filter(s => s.trim());
+  updateMemorySummary();
+  closeModal();
+  showToast('记忆库已更新', 'success');
+}
+
+function updateMemorySummary() {
+  const mem = APP_STATE.globalMemory;
+  const total = mem.researchQuestions.length + mem.coreHypotheses.length + mem.frameworkDetails.length + mem.completedChapterSummaries.length;
+  document.getElementById('memorySummary').textContent = total > 0
+    ? `${total} 条记忆 | 问题${mem.researchQuestions.length} 假设${mem.coreHypotheses.length} 框架${mem.frameworkDetails.length} 摘要${mem.completedChapterSummaries.length}`
+    : '暂无记忆数据';
+}
+
+function renderExportModal() {
+  return `<div class="modal-header"><h2>📥 导出论文</h2><button class="btn-icon" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px;padding:12px;background:rgba(59,130,246,0.1);border-radius:var(--radius);font-size:12px;color:var(--info)">
+        💡 提示：选择"项目文件"可导出完整项目，之后可重新导入继续编辑
+      </div>
+      <div class="export-options">
+        <div class="export-option" onclick="exportProject()" style="border-color:var(--accent)">
+          <div class="export-icon">💾</div>
+          <div class="export-name" style="color:var(--accent)">项目文件</div>
+          <div class="export-desc">导出为.json文件，可重新导入</div>
+        </div>
+        <div class="export-option" onclick="exportAs('markdown')">
+          <div class="export-icon">📝</div>
+          <div class="export-name">Markdown</div>
+          <div class="export-desc">导出为.md文件</div>
+        </div>
+        <div class="export-option" onclick="exportAs('word')">
+          <div class="export-icon">📄</div>
+          <div class="export-name">Word</div>
+          <div class="export-desc">导出为.doc文件</div>
+        </div>
+        <div class="export-option" onclick="exportAs('html')">
+          <div class="export-icon">🌐</div>
+          <div class="export-name">HTML</div>
+          <div class="export-desc">导出为网页文件</div>
+        </div>
+        <div class="export-option" onclick="exportAs('txt')">
+          <div class="export-icon">📃</div>
+          <div class="export-name">纯文本</div>
+          <div class="export-desc">导出为.txt文件</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal()">关闭</button></div>`;
+}
+
+function getFullPaperText() {
+  let text = '';
+  APP_STATE.chapters.forEach(ch => {
+    if (ch.content) {
+      text += ch.content + '\n\n';
+    }
+  });
+  return text.trim();
+}
+
+function exportAs(format) {
+  const content = getFullPaperText();
+  if (!content) {
+    showToast('论文内容为空，请先撰写', 'error');
+    return;
+  }
+
+  const title = APP_STATE.project?.title || '论文';
+  let blob, filename;
+
+  switch (format) {
+    case 'markdown':
+      blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+      filename = `${title}.md`;
+      break;
+    case 'txt':
+      blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+      filename = `${title}.txt`;
+      break;
+    case 'html':
+      const htmlContent = `<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><title>${title}</title><style>body{font-family:SimSun,serif;max-width:800px;margin:40px auto;padding:0 20px;line-height:2;font-size:14pt}h1{text-align:center;font-size:18pt;margin:32px 0 16px}h2{font-size:16pt;margin:24px 0 12px}h3{font-size:14pt;margin:20px 0 8px}p{text-indent:2em;margin:8px 0}</style></head><body>${formatPaperContent(content)}</body></html>`;
+      blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      filename = `${title}.html`;
+      break;
+    case 'word':
+      const wordContent = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="UTF-8"><style>body{font-family:SimSun,serif;line-height:2;font-size:12pt}h1{font-size:16pt;text-align:center}h2{font-size:14pt}h3{font-size:12pt}p{text-indent:2em}</style></head><body>${formatPaperContent(content)}</body></html>`;
+      blob = new Blob([wordContent], { type: 'application/msword;charset=utf-8' });
+      filename = `${title}.doc`;
+      break;
+  }
+
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  closeModal();
+  showToast(`已导出为 ${format.toUpperCase()} 格式`, 'success');
+}
+
+function exportProject() {
+  if (!APP_STATE.project) {
+    showToast('没有可导出的项目', 'error');
+    return;
+  }
+  
+  const projectData = {
+    version: '1.0',
+    exportTime: new Date().toISOString(),
+    project: APP_STATE.project,
+    chapters: APP_STATE.chapters,
+    globalMemory: APP_STATE.globalMemory,
+    chatHistory: APP_STATE.chatHistory,
+    outlineLocked: APP_STATE.outlineLocked,
+    currentChapterIndex: APP_STATE.currentChapterIndex,
+    currentSectionId: APP_STATE.currentSectionId
+  };
+  
+  const jsonStr = JSON.stringify(projectData, null, 2);
+  const blob = new Blob([jsonStr], { type: 'application/json;charset=utf-8' });
+  const title = APP_STATE.project.title || '论文项目';
+  const filename = `${title}_项目_${new Date().toISOString().slice(0,10)}.json`;
+  
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+  closeModal();
+  showToast('项目文件已导出，可随时导入继续编辑', 'success');
+}
+
+function importProject() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  
+  input.onchange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+      
+      if (!data.project || !data.chapters) {
+        showToast('无效的项目文件格式', 'error');
+        return;
+      }
+      
+      if (APP_STATE.project) {
+        const confirmed = confirm('导入将覆盖当前项目，是否继续？\n\n建议先导出当前项目进行备份。');
+        if (!confirmed) return;
+      }
+      
+      APP_STATE.project = data.project;
+      APP_STATE.chapters = data.chapters;
+      APP_STATE.globalMemory = data.globalMemory || {
+        researchQuestions: [],
+        coreHypotheses: [],
+        frameworkDetails: [],
+        keyData: [],
+        literaturePositions: [],
+        completedChapterSummaries: [],
+        spineCodes: {}
+      };
+      APP_STATE.chatHistory = data.chatHistory || [];
+      APP_STATE.outlineLocked = data.outlineLocked || false;
+      APP_STATE.currentChapterIndex = data.currentChapterIndex ?? -1;
+      APP_STATE.currentSectionId = data.currentSectionId || null;
+      
+      const chatMessages = document.getElementById('chatMessages');
+      if (chatMessages) chatMessages.innerHTML = '';
+      
+      APP_STATE.chatHistory.forEach(msg => {
+        addChatMessage(msg.role, msg.content);
+      });
+      
+      document.getElementById('projectName').textContent = APP_STATE.project.title || '未命名项目';
+      renderChapterList();
+      renderCurrentChapterContent();
+      saveProjectToLocal();
+      
+      showToast(`项目"${APP_STATE.project.title}"导入成功！`, 'success');
+      addChatMessage('system', `✅ 项目已成功导入！\n\n论文题目：${APP_STATE.project.title}\n章节数：${APP_STATE.chapters.filter(ch => ch.id.startsWith('ch')).length}章\n\n您可以继续编辑或撰写论文。`);
+      
+    } catch (err) {
+      console.error('导入失败:', err);
+      showToast('导入失败，请检查文件格式', 'error');
+    }
+  };
+  
+  input.click();
+}
+
+function addChatMessage(role, content) {
+  const container = document.getElementById('chatMessages');
+  const debugContainer = document.getElementById('debugMessagesContainer');
+  const div = document.createElement('div');
+  
+  let roleDisplay = '系统';
+  let roleClass = role;
+  
+  if (role === 'user') {
+    roleDisplay = '你';
+  } else if (role === 'assistant') {
+    roleDisplay = 'AI';
+  } else if (role === 'debug') {
+    roleDisplay = '🔧 调试';
+    roleClass = 'debug';
+  } else if (role === 'debug-send') {
+    roleDisplay = '📤 发送内容';
+    roleClass = 'debug debug-send';
+  } else if (role === 'debug-receive') {
+    roleDisplay = '📥 返回内容';
+    roleClass = 'debug debug-receive';
+  }
+  
+  div.className = `chat-msg ${roleClass}`;
+  
+  if (role.startsWith('debug') && debugContainer) {
+    const msgId = 'debug_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    div.id = msgId;
+    const lineCount = content.split('\n').length;
+    div.innerHTML = `
+      <div class="msg-header" onclick="toggleDebugMessage('${msgId}')">
+        <span class="msg-role">${roleDisplay} (${lineCount}行)</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="msg-content">${escapeHtml(content)}</div>
+    `;
+    
+    if (role === 'debug-send' && !showDebugSend) {
+      div.style.display = 'none';
+    }
+    if (role === 'debug-receive' && !showDebugReceive) {
+      div.style.display = 'none';
+    }
+    
+    debugContainer.appendChild(div);
+    APP_STATE.debugMessages.push({ role, content, msgId: div.id });
+  } else {
+    div.innerHTML = `<div class="msg-role">${roleDisplay}</div><div class="msg-content">${escapeHtml(content)}</div>`;
+    container.appendChild(div);
+    APP_STATE.chatHistory.push({ role, content });
+  }
+  
+  if (!APP_STATE.userScrolled) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function toggleDebugMessage(msgId) {
+  const msg = document.getElementById(msgId);
+  if (msg) {
+    msg.classList.toggle('collapsed');
+  }
+}
+
+function addStreamingMessage() {
+  const container = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'chat-msg assistant';
+  div.id = 'streamingMsg';
+  div.innerHTML = `<div class="msg-role">AI</div><div class="msg-content" id="streamingContent"><div class="typing-indicator"><span></span><span></span><span></span></div></div>`;
+  container.appendChild(div);
+  
+  if (!APP_STATE.userScrolled) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function updateStreamingMessage(content) {
+  const el = document.getElementById('streamingContent');
+  if (el) {
+    el.innerHTML = escapeHtml(content).replace(/\n/g, '<br>');
+    
+    if (!APP_STATE.userScrolled) {
+      const container = document.getElementById('chatMessages');
+      container.scrollTop = container.scrollHeight;
+    }
+  }
+}
+
+function finalizeStreamingMessage() {
+  const el = document.getElementById('streamingMsg');
+  if (el) el.removeAttribute('id');
+  const contentEl = document.getElementById('streamingContent');
+  if (contentEl) contentEl.removeAttribute('id');
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function handleChatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChatMessage();
+  }
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg || APP_STATE.isGenerating) return;
+
+  input.value = '';
+  addChatMessage('user', msg);
+
+  const systemPrompt = buildSystemPrompt();
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    ...APP_STATE.chatHistory.slice(-20)
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('sendBtn').disabled = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    updateMemoryFromResponse(result);
+  }
+  saveProjectToLocal();
+}
+
+function updateMemoryFromResponse(content) {
+  const mem = APP_STATE.globalMemory;
+  const hypothesisMatch = content.match(/假设[：:]\s*(.+)/g);
+  if (hypothesisMatch) {
+    hypothesisMatch.forEach(h => {
+      const cleaned = h.replace(/假设[：:]\s*/, '').trim();
+      if (!mem.coreHypotheses.includes(cleaned)) {
+        mem.coreHypotheses.push(cleaned);
+      }
+    });
+  }
+  updateMemorySummary();
+}
+
+async function startOutlineGeneration() {
+  if (APP_STATE.isGenerating) {
+    showToast('正在生成大纲，请稍候...', 'info');
+    return;
+  }
+  if (!APP_STATE.project) {
+    showToast('请先创建论文项目', 'error');
+    openModal('projectSettings');
+    return;
+  }
+  if (!APP_STATE.apiConfig.apiKey) {
+    showToast('请先配置API', 'error');
+    openModal('apiSettings');
+    return;
+  }
+
+  if (APP_STATE.outlineLocked && APP_STATE.chapters.length > 0) {
+    if (confirm('大纲已锁定，是否解锁并重新生成大纲？\n\n注意：重新生成将覆盖当前大纲结构。')) {
+      APP_STATE.outlineLocked = false;
+      saveProjectToLocal();
+    } else {
+      return;
+    }
+  }
+
+  if (APP_STATE.chapters.length > 0) {
+    if (!confirm('确定要重新生成大纲吗？\n\n这将覆盖当前的大纲结构，已撰写的内容不会被删除。')) {
+      return;
+    }
+    APP_STATE.chatHistory = [];
+    const chatMessages = document.getElementById('chatMessages');
+    if (chatMessages) chatMessages.innerHTML = '';
+    const debugContainer = document.getElementById('debugMessagesContainer');
+    if (debugContainer) debugContainer.innerHTML = '';
+    APP_STATE.debugMessages = [];
+  }
+
+  APP_STATE.isGenerating = true;
+  showToast('⏳ 正在生成大纲，请稍候...', 'info');
+  addChatMessage('system', '正在生成论文大纲...');
+
+  const systemPrompt = buildSystemPrompt();
+  const paperType = APP_STATE.project.paperType || 'empirical';
+  
+  const paperTypeGuidance = getPaperTypeGuidance(paperType);
+  
+  const outlineRequest = `# 论文大纲生成任务
+
+你是一位专业的研究员，正在撰写一篇学术论文。请根据以下信息，生成**符合论文性质的多样化大纲**。
+
+## 论文基本信息
+- 论文题目：${APP_STATE.project.title}
+- 学科/专业：${APP_STATE.project.discipline}
+- 研究方向：${APP_STATE.project.researchField || '未设置'}
+- 身份特征：${APP_STATE.project.identity || '研究生'}
+- 学位类型：${getDegreeTypeName(APP_STATE.project.degreeType)}
+- 论文性质：${getPaperTypeName(paperType)}
+- 写作风格：${APP_STATE.project.writingStyle || '学术严谨'}
+- 目标字数：${APP_STATE.project.totalWords || '40000-60000'}
+- 研究问题：${APP_STATE.project.researchQuestions || '未设置'}
+
+## 论文性质指导
+${paperTypeGuidance}
+
+## 字数分配规划（必须严格遵守）
+
+**目标总字数：${APP_STATE.project.totalWords || '40000-60000'}**
+
+${getWordCountGuidance(APP_STATE.project.totalWords, getChapterCountByDegree(APP_STATE.project.degreeType))}
+
+**字数分配原则：**
+- 绪论章节：占总字数10-15%
+- 文献综述/理论章节：占总字数15-20%
+- 核心分析章节：占总字数40-50%
+- 结论章节：占总字数10-15%
+
+**重要：所有章节字数之和必须等于目标总字数！**
+
+## 大纲生成要求
+
+**重要：必须根据论文性质生成对应的大纲结构，不能使用通用模板！**
+
+1. **章节结构要求**
+   - 硕士论文：5-6章
+   - 博士论文：6-7章
+   - 本科论文：4-5章
+   - 每章必须包含2-4个小节
+   - 每个小节可包含1-2个三级小节
+
+2. **根据论文性质设计结构**
+   - 实证研究型：绪论→文献综述→研究方法→数据分析→结论
+   - 理论研究型：绪论→文献批判→理论构建→理论验证→结论
+   - 文献综述型：引言→检索策略→主题分析→研究展望
+   - 应用研究型：绪论→方案设计→实施过程→效果评估→结论
+   - 案例研究型：引言→案例选择→案例分析→结论启示
+
+3. **每章内容要求**
+   - 章节标题要体现研究主题，不能使用通用标题
+   - 每个小节要有明确的论证逻辑
+   - **必须标注每章预计字数，且各章字数之和必须严格等于目标总字数**
+
+## 输出格式（严格遵守）
+
+## 第一章 [具体章节名]
+
+**核心论证逻辑：** [2-3句话概括本章论证主线]
+
+**预计字数：** XXXX字
+
+### 1.1 [具体小节名]
+
+**论证逻辑：** [1-2句话概括]
+
+**预计字数：** XXX字]
+
+**预计字数：** XXX字
+
+### 1.2 [具体小节名]
+
+**论证逻辑：** [1-2句话概括]
+
+**预计字数：** XXX字
+
+## 第二章 [具体章节名]
+
+**核心论证逻辑：** [2-3句话概括]
+
+**预计字数：** XXXX字
+
+### 2.1 [具体小节名]
+
+**论证逻辑：** [1-2句话概括]
+
+**预计字数：** XXX字
+
+...（继续生成所有章节）
+
+---
+**注意：**
+1. 章节标题必须与研究主题相关，体现论文特色
+2. 每章至少2个小节，确保结构完整
+3. 字数总和应接近目标字数`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: outlineRequest }
+  ];
+
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    parseOutlineResult(result);
+    renderChapterList();
+    
+    switchEditorTab('outline');
+    
+    saveProjectToLocal();
+    addChatMessage('system', '✅ 大纲已生成！\n\n📌 **下一步操作：**\n1. 检查大纲结构是否满意\n2. 点击"🔒 锁定大纲"按钮，AI将为您分配字数并提供优化建议\n3. 锁定后即可开始按小节撰写论文');
+  }
+}
+
+function parseOutlineResult(result) {
+  const chapterPattern = /^##\s*第([一二三四五六七八九十]+)章\s+(.+)$/gm;
+  const allChapterMatches = [...result.matchAll(chapterPattern)];
+  
+  if (allChapterMatches.length === 0) {
+    console.log('未找到章节内容');
+    return;
+  }
+  
+  let lastOutlineStartIndex = 0;
+  for (let i = 1; i < allChapterMatches.length; i++) {
+    const prevChapterNum = allChapterMatches[i - 1][1];
+    const currChapterNum = allChapterMatches[i][1];
+    if (prevChapterNum === '一' && currChapterNum !== '二') {
+      lastOutlineStartIndex = i;
+    }
+  }
+  
+  const lines = result.split('\n');
+  const chapters = [];
+  let currentChapter = null;
+  let currentSection = null;
+  let currentChapterWords = 0;
+  let currentSectionWords = 0;
+  let chapterCount = 0;
+  let startParsing = false;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line) continue;
+
+    const chapterMatch = line.match(/^##\s*第([一二三四五六七八九十]+)章\s+(.+)$/);
+    if (chapterMatch) {
+      if (chapterMatch[1] === '一') {
+        chapterCount++;
+        if (chapterCount > lastOutlineStartIndex + 1) {
+          startParsing = true;
+          chapters.length = 0;
+        } else if (chapterCount === lastOutlineStartIndex + 1) {
+          startParsing = true;
+        }
+      }
+      
+      if (!startParsing) continue;
+      
+      if (currentChapter) {
+        currentChapter.expectedWords = currentChapterWords;
+        if (currentSection && currentSectionWords > 0) {
+          currentSection.expectedWords = currentSectionWords;
+        }
+        chapters.push(currentChapter);
+        currentChapterWords = 0;
+        currentSectionWords = 0;
+      }
+      currentChapter = {
+        id: `ch${chapters.length + 1}`,
+        title: `第${chapterMatch[1]}章 ${chapterMatch[2].trim()}`,
+        level: 1,
+        children: [],
+        content: '',
+        status: 'pending',
+        wordCount: 0,
+        expectedWords: 0,
+        index: chapters.length
+      };
+      currentSection = null;
+      continue;
+    }
+
+    if (!startParsing || !currentChapter) continue;
+
+    const chapterWordMatch = line.match(/\*\*预计字数[：:]\*\*\s*(\d+)/);
+    if (chapterWordMatch) {
+      currentChapterWords = parseInt(chapterWordMatch[1]) || 0;
+      continue;
+    }
+
+    const sectionMatch = line.match(/^###\s*(\d+)\.(\d+)\s+(.+)$/);
+    if (sectionMatch && currentChapter) {
+      if (currentSection && currentSectionWords > 0) {
+        currentSection.expectedWords = currentSectionWords;
+      }
+      currentSection = {
+        id: `${currentChapter.id}_${sectionMatch[2]}`,
+        title: `${sectionMatch[1]}.${sectionMatch[2]} ${sectionMatch[3].trim()}`,
+        level: 2,
+        content: '',
+        status: 'pending',
+        wordCount: 0,
+        expectedWords: 0
+      };
+      currentSectionWords = 0;
+      currentChapter.children.push(currentSection);
+      continue;
+    }
+
+    const sectionWordMatch = line.match(/\*\*预计字数[：:]\*\*\s*(\d+)/);
+    if (sectionWordMatch && currentSection) {
+      currentSectionWords = parseInt(sectionWordMatch[1]) || 0;
+    }
+  }
+
+  if (currentChapter && startParsing) {
+    currentChapter.expectedWords = currentChapterWords;
+    if (currentSection && currentSectionWords > 0) {
+      currentSection.expectedWords = currentSectionWords;
+    }
+    chapters.push(currentChapter);
+  }
+
+  if (chapters.length > 0) {
+    chapters.forEach(ch => {
+      const sectionTotal = ch.children.reduce((sum, s) => sum + (s.expectedWords || 0), 0);
+      if (sectionTotal > 0 && ch.expectedWords < sectionTotal) {
+        ch.expectedWords = sectionTotal;
+      }
+    });
+    
+    const baseSections = [
+      {id:'title',title:'标题页',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:0,index:0},
+      {id:'abstract_cn',title:'摘要',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:300,index:1},
+      {id:'abstract_en',title:'Abstract',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:250,index:2},
+      {id:'toc',title:'目录',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:0,index:3}
+    ];
+    
+    const endSections = [
+      {id:'references',title:'参考文献',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:0,index:chapters.length + 4},
+      {id:'appendix',title:'附录',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:0,index:chapters.length + 5},
+      {id:'acknowledgement',title:'致谢',level:1,children:[],content:'',status:'pending',wordCount:0,expectedWords:200,index:chapters.length + 6}
+    ];
+    
+    chapters.forEach((ch, idx) => {
+      ch.index = idx + 4;
+    });
+    
+    APP_STATE.chapters = [...baseSections, ...chapters, ...endSections];
+    
+    const finalTotal = chapters.reduce((sum, ch) => sum + (ch.expectedWords || 0), 0);
+    const targetTotal = parseTotalWords(APP_STATE.project.totalWords);
+    const diff = Math.abs(finalTotal - targetTotal);
+    const diffPercent = Math.round((diff / targetTotal) * 100);
+    
+    console.log(`大纲解析完成，共${chapters.length}章，预计总字数${finalTotal}字，目标字数${targetTotal}字`);
+    
+    if (diffPercent > 10) {
+      console.log(`警告：字数差距较大（${diffPercent}%），建议锁定大纲后重新分配字数`);
+      addChatMessage('system', `⚠️ **字数分配提示**\n\n大纲预计总字数：${finalTotal.toLocaleString()}字\n目标总字数：${targetTotal.toLocaleString()}字\n\n差距：${diff.toLocaleString()}字（${diffPercent}%）\n\n建议：点击"🔒 锁定大纲"按钮，AI将根据目标字数重新分配各章节字数。`);
+    }
+  }
+}
+
+function getPaperTypeName(paperType) {
+  const names = {
+    'empirical': '📊 实证研究型',
+    'theoretical': '📚 理论研究型',
+    'review': '📖 文献综述型',
+    'applied': '🔧 应用研究型',
+    'case_study': '📋 案例研究型'
+  };
+  return names[paperType] || '📊 实证研究型';
+}
+
+function getPaperTypeGuidance(paperType) {
+  const guidance = {
+    'empirical': `
+**实证研究型论文特点：**
+- 核心结构：问题提出 → 理论框架 → 研究设计 → 数据分析 → 结论讨论
+- 重点章节：研究方法、数据分析、结果讨论
+- 必须包含：研究假设、变量定义、样本选择、统计方法
+- 创新点体现：研究设计创新、数据来源创新、分析方法创新
+- 避免：过度文献堆砌，应以实证分析为主`,
+
+    'theoretical': `
+**理论研究型论文特点：**
+- 核心结构：问题提出 → 文献批判 → 理论构建 → 理论验证 → 结论展望
+- 重点章节：理论框架、概念辨析、理论推演
+- 必须包含：核心概念界定、理论假设、逻辑推演
+- 创新点体现：理论框架创新、概念重构、逻辑体系构建
+- 注意：需要有充分的理论对话和批判性分析`,
+
+    'review': `
+**文献综述型论文特点：**
+- 核心结构：引言 → 文献检索策略 → 主题分析 → 研究展望
+- 重点章节：文献检索方法、主题分析、研究评述
+- 必须包含：检索策略、筛选标准、分析框架
+- 创新点体现：综述视角创新、分析框架创新、未来展望创新
+- 注意：需要有系统的文献检索和清晰的分析框架`,
+
+    'applied': `
+**应用研究型论文特点：**
+- 核心结构：问题提出 → 方案设计 → 实施过程 → 效果评估 → 结论建议
+- 重点章节：方案设计、实施过程、效果评估
+- 必须包含：需求分析、方案设计、实施步骤、评估方法
+- 创新点体现：应用场景创新、解决方案创新、评估方法创新
+- 注意：需要有明确的实践背景和应用价值`,
+
+    'case_study': `
+**案例研究型论文特点：**
+- 核心结构：引言 → 案例选择 → 案例描述 → 案例分析 → 结论启示
+- 重点章节：案例描述、案例分析、理论对话
+- 必须包含：案例选择依据、案例背景、分析框架
+- 创新点体现：案例选择创新、分析视角创新、理论贡献创新
+- 注意：需要有深入的案例剖析和理论提升`
+  };
+  return guidance[paperType] || guidance['empirical'];
+}
+
+function calculateChapterWords(chapter, totalWordsStr) {
+  const totalWords = parseTotalWords(totalWordsStr);
+  const contentChapters = APP_STATE.chapters.filter(c => 
+    !['title', 'toc', 'abstract_cn', 'abstract_en', 'references', 'appendix'].includes(c.id)
+  );
+  const chapterIndex = contentChapters.findIndex(c => c.id === chapter.id);
+  const totalContentChapters = contentChapters.length;
+  
+  if (totalContentChapters === 0) return 6000;
+  
+  const baseWords = Math.floor(totalWords / totalContentChapters);
+  
+  const weights = {
+    'ch1': 0.8,
+    'ch2': 1.0,
+    'ch3': 1.2,
+    'ch4': 1.3,
+    'ch5': 1.0,
+    'ch6': 0.9
+  };
+  
+  const weight = weights[chapter.id] || 1.0;
+  const targetWords = Math.floor(baseWords * weight);
+  
+  return targetWords;
+}
+
+function parseTotalWords(totalWordsStr) {
+  if (!totalWordsStr) return 50000;
+  
+  let str = totalWordsStr.toString();
+  
+  const wanMatch = str.match(/(\d+(?:\.\d+)?)\s*[-~到]\s*(\d+(?:\.\d+)?)\s*万/);
+  if (wanMatch) {
+    const min = parseFloat(wanMatch[1]) * 10000;
+    const max = parseFloat(wanMatch[2]) * 10000;
+    return Math.floor((min + max) / 2);
+  }
+  
+  const singleWanMatch = str.match(/(\d+(?:\.\d+)?)\s*万/);
+  if (singleWanMatch) {
+    return Math.floor(parseFloat(singleWanMatch[1]) * 10000);
+  }
+  
+  const qianMatch = str.match(/(\d+(?:\.\d+)?)\s*[-~到]\s*(\d+(?:\.\d+)?)\s*千/);
+  if (qianMatch) {
+    const min = parseFloat(qianMatch[1]) * 1000;
+    const max = parseFloat(qianMatch[2]) * 1000;
+    return Math.floor((min + max) / 2);
+  }
+  
+  const numbers = str.match(/[\d.]+/g);
+  if (numbers && numbers.length >= 2) {
+    const min = parseFloat(numbers[0]);
+    const max = parseFloat(numbers[1]);
+    if (max < 1000 && min < 1000) {
+      return Math.floor((min + max) / 2 * 10000);
+    }
+    return Math.floor((min + max) / 2);
+  } else if (numbers && numbers.length === 1) {
+    const num = parseFloat(numbers[0]);
+    if (num < 1000) {
+      return Math.floor(num * 10000);
+    }
+    return Math.floor(num);
+  }
+  
+  return 50000;
+}
+
+function getWordCountGuidance(totalWordsStr, chapterCount) {
+  const totalWords = parseTotalWords(totalWordsStr);
+  
+  const weights = [0.12, 0.18, 0.25, 0.25, 0.15, 0.05];
+  const sectionCounts = [3, 3, 4, 4, 3, 2];
+  
+  let guidance = `总字数${totalWords}字，共${chapterCount}章。\n\n`;
+  guidance += `**字数分配方案（必须严格遵守）：**\n\n`;
+  
+  let totalAllocated = 0;
+  for (let i = 0; i < chapterCount; i++) {
+    const weight = weights[i] || 0.15;
+    const chapterWords = Math.floor(totalWords * weight);
+    const sections = sectionCounts[i] || 3;
+    totalAllocated += chapterWords;
+    
+    guidance += `**第${i + 1}章：约${chapterWords}字**（分${sections}个小节）\n`;
+    
+    const sectionWeights = [];
+    for (let j = 0; j < sections; j++) {
+      sectionWeights.push(j === 0 ? 0.25 : (j === sections - 1 ? 0.2 : 0.55 / (sections - 2)));
+    }
+    
+    for (let j = 0; j < sections; j++) {
+      const sectionWords = Math.floor(chapterWords * sectionWeights[j]);
+      guidance += `  - ${i + 1}.${j + 1} 小节：约${sectionWords}字\n`;
+    }
+    guidance += '\n';
+  }
+  
+  guidance += `**重要：各章节字数总和必须接近${totalWords}字，小节字数总和必须等于章节字数。**`;
+  
+  return guidance;
+}
+
+function getPaperTypeWritingGuidance(paperType) {
+  const guidance = {
+    'empirical': `
+**实证研究型写作要点：**
+1. 研究问题必须具体、可检验
+2. 理论框架要为假设提供依据
+3. 研究方法要详细说明变量操作化
+4. 数据分析要展示统计结果和效应量
+5. 讨论要解释结果的理论意义和实践启示
+6. 避免过度文献堆砌，以实证分析为主`,
+
+    'theoretical': `
+**理论研究型写作要点：**
+1. 核心概念要清晰界定，体现概念张力
+2. 理论框架要有逻辑推演过程
+3. 要与前人理论进行深度对话
+4. 理论假设要有充分论证
+5. 要有批判性分析和理论创新
+6. 注意理论的可检验性和解释力`,
+
+    'review': `
+**文献综述型写作要点：**
+1. 文献检索策略要系统透明
+2. 分析框架要有理论依据
+3. 主题分析要有逻辑主线
+4. 要有批判性评述，而非简单罗列
+5. 要指出研究空白和未来方向
+6. 结论要有理论贡献和实践启示`,
+
+    'applied': `
+**应用研究型写作要点：**
+1. 问题要从实践中来，有现实背景
+2. 方案设计要有理论支撑
+3. 实施过程要详细描述
+4. 效果评估要有科学方法
+5. 结论要有可操作的建议
+6. 要体现应用价值和社会意义`,
+
+    'case_study': `
+**案例研究型写作要点：**
+1. 案例选择要有典型性和代表性
+2. 案例描述要详实生动
+3. 分析框架要有理论依据
+4. 要有深入的案例剖析
+5. 要有理论提升和抽象
+6. 结论要有推广价值和启示`
+  };
+  return guidance[paperType] || guidance['empirical'];
+}
+
+async function startChapterGeneration() {
+  if (APP_STATE.currentChapterIndex < 0) {
+    showToast('请先选择一个章节', 'error');
+    return;
+  }
+  if (!APP_STATE.apiConfig.apiKey) {
+    showToast('请先配置API', 'error');
+    openModal('apiSettings');
+    return;
+  }
+
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  
+  if (!ch.children || ch.children.length === 0) {
+    showToast('该章节没有小节，请先编辑大纲添加小节', 'error');
+    return;
+  }
+  
+  const pendingSections = ch.children.filter(s => !s.content);
+  if (pendingSections.length === 0) {
+    showToast('该章节所有小节已完成撰写', 'success');
+    return;
+  }
+  
+  const firstPending = pendingSections[0];
+  APP_STATE.currentSectionId = firstPending.id;
+  renderChapterList();
+  
+  switchEditorTab('content');
+  
+  await startSectionGeneration();
+}
+
+function getPreviousSpineCode() {
+  const currentIndex = APP_STATE.currentChapterIndex;
+  if (currentIndex <= 0) return null;
+  
+  for (let i = currentIndex - 1; i >= 0; i--) {
+    const prevChapter = APP_STATE.chapters[i];
+    if (prevChapter && APP_STATE.globalMemory.spineCodes[prevChapter.id]) {
+      return APP_STATE.globalMemory.spineCodes[prevChapter.id];
+    }
+  }
+  return null;
+}
+
+function extractSpineCode(content) {
+  const spineMatch = content.match(/@\[SPINE:([^\]]+)\]\s*([^\n]+)/);
+  if (spineMatch) {
+    const spineCode = `@[SPINE:${spineMatch[1]}] ${spineMatch[2]}`;
+    const cleanContent = content.replace(/@\[SPINE:[^\]]+\]\s*[^\n]+\n?/, '').trim();
+    return { content: cleanContent, spineCode };
+  }
+  return { content, spineCode: null };
+}
+
+function detectAIWriting(content) {
+  const warnings = [];
+  
+  const aiPatterns = [
+    { pattern: /随着[^。]+的发展[，。]/g, message: '发现"随着...的发展"开头' },
+    { pattern: /在当今社会[，。]/g, message: '发现"在当今社会"开头' },
+    { pattern: /近年来[，。]/g, message: '发现"近年来"开头' },
+    { pattern: /综上所述[，。：]/g, message: '发现"综上所述"过渡' },
+    { pattern: /总而言之[，。：]/g, message: '发现"总而言之"过渡' },
+    { pattern: /由此可见[，。：]/g, message: '发现"由此可见"过渡' },
+    { pattern: /具有重要的理论意义和实践价值/g, message: '发现空泛的意义表述' },
+    { pattern: /填补了[^。]+空白/g, message: '发现"填补空白"空话' },
+    { pattern: /首先[，。].*?其次[，。].*?最后[，。]/gs, message: '发现机械的"首先其次最后"结构' }
+  ];
+  
+  for (const { pattern, message } of aiPatterns) {
+    if (pattern.test(content)) {
+      warnings.push(message);
+    }
+  }
+  
+  return warnings;
+}
+
+async function optimizeAIWriting() {
+  if (!APP_STATE.currentSectionId) {
+    showToast('请先选择一个小节', 'error');
+    return;
+  }
+
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) {
+    showToast('章节信息错误', 'error');
+    return;
+  }
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section || !section.content) {
+    showToast('该小节尚未撰写', 'error');
+    return;
+  }
+
+  const warnings = detectAIWriting(section.content);
+  if (warnings.length === 0) {
+    showToast('未检测到AI写作痕迹，内容质量良好！', 'success');
+    return;
+  }
+
+  switchEditorTab('content');
+  addChatMessage('system', `检测到以下AI写作痕迹：\n${warnings.join('\n')}\n\n正在优化...`);
+
+  const systemPrompt = buildSystemPrompt();
+  const optimizePrompt = `请对以下小节内容进行"去AI化"优化：
+
+【当前内容】
+${section.content}
+
+【优化要求】
+1. 替换所有AI惯用表达（如"随着...的发展""综上所述""具有重要的理论意义和实践价值"等）
+2. 开篇从具体现象、数据或矛盾切入，而非宏大叙事
+3. 增加第一人称判断："对此，笔者认为..."
+4. 增加学术质疑："然而，这一观点忽视了..."
+5. 长短句交替，避免均匀句长
+6. 使用观点对话式评述，而非简单罗列
+7. 包含"让步-转折"句式："诚然...但..."
+8. 适当使用设问句、反问句增加思辨张力
+
+【输出要求】
+- 输出优化后的完整小节内容
+- 保持学术严谨性
+- 保持原意不变`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: optimizePrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    section.content = result;
+    section.wordCount = countWords(result);
+    section.status = 'review';
+    chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentSectionContent();
+    updateProgress();
+    addChatMessage('system', '去AI化优化完成！请审阅修改后的内容。');
+    saveProjectToLocal();
+  }
+}
+
+async function startSectionGeneration() {
+  if (!APP_STATE.currentSectionId) {
+    showToast('请先选择一个小节', 'error');
+    return;
+  }
+  if (!APP_STATE.apiConfig.apiKey) {
+    showToast('请先配置API', 'error');
+    openModal('apiSettings');
+    return;
+  }
+
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) {
+    showToast('章节信息错误', 'error');
+    return;
+  }
+
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section) {
+    showToast('小节信息错误', 'error');
+    return;
+  }
+
+  section.status = 'writing';
+  renderChapterList();
+  
+  switchEditorTab('content');
+
+  addChatMessage('system', `正在撰写"${section.title}"...`);
+
+  const systemPrompt = buildSystemPrompt();
+  const memoryContext = buildMemoryContext();
+  
+  const targetWords = section.expectedWords || 1500;
+  const chapterTitle = chapter.title;
+  const sectionTitle = section.title;
+  
+  const previousSections = chapter.children
+    .filter(s => s.content && s.id !== section.id)
+    .map(s => `【${s.title}】\n${s.content.substring(0, 200)}...`)
+    .join('\n\n');
+  
+  const siblingSections = chapter.children.map(s => s.title).join('、');
+  
+  const sectionRequest = `请撰写论文的"${sectionTitle}"小节。
+
+【所属章节】${chapterTitle}
+
+【本章小节结构】
+${siblingSections}
+
+${previousSections ? `【本章已完成的小节摘要】\n${previousSections}\n\n请确保本小节与已完成小节形成逻辑衔接。` : ''}
+
+${memoryContext}
+
+【小节信息】
+- 小节标题：${sectionTitle}
+- 目标字数：${targetWords}字
+- 必须达到目标字数的90%以上
+
+【撰写要求】
+1. 严格遵循"去AI化书写规范"
+2. 禁止使用"随着...的发展""综上所述"等AI惯用表达
+3. 必须包含第一人称判断和学术质疑
+4. 内容要充实，论证要严谨
+5. 添加【本小节已完成】+ 字数统计
+
+【注意事项】
+- 本小节是"${chapterTitle}"的一部分，要与本章其他小节形成有机整体
+- 不要重复本章其他小节已论述的内容
+- 保持学术写作的严谨性和逻辑性`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: sectionRequest }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+    section.content = full;
+    section.wordCount = countWords(full);
+    if (APP_STATE.currentSectionId) {
+      renderCurrentSectionContent();
+    }
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    section.content = result;
+    section.wordCount = countWords(result);
+    section.status = 'done';
+    
+    chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+    
+    const allDone = chapter.children.every(s => s.status === 'done' || s.content);
+    if (allDone) {
+      chapter.status = 'done';
+      chapter.content = chapter.children.map(s => `### ${s.title}\n\n${s.content}`).join('\n\n');
+    } else {
+      chapter.status = 'writing';
+    }
+    
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+
+    const aiWarnings = detectAIWriting(result);
+    if (aiWarnings.length > 0) {
+      addChatMessage('system', `⚠️ 检测到AI写作痕迹：\n${aiWarnings.join('\n')}\n\n建议使用"修改本小节"功能进行修正。`);
+    }
+
+    renderChapterList();
+    renderCurrentSectionContent();
+    updateProgress();
+    updateMemorySummary();
+    addChatMessage('system', `"${section.title}"已完成！字数: ${section.wordCount}`);
+    saveProjectToLocal();
+  }
+}
+
+async function reviseCurrentSection() {
+  if (!APP_STATE.currentSectionId) {
+    showToast('请先选择一个小节', 'error');
+    return;
+  }
+
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) return;
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section || !section.content) {
+    showToast('该小节尚未撰写', 'error');
+    return;
+  }
+
+  const revisionInstruction = prompt('请输入修改指令：\n\n例如：\n- 增加更多数据支撑\n- 简化理论论述部分\n- 增加案例分析\n- 调整论证逻辑');
+  if (!revisionInstruction) return;
+
+  switchEditorTab('content');
+  addChatMessage('system', `正在根据指令修改"${section.title}"...`);
+
+  const systemPrompt = buildSystemPrompt();
+  const revisePrompt = `请根据以下指令修改小节内容：
+
+【当前小节】${section.title}
+
+【当前内容】
+${section.content}
+
+【修改指令】
+${revisionInstruction}
+
+【修改要求】
+1. 保持原有字数水平（约${section.wordCount}字）
+2. 保持学术严谨性
+3. 严格遵循"去AI化书写规范"
+4. 输出修改后的完整内容`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: revisePrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    section.content = result;
+    section.wordCount = countWords(result);
+    section.status = 'review';
+    
+    chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+    
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentSectionContent();
+    updateProgress();
+    addChatMessage('system', '小节修改完成！请审阅修改后的内容。');
+    saveProjectToLocal();
+  }
+}
+
+async function continueWriting() {
+  if (!APP_STATE.currentSectionId) {
+    showToast('请先选择一个小节', 'error');
+    return;
+  }
+
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) {
+    showToast('章节信息错误', 'error');
+    return;
+  }
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section || !section.content) {
+    showToast('该小节尚未撰写，请先撰写小节内容', 'error');
+    return;
+  }
+
+  const lastParagraphs = section.content.split('\n\n').slice(-3).join('\n\n');
+  if (!lastParagraphs) {
+    showToast('小节内容不足，无法续写', 'error');
+    return;
+  }
+
+  switchEditorTab('content');
+  addChatMessage('system', '正在续写小节内容...');
+
+  const systemPrompt = buildSystemPrompt();
+  const continuePrompt = `请基于以下内容续写下一段：
+
+【当前小节末尾内容】
+${lastParagraphs}
+
+【小节信息】
+章节：${chapter.title}
+小节：${section.title}
+
+【续写要求】
+1. 保持与前文的逻辑连贯
+2. 保持语言风格一致
+3. 避免AI式表达
+4. 续写200-400字
+5. 继续深入论证，不要总结收尾`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: continuePrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    section.content = section.content + '\n\n' + result;
+    section.wordCount = countWords(section.content);
+    chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    
+    renderChapterList();
+    renderCurrentSectionContent();
+    updateProgress();
+    addChatMessage('system', `续写完成！新增约${countWords(result)}字`);
+    saveProjectToLocal();
+  }
+}
+
+async function polishContent() {
+  if (!APP_STATE.currentSectionId) {
+    showToast('请先选择一个小节', 'error');
+    return;
+  }
+
+  const chapter = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!chapter || !chapter.children) {
+    showToast('章节信息错误', 'error');
+    return;
+  }
+  
+  const section = chapter.children.find(s => s.id === APP_STATE.currentSectionId);
+  if (!section || !section.content) {
+    showToast('该小节尚未撰写', 'error');
+    return;
+  }
+
+  switchEditorTab('content');
+  addChatMessage('system', '正在润色小节内容...');
+
+  const systemPrompt = buildSystemPrompt();
+  const polishPrompt = `请对以下小节内容进行学术润色：
+
+【当前内容】
+${section.content}
+
+【润色要求】
+1. 提升语言的学术性和专业性
+2. 增强论证的深度和逻辑性
+3. 优化句式结构，增加多样性
+4. 去除可能的AI写作痕迹
+5. 保持原意不变
+6. 确保符合"去AI化书写规范"`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: polishPrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    section.content = result;
+    section.wordCount = countWords(result);
+    section.status = 'review';
+    chapter.wordCount = chapter.children.reduce((sum, s) => sum + (s.wordCount || 0), 0);
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentSectionContent();
+    updateProgress();
+    addChatMessage('system', '润色完成！请审阅修改后的内容。');
+    saveProjectToLocal();
+  }
+}
+
+async function logicCheck() {
+  if (!APP_STATE.project) {
+    showToast('请先创建项目', 'error');
+    return;
+  }
+
+  const completedChapters = APP_STATE.chapters.filter(c => c.content && c.status === 'done');
+  if (completedChapters.length < 2) {
+    showToast('至少需要完成2个章节才能进行逻辑检查', 'error');
+    return;
+  }
+
+  addChatMessage('system', '正在进行逻辑连贯性检查...');
+
+  const systemPrompt = buildSystemPrompt();
+  
+  const chaptersContent = completedChapters.map((c, i) => 
+    `【${c.title}】\n脊柱密文：${APP_STATE.globalMemory.spineCodes[c.id] || '无'}\n内容摘要：${c.content.substring(0, 500)}...`
+  ).join('\n\n');
+
+  const checkPrompt = `请对以下已完成章节进行逻辑连贯性检查：
+
+${chaptersContent}
+
+【检查维度】
+1. 纵向连贯性
+   - 各章节是否层层递进回答核心问题？
+   - 当前章节是否回应了上一章的"待解问题"？
+   - 当前章节是否为下一章埋下了伏笔？
+
+2. 横向连贯性
+   - 章节内部论点与论据是否形成对话？
+   - 不同论据之间是否形成对话而非简单堆砌？
+
+3. 逻辑完整性
+   - 是否存在逻辑跳跃或断裂？
+   - 是否存在前后矛盾？
+   - 论证链条是否完整？
+
+【输出格式】
+请输出：
+- 连贯性评分（1-10分）
+- 存在的问题（如有）
+- 优化建议（如有）`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: checkPrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    addChatMessage('system', '逻辑检查完成！请查看分析结果。');
+  }
+}
+
+async function optimizeCurrentChapter() {
+  if (APP_STATE.currentChapterIndex < 0) {
+    showToast('请先选择一个章节', 'error');
+    return;
+  }
+
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!ch.content) {
+    showToast('该章节尚未撰写', 'error');
+    return;
+  }
+
+  const warnings = detectAIWriting(ch.content);
+  if (warnings.length === 0) {
+    showToast('未检测到AI写作痕迹，内容质量良好！', 'success');
+    return;
+  }
+
+  addChatMessage('system', `检测到以下AI写作痕迹：\n${warnings.join('\n')}\n\n正在优化...`);
+
+  const systemPrompt = buildSystemPrompt();
+  const optimizePrompt = `请对以下章节内容进行"去AI化"优化：
+
+【当前内容】
+${ch.content}
+
+【检测到的AI痕迹】
+${warnings.join('\n')}
+
+【优化要求】
+1. 替换所有AI惯用表达（如"随着...的发展""综上所述""具有重要的理论意义和实践价值"等）
+2. 开篇从具体现象、数据或矛盾切入，而非宏大叙事
+3. 增加第一人称判断："对此，笔者认为..."
+4. 增加学术质疑："然而，这一观点忽视了..."
+5. 长短句交替，避免均匀句长
+6. 使用观点对话式评述，而非简单罗列
+7. 包含"让步-转折"句式："诚然...但..."
+8. 适当使用设问句、反问句增加思辨张力
+
+【输出要求】
+- 输出优化后的完整章节内容
+- 保持学术严谨性
+- 保持原意不变
+- 添加【本章已完成】+ 字数统计`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: optimizePrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    ch.content = result;
+    ch.wordCount = countWords(result);
+    ch.status = 'review';
+    ch.aiWarningShown = false;
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentChapterContent();
+    addChatMessage('system', '✅ 去AI化优化完成！请审阅修改后的内容。');
+    saveProjectToLocal();
+  }
+}
+
+async function rewriteSelection() {
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
+  
+  if (!selectedText) {
+    showToast('请先在编辑器中选中需要重构的文本', 'error');
+    return;
+  }
+
+  if (APP_STATE.currentChapterIndex < 0) {
+    showToast('请先选择一个章节', 'error');
+    return;
+  }
+
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!ch.content) {
+    showToast('该章节尚未撰写', 'error');
+    return;
+  }
+
+  const fullContent = ch.content;
+  const selectionIndex = fullContent.indexOf(selectedText);
+  
+  if (selectionIndex === -1) {
+    showToast('无法在章节中找到选中的文本', 'error');
+    return;
+  }
+
+  const contextBefore = fullContent.substring(Math.max(0, selectionIndex - 500), selectionIndex);
+  const contextAfter = fullContent.substring(selectionIndex + selectedText.length, Math.min(fullContent.length, selectionIndex + selectedText.length + 500));
+
+  const userIntent = prompt('请描述您希望如何重构这段内容：\n\n例如：\n- 使论证更加严谨\n- 增加数据支撑\n- 调整语言风格\n- 补充理论依据');
+  
+  if (!userIntent) {
+    showToast('已取消重构', 'info');
+    return;
+  }
+
+  addChatMessage('system', `正在重构选中内容...\n\n【选中内容】${selectedText.substring(0, 100)}${selectedText.length > 100 ? '...' : ''}\n\n【重构意图】${userIntent}`);
+
+  const systemPrompt = buildSystemPrompt();
+  const rewritePrompt = `请根据用户意图重构以下选中的文本内容。
+
+【上下文（前文）】
+${contextBefore || '（无前文）'}
+
+【选中内容（需要重构）】
+${selectedText}
+
+【上下文（后文）】
+${contextAfter || '（无后文）'}
+
+【用户重构意图】
+${userIntent}
+
+【重构要求】
+1. 保持与上下文的逻辑连贯性
+2. 遵循"去AI化书写规范"
+3. 保持学术严谨性
+4. 输出重构后的完整内容（仅输出重构后的选中内容部分，不要输出上下文）
+
+【输出格式】
+直接输出重构后的内容，不需要额外说明。`;
+
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: rewritePrompt }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    const newContent = fullContent.substring(0, selectionIndex) + result + fullContent.substring(selectionIndex + selectedText.length);
+    ch.content = newContent;
+    ch.wordCount = countWords(newContent);
+    ch.status = 'review';
+    ch.aiWarningShown = false;
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentChapterContent();
+    addChatMessage('system', '✅ 内容重构完成！请审阅修改后的内容。');
+    saveProjectToLocal();
+  }
+}
+
+function buildMemoryContext() {
+  const mem = APP_STATE.globalMemory;
+  let ctx = '【全局记忆库】\n';
+  if (mem.researchQuestions.length) ctx += `研究问题: ${mem.researchQuestions.join('; ')}\n`;
+  if (mem.coreHypotheses.length) ctx += `核心假设: ${mem.coreHypotheses.join('; ')}\n`;
+  if (mem.frameworkDetails.length) ctx += `理论框架: ${mem.frameworkDetails.join('; ')}\n`;
+  if (mem.keyData.length) ctx += `关键数据: ${mem.keyData.join('; ')}\n`;
+  if (mem.literaturePositions.length) ctx += `文献立场: ${mem.literaturePositions.join('; ')}\n`;
+  if (mem.completedChapterSummaries.length) ctx += `已完成章节: ${mem.completedChapterSummaries.length}章\n`;
+  return ctx;
+}
+
+async function reviseCurrentChapter() {
+  if (APP_STATE.currentChapterIndex < 0) {
+    showToast('请先选择一个章节', 'error');
+    return;
+  }
+
+  const ch = APP_STATE.chapters[APP_STATE.currentChapterIndex];
+  if (!ch.content) {
+    showToast('该章节尚未撰写', 'error');
+    return;
+  }
+
+  const instruction = prompt('请输入修改要求：');
+  if (!instruction) return;
+
+  addChatMessage('user', `请修改"${ch.title}"章节，修改要求：${instruction}`);
+
+  const systemPrompt = buildSystemPrompt();
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: `以下是"${ch.title}"的当前内容：\n\n${ch.content}` },
+    { role: 'assistant', content: '已记录当前章节内容。' },
+    { role: 'user', content: `请根据以下要求修改上述章节，输出完整修改后的章节内容：\n${instruction}` }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+    ch.content = full;
+    ch.wordCount = countWords(full);
+    if (APP_STATE.currentEditorTab === 'content') {
+      renderCurrentChapterContent();
+    }
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    ch.content = result;
+    ch.wordCount = countWords(result);
+    ch.status = 'review';
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    renderChapterList();
+    renderCurrentChapterContent();
+    addChatMessage('system', `"${ch.title}"已修改完成，请审阅。`);
+    saveProjectToLocal();
+  }
+}
+
+async function quickAction(action) {
+  switch (action) {
+    case 'auto_write_all':
+      await autoWriteFullPaper();
+      break;
+    case 'generate_outline':
+      await startOutlineGeneration();
+      break;
+    case 'write_chapter':
+      await startChapterGeneration();
+      break;
+    case 'revise_chapter':
+      await reviseCurrentChapter();
+      break;
+    case 'expand_section':
+      const input = document.getElementById('chatInput');
+      input.value = '请扩写当前章节中内容较为简略的部分，保持学术风格和全局一致性';
+      input.focus();
+      break;
+    case 'check_consistency':
+      if (!APP_STATE.project) { showToast('请先创建项目', 'error'); return; }
+      addChatMessage('user', '请进行全局一致性检查，检查所有已完成章节之间是否存在矛盾或不一致之处。');
+      await sendChatMessage();
+      break;
+    case 'compile_all':
+      await compileFullPaper();
+      break;
+    case 'optimize_ai':
+      await optimizeAIWriting();
+      break;
+    case 'continue_writing':
+      await continueWriting();
+      break;
+    case 'polish_content':
+      await polishContent();
+      break;
+    case 'logic_check':
+      await logicCheck();
+      break;
+    case 'optimize_current':
+      await optimizeCurrentChapter();
+      break;
+    case 'rewrite_selection':
+      await rewriteSelection();
+      break;
+  }
+}
+
+async function autoWriteFullPaper() {
+  if (!APP_STATE.project) {
+    showToast('请先创建论文项目', 'error');
+    openModal('projectSettings');
+    return;
+  }
+
+  if (!APP_STATE.apiConfig.apiKey) {
+    showToast('请先配置 API', 'error');
+    openModal('apiSettings');
+    return;
+  }
+
+  const confirmed = confirm('一键生成论文将自动完成以下步骤：\n\n1. 生成论文大纲\n2. 逐章撰写内容\n3. 整合全文\n\n此过程可能需要较长时间，确定继续吗？');
+  if (!confirmed) return;
+
+  addChatMessage('system', '🚀 开始一键生成论文...');
+
+  // Step 1: 生成大纲
+  addChatMessage('system', '📝 第一步：生成论文大纲...');
+  await startOutlineGeneration();
+  
+  // 等待用户确认大纲
+  const outlineConfirmed = confirm('大纲已生成！请查看并确认大纲内容。\n\n确认后将继续逐章撰写，或取消后手动调整大纲。');
+  if (!outlineConfirmed) {
+    addChatMessage('system', '⏸ 已暂停，您可以手动调整大纲后继续撰写。');
+    return;
+  }
+
+  // Step 2: 逐章撰写
+  const chaptersToWrite = APP_STATE.chapters.filter(ch => 
+    ch.id !== 'title' && ch.id !== 'abstract_cn' && ch.id !== 'abstract_en' && 
+    ch.id !== 'toc' && ch.id !== 'references' && ch.id !== 'appendix' && 
+    ch.id !== 'acknowledgement' && ch.id !== 'declaration'
+  );
+
+  addChatMessage('system', `✍️ 第二步：开始撰写 ${chaptersToWrite.length} 个章节...`);
+
+  for (let i = 0; i < chaptersToWrite.length; i++) {
+    const ch = chaptersToWrite[i];
+    const chapterIndex = APP_STATE.chapters.findIndex(c => c.id === ch.id);
+    
+    addChatMessage('system', `正在撰写：${ch.title}（${i + 1}/${chaptersToWrite.length}）`);
+    
+    selectChapter(chapterIndex);
+    await startChapterGeneration();
+    
+    // 短暂延迟，避免 API 限流
+    if (i < chaptersToWrite.length - 1) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
+  }
+
+  // Step 3: 整合全文
+  addChatMessage('system', '📚 第三步：整合全文...');
+  await compileFullPaper();
+
+  addChatMessage('system', '🎉 论文生成完成！您可以导出或继续修改。');
+  showToast('🎉 论文一键生成完成！', 'success');
+}
+
+async function compileFullPaper() {
+  const incompleteChapters = APP_STATE.chapters.filter(c => !c.content && c.id !== 'toc');
+  if (incompleteChapters.length > 0) {
+    showToast(`还有 ${incompleteChapters.length} 个章节未完成`, 'warning');
+  }
+
+  const content = getFullPaperText();
+  if (!content) {
+    showToast('论文内容为空', 'error');
+    return;
+  }
+
+  addChatMessage('system', '正在整合全文...');
+
+  const systemPrompt = buildSystemPrompt();
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user', content: `以下是论文全文内容，请进行最终审校：\n\n${content}\n\n请检查：1.全局一致性 2.章节衔接 3.格式规范 4.语言风格统一性。输出审校意见和修改建议。` }
+  ];
+
+  APP_STATE.isGenerating = true;
+  document.getElementById('apiStatusDot').className = 'status-dot working';
+  addStreamingMessage();
+
+  const result = await callAPI(messages, (chunk, full) => {
+    updateStreamingMessage(full);
+  });
+
+  finalizeStreamingMessage();
+  APP_STATE.isGenerating = false;
+  document.getElementById('apiStatusDot').className = 'status-dot connected';
+
+  if (result) {
+    APP_STATE.chatHistory.push({ role: 'assistant', content: result });
+    addChatMessage('system', '全文审校完成！请查看AI的审校意见。确认无误后可导出论文。');
+  }
+}
+
+function clearChat() {
+  if (!confirm('确定清空所有对话记录？')) return;
+  APP_STATE.chatHistory = [];
+  APP_STATE.debugMessages = [];
+  document.getElementById('chatMessages').innerHTML = '';
+  addChatMessage('system', '对话已清空。你可以继续与AI对话进行论文写作。');
+  saveProjectToLocal();
+}
+
+function saveProjectToLocal() {
+  const data = {
+    project: APP_STATE.project,
+    chapters: APP_STATE.chapters,
+    currentChapterIndex: APP_STATE.currentChapterIndex,
+    outlineLocked: APP_STATE.outlineLocked,
+    globalMemory: APP_STATE.globalMemory,
+    chatHistory: APP_STATE.chatHistory.slice(-50),
+    debugMessages: APP_STATE.debugMessages.slice(-20),
+    totalTokens: APP_STATE.totalTokens
+  };
+  safeSetItem('academiWriteProject', JSON.stringify(data));
+}
+
+function loadProjectFromLocal() {
+  const saved = safeGetItem('academiWriteProject');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.project) APP_STATE.project = data.project;
+      if (data.chapters) APP_STATE.chapters = data.chapters;
+      if (typeof data.currentChapterIndex === 'number') APP_STATE.currentChapterIndex = data.currentChapterIndex;
+      if (typeof data.outlineLocked === 'boolean') APP_STATE.outlineLocked = data.outlineLocked;
+      if (data.globalMemory) APP_STATE.globalMemory = data.globalMemory;
+      if (data.chatHistory) APP_STATE.chatHistory = data.chatHistory;
+      if (data.debugMessages) APP_STATE.debugMessages = data.debugMessages;
+      if (data.totalTokens) APP_STATE.totalTokens = data.totalTokens;
+
+      if (APP_STATE.project) {
+        document.getElementById('projectName').textContent = APP_STATE.project.title;
+      }
+      renderChapterList();
+      updateMemorySummary();
+      updateProgress();
+      updateTokenDisplay();
+      
+      if (APP_STATE.chatHistory && APP_STATE.chatHistory.length > 0) {
+        const chatMessages = document.getElementById('chatMessages');
+        chatMessages.innerHTML = '';
+        
+        if (APP_STATE.debugMessages && APP_STATE.debugMessages.length > 0) {
+          const debugContainer = document.getElementById('debugMessagesContainer');
+          debugContainer.innerHTML = '';
+          APP_STATE.debugMessages.forEach(msg => {
+            const div = document.createElement('div');
+            let roleDisplay = '🔧 调试';
+            let roleClass = 'debug';
+            if (msg.role === 'debug-send') {
+              roleDisplay = '📤 发送内容';
+              roleClass = 'debug debug-send';
+            } else if (msg.role === 'debug-receive') {
+              roleDisplay = '📥 返回内容';
+              roleClass = 'debug debug-receive';
+            }
+            const msgId = 'debug_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const lineCount = msg.content.split('\n').length;
+            div.id = msgId;
+            div.className = `chat-msg ${roleClass}`;
+            div.innerHTML = `
+              <div class="msg-header" onclick="toggleDebugMessage('${msgId}')">
+                <span class="msg-role">${roleDisplay} (${lineCount}行)</span>
+                <span class="toggle-icon">▼</span>
+              </div>
+              <div class="msg-content">${escapeHtml(msg.content)}</div>
+            `;
+            if (msg.role === 'debug-send' && !showDebugSend) {
+              div.style.display = 'none';
+            }
+            if (msg.role === 'debug-receive' && !showDebugReceive) {
+              div.style.display = 'none';
+            }
+            debugContainer.appendChild(div);
+          });
+        }
+        
+        APP_STATE.chatHistory.forEach(msg => {
+          const div = document.createElement('div');
+          div.className = `chat-msg ${msg.role}`;
+          div.innerHTML = `<div class="msg-role">${msg.role === 'user' ? '你' : msg.role === 'assistant' ? 'AI' : '系统'}</div><div class="msg-content">${escapeHtml(msg.content)}</div>`;
+          chatMessages.appendChild(div);
+        });
+        
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+      
+      if (APP_STATE.chapters.length > 0) {
+        const idxToSelect = APP_STATE.currentChapterIndex >= 0 && APP_STATE.currentChapterIndex < APP_STATE.chapters.length 
+          ? APP_STATE.currentChapterIndex 
+          : 0;
+        selectChapter(idxToSelect);
+      }
+    } catch (e) {
+      console.error('加载项目失败:', e);
+    }
+  }
+
+  const currentConfigId = localStorage.getItem('currentAPIConfigId');
+  if (currentConfigId) {
+    const savedConfigs = getSavedAPIConfigs();
+    const config = savedConfigs.find(c => c.id === currentConfigId);
+    if (config) {
+      APP_STATE.apiConfig.apiKey = config.apiKey;
+      APP_STATE.apiConfig.model = config.model;
+      APP_STATE.apiConfig.baseUrl = config.baseUrl;
+      console.log('已加载保存的API配置:', config.name);
+    }
+  }
+  
+  const apiSaved = safeGetItem('apiConfig');
+  if (apiSaved && !APP_STATE.apiConfig.apiKey) {
+    try {
+      const apiData = JSON.parse(apiSaved);
+      if (apiData.apiKey) APP_STATE.apiConfig.apiKey = apiData.apiKey;
+      if (apiData.model) APP_STATE.apiConfig.model = apiData.model;
+      if (apiData.baseUrl) APP_STATE.apiConfig.baseUrl = apiData.baseUrl;
+      console.log('API配置已加载:', {
+        hasKey: !!APP_STATE.apiConfig.apiKey,
+        model: APP_STATE.apiConfig.model,
+        baseUrl: APP_STATE.apiConfig.baseUrl
+      });
+    } catch (e) {
+      console.error('加载API配置失败:', e);
+    }
+  }
+  updateAPIStatus();
+  
+  APP_STATE.deepThinkingEnabled = localStorage.getItem('deepThinkingEnabled') === 'true';
+  if (APP_STATE.deepThinkingEnabled) {
+    console.log('🧠 深度思考模式已恢复');
+  }
+
+  const theme = safeGetItem('theme');
+  if (theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeBtn').textContent = theme === 'light' ? '☀' : '🌙';
+  }
+}
+
+function init() {
+  loadProjectFromLocal();
+  updateAPIStatus();
+  initDebugButtons();
+
+  document.getElementById('chatInput').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+  });
+
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.addEventListener('scroll', function() {
+    const isAtBottom = chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 50;
+    APP_STATE.userScrolled = !isAtBottom;
+  });
+
+  setInterval(saveProjectToLocal, 30000);
+}
+
+init();
+</script>
+</body>
+</html>

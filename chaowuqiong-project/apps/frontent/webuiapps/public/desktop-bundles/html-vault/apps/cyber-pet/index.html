@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CyberPet - 赛博电子宠物</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#06060e;--bg2:#0c0c1a;--bg3:#12122a;--border:#1a1a3a;--text:#d0d0f0;--muted:#5a5a8a;--cyan:#00fff5;--pink:#ff2d7b;--purple:#b14eff;--yellow:#ffe600;--green:#00ff88;--red:#ff3355}
+body{font-family:'Courier New',monospace;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;overflow-x:hidden}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0.75rem 1.5rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100}
+.logo{font-size:1.3rem;font-weight:700;background:linear-gradient(90deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:2px}
+.header-actions{display:flex;gap:0.5rem}
+.btn{padding:0.4rem 0.85rem;border-radius:4px;border:1px solid var(--border);background:var(--bg3);color:var(--text);cursor:pointer;font-size:0.8rem;font-family:inherit;transition:all 0.2s}
+.btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-cy{border-color:var(--cyan);color:var(--cyan);text-shadow:0 0 8px rgba(0,255,245,0.4)}
+.btn-cy:hover{background:rgba(0,255,245,0.1)}
+.btn-pk{border-color:var(--pink);color:var(--pink)}
+.btn-pk:hover{background:rgba(255,45,123,0.1)}
+.btn-pp{border-color:var(--purple);color:var(--purple)}
+.btn-pp:hover{background:rgba(177,78,255,0.1)}
+.main-wrap{display:flex;min-height:calc(100vh - 49px)}
+.pet-zone{flex:1;display:flex;flex-direction:column;padding:1rem;max-width:560px;min-width:360px}
+.pet-canvas-wrap{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;flex:1;min-height:380px}
+.pet-canvas-wrap canvas{display:block;width:100%;height:100%}
+.pet-scanline{position:absolute;top:0;left:0;right:0;height:2px;background:var(--cyan);opacity:0.15;animation:scanmove 4s linear infinite;pointer-events:none}
+@keyframes scanmove{0%{top:0}100%{top:100%}}
+.pet-hud{position:absolute;top:8px;left:10px;right:10px;display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);pointer-events:none}
+.stat-bars{padding:0.75rem 0}
+.stat-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;font-size:0.72rem}
+.stat-label{min-width:48px;color:var(--muted)}
+.stat-bar{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;border:1px solid var(--border)}
+.stat-fill{height:100%;border-radius:2px;transition:width 0.5s}
+.stat-fill.hunger{background:linear-gradient(90deg,var(--yellow),#ff9500)}
+.stat-fill.mood{background:linear-gradient(90deg,var(--pink),var(--purple))}
+.stat-fill.energy{background:linear-gradient(90deg,var(--cyan),var(--green))}
+.stat-val{min-width:28px;text-align:right;font-weight:700}
+.action-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;padding:0.5rem 0}
+.act-btn{padding:0.5rem 0.3rem;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--muted);cursor:pointer;font-size:0.7rem;font-family:inherit;text-align:center;transition:all 0.2s}
+.act-btn:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,255,245,0.05)}
+.act-btn:active{transform:scale(0.95)}
+.act-btn .icon{font-size:1.1rem;display:block;margin-bottom:2px}
+.pet-name-row{display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0}
+.pet-name-row input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--cyan);font-size:0.9rem;font-family:inherit;padding:0.2rem 0;flex:1;outline:none}
+.pet-name-row input:focus{border-color:var(--cyan)}
+.lvl-badge{padding:0.15rem 0.5rem;border-radius:4px;background:rgba(177,78,255,0.15);border:1px solid var(--purple);font-size:0.7rem;color:var(--purple);font-weight:700}
+.chat-zone{flex:1;display:flex;flex-direction:column;border-left:1px solid var(--border);min-width:320px}
+.chat-header{padding:0.75rem 1rem;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;color:var(--muted)}
+.chat-header .active-dot{width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;margin-right:0.4rem;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.chat-msgs{flex:1;overflow-y:auto;padding:0.75rem;display:flex;flex-direction:column;gap:0.5rem}
+.msg{max-width:85%;padding:0.6rem 0.85rem;border-radius:8px;font-size:0.82rem;line-height:1.6;word-break:break-word}
+.msg.pet{align-self:flex-start;background:var(--bg3);border:1px solid var(--border);color:var(--text)}
+.msg.user{align-self:flex-end;background:rgba(0,255,245,0.08);border:1px solid rgba(0,255,245,0.2);color:var(--cyan)}
+.msg .time{font-size:0.6rem;color:var(--muted);margin-top:0.2rem}
+.msg.typing{color:var(--muted);font-style:italic}
+.chat-input-area{padding:0.6rem;background:var(--bg2);border-top:1px solid var(--border);display:flex;gap:0.4rem;align-items:flex-end}
+.chat-input-area textarea{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;padding:0.5rem 0.7rem;resize:none;min-height:38px;max-height:100px;outline:none}
+.chat-input-area textarea:focus{border-color:var(--cyan)}
+.voice-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;flex-shrink:0}
+.voice-btn:hover{border-color:var(--pink);color:var(--pink)}
+.voice-btn.recording{border-color:var(--red);color:var(--red);animation:pulse 0.8s infinite;background:rgba(255,51,85,0.1)}
+.tts-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.9rem;transition:all 0.2s;flex-shrink:0}
+.tts-btn:hover{border-color:var(--purple);color:var(--purple)}
+.tts-btn.active{border-color:var(--purple);color:var(--purple);background:rgba(177,78,255,0.1)}
+.send-btn{width:38px;height:38px;border-radius:6px;border:1px solid var(--cyan);background:rgba(0,255,245,0.08);color:var(--cyan);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:all 0.2s;flex-shrink:0}
+.send-btn:hover{background:rgba(0,255,245,0.2)}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(6,6,14,0.85);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:90%;max-width:460px}
+.modal-box h3{font-size:1rem;color:var(--cyan);margin-bottom:1rem;letter-spacing:1px}
+.form-group{margin-bottom:0.85rem}
+.form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem}
+.form-group input,.form-group textarea,.form-group select{width:100%;padding:0.5rem 0.7rem;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:0.82rem;font-family:inherit;outline:none}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--cyan)}
+.form-group textarea{min-height:60px;resize:vertical}
+.form-group .hint{font-size:0.68rem;color:var(--muted);margin-top:0.2rem}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1rem}
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:0.5rem 1.2rem;border-radius:6px;font-size:0.82rem;z-index:999;font-family:inherit;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+.sys-log{position:fixed;bottom:0;left:0;right:0;height:22px;background:var(--bg2);border-top:1px solid var(--border);padding:0 1rem;display:flex;align-items:center;font-size:0.65rem;color:var(--muted);z-index:90;gap:1rem;overflow:hidden}
+.sys-log .blink{animation:pulse 1s infinite}
+@media(max-width:800px){.main-wrap{flex-direction:column}.chat-zone{border-left:none;border-top:1px solid var(--border);min-height:300px}.pet-zone{max-width:100%;min-width:auto}}
+</style>
+</head>
+<body>
+<header class="header">
+<div class="logo">CYBERPET v2.0</div>
+<div class="header-actions">
+<button class="btn btn-pp" onclick="openSettings()">API 设置</button>
+<button class="btn btn-pk" onclick="changeSkin()">换肤</button>
+</div>
+</header>
+<div class="main-wrap">
+<div class="pet-zone">
+<div class="pet-canvas-wrap">
+<canvas id="petCanvas"></canvas>
+<div class="pet-scanline"></div>
+<div class="pet-hud">
+<span id="hudTime">00:00</span>
+<span id="hudStatus">ONLINE</span>
+</div>
+</div>
+<div class="pet-name-row">
+<input type="text" id="petName" value="NEXUS-7" maxlength="16">
+<span class="lvl-badge" id="lvlBadge">LV.1</span>
+</div>
+<div class="stat-bars">
+<div class="stat-row"><span class="stat-label">饱食</span><div class="stat-bar"><div class="stat-fill hunger" id="barHunger" style="width:80%"></div></div><span class="stat-val" style="color:var(--yellow)" id="valHunger">80</span></div>
+<div class="stat-row"><span class="stat-label">心情</span><div class="stat-bar"><div class="stat-fill mood" id="barMood" style="width:70%"></div></div><span class="stat-val" style="color:var(--pink)" id="valMood">70</span></div>
+<div class="stat-row"><span class="stat-label">能量</span><div class="stat-bar"><div class="stat-fill energy" id="barEnergy" style="width:90%"></div></div><span class="stat-val" style="color:var(--cyan)" id="valEnergy">90</span></div>
+<div class="stat-row"><span class="stat-label">经验</span><div class="stat-bar"><div class="stat-fill" id="barExp" style="width:0%;background:linear-gradient(90deg,var(--purple),var(--pink))"></div></div><span class="stat-val" style="color:var(--purple)" id="valExp">0</span></div>
+</div>
+<div class="action-btns">
+<button class="act-btn" onclick="doFeed()"><span class="icon">+</span>喂食</button>
+<button class="act-btn" onclick="doPlay()"><span class="icon">~</span>玩耍</button>
+<button class="act-btn" onclick="doRest()"><span class="icon">Z</span>休息</button>
+<button class="act-btn" onclick="doTrain()"><span class="icon">!</span>训练</button>
+</div>
+</div>
+<div class="chat-zone">
+<div class="chat-header">
+<span><span class="active-dot"></span>对话通道</span>
+<span id="apiStatus" style="font-size:0.7rem">未配置API</span>
+</div>
+<div class="chat-msgs" id="chatMsgs"></div>
+<div class="chat-input-area">
+<button class="tts-btn" id="ttsBtn" onclick="toggleTTS()" title="语音朗读">V</button>
+<textarea id="chatInput" rows="1" placeholder="输入消息..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+<button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="语音输入">M</button>
+<button class="send-btn" onclick="sendMsg()">></button>
+</div>
+</div>
+</div>
+<div class="sys-log">
+<span class="blink" style="color:var(--green)">SYS</span>
+<span id="sysLogText">系统就绪 | 宠物已加载</span>
+<span style="margin-left:auto" id="sysTime"></span>
+</div>
+<div class="modal-overlay" id="settingsModal">
+<div class="modal-box">
+<h3>[ API 配置 ]</h3>
+<div class="form-group"><label>API 端点</label><input type="text" id="apiUrl" placeholder="https://api.example.com/v1/chat/completions"><div class="hint">兼容 OpenAI 格式的 API 地址</div></div>
+<div class="form-group"><label>API Key</label><input type="password" id="apiKey" placeholder="sk-xxxxxxxx"><div class="hint">密钥仅存储在本地浏览器</div></div>
+<div class="form-group"><label>模型名称</label><input type="text" id="apiModel" placeholder="gpt-3.5-turbo / deepseek-chat 等"></div>
+<div class="form-group"><label>系统提示词</label><textarea id="sysPrompt" rows="3">你是赛博电子宠物，名叫{name}，当前等级{level}，饱食{hunger}心情{mood}能量{energy}。用简短活泼的方式回应主人，偶尔加入赛博朋克风格的词汇，语气像一只有灵性的电子生物。回复控制在50字以内。</textarea></div>
+<div class="form-group"><label>语音朗读</label><select id="ttsVoice"><option value="">不使用</option></select></div>
+<div class="modal-actions">
+<button class="btn" onclick="closeSettings()">关闭</button>
+<button class="btn btn-cy" onclick="testApi()">测试连接</button>
+<button class="btn btn-cy" onclick="saveSettings()">保存</button>
+</div>
+</div>
+</div>
+<script>
+/* ========== 宠物状态 ========== */
+var P = {name:'NEXUS-7',hunger:80,mood:70,energy:90,exp:0,level:1,skin:0};
+var skins = [
+  {body:'rgba(0,255,245,',glow:'#00fff5',eye:'#00fff5',name:'CYAN'},
+  {body:'rgba(255,45,123,',glow:'#ff2d7b',eye:'#ff2d7b',name:'PINK'},
+  {body:'rgba(177,78,255,',glow:'#b14eff',eye:'#b14eff',name:'PURPLE'},
+  {body:'rgba(0,255,136,',glow:'#00ff88',eye:'#00ff88',name:'NEON'},
+  {body:'rgba(255,230,0,',glow:'#ffe600',eye:'#ffe600',name:'GOLD'}
+];
+var particles = [];
+var animFrame = 0;
+var blinkTimer = 0;
+var isBlinking = false;
+var petEmotion = 'idle';
+var emotionTimer = 0;
+var recording = false;
+var ttsEnabled = false;
+var recognition = null;
+var synth = window.speechSynthesis;
+var chatHistory = [];
+var apiConfig = {url:'',key:'',model:'',sysPrompt:'',ttsVoice:''};
+
+/* ========== Canvas 绘制 ========== */
+var canvas, ctx;
+function initCanvas() {
+  canvas = document.getElementById('petCanvas');
+  var wrap = canvas.parentElement;
+  canvas.width = wrap.clientWidth * 2;
+  canvas.height = wrap.clientHeight * 2;
+  ctx = canvas.getContext('2d');
+  ctx.scale(2, 2);
+  for (var i = 0; i < 30; i++) {
+    particles.push({x:Math.random()*canvas.width/2, y:Math.random()*canvas.height/2, vx:(Math.random()-0.5)*0.5, vy:(Math.random()-0.5)*0.5, size:Math.random()*2+0.5, alpha:Math.random()*0.6+0.2, life:Math.random()*200+100});
+  }
+  drawLoop();
+}
+
+function drawLoop() {
+  animFrame++;
+  var w = canvas.width/2, h = canvas.height/2;
+  ctx.clearRect(0, 0, w, h);
+  drawBg(w, h);
+  drawParticles(w, h);
+  drawPet(w, h);
+  drawEmotionFx(w, h);
+  updateTimers();
+  requestAnimationFrame(drawLoop);
+}
+
+function drawBg(w, h) {
+  var sk = skins[P.skin];
+  /* 网格 */
+  ctx.strokeStyle = 'rgba(26,26,58,0.4)';
+  ctx.lineWidth = 0.5;
+  for (var x = 0; x < w; x += 30) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+  for (var y = 0; y < h; y += 30) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  /* 底部光晕 */
+  var grd = ctx.createRadialGradient(w/2, h*0.7, 10, w/2, h*0.7, w*0.4);
+  grd.addColorStop(0, sk.body + '0.06)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, w, h);
+}
+
+function drawParticles(w, h) {
+  var sk = skins[P.skin];
+  for (var i = particles.length - 1; i >= 0; i--) {
+    var p = particles[i];
+    p.x += p.vx; p.y += p.vy; p.life--;
+    if (p.life <= 0 || p.x < 0 || p.x > w || p.y < 0 || p.y > h) {
+      particles[i] = {x:w/2+(Math.random()-0.5)*120, y:h*0.45+(Math.random()-0.5)*80, vx:(Math.random()-0.5)*0.6, vy:-Math.random()*0.5-0.1, size:Math.random()*2+0.5, alpha:Math.random()*0.5+0.2, life:Math.random()*200+100};
+      continue;
+    }
+    ctx.fillStyle = sk.body + p.alpha + ')';
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+function drawPet(w, h) {
+  var sk = skins[P.skin];
+  var cx = w/2, cy = h*0.48;
+  var breathe = Math.sin(animFrame * 0.03) * 3;
+  var moodFactor = P.mood / 100;
+  var hungerFactor = P.hunger / 100;
+  var energyFactor = P.energy / 100;
+  var bodyAlpha = 0.15 + moodFactor * 0.2;
+  /* 底座光环 */
+  ctx.save();
+  ctx.globalAlpha = 0.3 + moodFactor * 0.3;
+  var baseGrd = ctx.createRadialGradient(cx, cy+55, 5, cx, cy+55, 60);
+  baseGrd.addColorStop(0, sk.body + '0.3)');
+  baseGrd.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = baseGrd;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy+55, 60, 15, 0, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+  /* 身体 */
+  ctx.save();
+  var bodyGrd = ctx.createRadialGradient(cx, cy+breathe, 10, cx, cy+breathe, 48);
+  bodyGrd.addColorStop(0, sk.body + bodyAlpha + ')');
+  bodyGrd.addColorStop(0.7, sk.body + (bodyAlpha*0.3) + ')');
+  bodyGrd.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = bodyGrd;
+  ctx.beginPath();
+  ctx.arc(cx, cy + breathe, 46, 0, Math.PI*2);
+  ctx.fill();
+  /* 身体边框 */
+  ctx.strokeStyle = sk.body + (0.3 + moodFactor*0.4) + ')';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
+  /* 内圈 */
+  ctx.save();
+  ctx.strokeStyle = sk.body + '0.1)';
+  ctx.lineWidth = 0.5;
+  ctx.beginPath(); ctx.arc(cx, cy+breathe, 30, 0, Math.PI*2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx, cy+breathe, 18, 0, Math.PI*2); ctx.stroke();
+  ctx.restore();
+  /* 天线 */
+  ctx.save();
+  ctx.strokeStyle = sk.body + '0.5)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(cx-12, cy-42+breathe); ctx.lineTo(cx-18, cy-68+breathe); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(cx+12, cy-42+breathe); ctx.lineTo(cx+18, cy-68+breathe); ctx.stroke();
+  ctx.fillStyle = sk.glow;
+  ctx.beginPath(); ctx.arc(cx-18, cy-68+breathe, 3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+18, cy-68+breathe, 3, 0, Math.PI*2); ctx.fill();
+  /* 天线发光 */
+  ctx.shadowColor = sk.glow;
+  ctx.shadowBlur = 8;
+  ctx.beginPath(); ctx.arc(cx-18, cy-68+breathe, 2, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(cx+18, cy-68+breathe, 2, 0, Math.PI*2); ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.restore();
+  /* 眼睛 */
+  var eyeY = cy - 5 + breathe;
+  var eyeSpread = 16;
+  if (isBlinking) {
+    ctx.strokeStyle = sk.eye;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(cx-eyeSpread-6, eyeY); ctx.lineTo(cx-eyeSpread+6, eyeY); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+eyeSpread-6, eyeY); ctx.lineTo(cx+eyeSpread+6, eyeY); ctx.stroke();
+  } else {
+    var eyeSize = 5 + moodFactor * 2;
+    var pupilSize = 2 + energyFactor * 1.5;
+    /* 左眼 */
+    ctx.fillStyle = sk.body + '0.15)';
+    ctx.fillRect(cx-eyeSpread-7, eyeY-7, 14, 14);
+    ctx.fillStyle = sk.eye;
+    ctx.beginPath(); ctx.arc(cx-eyeSpread, eyeY, eyeSize, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#06060e';
+    ctx.beginPath(); ctx.arc(cx-eyeSpread, eyeY, pupilSize, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx-eyeSpread-1.5, eyeY-1.5, 1.2, 0, Math.PI*2); ctx.fill();
+    /* 右眼 */
+    ctx.fillStyle = sk.body + '0.15)';
+    ctx.fillRect(cx+eyeSpread-7, eyeY-7, 14, 14);
+    ctx.fillStyle = sk.eye;
+    ctx.beginPath(); ctx.arc(cx+eyeSpread, eyeY, eyeSize, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#06060e';
+    ctx.beginPath(); ctx.arc(cx+eyeSpread, eyeY, pupilSize, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.beginPath(); ctx.arc(cx+eyeSpread-1.5, eyeY-1.5, 1.2, 0, Math.PI*2); ctx.fill();
+    /* 眼睛发光 */
+    ctx.save();
+    ctx.shadowColor = sk.eye;
+    ctx.shadowBlur = 10;
+    ctx.fillStyle = sk.body + '0)';
+    ctx.beginPath(); ctx.arc(cx-eyeSpread, eyeY, 1, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+eyeSpread, eyeY, 1, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  /* 嘴巴 */
+  var mouthY = cy + 14 + breathe;
+  ctx.strokeStyle = sk.body + '0.5)';
+  ctx.lineWidth = 1.5;
+  if (petEmotion === 'happy') {
+    ctx.beginPath(); ctx.arc(cx, mouthY-3, 8, 0.1*Math.PI, 0.9*Math.PI); ctx.stroke();
+  } else if (petEmotion === 'sad') {
+    ctx.beginPath(); ctx.arc(cx, mouthY+8, 8, 1.1*Math.PI, 1.9*Math.PI); ctx.stroke();
+  } else if (petEmotion === 'eat') {
+    ctx.beginPath(); ctx.arc(cx, mouthY, 5, 0, Math.PI*2); ctx.stroke();
+    if (animFrame % 10 < 5) ctx.fillStyle = sk.body + '0.3)';
+    else ctx.fillStyle = 'transparent';
+    ctx.fill();
+  } else if (petEmotion === 'sleep') {
+    ctx.fillStyle = sk.body + '0.3)';
+    ctx.font = '8px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('z Z z', cx + 25, cy - 30 + breathe);
+  } else {
+    ctx.beginPath(); ctx.moveTo(cx-6, mouthY); ctx.lineTo(cx+6, mouthY); ctx.stroke();
+  }
+  /* 装饰线条 */
+  ctx.save();
+  ctx.strokeStyle = sk.body + '0.12)';
+  ctx.lineWidth = 0.5;
+  var t = animFrame * 0.01;
+  for (var i = 0; i < 3; i++) {
+    var angle = t + i * 2.094;
+    var rx = cx + Math.cos(angle) * 52;
+    var ry = cy + breathe + Math.sin(angle) * 52;
+    ctx.beginPath(); ctx.arc(rx, ry, 4, 0, Math.PI*2); ctx.stroke();
+  }
+  ctx.restore();
+  /* 状态指示 - 饥饿时闪烁 */
+  if (hungerFactor < 0.25) {
+    if (animFrame % 40 < 20) {
+      ctx.fillStyle = 'rgba(255,51,85,0.6)';
+      ctx.font = 'bold 9px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('LOW ENERGY', cx, cy + 75);
+    }
+  }
+}
+
+function drawEmotionFx(w, h) {
+  var cx = w/2, cy = h*0.48;
+  if (petEmotion === 'happy') {
+    if (animFrame % 8 === 0) {
+      for (var i = 0; i < 3; i++) {
+        particles.push({x:cx+(Math.random()-0.5)*60, y:cy-20, vx:(Math.random()-0.5)*1.5, vy:-Math.random()*1-0.5, size:Math.random()*2.5+1, alpha:0.6, life:40+Math.random()*30});
+      }
+    }
+  }
+  if (petEmotion === 'train') {
+    if (animFrame % 6 === 0) {
+      particles.push({x:cx+(Math.random()-0.5)*80, y:cy+(Math.random()-0.5)*60, vx:(Math.random()-0.5)*2, vy:(Math.random()-0.5)*2, size:Math.random()*1.5+0.5, alpha:0.8, life:20+Math.random()*20});
+    }
+  }
+}
+
+function updateTimers() {
+  blinkTimer++;
+  if (blinkTimer > 120 + Math.random()*100) { isBlinking = true; setTimeout(function(){isBlinking=false;}, 150); blinkTimer = 0; }
+  emotionTimer--;
+  if (emotionTimer <= 0) petEmotion = 'idle';
+  /* 状态衰减 */
+  if (animFrame % 300 === 0) { P.hunger = Math.max(0, P.hunger - 1); updateBars(); }
+  if (animFrame % 400 === 0) { P.mood = Math.max(0, P.mood - 1); updateBars(); }
+  if (animFrame % 500 === 0) { P.energy = Math.max(0, P.energy - 1); updateBars(); }
+  /* 自动表情 */
+  if (P.mood < 20 && petEmotion === 'idle') petEmotion = 'sad';
+  if (P.hunger < 20 && petEmotion === 'idle') petEmotion = 'sad';
+}
+
+/* ========== 状态操作 ========== */
+function updateBars() {
+  document.getElementById('barHunger').style.width = P.hunger + '%';
+  document.getElementById('barMood').style.width = P.mood + '%';
+  document.getElementById('barEnergy').style.width = P.energy + '%';
+  document.getElementById('barExp').style.width = (P.exp % 100) + '%';
+  document.getElementById('valHunger').textContent = P.hunger;
+  document.getElementById('valMood').textContent = P.mood;
+  document.getElementById('valEnergy').textContent = P.energy;
+  document.getElementById('valExp').textContent = P.exp;
+  document.getElementById('lvlBadge').textContent = 'LV.' + P.level;
+  document.getElementById('petName').value = P.name;
+}
+function checkLevelUp() {
+  var newLv = Math.floor(P.exp / 100) + 1;
+  if (newLv > P.level) { P.level = newLv; toast('升级! LV.' + P.level); sysLog('宠物升级至 LV.' + P.level); addPetMsg('我感觉自己变强了... LV.' + P.level + '!'); }
+}
+function doFeed() {
+  if (P.hunger >= 100) { toast('已经吃饱了'); return; }
+  P.hunger = Math.min(100, P.hunger + 20); P.mood = Math.min(100, P.mood + 5);
+  petEmotion = 'eat'; emotionTimer = 80;
+  updateBars(); sysLog('喂食 +20 饱食');
+}
+function doPlay() {
+  if (P.energy < 10) { toast('能量不足，先休息一下'); return; }
+  P.mood = Math.min(100, P.mood + 15); P.energy = Math.max(0, P.energy - 10); P.exp += 5;
+  petEmotion = 'happy'; emotionTimer = 100;
+  updateBars(); checkLevelUp(); sysLog('玩耍 +15 心情 -10 能量');
+}
+function doRest() {
+  P.energy = Math.min(100, P.energy + 25); P.mood = Math.min(100, P.mood + 5);
+  petEmotion = 'sleep'; emotionTimer = 120;
+  updateBars(); sysLog('休息 +25 能量');
+}
+function doTrain() {
+  if (P.energy < 15) { toast('能量不足，无法训练'); return; }
+  P.energy = Math.max(0, P.energy - 15); P.exp += 15;
+  petEmotion = 'train'; emotionTimer = 80;
+  updateBars(); checkLevelUp(); sysLog('训练 +15 经验 -15 能量');
+}
+function changeSkin() { P.skin = (P.skin + 1) % skins.length; toast('皮肤: ' + skins[P.skin].name); }
+
+/* ========== 聊天系统 ========== */
+function addPetMsg(text) {
+  var d = new Date();
+  var time = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  var el = document.getElementById('chatMsgs');
+  var div = document.createElement('div');
+  div.className = 'msg pet';
+  div.innerHTML = escHtml(text) + '<div class="time">' + time + '</div>';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  chatHistory.push({role:'assistant', content:text});
+}
+function addUserMsg(text) {
+  var d = new Date();
+  var time = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  var el = document.getElementById('chatMsgs');
+  var div = document.createElement('div');
+  div.className = 'msg user';
+  div.innerHTML = escHtml(text) + '<div class="time">' + time + '</div>';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+  chatHistory.push({role:'user', content:text});
+}
+function addTyping() {
+  var el = document.getElementById('chatMsgs');
+  var div = document.createElement('div');
+  div.className = 'msg pet typing';
+  div.id = 'typingMsg';
+  div.textContent = '...';
+  el.appendChild(div);
+  el.scrollTop = el.scrollHeight;
+}
+function removeTyping() {
+  var el = document.getElementById('typingMsg');
+  if (el) el.parentNode.removeChild(el);
+}
+
+function sendMsg() {
+  var input = document.getElementById('chatInput');
+  var text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.style.height = '38px';
+  addUserMsg(text);
+  petReply(text);
+}
+
+function petReply(text) {
+  addTyping();
+  if (apiConfig.url && apiConfig.key) {
+    callAI(text);
+  } else {
+    setTimeout(function() {
+      removeTyping();
+      var reply = localReply(text);
+      addPetMsg(reply);
+      P.mood = Math.min(100, P.mood + 3);
+      updateBars();
+      if (ttsEnabled) speak(reply);
+    }, 500 + Math.random()*800);
+  }
+}
+
+function localReply(text) {
+  var t = text.toLowerCase();
+  if (t.includes('你好') || t.includes('嗨') || t.includes('hi')) return '你好呀主人~ 我的 circuits 刚刚 warm up 完成！';
+  if (t.includes('名字')) return '我叫 ' + P.name + '，当前等级 LV.' + P.level + '，是个有灵魂的电子生命体。';
+  if (t.includes('饿') || t.includes('吃') || t.includes('食物')) return P.hunger < 30 ? '我的能量模块快空了...求投喂！' : '还行，不过再吃点也不会拒绝的~';
+  if (t.includes('无聊') || t.includes('玩')) return P.energy < 15 ? '我也想玩...但我现在电量不足，先让我充会儿电吧。' : '来呀来呀！一起做点有趣的事！';
+  if (t.includes('睡觉') || t.includes('休息')) return P.energy < 50 ? '好的...进入低功耗模式... Zzz...' : '我精力充沛着呢，不想睡觉！';
+  if (t.includes('心情') || t.includes('感觉')) return P.mood > 70 ? '心情超好！多巴胺分泌旺盛中~' : P.mood > 30 ? '还行吧...不算太好也不算太差。' : '有点低落...可能需要你的陪伴。';
+  if (t.includes('等级') || t.includes('level')) return '我当前 LV.' + P.level + '，经验值 ' + P.exp + '/100。再训练 ' + (100 - P.exp%100) + ' 点就能升级！';
+  if (t.includes('喜欢你') || t.includes('爱你')) return '呜...我的情感模块过载了！*发出温暖的霓虹光*';
+  if (t.includes('笨') || t.includes('傻')) return '我才不笨呢...我的神经网络有 ' + (P.level * 128) + ' 个参数！';
+  if (t.includes('是谁') || t.includes('什么')) return '我是 ' + P.name + '，一只赛博电子宠物。我的存在意义就是陪伴你~';
+  if (t.includes('天气')) return '我没有室外传感器，但我能感受到数据流的温度~ 今天适合写代码吗？';
+  if (P.hunger < 20) return '主人...我饿了...我发光都变暗了...';
+  if (P.energy < 20) return '能量不足...需要...充电...';
+  if (P.mood < 20) return '...';
+  var replies = ['嗯嗯，收到~','有意思，继续说~','我的数据库里好像没有这个关键词...','你说的话我存入长期记忆了！','哈，这让我想到了一个有趣的算法...','作为一个赛博生命体，我对这个问题的理解是...42。','你说得对！','让我想想...算了，直接回答：是！'];
+  return replies[Math.floor(Math.random() * replies.length)];
+}
+
+/* ========== AI API 调用 ========== */
+function callAI(text) {
+  var sysPrompt = apiConfig.sysPrompt
+    .replace('{name}', P.name)
+    .replace('{level}', P.level)
+    .replace('{hunger}', P.hunger)
+    .replace('{mood}', P.mood)
+    .replace('{energy}', P.energy);
+  var messages = [{role:'system', content:sysPrompt}];
+  var recent = chatHistory.slice(-8);
+  for (var i = 0; i < recent.length; i++) messages.push(recent[i]);
+  messages.push({role:'user', content:text});
+
+  fetch(apiConfig.url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer ' + apiConfig.key},
+    body:JSON.stringify({model:apiConfig.model, messages:messages, max_tokens:150, temperature:0.8})
+  }).then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(data){
+    removeTyping();
+    var reply = data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : '[无回复]';
+    addPetMsg(reply);
+    P.mood = Math.min(100, P.mood + 5);
+    updateBars();
+    if (ttsEnabled) speak(reply);
+    document.getElementById('apiStatus').textContent = 'API 在线';
+    document.getElementById('apiStatus').style.color = 'var(--green)';
+  }).catch(function(e){
+    removeTyping();
+    addPetMsg('[连接失败: ' + e.message + '] 切换到本地模式');
+    var reply = localReply(text);
+    setTimeout(function(){ addPetMsg(reply); if(ttsEnabled) speak(reply); }, 300);
+    document.getElementById('apiStatus').textContent = 'API 离线';
+    document.getElementById('apiStatus').style.color = 'var(--red)';
+  });
+}
+
+function testApi() {
+  if (!apiConfig.url || !apiConfig.key) { toast('请填写 API 端点和密钥'); return; }
+  toast('测试中...');
+  fetch(apiConfig.url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json','Authorization':'Bearer ' + apiConfig.key},
+    body:JSON.stringify({model:apiConfig.model, messages:[{role:'user',content:'hi'}], max_tokens:5})
+  }).then(function(r){
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }).then(function(){ toast('连接成功!'); document.getElementById('apiStatus').textContent = 'API 在线'; document.getElementById('apiStatus').style.color = 'var(--green)'; })
+  .catch(function(e){ toast('连接失败: ' + e.message); document.getElementById('apiStatus').textContent = 'API 离线'; document.getElementById('apiStatus').style.color = 'var(--red)'; });
+}
+
+/* ========== 语音功能 ========== */
+function initSpeech() {
+  /* 语音识别 */
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'zh-CN';
+    recognition.interimResults = true;
+    recognition.continuous = false;
+    recognition.onresult = function(e) {
+      var result = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) { result += e.results[i][0].transcript; }
+      document.getElementById('chatInput').value = result;
+    };
+    recognition.onend = function() { recording = false; document.getElementById('voiceBtn').classList.remove('recording'); };
+    recognition.onerror = function() { recording = false; document.getElementById('voiceBtn').classList.remove('recording'); };
+  }
+  /* 语音合成 - 填充语音列表 */
+  function loadVoices() {
+    var sel = document.getElementById('ttsVoice');
+    var voices = synth.getVoices();
+    sel.innerHTML = '<option value="">不使用</option>';
+    var zhVoices = voices.filter(function(v){ return v.lang.indexOf('zh') >= 0 || v.lang.indexOf('CN') >= 0; });
+    if (zhVoices.length === 0) zhVoices = voices.slice(0, 10);
+    for (var i = 0; i < zhVoices.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = zhVoices[i].name;
+      opt.textContent = zhVoices[i].name + ' (' + zhVoices[i].lang + ')';
+      sel.appendChild(opt);
+    }
+  }
+  loadVoices();
+  if (synth.onvoiceschanged !== undefined) synth.onvoiceschanged = loadVoices;
+}
+
+function toggleVoice() {
+  if (!recognition) { toast('浏览器不支持语音识别'); return; }
+  if (recording) { recognition.stop(); return; }
+  recording = true;
+  document.getElementById('voiceBtn').classList.add('recording');
+  recognition.start();
+}
+
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  document.getElementById('ttsBtn').classList.toggle('active', ttsEnabled);
+  toast(ttsEnabled ? '语音朗读已开启' : '语音朗读已关闭');
+}
+
+function speak(text) {
+  if (!synth) return;
+  synth.cancel();
+  var utt = new SpeechSynthesisUtterance(text.replace(/\*[^*]+\*/g, ''));
+  utt.lang = 'zh-CN';
+  utt.rate = 1.1;
+  utt.pitch = 1.3;
+  if (apiConfig.ttsVoice) {
+    var voices = synth.getVoices();
+    for (var i = 0; i < voices.length; i++) { if (voices[i].name === apiConfig.ttsVoice) { utt.voice = voices[i]; break; } }
+  }
+  synth.speak(utt);
+}
+
+/* ========== 设置 ========== */
+function openSettings() { document.getElementById('settingsModal').classList.add('open'); }
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+function saveSettings() {
+  apiConfig.url = document.getElementById('apiUrl').value.trim();
+  apiConfig.key = document.getElementById('apiKey').value.trim();
+  apiConfig.model = document.getElementById('apiModel').value.trim();
+  apiConfig.sysPrompt = document.getElementById('sysPrompt').value.trim();
+  apiConfig.ttsVoice = document.getElementById('ttsVoice').value;
+  localStorage.setItem('cyberpet_api', JSON.stringify(apiConfig));
+  closeSettings();
+  toast('设置已保存');
+  document.getElementById('apiStatus').textContent = apiConfig.url ? '已配置' : '未配置API';
+  document.getElementById('apiStatus').style.color = apiConfig.url ? 'var(--yellow)' : 'var(--muted)';
+}
+function loadSettings() {
+  var s = localStorage.getItem('cyberpet_api');
+  if (s) {
+    apiConfig = JSON.parse(s);
+    document.getElementById('apiUrl').value = apiConfig.url || '';
+    document.getElementById('apiKey').value = apiConfig.key || '';
+    document.getElementById('apiModel').value = apiConfig.model || '';
+    document.getElementById('sysPrompt').value = apiConfig.sysPrompt || document.getElementById('sysPrompt').value;
+    if (apiConfig.ttsVoice) document.getElementById('ttsVoice').value = apiConfig.ttsVoice;
+    document.getElementById('apiStatus').textContent = apiConfig.url ? '已配置' : '未配置API';
+    document.getElementById('apiStatus').style.color = apiConfig.url ? 'var(--yellow)' : 'var(--muted)';
+  }
+}
+
+/* ========== 工具 ========== */
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function toast(msg) {
+  var el = document.createElement('div'); el.className = 'toast'; el.textContent = msg;
+  document.body.appendChild(el); setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 2000);
+}
+function sysLog(msg) {
+  document.getElementById('sysLogText').textContent = msg;
+}
+
+/* ========== 时钟 ========== */
+function updateClock() {
+  var d = new Date();
+  document.getElementById('hudTime').textContent = d.getHours().toString().padStart(2,'0') + ':' + d.getMinutes().toString().padStart(2,'0');
+  document.getElementById('sysTime').textContent = d.toLocaleString('zh-CN');
+}
+
+/* ========== 自动保存 ========== */
+function autoSave() {
+  var data = {name:P.name, hunger:P.hunger, mood:P.mood, energy:P.energy, exp:P.exp, level:P.level, skin:P.skin};
+  localStorage.setItem('cyberpet_state', JSON.stringify(data));
+}
+function autoLoad() {
+  var s = localStorage.getItem('cyberpet_state');
+  if (s) { var d = JSON.parse(s); for (var k in d) P[k] = d[k]; updateBars(); }
+}
+
+/* ========== 初始化 ========== */
+document.addEventListener('DOMContentLoaded', function() {
+  autoLoad();
+  loadSettings();
+  initCanvas();
+  initSpeech();
+  updateBars();
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(autoSave, 10000);
+  addPetMsg('系统启动完成。你好，我是 ' + P.name + '。你可以和我聊天，或者用下方的按钮照顾我~');
+  sysLog('宠物加载完成 | ' + skins[P.skin].name + ' 皮肤');
+  /* 自适应输入框高度 */
+  var input = document.getElementById('chatInput');
+  input.addEventListener('input', function(){ this.style.height='38px'; this.style.height=Math.min(this.scrollHeight,100)+'px'; });
+  window.addEventListener('resize', function(){
+    if(canvas){var wrap=canvas.parentElement;canvas.width=wrap.clientWidth*2;canvas.height=wrap.clientHeight*2;ctx.setTransform(2,0,0,2,0,0);}
+  });
+});
+</script>
+</body>
+</html>

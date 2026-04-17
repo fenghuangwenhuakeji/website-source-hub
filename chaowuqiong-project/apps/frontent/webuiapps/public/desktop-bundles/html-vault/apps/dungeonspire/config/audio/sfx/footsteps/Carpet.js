@@ -1,0 +1,1 @@
+export default { file: 'fs_carpet.wav', volume: 0.3, pitchVar: 0.0 };

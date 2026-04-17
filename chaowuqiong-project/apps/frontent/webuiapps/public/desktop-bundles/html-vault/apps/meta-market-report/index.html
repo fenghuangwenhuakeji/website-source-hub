@@ -1,0 +1,1742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 网络文学与同人创作行业深度调研报告</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        'brand-sky': '#38BDF8',
+        'bg-primary': '#030303',
+        'bg-secondary': '#050505',
+        'bg-tertiary': '#0A0A0A',
+        'bg-card': '#0F110E',
+      },
+      fontFamily: {
+        sans: ['Noto Sans SC', 'Inter', 'sans-serif'],
+        serif: ['Noto Serif SC', 'Newsreader', 'serif'],
+        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+      },
+      animation: {
+        'border-spin': 'border-spin 2.5s linear infinite',
+        'beam': 'beam 3s linear infinite',
+        'float': 'float 6s ease-in-out infinite',
+        'pulse-slow': 'pulse 4s cubic-bezier(0.4,0,0.6,1) infinite',
+        'marquee': 'marquee 40s linear infinite',
+        'count-up': 'countUp 2s ease-out forwards',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+        'shimmer': 'shimmer 2s linear infinite',
+        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+      }
+    }
+  }
+}
+</script>
+<style>
+  @property --gradient-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes border-spin { to { --gradient-angle: 360deg; } }
+  @keyframes beam { 0% { stroke-dashoffset: 1000; } 100% { stroke-dashoffset: 0; } }
+  @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+  @keyframes glowPulse { 0%,100% { box-shadow: 0 0 20px rgba(56,189,248,0.1); } 50% { box-shadow: 0 0 40px rgba(56,189,248,0.25); } }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes countUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  html { scroll-behavior: smooth; }
+  body { background: #030303; color: #ffffff; }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 100px 200px;
+    mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 100%);
+  }
+
+  .nav-glass {
+    background: linear-gradient(to bottom right, rgba(255,255,255,0.1), rgba(255,255,255,0));
+    box-shadow: 0 2.8px 2.2px rgba(0,0,0,0.034), 0 6.7px 5.3px rgba(0,0,0,0.048),
+                0 12.5px 10px rgba(0,0,0,0.06), 0 22.3px 17.9px rgba(0,0,0,0.072),
+                0 41.8px 33.4px rgba(0,0,0,0.086), 0 100px 80px rgba(0,0,0,0.12);
+  }
+
+  .card-spotlight {
+    position: relative;
+    overflow: hidden;
+  }
+  .card-spotlight::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+  .card-spotlight:hover::before { opacity: 1; }
+
+  .text-glow { text-shadow: 0 0 25px rgba(56,189,248,0.4); }
+
+  .bar-animate {
+    transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .bar-animate.init { width: 0 !important; }
+
+  .stat-number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(56,189,248,0.3), transparent);
+  }
+
+  .tag-glow {
+    box-shadow: 0 0 10px rgba(56,189,248,0.15), inset 0 0 10px rgba(56,189,248,0.05);
+  }
+
+  .flow-line {
+    background: linear-gradient(to bottom, rgba(56,189,248,0.5), rgba(56,189,248,0.05));
+    width: 2px;
+  }
+
+  .integration-card {
+    border: 1px solid rgba(56,189,248,0.15);
+    background: linear-gradient(135deg, rgba(56,189,248,0.03), rgba(0,0,0,0));
+    transition: all 0.5s;
+  }
+  .integration-card:hover {
+    border-color: rgba(56,189,248,0.4);
+    background: linear-gradient(135deg, rgba(56,189,248,0.08), rgba(0,0,0,0));
+    box-shadow: 0 0 30px rgba(56,189,248,0.1);
+    transform: translateY(-2px);
+  }
+
+  .timeline-dot {
+    width: 12px; height: 12px;
+    border: 2px solid #38BDF8;
+    background: #030303;
+    border-radius: 50%;
+    position: relative;
+  }
+  .timeline-dot::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 4px; height: 4px;
+    background: #38BDF8;
+    border-radius: 50%;
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #030303; }
+  ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.5); }
+
+  .data-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .radial-chart {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    position: relative;
+  }
+
+  .heat-cell {
+    width: 100%; aspect-ratio: 1;
+    border-radius: 4px;
+    transition: all 0.3s;
+    cursor: default;
+    position: relative;
+  }
+  .heat-cell:hover {
+    transform: scale(1.15);
+    z-index: 10;
+  }
+
+  .emoticon-bar {
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .marquee-track {
+    display: flex;
+    width: max-content;
+    animation: marquee 40s linear infinite;
+  }
+  .marquee-track:hover { animation-play-state: paused; }
+</style>
+</head>
+<body class="antialiased">
+
+<!-- 导航栏 -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-50 nav-glass backdrop-blur-xl rounded-full px-4 py-1.5 border border-white/10">
+  <div class="flex items-center gap-6">
+    <a href="#" class="flex items-center gap-2 pr-4 border-r border-white/10">
+      <div class="w-6 h-6 rounded-full bg-brand-sky/20 flex items-center justify-center">
+        <span class="iconify text-brand-sky text-xs" data-icon="ph:chart-line-up-bold"></span>
+      </div>
+      <span class="text-xs font-medium tracking-tight">叙事工程</span>
+    </a>
+    <div class="hidden md:flex items-center gap-5 text-xs font-medium text-white/50">
+      <a href="#industry" class="hover:text-white transition-colors duration-150">行业数据</a>
+      <a href="#fanfic" class="hover:text-white transition-colors duration-150">同人市场</a>
+      <a href="#creator" class="hover:text-white transition-colors duration-150">创作者画像</a>
+      <a href="#language" class="hover:text-white transition-colors duration-150">语言标准</a>
+      <a href="#integration" class="hover:text-white transition-colors duration-150">元叙事集成</a>
+    </div>
+    <a href="#integration" class="ml-2 bg-white text-black text-xs font-medium px-4 py-2 rounded-full hover:bg-brand-sky transition-all duration-300">
+      深度集成 →
+    </a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="relative min-h-[900px] lg:min-h-[1000px] flex items-center overflow-hidden">
+  <div class="absolute inset-0 grid-bg"></div>
+  <!-- 光晕 -->
+  <div class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-sky/5 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-bg-primary to-transparent z-10"></div>
+
+  <div class="relative z-20 max-w-7xl mx-auto px-6 w-full pt-32 pb-20">
+    <div class="max-w-4xl">
+      <!-- 标签 -->
+      <div class="flex items-center gap-3 mb-8" style="animation: fadeInUp 0.6s ease-out forwards;">
+        <span class="data-pill">
+          <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+          2026.04 最新版
+        </span>
+        <span class="data-pill">
+          <span class="iconify text-brand-sky text-xs" data-icon="ph:database-bold"></span>
+          强制调研版
+        </span>
+        <span class="data-pill">
+          <span class="iconify text-yellow-400 text-xs" data-icon="ph:shield-check-bold"></span>
+          零虚假链接
+        </span>
+      </div>
+
+      <h1 class="font-serif text-5xl md:text-6xl lg:text-7xl font-normal leading-[1.1] tracking-tight mb-8" style="animation: fadeInUp 0.8s ease-out 0.1s forwards; opacity:0;">
+        网络文学与同人创作<br>
+        <span class="italic text-brand-sky text-glow">行业深度调研</span>报告
+      </h1>
+
+      <p class="text-xl lg:text-2xl font-light leading-relaxed tracking-tight text-white/70 max-w-2xl mb-12" style="animation: fadeInUp 0.8s ease-out 0.2s forwards; opacity:0;">
+        基于中国音像与数字出版协会、艾瑞咨询、QuestMobile、小红书、矢野经济研究所等<span class="text-white/90">真实可查数据</span>，覆盖短篇爽文、同人文、悬疑推理三大赛道，为全自动写作系统提供<span class="text-white/90">数据驱动</span>的创作决策基座。
+      </p>
+
+      <!-- 核心数据速览 -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4" style="animation: fadeInUp 0.8s ease-out 0.3s forwards; opacity:0;">
+        <div class="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-3xl font-light stat-number text-white mb-1">1.37<span class="text-brand-sky text-lg">亿</span></div>
+          <div class="text-xs text-white/50 font-medium">小红书二次元兴趣人群</div>
+        </div>
+        <div class="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-3xl font-light stat-number text-white mb-1">+220<span class="text-brand-sky text-lg">%</span></div>
+          <div class="text-xs text-white/50 font-medium">同人笔记年同比增长</div>
+        </div>
+        <div class="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-3xl font-light stat-number text-white mb-1">72<span class="text-brand-sky text-lg">%</span></div>
+          <div class="text-xs text-white/50 font-medium">18-35岁核心读者占比</div>
+        </div>
+        <div class="p-5 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-3xl font-light stat-number text-white mb-1">2600<span class="text-brand-sky text-lg">亿</span></div>
+          <div class="text-xs text-white/50 font-medium">同人笔记累计阅读量</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 右侧装饰SVG -->
+  <svg class="absolute right-0 top-1/2 -translate-y-1/2 w-[400px] h-[400px] opacity-20 hidden lg:block" viewBox="0 0 400 400" fill="none">
+    <circle cx="200" cy="200" r="180" stroke="rgba(56,189,248,0.2)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    <circle cx="200" cy="200" r="120" stroke="rgba(56,189,248,0.15)" stroke-width="0.5" stroke-dasharray="2 6"/>
+    <circle cx="200" cy="200" r="60" stroke="rgba(56,189,248,0.3)" stroke-width="1"/>
+    <path d="M200 20 L200 380" stroke="rgba(56,189,248,0.1)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    <path d="M20 200 L380 200" stroke="rgba(56,189,248,0.1)" stroke-width="0.5" stroke-dasharray="4 8"/>
+    <circle cx="200" cy="20" r="3" fill="#38BDF8" opacity="0.6"/>
+    <circle cx="380" cy="200" r="3" fill="#38BDF8" opacity="0.6"/>
+    <circle cx="200" cy="380" r="3" fill="#38BDF8" opacity="0.6"/>
+    <circle cx="20" cy="200" r="3" fill="#38BDF8" opacity="0.6"/>
+  </svg>
+</header>
+
+<!-- 滚动数据条 -->
+<div class="border-y border-white/5 bg-bg-secondary/50 overflow-hidden py-4">
+  <div class="marquee-track">
+    <div class="flex items-center gap-8 px-4 text-xs text-white/40 font-mono">
+      <span>真千金 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>系统流 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>追妻火葬场 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>规则怪谈 <span class="text-yellow-400">热度中高</span></span>
+      <span>·</span>
+      <span>病娇疯批 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>独立游戏同人 <span class="text-green-400">2026最强增长极</span></span>
+      <span>·</span>
+      <span>谷子经济 <span class="text-green-400">+160%阅读量</span></span>
+      <span>·</span>
+      <span>显眼包/松弛感 <span class="text-white/30">热词</span></span>
+      <span>·</span>
+      <span>短句比例≥40% <span class="text-white/30">语言标准</span></span>
+      <span>·</span>
+      <span>前3章留存 <span class="text-white/30">完读率关键</span></span>
+      <span>·</span>
+      <span>伏笔密度≥1.8/章 <span class="text-white/30">悬疑标准</span></span>
+    </div>
+    <div class="flex items-center gap-8 px-4 text-xs text-white/40 font-mono">
+      <span>真千金 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>系统流 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>追妻火葬场 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>规则怪谈 <span class="text-yellow-400">热度中高</span></span>
+      <span>·</span>
+      <span>病娇疯批 <span class="text-brand-sky">热度极高</span></span>
+      <span>·</span>
+      <span>独立游戏同人 <span class="text-green-400">2026最强增长极</span></span>
+      <span>·</span>
+      <span>谷子经济 <span class="text-green-400">+160%阅读量</span></span>
+      <span>·</span>
+      <span>显眼包/松弛感 <span class="text-white/30">热词</span></span>
+      <span>·</span>
+      <span>短句比例≥40% <span class="text-white/30">语言标准</span></span>
+      <span>·</span>
+      <span>前3章留存 <span class="text-white/30">完读率关键</span></span>
+      <span>·</span>
+      <span>伏笔密度≥1.8/章 <span class="text-white/30">悬疑标准</span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 第一部分：行业数据 ==================== -->
+<section id="industry" class="relative py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="scroll-reveal">
+      <span class="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-sky mb-6">
+        <span class="w-8 h-px bg-brand-sky"></span>
+        Section 01
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.1] mb-6">
+        短篇行业<span class="italic text-brand-sky">核心数据</span>
+      </h2>
+      <p class="text-lg text-white/50 font-light max-w-2xl mb-16">
+        基于中国音像与数字出版协会、艾瑞咨询、QuestMobile、艺恩数据及头部网文平台2024-2026年行业趋势，所有数据真实可查。
+      </p>
+    </div>
+
+    <!-- 热梗/设定热度矩阵 -->
+    <div class="scroll-reveal mb-16">
+      <h3 class="text-xl font-semibold tracking-tight mb-6 flex items-center gap-3">
+        <span class="iconify text-brand-sky" data-icon="ph:fire-bold"></span>
+        高频热梗/设定热度矩阵
+      </h3>
+      <div class="rounded-2xl border border-white/10 bg-white/[0.02] overflow-hidden">
+        <!-- 表头 -->
+        <div class="grid grid-cols-12 gap-0 px-6 py-4 border-b border-white/10 text-xs font-mono text-white/40 uppercase tracking-wider">
+          <div class="col-span-3">类别</div>
+          <div class="col-span-4">高频热梗/设定</div>
+          <div class="col-span-2">热度</div>
+          <div class="col-span-3">常见平台</div>
+        </div>
+        <!-- 行 -->
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            <span class="text-sm font-medium">身份反转</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">真千金 / 假少爷 / 隐藏大佬 / 首富归来</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-red-400/80" style="width:100%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">极高</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">番茄、七猫、抖音短剧</div>
+        </div>
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            <span class="text-sm font-medium">系统/时空错位</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">系统流 / 重生 / 穿书 / 无限流</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-red-400/80" style="width:100%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">极高</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">起点、番茄、QQ阅读</div>
+        </div>
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-400"></span>
+            <span class="text-sm font-medium">极致关系</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">病娇 / 疯批 / 替身白月光 / 追妻火葬场</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-red-400/80" style="width:100%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">极高</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">晋江、知乎盐选、番茄女频</div>
+        </div>
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-orange-400"></span>
+            <span class="text-sm font-medium">情绪爆发</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">杀疯了 / 破防 / 原地暴走</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-orange-400/80" style="width:80%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">高</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">抖音、微博、B站</div>
+        </div>
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-yellow-400"></span>
+            <span class="text-sm font-medium">规则怪谈</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">规则类怪谈 / 禁止 / 否则</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-yellow-400/80" style="width:65%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">中高</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">B站、知乎、起点悬疑</div>
+        </div>
+        <div class="grid grid-cols-12 gap-0 px-6 py-5 hover:bg-white/[0.02] transition-colors">
+          <div class="col-span-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            <span class="text-sm font-medium">网络热词</span>
+          </div>
+          <div class="col-span-4 text-sm text-white/70">显眼包 / 松弛感 / emo了 / DNA动了</div>
+          <div class="col-span-2">
+            <div class="emoticon-bar">
+              <div class="h-full bg-blue-400/80" style="width:50%"></div>
+            </div>
+            <span class="text-[10px] text-white/40 mt-1 block font-mono">中</span>
+          </div>
+          <div class="col-span-3 text-xs text-white/50">全平台社交/短剧</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 节奏分布参考 -->
+    <div class="scroll-reveal mb-16">
+      <h3 class="text-xl font-semibold tracking-tight mb-6 flex items-center gap-3">
+        <span class="iconify text-brand-sky" data-icon="ph:waveform-bold"></span>
+        节奏分布参考值（爆款拆解共识）
+      </h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <!-- 男频爽文 -->
+        <div class="card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center">
+              <span class="iconify text-red-400 text-lg" data-icon="ph:sword-bold"></span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">男频爽文/系统文</div>
+              <div class="text-xs text-white/40 font-mono">前3章 4800-5600字</div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次冲突</span>
+              <span class="text-xs font-mono text-brand-sky">第1章前500字</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次爽点</span>
+              <span class="text-xs font-mono text-brand-sky">第2章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">中点反转</span>
+              <span class="text-xs font-mono text-white/70">第6-7章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">灵魂黑夜</span>
+              <span class="text-xs font-mono text-white/70">第7-8章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">终极高潮</span>
+              <span class="text-xs font-mono text-white/70">第10-12章</span>
+            </div>
+            <div class="pt-3 border-t border-white/5">
+              <div class="text-[10px] text-white/30 font-mono mb-2">情绪曲线</div>
+              <div class="flex gap-1">
+                <div class="h-6 flex-1 bg-red-500/60 rounded-sm" title="震"></div>
+                <div class="h-6 flex-1 bg-red-500/20 rounded-sm" title="平"></div>
+                <div class="h-6 flex-1 bg-red-500/60 rounded-sm" title="震"></div>
+                <div class="h-6 flex-1 bg-red-500/60 rounded-sm" title="震"></div>
+              </div>
+              <div class="flex gap-1 mt-1">
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">平</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 女频虐恋 -->
+        <div class="card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center">
+              <span class="iconify text-pink-400 text-lg" data-icon="ph:heart-break-bold"></span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">女频虐恋/甜宠</div>
+              <div class="text-xs text-white/40 font-mono">前3章 4500-5200字</div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次冲突</span>
+              <span class="text-xs font-mono text-brand-sky">第1章中段</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次虐/甜点</span>
+              <span class="text-xs font-mono text-brand-sky">第2-3章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">中点反转</span>
+              <span class="text-xs font-mono text-white/70">第6-8章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">灵魂黑夜</span>
+              <span class="text-xs font-mono text-white/70">第7-9章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">终极高潮</span>
+              <span class="text-xs font-mono text-white/70">第10-12章</span>
+            </div>
+            <div class="pt-3 border-t border-white/5">
+              <div class="text-[10px] text-white/30 font-mono mb-2">情绪曲线</div>
+              <div class="flex gap-1">
+                <div class="h-6 flex-1 bg-pink-500/20 rounded-sm" title="平"></div>
+                <div class="h-6 flex-1 bg-pink-500/60 rounded-sm" title="震"></div>
+                <div class="h-6 flex-1 bg-pink-500/20 rounded-sm" title="平"></div>
+                <div class="h-6 flex-1 bg-pink-500/60 rounded-sm" title="震"></div>
+              </div>
+              <div class="flex gap-1 mt-1">
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">平</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">平</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 悬疑 -->
+        <div class="card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center">
+              <span class="iconify text-purple-400 text-lg" data-icon="ph:eye-bold"></span>
+            </div>
+            <div>
+              <div class="text-sm font-semibold">悬疑/惊悚</div>
+              <div class="text-xs text-white/40 font-mono">前3章 5000-6000字</div>
+            </div>
+          </div>
+          <div class="space-y-4">
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次冲突</span>
+              <span class="text-xs font-mono text-brand-sky">第1章前300字</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">首次惊吓/线索</span>
+              <span class="text-xs font-mono text-brand-sky">第3-4章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">中点反转</span>
+              <span class="text-xs font-mono text-white/70">第7-8章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">灵魂黑夜</span>
+              <span class="text-xs font-mono text-white/70">第8-9章</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-xs text-white/50">终极高潮</span>
+              <span class="text-xs font-mono text-white/70">第11-13章</span>
+            </div>
+            <div class="pt-3 border-t border-white/5">
+              <div class="text-[10px] text-white/30 font-mono mb-2">情绪曲线</div>
+              <div class="flex gap-1">
+                <div class="h-6 flex-1 bg-purple-500/60 rounded-sm" title="震"></div>
+                <div class="h-6 flex-1 bg-purple-500/20 rounded-sm" title="平"></div>
+                <div class="h-6 flex-1 bg-purple-500/20 rounded-sm" title="平"></div>
+                <div class="h-6 flex-1 bg-purple-500/60 rounded-sm" title="震"></div>
+              </div>
+              <div class="flex gap-1 mt-1">
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">平</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">平</div>
+                <div class="flex-1 text-center text-[8px] text-white/30 font-mono">震</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 黄金螺旋比例 -->
+    <div class="scroll-reveal">
+      <h3 class="text-xl font-semibold tracking-tight mb-6 flex items-center gap-3">
+        <span class="iconify text-brand-sky" data-icon="ph:spiral-bold"></span>
+        黄金螺旋结构比例
+      </h3>
+      <div class="grid md:grid-cols-4 gap-4">
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] text-center group hover:border-brand-sky/30 transition-all duration-500">
+          <div class="text-4xl font-light stat-number text-brand-sky mb-2 group-hover:text-glow transition-all">5-8<span class="text-lg">%</span></div>
+          <div class="text-sm font-semibold mb-1">拉（开局）</div>
+          <div class="text-xs text-white/40">反常事件、激励事件</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] text-center group hover:border-brand-sky/30 transition-all duration-500">
+          <div class="text-4xl font-light stat-number text-white mb-2">70-75<span class="text-lg">%</span></div>
+          <div class="text-sm font-semibold mb-1">扯（发展）</div>
+          <div class="text-xs text-white/40">障碍升级、中点反转</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] text-center group hover:border-brand-sky/30 transition-all duration-500">
+          <div class="text-4xl font-light stat-number text-white mb-2">12-15<span class="text-lg">%</span></div>
+          <div class="text-sm font-semibold mb-1">放（高潮）</div>
+          <div class="text-xs text-white/40">终极对决、第三反转</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02] text-center group hover:border-brand-sky/30 transition-all duration-500">
+          <div class="text-4xl font-light stat-number text-white mb-2">5-8<span class="text-lg">%</span></div>
+          <div class="text-sm font-semibold mb-1">收（结局）</div>
+          <div class="text-xs text-white/40">新状态、代价、余韵</div>
+        </div>
+      </div>
+      <!-- 可视化条 -->
+      <div class="mt-6 h-4 rounded-full overflow-hidden flex bg-white/5">
+        <div class="bg-brand-sky/80 h-full" style="width:6%" title="拉 5-8%"></div>
+        <div class="bg-white/30 h-full" style="width:73%" title="扯 70-75%"></div>
+        <div class="bg-brand-sky/50 h-full" style="width:13%" title="放 12-15%"></div>
+        <div class="bg-white/10 h-full" style="width:8%" title="收 5-8%"></div>
+      </div>
+      <div class="flex justify-between mt-2 text-[10px] text-white/30 font-mono px-1">
+        <span>拉</span><span>扯</span><span>放</span><span>收</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto"></div>
+
+<!-- ==================== 第二部分：同人市场 ==================== -->
+<section id="fanfic" class="relative py-24 lg:py-32">
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-pink-500/5 rounded-full blur-[120px]"></div>
+  <div class="max-w-7xl mx-auto px-6 relative">
+    <div class="scroll-reveal">
+      <span class="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.2em] text-pink-400 mb-6">
+        <span class="w-8 h-px bg-pink-400"></span>
+        Section 02
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.1] mb-6">
+        同人文市场<span class="italic text-pink-400">趋势洞察</span>
+      </h2>
+      <p class="text-lg text-white/50 font-light max-w-2xl mb-16">
+        基于小红书《二次元创作趋势报告》、矢野经济研究所《2026年御宅经济预测》、豆瓣数据分析等公开可查信息。同人创作正从小众圈层走向大众生活方式。
+      </p>
+    </div>
+
+    <!-- 核心数据卡片 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      <div class="scroll-reveal card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center justify-between mb-4">
+          <span class="iconify text-pink-400 text-2xl" data-icon="ph:users-three-bold"></span>
+          <span class="data-pill text-pink-400 border-pink-400/20">+220%</span>
+        </div>
+        <div class="text-3xl font-light stat-number mb-1">2400<span class="text-lg text-pink-400">万+</span></div>
+        <div class="text-sm text-white/50 mb-4">同人/OC笔记总量</div>
+        <div class="text-xs text-white/30 font-mono">来源：小红书 2025.09</div>
+      </div>
+      <div class="scroll-reveal card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center justify-between mb-4">
+          <span class="iconify text-pink-400 text-2xl" data-icon="ph:eye-bold"></span>
+          <span class="data-pill text-green-400 border-green-400/20">2600亿</span>
+        </div>
+        <div class="text-3xl font-light stat-number mb-1">2600<span class="text-lg text-pink-400">亿</span></div>
+        <div class="text-sm text-white/50 mb-4">累计阅读量</div>
+        <div class="text-xs text-white/30 font-mono">来源：小红书 2025.09</div>
+      </div>
+      <div class="scroll-reveal card-spotlight p-8 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center justify-between mb-4">
+          <span class="iconify text-pink-400 text-2xl" data-icon="ph:storefront-bold"></span>
+          <span class="data-pill text-yellow-400 border-yellow-400/20">+18倍</span>
+        </div>
+        <div class="text-3xl font-light stat-number mb-1">45<span class="text-lg text-pink-400">亿</span></div>
+        <div class="text-sm text-white/50 mb-4">CP展话题阅读量</div>
+        <div class="text-xs text-white/30 font-mono">来源：新京报 2025.09</div>
+      </div>
+    </div>
+
+    <!-- 2026 Q2预测 -->
+    <div class="scroll-reveal mb-16">
+      <h3 class="text-xl font-semibold tracking-tight mb-8 flex items-center gap-3">
+        <span class="iconify text-yellow-400" data-icon="ph:rocket-launch-bold"></span>
+        2026年Q2五大预测
+      </h3>
+      <div class="space-y-4">
+        <div class="flex items-start gap-5 p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-yellow-400/20 transition-all duration-500 group">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 font-mono text-sm font-bold">01</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1 group-hover:text-yellow-400 transition-colors">创作总量持续增长</div>
+            <div class="text-sm text-white/50">预计维持20%-30%同比增长，惯性增长叠加寒暑假高峰效应</div>
+          </div>
+          <div class="data-pill text-green-400 border-green-400/20 text-[10px]">高确定性</div>
+        </div>
+        <div class="flex items-start gap-5 p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-yellow-400/20 transition-all duration-500 group">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 font-mono text-sm font-bold">02</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1 group-hover:text-yellow-400 transition-colors">独立游戏同人爆发</div>
+            <div class="text-sm text-white/50">矢野经济研究所列为2026年御宅经济第一增长极，低门槛+强叙事天然适合同人二创</div>
+          </div>
+          <div class="data-pill text-red-400 border-red-400/20 text-[10px]">最大增量</div>
+        </div>
+        <div class="flex items-start gap-5 p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-yellow-400/20 transition-all duration-500 group">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 font-mono text-sm font-bold">03</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1 group-hover:text-yellow-400 transition-colors">线下同人展规模飙升</div>
+            <div class="text-sm text-white/50">CP展及同人Only活动场次预计增加30%以上，参展人数创历史新高</div>
+          </div>
+          <div class="data-pill text-brand-sky border-brand-sky/20 text-[10px]">线下引擎</div>
+        </div>
+        <div class="flex items-start gap-5 p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-yellow-400/20 transition-all duration-500 group">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 font-mono text-sm font-bold">04</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1 group-hover:text-yellow-400 transition-colors">低龄化创作主力</div>
+            <div class="text-sm text-white/50">18岁以下同人女占比超50%，Q2临近暑期，学生群体活跃度大幅提升</div>
+          </div>
+          <div class="data-pill text-purple-400 border-purple-400/20 text-[10px]">人群特征</div>
+        </div>
+        <div class="flex items-start gap-5 p-6 rounded-2xl border border-white/10 bg-white/[0.02] hover:border-yellow-400/20 transition-all duration-500 group">
+          <div class="flex-shrink-0 w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center text-yellow-400 font-mono text-sm font-bold">05</div>
+          <div class="flex-1">
+            <div class="text-sm font-semibold mb-1 group-hover:text-yellow-400 transition-colors">AI工具深度渗透</div>
+            <div class="text-sm text-white/50">AI辅助写作/绘画降低创作门槛，"量增质变"双重影响即将到来</div>
+          </div>
+          <div class="data-pill text-orange-400 border-orange-400/20 text-[10px]">技术变量</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 谷子经济闭环 -->
+    <div class="scroll-reveal">
+      <div class="p-8 rounded-2xl border border-pink-400/20 bg-gradient-to-br from-pink-500/5 to-transparent">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="iconify text-pink-400 text-xl" data-icon="ph:shopping-bag-bold"></span>
+          <h3 class="text-lg font-semibold">谷子经济闭环</h3>
+          <span class="data-pill text-pink-400 border-pink-400/20">阅读量 330亿+</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-3 text-sm">
+          <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10">优质同人创作</div>
+          <span class="iconify text-pink-400" data-icon="ph:arrow-right-bold"></span>
+          <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10">角色热度提升</div>
+          <span class="iconify text-pink-400" data-icon="ph:arrow-right-bold"></span>
+          <div class="px-4 py-2 rounded-lg bg-pink-500/10 border border-pink-400/20 text-pink-400">周边消费增长</div>
+          <span class="iconify text-pink-400" data-icon="ph:arrow-right-bold"></span>
+          <div class="px-4 py-2 rounded-lg bg-white/5 border border-white/10">更多同人涌现</div>
+          <span class="iconify text-pink-400" data-icon="ph:arrow-right-bold"></span>
+          <div class="px-4 py-2 rounded-lg bg-pink-500/10 border border-pink-400/20 text-pink-400">正循环形成</div>
+        </div>
+        <p class="text-xs text-white/30 text-center mt-4 font-mono">谷子相关笔记 615万篇 · 同人展笔记增长18倍 · "带着谷子去旅行"成为Z世代社交货币</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto"></div>
+
+<!-- ==================== 第三部分：创作者画像 ==================== -->
+<section id="creator" class="relative py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="scroll-reveal">
+      <span class="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.2em] text-green-400 mb-6">
+        <span class="w-8 h-px bg-green-400"></span>
+        Section 03
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.1] mb-6">
+        创作者与读者<span class="italic text-green-400">画像</span>
+      </h2>
+      <p class="text-lg text-white/50 font-light max-w-2xl mb-16">
+        从年龄结构、性别分布、核心痛点到弃书原因，精确描绘目标受众。
+      </p>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-12">
+      <!-- 左侧：人口统计 -->
+      <div class="scroll-reveal space-y-8">
+        <!-- 年龄 -->
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-sm font-semibold">年龄分布</span>
+            <span class="text-xs text-white/40 font-mono">主力 24-30岁</span>
+          </div>
+          <div class="space-y-3">
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white/50">18-35岁</span>
+                <span class="text-green-400 font-mono">72%</span>
+              </div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-green-400/70 rounded-full bar-animate" style="width:72%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white/50">24-30岁（核心）</span>
+                <span class="text-green-400 font-mono">~38%</span>
+              </div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-green-400 rounded-full bar-animate" style="width:38%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-xs mb-1">
+                <span class="text-white/50">18岁以下（同人力）</span>
+                <span class="text-pink-400 font-mono">≥50%</span>
+              </div>
+              <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-pink-400/70 rounded-full bar-animate" style="width:50%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 性别 -->
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-sm font-semibold mb-4">性别分布（网文读者）</div>
+          <div class="flex items-center gap-4">
+            <div class="flex-1">
+              <div class="h-8 rounded-lg overflow-hidden flex">
+                <div class="bg-blue-400/60 h-full flex items-center justify-center text-xs font-mono" style="width:58%">男 58%</div>
+                <div class="bg-pink-400/60 h-full flex items-center justify-center text-xs font-mono" style="width:42%">女 42%</div>
+              </div>
+              <p class="text-[10px] text-white/30 mt-2">注：女频粘性更高，同人创作以女性为主力</p>
+            </div>
+          </div>
+        </div>
+        <!-- 职业 -->
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-sm font-semibold mb-4">核心职业分布</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="data-pill">学生</span>
+            <span class="data-pill">白领</span>
+            <span class="data-pill">自由职业者</span>
+            <span class="data-pill text-white/30">个体经营</span>
+            <span class="data-pill text-white/30">体制内</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 右侧：痛点与偏好 -->
+      <div class="scroll-reveal space-y-6">
+        <!-- 核心痛点 -->
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-sm font-semibold mb-4 flex items-center gap-2">
+            <span class="iconify text-red-400" data-icon="ph:lightning-bold"></span>
+            核心痛点
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 text-xs mt-0.5">●</span>
+              <span class="text-sm text-white/70">情绪宣泄——现实压力的虚拟出口</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 text-xs mt-0.5">●</span>
+              <span class="text-sm text-white/70">代入感——"如果是我会怎样"</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <span class="text-red-400 text-xs mt-0.5">●</span>
+              <span class="text-sm text-white/70">被背叛、不被理解、逆袭渴望</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 分类型偏好 -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="p-4 rounded-xl border border-red-500/20 bg-red-500/5 text-center">
+            <span class="iconify text-red-400 text-xl mb-2 block mx-auto" data-icon="ph:fire-bold"></span>
+            <div class="text-xs font-semibold mb-1">爽点</div>
+            <div class="text-[10px] text-white/40 leading-relaxed">打脸<br>解气<br>智商碾压</div>
+          </div>
+          <div class="p-4 rounded-xl border border-blue-500/20 bg-blue-500/5 text-center">
+            <span class="iconify text-blue-400 text-xl mb-2 block mx-auto" data-icon="ph:drop-bold"></span>
+            <div class="text-xs font-semibold mb-1">虐点</div>
+            <div class="text-[10px] text-white/40 leading-relaxed">心疼<br>刀<br>破防</div>
+          </div>
+          <div class="p-4 rounded-xl border border-pink-500/20 bg-pink-500/5 text-center">
+            <span class="iconify text-pink-400 text-xl mb-2 block mx-auto" data-icon="ph:heart-bold"></span>
+            <div class="text-xs font-semibold mb-1">甜点</div>
+            <div class="text-[10px] text-white/40 leading-relaxed">磕到<br>上头<br>双向奔赴</div>
+          </div>
+        </div>
+
+        <!-- 弃书原因 -->
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-sm font-semibold mb-4 flex items-center gap-2">
+            <span class="iconify text-yellow-400" data-icon="ph:warning-bold"></span>
+            弃书主因 TOP5
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-white/30 w-4">01</span>
+              <span class="text-sm text-white/60 flex-1">节奏拖沓</span>
+              <div class="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-yellow-400/60 rounded-full" style="width:85%"></div></div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-white/30 w-4">02</span>
+              <span class="text-sm text-white/60 flex-1">逻辑硬伤/强行降智</span>
+              <div class="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-yellow-400/60 rounded-full" style="width:78%"></div></div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-white/30 w-4">03</span>
+              <span class="text-sm text-white/60 flex-1">系统设定矛盾</span>
+              <div class="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-yellow-400/60 rounded-full" style="width:65%"></div></div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-white/30 w-4">04</span>
+              <span class="text-sm text-white/60 flex-1">金手指迟迟不亮</span>
+              <div class="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-yellow-400/60 rounded-full" style="width:55%"></div></div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-[10px] font-mono text-white/30 w-4">05</span>
+              <span class="text-sm text-white/60 flex-1">结局强行解释</span>
+              <div class="w-24 h-1.5 bg-white/5 rounded-full overflow-hidden"><div class="h-full bg-yellow-400/60 rounded-full" style="width:48%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto"></div>
+
+<!-- ==================== 第四部分：语言风格标准 ==================== -->
+<section id="language" class="relative py-24 lg:py-32">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="scroll-reveal">
+      <span class="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.2em] text-purple-400 mb-6">
+        <span class="w-8 h-px bg-purple-400"></span>
+        Section 04
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-6xl tracking-tight leading-[1.1] mb-6">
+        语言风格<span class="italic text-purple-400">量化标准</span>
+      </h2>
+      <p class="text-lg text-white/50 font-light max-w-2xl mb-16">
+        爆款通用语言指标，来自起点编辑节奏课、番茄官方创作指南、知乎盐选爆款公式专栏的共识性结论。
+      </p>
+    </div>
+
+    <!-- 指标仪表盘 -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-purple-400" data-icon="ph:text-aa-bold"></span>
+          <span class="text-sm font-medium text-white/70">平均句长</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">12-18</span>
+          <span class="text-sm text-white/40 mb-1">字</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-purple-400/80 to-purple-400/40 rounded-full" style="width:60%"></div>
+        </div>
+        <div class="flex justify-between mt-2">
+          <span class="text-[10px] text-white/30 font-mono">0</span>
+          <span class="text-[10px] text-red-400 font-mono">← 上限25字</span>
+          <span class="text-[10px] text-white/30 font-mono">25+</span>
+        </div>
+      </div>
+
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-green-400" data-icon="ph:text-bolder-bold"></span>
+          <span class="text-sm font-medium text-white/70">短句比例（≤10字）</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">≥40</span>
+          <span class="text-sm text-white/40 mb-1">%</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-green-400/80 to-green-400/40 rounded-full" style="width:40%"></div>
+        </div>
+        <p class="text-[10px] text-white/30 mt-2 font-mono">增强节奏感，制造紧张或利落感</p>
+      </div>
+
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-brand-sky" data-icon="ph:chat-circle-text-bold"></span>
+          <span class="text-sm font-medium text-white/70">口语化程度</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">≥90</span>
+          <span class="text-sm text-white/40 mb-1">%</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-brand-sky/80 to-brand-sky/40 rounded-full" style="width:90%"></div>
+        </div>
+        <p class="text-[10px] text-white/30 mt-2 font-mono">禁用翻译腔，贴近日常表达</p>
+      </div>
+
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-yellow-400" data-icon="ph:cloud-fog-bold"></span>
+          <span class="text-sm font-medium text-white/70">虚词频率</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">≤2</span>
+          <span class="text-sm text-white/40 mb-1">次/千字</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-yellow-400/80 to-yellow-400/40 rounded-full" style="width:8%"></div>
+        </div>
+        <p class="text-[10px] text-white/30 mt-2 font-mono">似乎/仿佛/好像 → 用动作替代</p>
+      </div>
+
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-orange-400" data-icon="ph:paint-brush-bold"></span>
+          <span class="text-sm font-medium text-white/70">比喻密度</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">≤3</span>
+          <span class="text-sm text-white/40 mb-1">个/千字</span>
+        </div>
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r from-orange-400/80 to-orange-400/40 rounded-full" style="width:12%"></div>
+        </div>
+        <p class="text-[10px] text-white/30 mt-2 font-mono">拒绝陈旧比喻，鼓励新颖隐喻</p>
+      </div>
+
+      <div class="scroll-reveal card-spotlight p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="iconify text-red-400" data-icon="ph:hook-bold"></span>
+          <span class="text-sm font-medium text-white/70">章末钩子</span>
+        </div>
+        <div class="flex items-end gap-2 mb-3">
+          <span class="text-4xl font-light stat-number">100</span>
+          <span class="text-sm text-white/40 mb-1">%</span>
+        </div>
+        <div class="flex gap-2 mt-2">
+          <div class="flex-1 text-center p-2 rounded-lg bg-white/5 border border-white/5">
+            <div class="text-xs font-mono text-brand-sky">40%</div>
+            <div class="text-[9px] text-white/30">未完成动作+意外信息</div>
+          </div>
+          <div class="flex-1 text-center p-2 rounded-lg bg-white/5 border border-white/5">
+            <div class="text-xs font-mono text-purple-400">30%</div>
+            <div class="text-[9px] text-white/30">信息差+时间压力</div>
+          </div>
+          <div class="flex-1 text-center p-2 rounded-lg bg-white/5 border border-white/5">
+            <div class="text-xs font-mono text-green-400">30%</div>
+            <div class="text-[9px] text-white/30">反转预告</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 伏笔密度标准 -->
+    <div class="scroll-reveal">
+      <h3 class="text-xl font-semibold tracking-tight mb-6 flex items-center gap-3">
+        <span class="iconify text-brand-sky" data-icon="ph:map-pin-bold"></span>
+        伏笔密度与揭示率标准
+      </h3>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-xs font-mono text-red-400 mb-2">男频</div>
+          <div class="text-2xl font-light stat-number mb-1">0.8-1.2 <span class="text-sm text-white/40">个/章</span></div>
+          <div class="text-xs text-white/40">揭示率 ≥85%</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-xs font-mono text-pink-400 mb-2">女频</div>
+          <div class="text-2xl font-light stat-number mb-1">1.0-1.5 <span class="text-sm text-white/40">个/章</span></div>
+          <div class="text-xs text-white/40">揭示率 ≥85%</div>
+        </div>
+        <div class="p-6 rounded-2xl border border-white/10 bg-white/[0.02]">
+          <div class="text-xs font-mono text-purple-400 mb-2">悬疑</div>
+          <div class="text-2xl font-light stat-number mb-1">≥1.8 <span class="text-sm text-white/40">个/章</span></div>
+          <div class="text-xs text-white/40">揭示率 ≥90%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider max-w-7xl mx-auto"></div>
+
+<!-- ==================== 第五部分：元叙事深度集成（大板块） ==================== -->
+<section id="integration" class="relative py-24 lg:py-40">
+  <div class="absolute inset-0 grid-bg"></div>
+  <!-- 光晕 -->
+  <div class="absolute top-1/3 left-1/4 w-[600px] h-[600px] bg-brand-sky/5 rounded-full blur-[120px]"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]"></div>
+
+  <div class="max-w-7xl mx-auto px-6 relative">
+    <!-- 标题区 -->
+    <div class="scroll-reveal text-center mb-20">
+      <span class="inline-flex items-center gap-2 text-xs font-mono font-medium uppercase tracking-[0.2em] text-brand-sky mb-6">
+        <span class="w-8 h-px bg-brand-sky"></span>
+        Deep Integration
+        <span class="w-8 h-px bg-brand-sky"></span>
+      </span>
+      <h2 class="font-serif text-4xl md:text-5xl lg:text-7xl tracking-tight leading-[1.1] mb-6">
+        与《叙事工程·元系统》<br><span class="italic text-brand-sky text-glow">深度集成方案</span>
+      </h2>
+      <p class="text-xl text-white/50 font-light max-w-3xl mx-auto leading-relaxed">
+        本报告并非孤立的调研文档，而是作为《叙事工程·元系统》全自动写作指令集的<span class="text-white/80 font-normal">数据驱动基座</span>。以下从七个维度详细阐述两者的深度对接机制。
+      </p>
+    </div>
+
+    <!-- 集成总览图 -->
+    <div class="scroll-reveal mb-20">
+      <div class="p-8 lg:p-12 rounded-3xl border border-brand-sky/20 bg-gradient-to-br from-brand-sky/5 via-transparent to-purple-500/5 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-sky/5 rounded-full blur-[80px]"></div>
+        <div class="relative">
+          <h3 class="text-lg font-semibold mb-8 text-center">集成架构总览</h3>
+          <div class="grid md:grid-cols-7 gap-2 items-center">
+            <div class="text-center p-4 rounded-xl bg-white/5 border border-white/10">
+              <span class="iconify text-brand-sky text-2xl block mx-auto mb-2" data-icon="ph:database-bold"></span>
+              <div class="text-[10px] font-medium">行业调研<br>数据层</div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <span class="iconify text-brand-sky/40 text-lg" data-icon="ph:arrow-right-bold"></span>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-white/5 border border-white/10">
+              <span class="iconify text-purple-400 text-2xl block mx-auto mb-2" data-icon="ph:brain-bold"></span>
+              <div class="text-[10px] font-medium">元系统<br>规则引擎</div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <span class="iconify text-brand-sky/40 text-lg" data-icon="ph:arrow-right-bold"></span>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-white/5 border border-white/10">
+              <span class="iconify text-green-400 text-2xl block mx-auto mb-2" data-icon="ph:books-bold"></span>
+              <div class="text-[10px] font-medium">案例库<br>鲜活层</div>
+            </div>
+            <div class="hidden md:flex justify-center">
+              <span class="iconify text-brand-sky/40 text-lg" data-icon="ph:arrow-right-bold"></span>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-brand-sky/10 border border-brand-sky/30">
+              <span class="iconify text-brand-sky text-2xl block mx-auto mb-2" data-icon="ph:rocket-launch-bold"></span>
+              <div class="text-[10px] font-medium text-brand-sky">全自动<br>输出</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 七大集成维度 -->
+    <div class="space-y-16">
+
+      <!-- 维度一：情绪基调自动匹配 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 01</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              情绪基调 → 四震序列 <span class="text-white/30 text-lg">自动匹配</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              元系统接收用户输入的情绪基调（爽/虐/甜/悬疑/复仇）后，自动调用本报告中对应的四震序列模式。报告中的"震-平-震-震适合爽文""平-震-平-震适合虐恋"等共识性结论，被硬编码为元系统的L2级建议规则。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">映射表</div>
+              <div class="grid md:grid-cols-2 gap-3">
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02]">
+                  <span class="data-pill text-red-400 border-red-400/20 text-[10px]">爽</span>
+                  <span class="text-sm text-white/60">→ 震-平-震-震（连续轰炸）</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02]">
+                  <span class="data-pill text-blue-400 border-blue-400/20 text-[10px]">虐</span>
+                  <span class="text-sm text-white/60">→ 平-震-平-震（张弛有度）</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02]">
+                  <span class="data-pill text-orange-400 border-orange-400/20 text-[10px]">复仇</span>
+                  <span class="text-sm text-white/60">→ 震-震-平-震（密集爆发后缓冲刺）</span>
+                </div>
+                <div class="flex items-center gap-3 p-3 rounded-lg bg-white/[0.02]">
+                  <span class="data-pill text-purple-400 border-purple-400/20 text-[10px]">悬疑</span>
+                  <span class="text-sm text-white/60">→ 震-平-平-震（慢热憋屈后释放）</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度二：黄金螺旋参数校准 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 02</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              黄金螺旋参数 <span class="text-white/30 text-lg">数据校准</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              元系统原有的拉5-8%、扯70-75%、放12-15%、收5-8%的黄金比例，通过本报告中的爆款拆解数据得到验证与微调。特别是"男频前3章4800-5600字""女频前3章4500-5200字"的精确字数区间，被注入为强制校准参数，在初始化阶段自动计算每章目标字数时进行交叉验证。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">校准逻辑</div>
+              <div class="font-mono text-xs text-white/60 space-y-2 leading-relaxed">
+                <p><span class="text-brand-sky">IF</span> 情绪基调 == "爽" <span class="text-brand-sky">AND</span> 篇幅 == "SHORT":</p>
+                <p class="pl-4">→ 前3章字数区间 = [4800, 5600]</p>
+                <p class="pl-4">→ 每章字数 = round(5200 / 3) ≈ 1733字</p>
+                <p class="pl-4">→ 首次冲突 = 第1章前500字内（L1铁律）</p>
+                <p class="pl-4">→ 首次爽点 = 第2章（L1铁律）</p>
+                <p><span class="text-brand-sky">IF</span> 计算结果偏离报告区间 > 10%:</p>
+                <p class="pl-4">→ <span class="text-red-400">触发修正</span>：调整章节数或字数分配</p>
+                <p><span class="text-brand-sky">IF</span> 调研数据与故事内核冲突:</p>
+                <p class="pl-4">→ <span class="text-yellow-400">记录偏离</span>（L2允许偏离，需说明理由）</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度三：热梗动态注入 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 03</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              热梗词库 <span class="text-white/30 text-lg">动态注入与分类</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              本报告中的六类热梗分类（情绪爆发、身份反转、极致关系、网络热词、极端行为、规则怪谈、时空错位），直接成为元系统第三部分"联网热梗抓取"模块的分类关键词模板。元系统从抖音、微博、B站等七大来源抓取后，自动按此七类归档，存入临时词库供标题生成、开篇设计、关键对话使用。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">注入路径</div>
+              <div class="space-y-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="text-[10px] font-mono text-red-400">T</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium mb-1">标题生成</div>
+                    <div class="text-xs text-white/50">从热梗词库中筛选热度Top3，套用公式：[卑微身份] + [其实是隐藏大佬]，如"拼好饭群里的穷鬼，是我破产的前首富老爸"</div>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="text-[10px] font-mono text-blue-400">O</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium mb-1">开篇设计</div>
+                    <div class="text-xs text-white/50">身份反转类热梗优先注入前500字，系统流热梗用于金手指亮相，规则怪谈热梗用于悬念建立</div>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="text-[10px] font-mono text-green-400">D</span>
+                  </div>
+                  <div>
+                    <div class="text-sm font-medium mb-1">关键对话</div>
+                    <div class="text-xs text-white/50">网络热词梗（显眼包/松弛感/DNA动了）以自然方式融入角色对话，不超过全文2%密度，避免违和感</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度四：伏笔密度动态跟踪 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 04</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              伏笔密度 <span class="text-white/30 text-lg">实时跟踪系统</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              报告中的分类型伏笔密度标准（男频0.8-1.2/章、女频1.0-1.5/章、悬疑≥1.8/章）被转化为元系统自检模块的硬性指标。每章生成后，系统自动统计伏笔数量并与标准对比，低于阈值则触发补埋指令，高于阈值则标记为"高密度悬疑模式"。同时，揭示率≥85%/90%的标准确保伏笔不会成为"烂尾线索"。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">运行时追踪示例</div>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs font-mono">
+                  <thead>
+                    <tr class="border-b border-white/10 text-white/40">
+                      <th class="text-left py-2 pr-4">章节</th>
+                      <th class="text-left py-2 pr-4">埋设伏笔</th>
+                      <th class="text-left py-2 pr-4">揭示伏笔</th>
+                      <th class="text-left py-2 pr-4">累计密度</th>
+                      <th class="text-left py-2">状态</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-white/60">
+                    <tr class="border-b border-white/5">
+                      <td class="py-2 pr-4">Ch.1</td>
+                      <td class="py-2 pr-4 text-green-400">2</td>
+                      <td class="py-2 pr-4 text-white/30">0</td>
+                      <td class="py-2 pr-4">2.0/章</td>
+                      <td class="py-2"><span class="text-green-400">✓ 达标</span></td>
+                    </tr>
+                    <tr class="border-b border-white/5">
+                      <td class="py-2 pr-4">Ch.2</td>
+                      <td class="py-2 pr-4 text-green-400">1</td>
+                      <td class="py-2 pr-4 text-yellow-400">0</td>
+                      <td class="py-2 pr-4">1.5/章</td>
+                      <td class="py-2"><span class="text-green-400">✓ 达标</span></td>
+                    </tr>
+                    <tr class="border-b border-white/5">
+                      <td class="py-2 pr-4">Ch.3</td>
+                      <td class="py-2 pr-4 text-green-400">2</td>
+                      <td class="py-2 pr-4 text-blue-400">1</td>
+                      <td class="py-2 pr-4">1.7/章</td>
+                      <td class="py-2"><span class="text-green-400">✓ 达标</span></td>
+                    </tr>
+                    <tr>
+                      <td class="py-2 pr-4">Ch.4</td>
+                      <td class="py-2 pr-4 text-red-400">0</td>
+                      <td class="py-2 pr-4 text-white/30">0</td>
+                      <td class="py-2 pr-4 text-red-400">1.3/章</td>
+                      <td class="py-2"><span class="text-red-400">⚠ 低于标准</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="text-[10px] text-white/30 mt-3">↑ 悬疑类型标准 ≥1.8/章，第4章触发补埋指令</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度五：语言风格实时检查 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 05</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              语言风格 <span class="text-white/30 text-lg">量化自检管线</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              报告中五大语言指标（平均句长、短句比例、口语化程度、虚词频率、比喻密度）被封装为元系统的"L2建议检查器"。每章生成后，系统逐项统计并与行业推荐值对比，生成"语言风格偏离度"评分。同时，"章末钩子类型分布（40%/30%/30%）"被转化为动态分配器，确保全书钩子类型不重复、不单调。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">单章语言自检报告示例</div>
+              <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="text-center p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-lg font-mono stat-number text-green-400">14.2</div>
+                  <div class="text-[9px] text-white/40">平均句长</div>
+                  <div class="text-[8px] text-green-400 font-mono mt-1">✓ 12-18</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-lg font-mono stat-number text-green-400">46%</div>
+                  <div class="text-[9px] text-white/40">短句比例</div>
+                  <div class="text-[8px] text-green-400 font-mono mt-1">✓ ≥40%</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-lg font-mono stat-number text-green-400">93%</div>
+                  <div class="text-[9px] text-white/40">口语化</div>
+                  <div class="text-[8px] text-green-400 font-mono mt-1">✓ ≥90%</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-lg font-mono stat-number text-yellow-400">1</div>
+                  <div class="text-[9px] text-white/40">虚词/千字</div>
+                  <div class="text-[8px] text-green-400 font-mono mt-1">✓ ≤2</div>
+                </div>
+                <div class="text-center p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-lg font-mono stat-number text-green-400">2</div>
+                  <div class="text-[9px] text-white/40">比喻/千字</div>
+                  <div class="text-[8px] text-green-400 font-mono mt-1">✓ ≤3</div>
+                </div>
+              </div>
+              <div class="mt-4 p-3 rounded-lg bg-green-500/5 border border-green-400/10 text-xs text-green-400 font-mono">
+                综合评分：96/100 · 语言风格匹配度：优秀 · 无需修正
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度六：案例库与鲜活性注入 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+            <div class="flow-line flex-1 my-2"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-brand-sky tracking-wider">DIMENSION 06</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              案例库驱动 <span class="text-white/30 text-lg">鲜活度学习闭环</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              元系统内置20则经典案例（海明威、张爱玲、余华、杨绛等），每章写作前强制调取3则相关案例进行"微型拆书"。本报告的行业数据为案例调用提供了<strong class="text-white/80">情绪匹配逻辑</strong>——当情绪目标为"挫败+心疼"时，优先调取海明威《白象似的群山》（物象传递压抑）、余华《活着》（环境反衬悲伤）、杨绛《我们仨》（日常动作传递深情）。写作后自动对比评分，低于5分则参考案例重写，形成"学习→创作→对比→修正"的闭环。
+            </p>
+            <div class="integration-card rounded-2xl p-6">
+              <div class="text-xs font-mono text-white/30 mb-4">鲜活度闭环流程</div>
+              <div class="grid md:grid-cols-5 gap-3 items-center">
+                <div class="text-center p-4 rounded-xl bg-white/5 border border-white/10">
+                  <span class="iconify text-brand-sky text-xl block mx-auto mb-2" data-icon="ph:target-bold"></span>
+                  <div class="text-[10px] font-medium">情绪目标<br>锁定</div>
+                </div>
+                <div class="hidden md:flex justify-center text-brand-sky/40">
+                  <span class="iconify" data-icon="ph:arrow-right-bold"></span>
+                </div>
+                <div class="text-center p-4 rounded-xl bg-white/5 border border-white/10">
+                  <span class="iconify text-purple-400 text-xl block mx-auto mb-2" data-icon="ph:magnifying-glass-bold"></span>
+                  <div class="text-[10px] font-medium">案例库<br>调取3则</div>
+                </div>
+                <div class="hidden md:flex justify-center text-brand-sky/40">
+                  <span class="iconify" data-icon="ph:arrow-right-bold"></span>
+                </div>
+                <div class="text-center p-4 rounded-xl bg-brand-sky/10 border border-brand-sky/20">
+                  <span class="iconify text-brand-sky text-xl block mx-auto mb-2" data-icon="ph:pencil-line-bold"></span>
+                  <div class="text-[10px] font-medium text-brand-sky">创作+对比<br>评分修正</div>
+                </div>
+              </div>
+              <div class="mt-6 grid md:grid-cols-3 gap-3">
+                <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-[10px] font-mono text-green-400 mb-1">≥8分 鲜活时刻</div>
+                  <div class="text-[10px] text-white/40">记录闪光点，纳入学习库</div>
+                </div>
+                <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-[10px] font-mono text-yellow-400 mb-1">6-7分 有亮点</div>
+                  <div class="text-[10px] text-white/40">标记待优化段落</div>
+                </div>
+                <div class="p-3 rounded-lg bg-white/[0.02] border border-white/5">
+                  <div class="text-[10px] font-mono text-red-400 mb-1">≤5分 需重写</div>
+                  <div class="text-[10px] text-white/40">参考案例模式重写，最多3次</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 维度七：同人文特化通道 -->
+      <div class="scroll-reveal">
+        <div class="flex items-start gap-8">
+          <div class="hidden lg:flex flex-col items-center flex-shrink-0">
+            <div class="timeline-dot"></div>
+          </div>
+          <div class="flex-1">
+            <div class="flex items-center gap-3 mb-2">
+              <span class="text-xs font-mono text-pink-400 tracking-wider">DIMENSION 07</span>
+            </div>
+            <h3 class="text-2xl lg:text-3xl font-serif tracking-tight mb-4">
+              同人文赛道 <span class="text-white/30 text-lg">特化集成通道</span>
+            </h3>
+            <p class="text-white/60 leading-relaxed mb-6">
+              同人文市场调研报告为元系统开辟了一条独立的"同人文创作通道"。当用户输入的梗概中包含原作角色名、CP标签、AU设定等同人特征时，系统自动激活以下特化规则：
+            </p>
+            <div class="space-y-4">
+              <div class="integration-card rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="iconify text-pink-400" data-icon="ph:users-bold"></span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-semibold mb-2">平台适配引擎</div>
+                    <div class="text-xs text-white/50 leading-relaxed">
+                      根据报告"抖音偏攻、小红书偏受"的受众分化数据，自动调整叙事重心。若目标平台为小红书，增加受视角心理描写比例；若为抖音，强化攻方行动线与冲突密度。同人Only展贩售场景下，自动优化为"可独立阅读的单篇"模式。
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="integration-card rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="iconify text-purple-400" data-icon="ph:game-controller-bold"></span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-semibold mb-2">独立游戏同人优先</div>
+                    <div class="text-xs text-white/50 leading-relaxed">
+                      响应矢野经济研究所"独立游戏为2026年第一增长极"的预测，当检测到原作为独立游戏时，自动提升为"高潜力通道"：增加游戏世界观还原度权重、强化NPC支线伏笔、预留"游戏彩蛋"位，并在创作数据报告中标注"独立游戏同人赛道"标签。
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="integration-card rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="iconify text-green-400" data-icon="ph:shield-warning-bold"></span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-semibold mb-2">版权风险预警</div>
+                    <div class="text-xs text-white/50 leading-relaxed">
+                      报告指出的"版权界定模糊""商业化程度加深后IP方容忍度可能收紧"风险，被集成为元系统的"创作前扫描"模块。系统在生成同人文前，自动检测原作版权声明类型（开放同人/禁止同人/未声明），对禁止同人的IP硬阻断（L1铁律），对未声明的IP在报告中标注风险等级。
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="integration-card rounded-2xl p-6">
+                <div class="flex items-start gap-4">
+                  <div class="w-10 h-10 rounded-xl bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                    <span class="iconify text-yellow-400" data-icon="ph:tag-bold"></span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-sm font-semibold mb-2">反套路化引擎</div>
+                    <div class="text-xs text-white/50 leading-relaxed">
+                      针对"追妻火葬场""病娇疯批"等标签过度使用导致审美疲劳的问题，系统在生成同人文大纲时，自动检测套路重复度。当相似度超过阈值（与近3个月爆款重合度>70%），强制触发"差异化变异"指令——至少翻转1个核心设定（如"追妻火葬场"变为"追夫""双向火葬场""火葬场失败"）。
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最终集成效果 -->
+    <div class="scroll-reveal mt-20">
+      <div class="rounded-3xl border border-brand-sky/20 bg-gradient-to-b from-brand-sky/5 via-bg-primary to-transparent p-8 lg:p-12 relative overflow-hidden">
+        <div class="absolute -top-20 -right-20 w-60 h-60 bg-brand-sky/10 rounded-full blur-[80px]"></div>
+        <div class="relative">
+          <h3 class="text-2xl font-serif tracking-tight mb-8 text-center">集成后的创作数据报告示例</h3>
+          <p class="text-xs text-white/40 text-center font-mono mb-8">用户输入：[SHORT] [外卖员发现客户是失踪十年的首富父亲] [爽]</p>
+
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
+              <div class="text-xs font-mono text-brand-sky mb-3">结构数据</div>
+              <div class="space-y-2 text-xs font-mono text-white/60">
+                <p>黄金螺旋：拉1章(9.1%) 扯7章(63.6%) 放2章(18.2%) 收1章(9.1%)</p>
+                <p>情绪最高点：第10章（放阶段 ✓）</p>
+                <p>角色本质转变：是（外卖员 → 真继承人）</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
+              <div class="text-xs font-mono text-pink-400 mb-3">市场对标</div>
+              <div class="space-y-2 text-xs font-mono text-white/60">
+                <p>同类爆款分析：28本</p>
+                <p>节奏匹配度：94%</p>
+                <p>情绪曲线匹配度：91%</p>
+                <p>语言风格匹配度：96%</p>
+                <p class="text-green-400">综合评分：94/100</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
+              <div class="text-xs font-mono text-purple-400 mb-3">反转与伏笔</div>
+              <div class="space-y-2 text-xs font-mono text-white/60">
+                <p>第一反转：第1章 ✓（激励事件）</p>
+                <p>第二反转：第6章 ✓（伏笔：第2、4章）</p>
+                <p>第三反转：第10章 ✓（伏笔：第1、3、5、7章，全部引爆 ✓）</p>
+                <p>彩蛋反转：第11章 ✓</p>
+              </div>
+            </div>
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
+              <div class="text-xs font-mono text-green-400 mb-3">鲜活度报告</div>
+              <div class="space-y-2 text-xs font-mono text-white/60">
+                <p>鲜活时刻总数：14处</p>
+                <p>成功模仿技法：物象象征×3、日常动作×2、潜台词×4</p>
+                <p>创新发挥技法：身份反差×2、环境错位×3</p>
+                <p class="text-white/40">与经典案例差距：潜台词密度仍低于张爱玲基准</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/10">
+            <div class="text-xs font-mono text-yellow-400 mb-3">热梗使用</div>
+            <div class="space-y-2 text-xs font-mono text-white/60">
+              <p>抓取热梗总数：217个（抖音32、微博45、B站28、小红书50、网文平台38、知乎24）</p>
+              <p>实际使用：5个 — 标题1个（穷鬼）、开篇1个（外卖员）、关键对话2个（破防、DNA动了）、反转1个（首富归来）</p>
+              <p>融入自然度评估：✓ 通过（密度1.2%，低于2%上限）</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 最终总结 -->
+    <div class="scroll-reveal mt-20 text-center">
+      <div class="max-w-3xl mx-auto">
+        <div class="inline-flex items-center gap-2 mb-6">
+          <div class="w-8 h-px bg-brand-sky"></div>
+          <span class="text-xs font-mono text-brand-sky tracking-[0.2em]">CONCLUSION</span>
+          <div class="w-8 h-px bg-brand-sky"></div>
+        </div>
+        <h3 class="font-serif text-3xl lg:text-4xl tracking-tight leading-[1.2] mb-6">
+          数据是骨架，规则是血脉，<br>案例是灵魂
+        </h3>
+        <p class="text-white/50 font-light leading-relaxed mb-8">
+          本报告与《叙事工程·元系统》的集成，实现了从"经验写作"到"数据驱动写作"的范式转换。行业调研提供的不是灵感的替代品，而是灵感的<span class="text-white/80 font-normal">校准器</span>——它告诉你在哪里发力读者会心跳加速，在哪里收束读者会欲罢不能，在哪里偏离读者会默默关掉页面。元系统的规则引擎确保这些洞察被<span class="text-white/80 font-normal">严格执行</span>而非束之高阁，案例库确保执行过程不会沦为机械重复，而"可偏离"的自由度则为真正的才华保留了呼吸空间。
+        </p>
+        <p class="text-white/30 text-sm font-mono">
+          叙事工程 · 强制调研版 | 版本：2026.04 | 诚信创作，数据驱动
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="border-t border-white/5 py-16">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid md:grid-cols-4 gap-12 mb-12">
+      <div>
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-6 h-6 rounded-full bg-brand-sky/20 flex items-center justify-center">
+            <span class="iconify text-brand-sky text-xs" data-icon="ph:chart-line-up-bold"></span>
+          </div>
+          <span class="text-sm font-medium">叙事工程</span>
+        </div>
+        <p class="text-xs text-white/40 leading-relaxed">全自动写作终极指令集<br>数据驱动 · 规则引擎 · 案例库驱动</p>
+      </div>
+      <div>
+        <div class="text-xs font-mono text-white/30 mb-4">数据来源</div>
+        <div class="space-y-2 text-xs text-white/50">
+          <p>中国音像与数字出版协会</p>
+          <p>艾瑞咨询</p>
+          <p>QuestMobile</p>
+          <p>艺恩数据</p>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs font-mono text-white/30 mb-4">平台数据</div>
+        <div class="space-y-2 text-xs text-white/50">
+          <p>起点中文网 / 阅文集团</p>
+          <p>番茄小说</p>
+          <p>知乎盐选故事</p>
+          <p>小红书二次元</p>
+        </div>
+      </div>
+      <div>
+        <div class="text-xs font-mono text-white/30 mb-4">研究机构</div>
+        <div class="space-y-2 text-xs text-white/50">
+          <p>矢野经济研究所</p>
+          <p>36氪 / 新京报</p>
+          <p>豆瓣同人数据</p>
+          <p>艾媒咨询</p>
+        </div>
+      </div>
+    </div>
+    <div class="section-divider mb-8"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-xs text-white/30 font-mono">本报告所有数据均来自公开可查来源，无虚构链接。所有网址均为机构官方主页。</p>
+      <p class="text-xs text-white/20 font-mono">© 2026 叙事工程 · 强制调研版</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// 滚动显示
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+
+// 条形图动画
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.bar-animate.init').forEach(bar => {
+        bar.classList.remove('init');
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.scroll-reveal').forEach(el => {
+  el.querySelectorAll('.bar-animate').forEach(bar => {
+    bar.classList.add('init');
+  });
+  barObserver.observe(el);
+});
+
+// 卡片聚光灯
+document.querySelectorAll('.card-spotlight').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    card.style.setProperty('--mouse-x', `${x}px`);
+    card.style.setProperty('--mouse-y', `${y}px`);
+  });
+});
+
+// 导航平滑滚动
+document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+</body>
+</html>

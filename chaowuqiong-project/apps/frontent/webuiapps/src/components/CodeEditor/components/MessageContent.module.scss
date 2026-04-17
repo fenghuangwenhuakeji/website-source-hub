@@ -1,0 +1,179 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.messageContent {
+  font-size: 13px;
+  line-height: 1.7;
+  color: cyber.$color-text;
+
+  // 标题
+  .heading1 {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: cyber.$color-accent;
+    margin: 16px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(250, 234, 95, 0.2);
+    transform: skewX(cyber.$skew-angle);
+  }
+
+  .heading2 {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: cyber.$color-accent;
+    margin: 14px 0 10px;
+    padding-left: 12px;
+    border-left: 3px solid cyber.$color-accent;
+  }
+
+  .heading3 {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: cyber.$color-text;
+    margin: 12px 0 8px;
+  }
+
+  // 段落
+  p {
+    margin: 8px 0;
+  }
+
+  // 代码块
+  .codeBlock {
+    margin: 12px 0;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+
+    .codeLang {
+      padding: 6px 12px;
+      background: rgba(250, 234, 95, 0.1);
+      border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: cyber.$color-accent;
+    }
+
+    pre {
+      padding: 12px;
+      margin: 0;
+      overflow-x: auto;
+
+      code {
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #e0e0e0;
+        background: none;
+        padding: 0;
+      }
+    }
+  }
+
+  // 行内代码
+  code {
+    background: rgba(250, 234, 95, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    color: cyber.$color-accent;
+  }
+
+  // 引用块
+  blockquote {
+    margin: 12px 0;
+    padding: 12px 16px;
+    background: rgba(250, 234, 95, 0.05);
+    border-left: 3px solid cyber.$color-accent;
+    color: cyber.$color-text-secondary;
+    font-style: italic;
+  }
+
+  // 列表
+  ul, ol {
+    margin: 8px 0;
+    padding-left: 24px;
+  }
+
+  li {
+    margin: 4px 0;
+  }
+
+  // 链接
+  a {
+    color: cyber.$color-accent;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(250, 234, 95, 0.3);
+    transition: all 0.2s;
+
+    &:hover {
+      border-bottom-color: cyber.$color-accent;
+    }
+  }
+
+  // 分隔线
+  .divider {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, cyber.$color-accent, transparent);
+    margin: 16px 0;
+  }
+
+  // 表格
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 12px;
+
+    th, td {
+      padding: 8px 12px;
+      border: 1px solid rgba(250, 234, 95, 0.2);
+      text-align: left;
+    }
+
+    th {
+      background: rgba(250, 234, 95, 0.1);
+      font-weight: 700;
+      color: cyber.$color-accent;
+    }
+
+    tr:nth-child(even) {
+      background: rgba(250, 234, 95, 0.03);
+    }
+  }
+
+  // 工具调用结果
+  .toolResult {
+    background: rgba(118, 247, 255, 0.1);
+    border: 1px solid rgba(118, 247, 255, 0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 12px;
+
+    &.success {
+      background: rgba(74, 222, 128, 0.1);
+      border-color: rgba(74, 222, 128, 0.3);
+    }
+
+    &.error {
+      background: rgba(255, 71, 87, 0.1);
+      border-color: rgba(255, 71, 87, 0.3);
+    }
+  }
+
+  // 强调
+  strong {
+    color: cyber.$color-accent;
+    font-weight: 700;
+  }
+
+  em {
+    color: rgba(250, 234, 95, 0.8);
+    font-style: italic;
+  }
+}

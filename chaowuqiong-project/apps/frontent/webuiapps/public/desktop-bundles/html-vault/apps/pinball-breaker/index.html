@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>弹球消砖</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-dark: #0d1117;
+  --bg-card: #161b22;
+  --bg-input: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-muted: #8b949e;
+  --accent: #f0883e;
+  --accent-light: #ffa657;
+  --success: #3fb950;
+  --danger: #f85149;
+  --step-active: #388bfd;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-dark);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.header {
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.logo { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.header-actions { display: flex; gap: 0.75rem; }
+.btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+.btn:hover { background: var(--border); }
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+.btn-primary:hover { background: var(--accent-light); }
+.main-container {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+.sidebar {
+  width: 280px;
+  background: var(--bg-card);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+.card {
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+.card h3 {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--accent);
+}
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+.stat-item {
+  text-align: center;
+  padding: 0.75rem 0.5rem;
+  background: var(--bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.stat-item .label { font-size: 0.7rem; color: var(--text-muted); }
+.stat-item .value { font-size: 1.5rem; font-weight: 700; color: var(--accent); margin-top: 0.15rem; }
+.stat-item .value.green { color: var(--success); }
+.stat-item .value.blue { color: var(--step-active); }
+.stat-item .value.red { color: var(--danger); }
+.lives-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+.life-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--danger);
+  transition: all 0.3s;
+}
+.life-dot.lost { background: var(--bg-card); border: 1px solid var(--border); }
+.speed-bar {
+  height: 6px;
+  background: var(--bg-card);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+.speed-bar .fill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.3s;
+  border-radius: 3px;
+}
+.tip-box {
+  background: rgba(56, 139, 253, 0.1);
+  border: 1px solid rgba(56, 139, 253, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 0.85rem;
+}
+.tip-box strong { color: var(--step-active); }
+.key-list { display: flex; flex-direction: column; gap: 0.4rem; }
+.key-row { display: flex; align-items: center; gap: 0.6rem; }
+.key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 28px;
+  padding: 0 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.key-row span { color: var(--text-muted); font-size: 0.8rem; }
+.powerup-legend { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; }
+.pu-row { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+.pu-icon {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.65rem; font-weight: 700; color: #000;
+  flex-shrink: 0;
+}
+.game-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+.canvas-wrapper {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  box-shadow: 0 0 40px rgba(240, 136, 62, 0.06);
+  max-width: 100%;
+}
+#gameCanvas {
+  display: block;
+  background: #0a0e14;
+  max-width: 100%;
+  height: auto;
+}
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(13, 17, 23, 0.88);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 10;
+}
+.overlay.hidden { display: none; }
+.overlay h2 { font-size: 2rem; color: var(--accent); margin-bottom: 0.5rem; }
+.overlay p { color: var(--text-muted); margin-bottom: 1.5rem; font-size: 0.95rem; }
+.overlay .final-score { font-size: 3rem; font-weight: 700; color: var(--accent); margin: 0.5rem 0 1rem; }
+.float-text {
+  position: absolute;
+  font-weight: 700;
+  font-size: 1rem;
+  pointer-events: none;
+  z-index: 20;
+  opacity: 1;
+}
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg-card);
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+}
+.history-item .rank {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 700;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.history-item .rank.gold { background: #f0883e; color: #000; }
+.history-item .rank.silver { background: #8b949e; color: #000; }
+.history-item .rank.bronze { background: #6e4a2a; color: #fff; }
+.mobile-controls { display: none; margin-top: 1rem; }
+.ctrl-row { display: flex; gap: 0.4rem; justify-content: center; }
+.d-btn {
+  width: 100px; height: 56px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.d-btn:active { background: var(--accent); color: #000; }
+@media (max-width: 900px) {
+  .main-container { flex-direction: column; }
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .sidebar .card { flex: 1; min-width: 180px; }
+  .sidebar .card.hide-mobile { display: none; }
+  .game-area { padding: 1rem; }
+  .mobile-controls { display: flex; flex-direction: column; align-items: center; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">弹球消砖</div>
+  <div class="header-actions">
+    <button class="btn" onclick="togglePause()">暂停</button>
+    <button class="btn btn-primary" onclick="resetGame()">重新开始</button>
+  </div>
+</header>
+
+<div class="main-container">
+  <nav class="sidebar">
+    <div class="card">
+      <h3>游戏数据</h3>
+      <div class="stat-grid">
+        <div class="stat-item">
+          <div class="label">当前得分</div>
+          <div class="value" id="scoreDisplay">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">最高记录</div>
+          <div class="value green" id="highScoreDisplay">0</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">当前关卡</div>
+          <div class="value blue" id="levelDisplay">1</div>
+        </div>
+        <div class="stat-item">
+          <div class="label">剩余砖块</div>
+          <div class="value" id="bricksDisplay">0</div>
+        </div>
+      </div>
+      <div class="lives-row" id="livesRow"></div>
+      <div style="margin-top: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+          <span style="color: var(--text-muted);">球速</span>
+          <span style="color: var(--accent);" id="speedLabel">1x</span>
+        </div>
+        <div class="speed-bar">
+          <div class="fill" id="speedFill" style="width: 20%;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card hide-mobile">
+      <h3>操作说明</h3>
+      <div class="key-list">
+        <div class="key-row"><span class="key">←</span><span class="key">→</span><span>移动挡板</span></div>
+        <div class="key-row"><span class="key">鼠标</span><span>移动挡板</span></div>
+        <div class="key-row"><span class="key">Space</span><span>发射球</span></div>
+        <div class="key-row"><span class="key">P</span><span>暂停 / 继续</span></div>
+      </div>
+    </div>
+
+    <div class="card hide-mobile">
+      <h3>道具说明</h3>
+      <div class="powerup-legend">
+        <div class="pu-row"><span class="pu-icon" style="background:#3fb950;">W</span><span style="color:var(--text-muted);">加宽挡板 8秒</span></div>
+        <div class="pu-row"><span class="pu-icon" style="background:#f85149;">P</span><span style="color:var(--text-muted);">穿透球 5秒</span></div>
+        <div class="pu-row"><span class="pu-icon" style="background:#ffa657;">+</span><span style="color:var(--text-muted);">额外生命 +1</span></div>
+        <div class="pu-row"><span class="pu-icon" style="background:#388bfd;">S</span><span style="color:var(--text-muted);">减速球 6秒</span></div>
+      </div>
+      <div class="tip-box" style="margin-top: 0.75rem;">
+        <strong>提示：</strong>砖块破碎时有概率掉落道具，用挡板接住即可生效
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>排行榜</h3>
+      <div id="historyList">
+        <p style="color: var(--text-muted); text-align: center; padding: 0.5rem; font-size: 0.8rem;">暂无记录</p>
+      </div>
+    </div>
+  </nav>
+
+  <main class="game-area">
+    <div>
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="gameCanvas" width="560" height="680"></canvas>
+        <div class="overlay" id="startOverlay">
+          <h2>弹球消砖</h2>
+          <p>移动挡板反弹弹球，消除所有砖块</p>
+          <button class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;" onclick="startGame()">开始游戏</button>
+        </div>
+        <div class="overlay hidden" id="pauseOverlay">
+          <h2>已暂停</h2>
+          <p>按 P 键或点击按钮继续</p>
+          <button class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;" onclick="togglePause()">继续游戏</button>
+        </div>
+        <div class="overlay hidden" id="gameOverOverlay">
+          <h2>游戏结束</h2>
+          <div class="final-score" id="finalScore">0</div>
+          <p id="gameOverMsg">再接再厉！</p>
+          <button class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;" onclick="resetGame()">再来一局</button>
+        </div>
+        <div class="overlay hidden" id="levelUpOverlay">
+          <h2 id="levelUpTitle">关卡通过</h2>
+          <p id="levelUpMsg">准备进入下一关</p>
+          <button class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;" onclick="nextLevel()">下一关</button>
+        </div>
+      </div>
+      <div class="mobile-controls">
+        <div class="ctrl-row">
+          <div class="d-btn" id="btnLeft">◀ 左移</div>
+          <div class="d-btn" id="btnLaunch" style="width:80px;">发射</div>
+          <div class="d-btn" id="btnRight">右移 ▶</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ========== 游戏常量 ==========
+var GW = 560;
+var GH = 680;
+var BCOLS = 10;
+var BROWS = 6;
+var BW = 50;
+var BH = 22;
+var BGAP = 4;
+var BOX = 12;
+var BOY = 60;
+var PAD_W_DEFAULT = 100;
+var PAD_W_WIDE = 160;
+var PAD_H = 14;
+var PAD_Y = 645;
+var BALL_R = 6;
+var BASE_SPEED = 5;
+
+// 砖块颜色和分值（每行）
+var B_COLORS = ['#f85149','#f0883e','#ffa657','#e3b341','#3fb950','#388bfd'];
+var B_SCORES = [70, 50, 40, 30, 20, 10];
+
+// 道具定义
+var PU_TYPES = [
+  { id: 'wide',   label: 'W', color: '#3fb950', desc: '加宽' },
+  { id: 'pierce', label: 'P', color: '#f85149', desc: '穿透' },
+  { id: 'life',   label: '+', color: '#ffa657', desc: '生命' },
+  { id: 'slow',   label: 'S', color: '#388bfd', desc: '减速' }
+];
+var PU_DROP_RATE = 0.18;
+
+// ========== 游戏状态 ==========
+var canvas = document.getElementById('gameCanvas');
+var ctx = canvas.getContext('2d');
+var canvasWrapper = document.getElementById('canvasWrapper');
+
+var paddle = { x: 0, w: PAD_W_DEFAULT, h: PAD_H, y: PAD_Y };
+var ball = { x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, launched: false };
+var bricks = [];
+var particles = [];
+var powerups = [];
+var trail = [];
+
+var score = 0;
+var lives = 3;
+var level = 1;
+var highScore = 0;
+var combo = 0;
+var maxCombo = 0;
+
+var gameRunning = false;
+var gamePaused = false;
+var ballLaunched = false;
+
+var wideTimer = 0;
+var pierceTimer = 0;
+var slowTimer = 0;
+
+var history = [];
+var animFrame = null;
+
+// 输入
+var keysDown = {};
+var mouseControl = false;
+var touchActive = false;
+var mobileLeft = false;
+var mobileRight = false;
+
+// ========== 工具函数 ==========
+function roundRect(c, x, y, w, h, r) {
+  r = Math.max(0, Math.min(r, Math.min(w, h) / 2));
+  c.beginPath();
+  c.moveTo(x + r, y);
+  c.lineTo(x + w - r, y);
+  c.quadraticCurveTo(x + w, y, x + w, y + r);
+  c.lineTo(x + w, y + h - r);
+  c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  c.lineTo(x + r, y + h);
+  c.quadraticCurveTo(x, y + h, x, y + h - r);
+  c.lineTo(x, y + r);
+  c.quadraticCurveTo(x, y, x + r, y);
+  c.closePath();
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+// ========== 关卡生成 ==========
+function generateBricks(lvl) {
+  var arr = [];
+  var pattern = (lvl - 1) % 4;
+  var hpBonus = Math.floor((lvl - 1) / 4);
+
+  for (var r = 0; r < BROWS; r++) {
+    for (var c = 0; c < BCOLS; c++) {
+      var include = false;
+      var hp = 1;
+
+      if (pattern === 0) {
+        // 满屏
+        include = true;
+      } else if (pattern === 1) {
+        // 棋盘格
+        include = (r + c) % 2 === 0;
+      } else if (pattern === 2) {
+        // 菱形
+        var cr = BROWS / 2 - 0.5;
+        var cc = BCOLS / 2 - 0.5;
+        var dist = Math.abs(r - cr) / cr + Math.abs(c - cc) / cc;
+        include = dist <= 1.1;
+        if (dist <= 0.5) hp = 2;
+      } else {
+        // 倒三角 + 顶部满行
+        include = (r <= 1) || (c >= r && c < BCOLS - r);
+        if (r <= 1) hp = 2;
+      }
+
+      hp += hpBonus;
+
+      if (include) {
+        arr.push({
+          x: BOX + c * (BW + BGAP),
+          y: BOY + r * (BH + BGAP),
+          w: BW,
+          h: BH,
+          color: B_COLORS[r],
+          score: B_SCORES[r],
+          hp: hp,
+          maxHp: hp,
+          alive: true
+        });
+      }
+    }
+  }
+  return arr;
+}
+
+// ========== 初始化球和挡板 ==========
+function resetBallPaddle() {
+  paddle.w = PAD_W_DEFAULT;
+  paddle.x = (GW - paddle.w) / 2;
+  ball.launched = false;
+  ball.x = GW / 2;
+  ball.y = PAD_Y - BALL_R - 2;
+  ball.vx = 0;
+  ball.vy = 0;
+  trail = [];
+  wideTimer = 0;
+  pierceTimer = 0;
+  slowTimer = 0;
+}
+
+function launchBall() {
+  if (ball.launched) return;
+  ball.launched = true;
+  var speed = getSpeed();
+  var angle = (Math.random() - 0.5) * 0.8;
+  ball.vx = speed * Math.sin(angle);
+  ball.vy = -speed * Math.cos(angle);
+}
+
+function getSpeed() {
+  var s = BASE_SPEED + (level - 1) * 0.4;
+  if (slowTimer > 0) s *= 0.6;
+  return Math.min(s, 9);
+}
+
+// ========== 碰撞检测 ==========
+function ballPaddleCollision() {
+  if (ball.vy < 0) return;
+  if (ball.y + ball.r >= paddle.y &&
+      ball.y + ball.r <= paddle.y + paddle.h + 4 &&
+      ball.x >= paddle.x - ball.r &&
+      ball.x <= paddle.x + paddle.w + ball.r) {
+    // 根据击中位置计算反弹角
+    var hitPos = (ball.x - paddle.x) / paddle.w;
+    hitPos = clamp(hitPos, 0, 1);
+    var angle = (hitPos - 0.5) * Math.PI * 0.7;
+    var speed = getSpeed();
+    ball.vx = speed * Math.sin(angle);
+    ball.vy = -speed * Math.cos(angle);
+    // 确保球在挡板上方
+    ball.y = paddle.y - ball.r;
+    combo = 0;
+  }
+}
+
+function ballBrickCollision() {
+  for (var i = 0; i < bricks.length; i++) {
+    var b = bricks[i];
+    if (!b.alive) continue;
+
+    var closestX = clamp(ball.x, b.x, b.x + b.w);
+    var closestY = clamp(ball.y, b.y, b.y + b.h);
+    var dx = ball.x - closestX;
+    var dy = ball.y - closestY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+
+    if (dist < ball.r) {
+      // 穿透模式不反弹
+      if (pierceTimer <= 0) {
+        if (Math.abs(dx) > Math.abs(dy)) {
+          ball.vx = -ball.vx;
+        } else {
+          ball.vy = -ball.vy;
+        }
+      }
+
+      b.hp--;
+      if (b.hp <= 0) {
+        b.alive = false;
+        combo++;
+        if (combo > maxCombo) maxCombo = combo;
+        var comboMul = Math.min(combo, 10);
+        var pts = b.score * comboMul;
+        score += pts;
+        spawnParticles(b.x + b.w / 2, b.y + b.h / 2, b.color, 8);
+        showFloatText('+' + pts + (comboMul > 1 ? ' x' + comboMul : ''), b.x, b.y, comboMul > 1 ? '#ffa657' : '#3fb950');
+
+        // 道具掉落
+        if (Math.random() < PU_DROP_RATE) {
+          spawnPowerup(b.x + b.w / 2, b.y + b.h / 2);
+        }
+      } else {
+        // 砖块被击中但没碎，小粒子
+        spawnParticles(closestX, closestY, b.color, 3);
+      }
+
+      if (pierceTimer <= 0) break; // 非穿透模式只碰一个
+    }
+  }
+}
+
+function ballWallCollision() {
+  // 左右墙
+  if (ball.x - ball.r <= 0) {
+    ball.x = ball.r;
+    ball.vx = Math.abs(ball.vx);
+  }
+  if (ball.x + ball.r >= GW) {
+    ball.x = GW - ball.r;
+    ball.vx = -Math.abs(ball.vx);
+  }
+  // 顶墙
+  if (ball.y - ball.r <= 0) {
+    ball.y = ball.r;
+    ball.vy = Math.abs(ball.vy);
+  }
+  // 底部掉落
+  if (ball.y - ball.r > GH) {
+    loseLife();
+  }
+}
+
+// ========== 粒子系统 ==========
+function spawnParticles(x, y, color, count) {
+  for (var i = 0; i < count; i++) {
+    var angle = Math.random() * Math.PI * 2;
+    var speed = 1.5 + Math.random() * 3;
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 1,
+      decay: 0.02 + Math.random() * 0.02,
+      size: 2 + Math.random() * 3,
+      color: color
+    });
+  }
+}
+
+function updateParticles() {
+  for (var i = particles.length - 1; i >= 0; i--) {
+    var p = particles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08;
+    p.life -= p.decay;
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+    }
+  }
+}
+
+// ========== 道具系统 ==========
+function spawnPowerup(x, y) {
+  var type = PU_TYPES[Math.floor(Math.random() * PU_TYPES.length)];
+  powerups.push({
+    x: x - 12,
+    y: y,
+    w: 24,
+    h: 24,
+    vy: 2,
+    type: type
+  });
+}
+
+function updatePowerups() {
+  for (var i = powerups.length - 1; i >= 0; i--) {
+    var pu = powerups[i];
+    pu.y += pu.vy;
+
+    // 与挡板碰撞
+    if (pu.y + pu.h >= paddle.y &&
+        pu.y <= paddle.y + paddle.h &&
+        pu.x + pu.w >= paddle.x &&
+        pu.x <= paddle.x + paddle.w) {
+      activatePowerup(pu.type);
+      powerups.splice(i, 1);
+      continue;
+    }
+
+    // 超出屏幕
+    if (pu.y > GH + 30) {
+      powerups.splice(i, 1);
+    }
+  }
+}
+
+function activatePowerup(type) {
+  switch (type.id) {
+    case 'wide':
+      wideTimer = 480;
+      paddle.w = PAD_W_WIDE;
+      showFloatText('挡板加宽!', paddle.x, paddle.y - 30, '#3fb950');
+      break;
+    case 'pierce':
+      pierceTimer = 300;
+      showFloatText('穿透球!', paddle.x, paddle.y - 30, '#f85149');
+      break;
+    case 'life':
+      if (lives < 5) lives++;
+      showFloatText('生命 +1!', paddle.x, paddle.y - 30, '#ffa657');
+      renderLives();
+      break;
+    case 'slow':
+      slowTimer = 360;
+      showFloatText('减速球!', paddle.x, paddle.y - 30, '#388bfd');
+      break;
+  }
+}
+
+function updateTimers() {
+  if (wideTimer > 0) {
+    wideTimer--;
+    if (wideTimer <= 0) {
+      paddle.w = PAD_W_DEFAULT;
+      // 确保挡板不超出边界
+      if (paddle.x + paddle.w > GW) paddle.x = GW - paddle.w;
+    }
+  }
+  if (pierceTimer > 0) pierceTimer--;
+  if (slowTimer > 0) {
+    slowTimer--;
+    if (slowTimer <= 0) {
+      // 恢复速度
+      var speed = getSpeed();
+      var currentSpeed = Math.sqrt(ball.vx * ball.vx + ball.vy * ball.vy);
+      if (currentSpeed > 0.1) {
+        var ratio = speed / currentSpeed;
+        ball.vx *= ratio;
+        ball.vy *= ratio;
+      }
+    }
+  }
+}
+
+// ========== 飘字 ==========
+function showFloatText(text, x, y, color) {
+  // 坐标转换到wrapper坐标
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = rect.width / GW;
+  var screenX = x * scaleX;
+  var screenY = y * (rect.height / GH);
+
+  var el = document.createElement('div');
+  el.className = 'float-text';
+  el.textContent = text;
+  el.style.left = screenX + 'px';
+  el.style.top = screenY + 'px';
+  el.style.color = color || '#3fb950';
+  canvasWrapper.appendChild(el);
+
+  var opacity = 1;
+  var top = screenY;
+  var timer = setInterval(function() {
+    opacity -= 0.025;
+    top -= 1;
+    if (opacity <= 0) {
+      clearInterval(timer);
+      if (el.parentNode) canvasWrapper.removeChild(el);
+      return;
+    }
+    el.style.opacity = opacity;
+    el.style.top = top + 'px';
+  }, 20);
+}
+
+// ========== 生命 / 游戏结束 ==========
+function loseLife() {
+  lives--;
+  combo = 0;
+  renderLives();
+
+  if (lives <= 0) {
+    doGameOver();
+  } else {
+    resetBallPaddle();
+  }
+}
+
+function doGameOver() {
+  gameRunning = false;
+  if (animFrame) cancelAnimationFrame(animFrame);
+
+  if (score > highScore) highScore = score;
+
+  var now = new Date();
+  var timeStr = now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+  history.unshift({ score: score, level: level, combo: maxCombo, time: timeStr });
+  if (history.length > 10) history = history.slice(0, 10);
+  saveData();
+
+  document.getElementById('finalScore').textContent = score;
+  if (score >= highScore && score > 0) {
+    document.getElementById('gameOverMsg').textContent = '新纪录！最大连击 ' + maxCombo;
+  } else if (score > 1000) {
+    document.getElementById('gameOverMsg').textContent = '表现不错！最大连击 ' + maxCombo;
+  } else {
+    document.getElementById('gameOverMsg').textContent = '再接再厉！最大连击 ' + maxCombo;
+  }
+  document.getElementById('gameOverOverlay').classList.remove('hidden');
+  updateUI();
+  renderHistory();
+}
+
+function checkLevelClear() {
+  var remaining = 0;
+  for (var i = 0; i < bricks.length; i++) {
+    if (bricks[i].alive) remaining++;
+  }
+  document.getElementById('bricksDisplay').textContent = remaining;
+  return remaining === 0;
+}
+
+function onLevelClear() {
+  gameRunning = false;
+  if (animFrame) cancelAnimationFrame(animFrame);
+
+  document.getElementById('levelUpTitle').textContent = '第 ' + level + ' 关通过';
+  document.getElementById('levelUpMsg').textContent = '得分 ' + score + '，准备进入第 ' + (level + 1) + ' 关';
+  document.getElementById('levelUpOverlay').classList.remove('hidden');
+}
+
+function nextLevel() {
+  document.getElementById('levelUpOverlay').classList.add('hidden');
+  level++;
+  bricks = generateBricks(level);
+  powerups = [];
+  particles = [];
+  resetBallPaddle();
+  gameRunning = true;
+  updateUI();
+  gameLoop();
+}
+
+// ========== 游戏循环 ==========
+function gameLoop() {
+  if (!gameRunning || gamePaused) return;
+  update();
+  draw();
+  animFrame = requestAnimationFrame(gameLoop);
+}
+
+function update() {
+  // 挡板移动（键盘）
+  var padSpeed = 7;
+  if (keysDown['ArrowLeft'] || keysDown['a'] || keysDown['A'] || mobileLeft) {
+    paddle.x -= padSpeed;
+  }
+  if (keysDown['ArrowRight'] || keysDown['d'] || keysDown['D'] || mobileRight) {
+    paddle.x += padSpeed;
+  }
+  paddle.x = clamp(paddle.x, 0, GW - paddle.w);
+
+  // 球未发射时跟随挡板
+  if (!ball.launched) {
+    ball.x = paddle.x + paddle.w / 2;
+    ball.y = PAD_Y - BALL_R - 2;
+  } else {
+    // 拖尾
+    trail.push({ x: ball.x, y: ball.y });
+    if (trail.length > 10) trail.shift();
+
+    // 更新球位置
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+
+    // 碰撞
+    ballWallCollision();
+    ballPaddleCollision();
+    ballBrickCollision();
+
+    // 检查通关
+    if (checkLevelClear()) {
+      onLevelClear();
+      return;
+    }
+  }
+
+  // 更新计时器
+  updateTimers();
+
+  // 更新粒子和道具
+  updateParticles();
+  updatePowerups();
+}
+
+// ========== 绘制 ==========
+function draw() {
+  ctx.clearRect(0, 0, GW, GH);
+
+  // 背景网格
+  ctx.strokeStyle = '#151b23';
+  ctx.lineWidth = 0.5;
+  for (var i = 0; i <= BCOLS; i++) {
+    var gx = BOX + i * (BW + BGAP) - BGAP / 2;
+    ctx.beginPath();
+    ctx.moveTo(gx, BOY - 10);
+    ctx.lineTo(gx, BOY + BROWS * (BH + BGAP));
+    ctx.stroke();
+  }
+
+  // 砖块
+  for (var i = 0; i < bricks.length; i++) {
+    var b = bricks[i];
+    if (!b.alive) continue;
+
+    // 根据hp调整亮度
+    var alpha = 0.5 + 0.5 * (b.hp / b.maxHp);
+    ctx.globalAlpha = alpha;
+
+    // 砖块主体
+    ctx.fillStyle = b.color;
+    roundRect(ctx, b.x, b.y, b.w, b.h, 3);
+    ctx.fill();
+
+    // 高光
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.fillRect(b.x + 2, b.y + 1, b.w - 4, 3);
+
+    // 如果hp > 1 显示数字
+    if (b.hp > 1) {
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = '#000';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(b.hp, b.x + b.w / 2, b.y + b.h / 2 + 1);
+    }
+
+    ctx.globalAlpha = 1;
+  }
+
+  // 道具
+  for (var i = 0; i < powerups.length; i++) {
+    var pu = powerups[i];
+    ctx.fillStyle = pu.type.color;
+    roundRect(ctx, pu.x, pu.y, pu.w, pu.h, 5);
+    ctx.fill();
+
+    // 发光
+    ctx.shadowColor = pu.type.color;
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = pu.type.color;
+    roundRect(ctx, pu.x, pu.y, pu.w, pu.h, 5);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(pu.type.label, pu.x + pu.w / 2, pu.y + pu.h / 2);
+  }
+
+  // 拖尾
+  for (var i = 0; i < trail.length; i++) {
+    var t = trail[i];
+    var a = (i / trail.length) * 0.35;
+    var size = ball.r * (i / trail.length) * 0.8;
+    size = Math.max(1, size);
+    if (pierceTimer > 0) {
+      ctx.fillStyle = 'rgba(248, 81, 73, ' + a + ')';
+    } else if (slowTimer > 0) {
+      ctx.fillStyle = 'rgba(56, 139, 253, ' + a + ')';
+    } else {
+      ctx.fillStyle = 'rgba(240, 136, 62, ' + a + ')';
+    }
+    ctx.beginPath();
+    ctx.arc(t.x, t.y, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 球
+  var ballColor = '#ffa657';
+  if (pierceTimer > 0) ballColor = '#f85149';
+  else if (slowTimer > 0) ballColor = '#388bfd';
+
+  ctx.shadowColor = ballColor;
+  ctx.shadowBlur = 12;
+  ctx.fillStyle = ballColor;
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // 球高光
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.beginPath();
+  ctx.arc(ball.x - ball.r * 0.25, ball.y - ball.r * 0.25, ball.r * 0.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 挡板
+  var padColor = '#f0883e';
+  if (wideTimer > 0) padColor = '#3fb950';
+  ctx.shadowColor = padColor;
+  ctx.shadowBlur = 10;
+  ctx.fillStyle = padColor;
+  roundRect(ctx, paddle.x, paddle.y, paddle.w, paddle.h, 7);
+  ctx.fill();
+  ctx.shadowBlur = 0;
+
+  // 挡板高光
+  ctx.fillStyle = 'rgba(255,255,255,0.2)';
+  roundRect(ctx, paddle.x + 3, paddle.y + 2, paddle.w - 6, 4, 2);
+  ctx.fill();
+
+  // 粒子
+  for (var i = 0; i < particles.length; i++) {
+    var p = particles[i];
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.fillRect(p.x - p.size / 2, p.y - p.size / 2, p.size, p.size);
+  }
+  ctx.globalAlpha = 1;
+
+  // 未发射提示
+  if (!ball.launched && gameRunning) {
+    ctx.fillStyle = 'rgba(230, 237, 243, 0.5)';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('按空格键或点击发射', GW / 2, PAD_Y - 40);
+  }
+
+  // 状态指示（加宽/穿透/减速）
+  var statusY = GH - 20;
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'left';
+  if (wideTimer > 0) {
+    ctx.fillStyle = '#3fb950';
+    ctx.fillText('加宽 ' + Math.ceil(wideTimer / 60) + 's', 10, statusY);
+    statusY -= 16;
+  }
+  if (pierceTimer > 0) {
+    ctx.fillStyle = '#f85149';
+    ctx.fillText('穿透 ' + Math.ceil(pierceTimer / 60) + 's', 10, statusY);
+    statusY -= 16;
+  }
+  if (slowTimer > 0) {
+    ctx.fillStyle = '#388bfd';
+    ctx.fillText('减速 ' + Math.ceil(slowTimer / 60) + 's', 10, statusY);
+  }
+
+  // 连击显示
+  if (combo >= 3 && ball.launched) {
+    ctx.fillStyle = '#ffa657';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(combo + ' 连击!', GW - 10, GH - 16);
+  }
+}
+
+// ========== UI 更新 ==========
+function updateUI() {
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('highScoreDisplay').textContent = highScore;
+  document.getElementById('levelDisplay').textContent = level;
+
+  var remaining = 0;
+  for (var i = 0; i < bricks.length; i++) {
+    if (bricks[i].alive) remaining++;
+  }
+  document.getElementById('bricksDisplay').textContent = remaining;
+
+  var speedMult = (BASE_SPEED + (level - 1) * 0.4) / BASE_SPEED;
+  if (slowTimer > 0) speedMult *= 0.6;
+  speedMult = Math.min(speedMult, 9 / BASE_SPEED);
+  document.getElementById('speedLabel').textContent = speedMult.toFixed(1) + 'x';
+  document.getElementById('speedFill').style.width = (speedMult / 1.8 * 100) + '%';
+
+  renderLives();
+}
+
+function renderLives() {
+  var html = '';
+  for (var i = 0; i < 5; i++) {
+    html += '<div class="life-dot' + (i >= lives ? ' lost' : '') + '"></div>';
+  }
+  document.getElementById('livesRow').innerHTML = html;
+}
+
+// ========== 排行榜 ==========
+function renderHistory() {
+  var list = document.getElementById('historyList');
+  if (history.length === 0) {
+    list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 0.5rem; font-size: 0.8rem;">暂无记录</p>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < history.length && i < 5; i++) {
+    var item = history[i];
+    var rankClass = '';
+    if (i === 0) rankClass = ' gold';
+    else if (i === 1) rankClass = ' silver';
+    else if (i === 2) rankClass = ' bronze';
+    html += '<div class="history-item">'
+      + '<div style="display:flex;align-items:center;gap:0.5rem;">'
+      + '<span class="rank' + rankClass + '">' + (i + 1) + '</span>'
+      + '<span>' + item.time + ' · Lv' + item.level + '</span>'
+      + '</div>'
+      + '<span style="color:var(--accent);font-weight:700;">' + item.score + '</span>'
+      + '</div>';
+  }
+  list.innerHTML = html;
+}
+
+// ========== 存取 ==========
+function loadHighScore() {
+  var saved = localStorage.getItem('breakoutHighScore');
+  if (saved) highScore = parseInt(saved) || 0;
+  var h = localStorage.getItem('breakoutHistory');
+  if (h) { try { history = JSON.parse(h); } catch(e) { history = []; } }
+}
+function saveData() {
+  localStorage.setItem('breakoutHighScore', highScore);
+  localStorage.setItem('breakoutHistory', JSON.stringify(history.slice(0, 10)));
+}
+
+// ========== 输入处理 ==========
+document.addEventListener('keydown', function(e) {
+  keysDown[e.key] = true;
+
+  if (e.key === 'p' || e.key === 'P') {
+    e.preventDefault();
+    if (gameRunning) togglePause();
+    return;
+  }
+
+  if (!gameRunning || gamePaused) return;
+
+  if (e.key === ' ' || e.key === 'Spacebar') {
+    e.preventDefault();
+    launchBall();
+  }
+  if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+    e.preventDefault();
+    mouseControl = false;
+  }
+  if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+    e.preventDefault();
+    mouseControl = false;
+  }
+});
+
+document.addEventListener('keyup', function(e) {
+  keysDown[e.key] = false;
+});
+
+// 鼠标控制
+canvas.addEventListener('mousemove', function(e) {
+  if (!gameRunning || gamePaused) return;
+  mouseControl = true;
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = GW / rect.width;
+  var mouseX = (e.clientX - rect.left) * scaleX;
+  paddle.x = clamp(mouseX - paddle.w / 2, 0, GW - paddle.w);
+});
+
+canvas.addEventListener('click', function(e) {
+  if (!gameRunning || gamePaused) return;
+  launchBall();
+});
+
+// 触摸控制
+canvas.addEventListener('touchmove', function(e) {
+  if (!gameRunning || gamePaused) return;
+  e.preventDefault();
+  var rect = canvas.getBoundingClientRect();
+  var scaleX = GW / rect.width;
+  var touch = e.touches[0];
+  var touchX = (touch.clientX - rect.left) * scaleX;
+  paddle.x = clamp(touchX - paddle.w / 2, 0, GW - paddle.w);
+}, { passive: false });
+
+canvas.addEventListener('touchstart', function(e) {
+  if (!gameRunning || gamePaused) return;
+  launchBall();
+});
+
+// 手机虚拟按钮
+var btnLeft = document.getElementById('btnLeft');
+var btnRight = document.getElementById('btnRight');
+var btnLaunch = document.getElementById('btnLaunch');
+
+btnLeft.addEventListener('touchstart', function(e) { e.preventDefault(); mobileLeft = true; mouseControl = false; });
+btnLeft.addEventListener('touchend', function(e) { e.preventDefault(); mobileLeft = false; });
+btnRight.addEventListener('touchstart', function(e) { e.preventDefault(); mobileRight = true; mouseControl = false; });
+btnRight.addEventListener('touchend', function(e) { e.preventDefault(); mobileRight = false; });
+btnLaunch.addEventListener('touchstart', function(e) { e.preventDefault(); launchBall(); });
+
+// ========== 游戏控制 ==========
+function startGame() {
+  document.getElementById('startOverlay').classList.add('hidden');
+  document.getElementById('gameOverOverlay').classList.add('hidden');
+  document.getElementById('pauseOverlay').classList.add('hidden');
+  document.getElementById('levelUpOverlay').classList.add('hidden');
+
+  score = 0;
+  lives = 3;
+  level = 1;
+  combo = 0;
+  maxCombo = 0;
+  bricks = generateBricks(level);
+  particles = [];
+  powerups = [];
+  trail = [];
+  gamePaused = false;
+  gameRunning = true;
+
+  resetBallPaddle();
+  updateUI();
+  gameLoop();
+}
+
+function resetGame() {
+  if (animFrame) cancelAnimationFrame(animFrame);
+  gameRunning = false;
+  startGame();
+}
+
+function togglePause() {
+  if (!gameRunning) return;
+  gamePaused = !gamePaused;
+  if (gamePaused) {
+    if (animFrame) cancelAnimationFrame(animFrame);
+    document.getElementById('pauseOverlay').classList.remove('hidden');
+  } else {
+    document.getElementById('pauseOverlay').classList.add('hidden');
+    gameLoop();
+  }
+}
+
+// ========== 启动 ==========
+loadHighScore();
+resetBallPaddle();
+bricks = generateBricks(1);
+updateUI();
+renderHistory();
+draw();
+</script>
+</body>
+</html>

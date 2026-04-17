@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎬 剧本编写系统 | Script Writing System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-input: #21262d;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #f0883e;
+            --accent-light: #ffa657;
+            --success: #3fb950;
+            --step-active: #388bfd;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航 */
+        .header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-input);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: var(--border);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        /* 主布局 */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* 左侧步骤导航 */
+        .steps-nav {
+            width: 280px;
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.5rem;
+            border: 1px solid transparent;
+        }
+
+        .step-item:hover {
+            background: var(--bg-input);
+        }
+
+        .step-item.active {
+            background: rgba(240, 136, 62, 0.15);
+            border-color: var(--accent);
+        }
+
+        .step-item.completed {
+            opacity: 0.7;
+        }
+
+        .step-item.completed .step-number {
+            background: var(--success);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-item.active .step-number {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .step-info h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .step-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* 内容区域 */
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .step-panel {
+            display: none;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .step-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .panel-header {
+            margin-bottom: 2rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent);
+        }
+
+        .panel-header p {
+            color: var(--text-muted);
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group .hint {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        /* 网格布局 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        /* 卡片 */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.1rem;
+        }
+
+        /* 角色卡片 */
+        .character-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .character-card .char-name {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .character-card .char-role {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .character-card .char-desc {
+            font-size: 0.9rem;
+        }
+
+        /* 三幕结构 */
+        .structure-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .act-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .act-card h4 {
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .act-card .act-percent {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .act-card textarea {
+            min-height: 100px;
+            font-size: 0.9rem;
+        }
+
+        /* 场景列表 */
+        .scene-item {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .scene-number {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            color: #000;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .scene-content {
+            flex: 1;
+        }
+
+        .scene-content input {
+            margin-bottom: 0.5rem;
+        }
+
+        .scene-content textarea {
+            min-height: 80px;
+        }
+
+        /* 剧本编辑器 */
+        .script-editor {
+            background: #1a1a2e;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            font-family: 'Courier New', monospace;
+            min-height: 500px;
+        }
+
+        .script-editor textarea {
+            background: transparent;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            line-height: 1.8;
+            padding: 0;
+        }
+
+        .script-editor textarea:focus {
+            border: none;
+            outline: none;
+        }
+
+        .script-format-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .format-btn {
+            padding: 0.4rem 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .format-btn:hover {
+            background: var(--accent);
+            color: #000;
+        }
+
+        /* 底部导航 */
+        .panel-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        /* 导出预览 */
+        .export-preview {
+            background: #fff;
+            color: #000;
+            padding: 3rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.6;
+        }
+
+        .export-preview .title-page {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .export-preview .title-page h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .export-preview .scene-heading {
+            font-weight: bold;
+            margin: 1.5rem 0 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .export-preview .action {
+            margin: 0.5rem 0;
+        }
+
+        .export-preview .character-name {
+            text-align: center;
+            font-weight: bold;
+            margin: 1rem 0 0;
+        }
+
+        .export-preview .dialogue {
+            text-align: center;
+            max-width: 60%;
+            margin: 0 auto;
+            font-size: 0.95rem;
+        }
+
+        /* 进度条 */
+        .progress-bar {
+            height: 4px;
+            background: var(--bg-input);
+            border-radius: 2px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar .fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        /* 提示框 */
+        .tip-box {
+            background: rgba(56, 139, 253, 0.1);
+            border: 1px solid rgba(56, 139, 253, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .tip-box strong {
+            color: var(--step-active);
+        }
+
+        /* 响应式 */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .steps-nav {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 1rem;
+            }
+
+            .step-item {
+                padding: 0.5rem;
+            }
+
+            .structure-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">🎬 剧本编写系统</div>
+        <div class="header-actions">
+            <button class="btn" onclick="saveProject()">💾 保存</button>
+            <button class="btn" onclick="loadProject()">📂 加载</button>
+            <button class="btn btn-primary" onclick="exportScript()">📄 导出剧本</button>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- 左侧步骤导航 -->
+        <nav class="steps-nav">
+            <div class="progress-bar">
+                <div class="fill" id="progressFill" style="width: 14.3%"></div>
+            </div>
+
+            <div class="step-item active" onclick="goToStep(0)">
+                <div class="step-number">1</div>
+                <div class="step-info">
+                    <h4>故事设定</h4>
+                    <p>主题、类型、时长</p>
+                </div>
+            </div>
+
+            <div class="step-item" onclick="goToStep(1)">
+                <div class="step-number">2</div>
+                <div class="step-info">
+                    <h4>角色档案</h4>
+                    <p>人物、关系、背景</p>
+                </div>
+            </div>
+
+            <div class="step-item" onclick="goToStep(2)">
+                <div class="step-number">3</div>
+                <div class="step-info">
+                    <h4>结构规划</h4>
+                    <p>三幕式框架</p>
+                </div>
+            </div>
+
+            <div class="step-item" onclick="goToStep(3)">
+                <div class="step-number">4</div>
+                <div class="step-info">
+                    <h4>场景大纲</h4>
+                    <p>分场、时间、地点</p>
+                </div>
+            </div>
+
+            <div class="step-item" onclick="goToStep(4)">
+                <div class="step-number">5</div>
+                <div class="step-info">
+                    <h4>剧本正文</h4>
+                    <p>对话、动作描写</p>
+                </div>
+            </div>
+
+            <div class="step-item" onclick="goToStep(5)">
+                <div class="step-number">6</div>
+                <div class="step-info">
+                    <h4>检查导出</h4>
+                    <p>预览、格式化</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 内容区域 -->
+        <main class="content-area">
+            <!-- 步骤1：故事设定 -->
+            <div class="step-panel active" id="panel-0">
+                <div class="panel-header">
+                    <h2>📖 故事设定</h2>
+                    <p>确定剧本的基础信息，这是整个故事的根基</p>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>剧本名称</label>
+                        <input type="text" id="scriptTitle" placeholder="例如：《追光者》">
+                    </div>
+                    <div class="form-group">
+                        <label>剧本类型</label>
+                        <select id="scriptType">
+                            <option value="">选择类型</option>
+                            <option value="电影剧本">电影剧本</option>
+                            <option value="短剧/微电影">短剧/微电影</option>
+                            <option value="电视剧剧本">电视剧剧本</option>
+                            <option value="舞台剧">舞台剧</option>
+                            <option value="游戏剧本">游戏剧本</option>
+                            <option value="广告剧本">广告剧本</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>预计时长</label>
+                        <select id="scriptDuration">
+                            <option value="">选择时长</option>
+                            <option value="3-5分钟">3-5分钟（短视频）</option>
+                            <option value="10-15分钟">10-15分钟（微电影）</option>
+                            <option value="30分钟">30分钟（短片）</option>
+                            <option value="90分钟">90分钟（标准电影）</option>
+                            <option value="120分钟+">120分钟+（长片）</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>题材风格</label>
+                        <select id="scriptGenre">
+                            <option value="">选择题材</option>
+                            <option value="爱情">爱情</option>
+                            <option value="喜剧">喜剧</option>
+                            <option value="悬疑">悬疑</option>
+                            <option value="动作">动作</option>
+                            <option value="科幻">科幻</option>
+                            <option value="奇幻">奇幻</option>
+                            <option value="恐怖">恐怖</option>
+                            <option value="剧情">剧情</option>
+                            <option value="历史">历史</option>
+                            <option value="动画">动画</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>故事主题（一句话核心）</label>
+                    <input type="text" id="scriptTheme" placeholder="例如：一个失去信念的人重新找到人生意义的故事">
+                    <p class="hint">好的主题能让观众产生共鸣，思考人生</p>
+                </div>
+
+                <div class="form-group">
+                    <label>故事梗概（Logline）</label>
+                    <textarea id="scriptLogline" placeholder="用2-3句话描述整个故事：谁 + 遇到什么问题 + 如何解决 + 结果如何&#10;例如：一个失业的中年男人，为了给女儿过生日，在24小时内经历了一系列荒诞的遭遇，最终明白了什么才是真正重要的东西。"></textarea>
+                    <p class="hint">Logline 是剧本的门面，要包含主角、冲突、目标</p>
+                </div>
+
+                <div class="form-group">
+                    <label>创作背景/灵感来源</label>
+                    <textarea id="scriptInspiration" placeholder="记录你的创作灵感、参考作品、想要表达的情感..."></textarea>
+                </div>
+
+                <div class="panel-nav">
+                    <div></div>
+                    <button class="btn btn-primary" onclick="nextStep()">下一步：角色档案 →</button>
+                </div>
+            </div>
+
+            <!-- 步骤2：角色档案 -->
+            <div class="step-panel" id="panel-1">
+                <div class="panel-header">
+                    <h2>👥 角色档案</h2>
+                    <p>塑造鲜活的人物，让观众记住他们</p>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 角色设计要点：</strong><br>
+                    • 主角要有明确的目标和缺陷<br>
+                    • 反派/对立面要有合理的动机<br>
+                    • 配角要推动故事或揭示主题
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>添加角色</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>角色名称</label>
+                            <input type="text" id="charName" placeholder="角色名字">
+                        </div>
+                        <div class="form-group">
+                            <label>角色类型</label>
+                            <select id="charRole">
+                                <option value="主角">主角</option>
+                                <option value="反派">反派</option>
+                                <option value="配角">配角</option>
+                                <option value="龙套">龙套</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>年龄</label>
+                            <input type="text" id="charAge" placeholder="例如：28岁">
+                        </div>
+                        <div class="form-group">
+                            <label>职业/身份</label>
+                            <input type="text" id="charJob" placeholder="职业或社会身份">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>性格特点</label>
+                        <input type="text" id="charPersonality" placeholder="例如：外表冷漠，内心善良；做事冲动但讲义气">
+                    </div>
+                    <div class="form-group">
+                        <label>角色目标</label>
+                        <input type="text" id="charGoal" placeholder="这个角色想要什么？">
+                    </div>
+                    <div class="form-group">
+                        <label>角色背景</label>
+                        <textarea id="charBackground" placeholder="角色的成长经历、重要往事..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>角色弧线</label>
+                        <textarea id="charArc" placeholder="角色在故事中的变化：从___变成___"></textarea>
+                    </div>
+                    <button class="btn btn-primary" onclick="addCharacter()">+ 添加角色</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>已创建的角色</h3>
+                    </div>
+                    <div id="characterList">
+                        <p style="color: var(--text-muted); text-align: center; padding: 1rem;">暂无角色，请添加</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>角色关系图</label>
+                    <textarea id="charRelationships" placeholder="描述角色之间的关系：&#10;小明(主角) 和 小红(女主) - 青梅竹马&#10;小明 和 老王(反派) - 杀父仇人"></textarea>
+                </div>
+
+                <div class="panel-nav">
+                    <button class="btn" onclick="prevStep()">← 上一步</button>
+                    <button class="btn btn-primary" onclick="nextStep()">下一步：结构规划 →</button>
+                </div>
+            </div>
+
+            <!-- 步骤3：结构规划 -->
+            <div class="step-panel" id="panel-2">
+                <div class="panel-header">
+                    <h2>🏗️ 结构规划</h2>
+                    <p>使用经典三幕式结构搭建故事骨架</p>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 三幕式结构：</strong><br>
+                    • <strong>第一幕（铺垫）</strong>：建立世界、介绍角色、触发事件<br>
+                    • <strong>第二幕（冲突）</strong>：挑战升级、中点转折、危机加深<br>
+                    • <strong>第三幕（解决）</strong>：高潮对决、结局收尾
+                </div>
+
+                <div class="structure-grid">
+                    <div class="act-card">
+                        <h4>🎭 第一幕：铺垫</h4>
+                        <p class="act-percent">约占 25%</p>
+                        <div class="form-group">
+                            <label>日常世界</label>
+                            <textarea id="act1World" placeholder="主角的日常生活是什么样的？"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>触发事件</label>
+                            <textarea id="act1Incident" placeholder="什么事件打破了平静？"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>第一幕终点</label>
+                            <textarea id="act1End" placeholder="主角决定踏上旅程的关键时刻"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="act-card">
+                        <h4>⚔️ 第二幕：冲突</h4>
+                        <p class="act-percent">约占 50%</p>
+                        <div class="form-group">
+                            <label>试炼与盟友</label>
+                            <textarea id="act2Trials" placeholder="主角遇到哪些挑战？结识了谁？"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>中点转折</label>
+                            <textarea id="act2Midpoint" placeholder="故事中间的重大转折/揭秘"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>至暗时刻</label>
+                            <textarea id="act2Dark" placeholder="主角最低谷、看似失败的时刻"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="act-card">
+                        <h4>🏆 第三幕：解决</h4>
+                        <p class="act-percent">约占 25%</p>
+                        <div class="form-group">
+                            <label>最终对决</label>
+                            <textarea id="act3Climax" placeholder="主角与反派/困难的最终对抗"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>结局</label>
+                            <textarea id="act3End" placeholder="故事如何收尾？角色有何变化？"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>主题升华</label>
+                            <textarea id="act3Theme" placeholder="最终要传达的核心信息"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>关键情节点</h3>
+                    </div>
+                    <div class="form-group">
+                        <label>列出5-7个关键情节点</label>
+                        <textarea id="keyPlotPoints" rows="8" placeholder="1. 开场：...&#10;2. 触发事件：...&#10;3. 第一个挑战：...&#10;4. 中点转折：...&#10;5. 危机时刻：...&#10;6. 高潮：...&#10;7. 结局：..."></textarea>
+                    </div>
+                </div>
+
+                <div class="panel-nav">
+                    <button class="btn" onclick="prevStep()">← 上一步</button>
+                    <button class="btn btn-primary" onclick="nextStep()">下一步：场景大纲 →</button>
+                </div>
+            </div>
+
+            <!-- 步骤4：场景大纲 -->
+            <div class="step-panel" id="panel-3">
+                <div class="panel-header">
+                    <h2>🎬 场景大纲</h2>
+                    <p>将故事分解为具体场景，规划时间和地点</p>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 场景编写要点：</strong><br>
+                    • 每个场景都要有明确的目的<br>
+                    • 场景内要有变化（进入时和离开时状态不同）<br>
+                    • 标注场景类型：内景/外景、日/夜
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>添加场景</h3>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>场景编号</label>
+                            <input type="number" id="sceneNumber" placeholder="1" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>场景类型</label>
+                            <select id="sceneType">
+                                <option value="内景 日">内景 日</option>
+                                <option value="内景 夜">内景 夜</option>
+                                <option value="外景 日">外景 日</option>
+                                <option value="外景 夜">外景 夜</option>
+                                <option value="内/外景">内/外景</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>场景地点</label>
+                        <input type="text" id="sceneLocation" placeholder="例如：咖啡厅、医院病房、城市街道">
+                    </div>
+                    <div class="form-group">
+                        <label>场景内容概述</label>
+                        <textarea id="sceneContent" placeholder="这个场景发生了什么？涉及哪些角色？目的是什么？"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>预估页数</label>
+                        <input type="text" id="scenePages" placeholder="例如：2页（约2分钟）">
+                    </div>
+                    <button class="btn btn-primary" onclick="addScene()">+ 添加场景</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>场景列表</h3>
+                        <span id="sceneCount">0 个场景</span>
+                    </div>
+                    <div id="sceneList">
+                        <p style="color: var(--text-muted); text-align: center; padding: 1rem;">暂无场景，请添加</p>
+                    </div>
+                </div>
+
+                <div class="panel-nav">
+                    <button class="btn" onclick="prevStep()">← 上一步</button>
+                    <button class="btn btn-primary" onclick="nextStep()">下一步：剧本正文 →</button>
+                </div>
+            </div>
+
+            <!-- 步骤5：剧本正文 -->
+            <div class="step-panel" id="panel-4">
+                <div class="panel-header">
+                    <h2>✍️ 剧本正文</h2>
+                    <p>按照标准剧本格式编写对话和动作</p>
+                </div>
+
+                <div class="tip-box">
+                    <strong>💡 剧本格式规范：</strong><br>
+                    • <strong>场景标题</strong>：内/外景 地点 - 日/夜<br>
+                    • <strong>动作描写</strong>：描述环境和角色行为<br>
+                    • <strong>角色名</strong>：居中，大写<br>
+                    • <strong>对话</strong>：居中，角色名下方<br>
+                    • <strong>括号备注</strong>：对话中的情绪/动作提示
+                </div>
+
+                <div class="script-format-bar">
+                    <button class="format-btn" onclick="insertFormat('scene')">📍 场景标题</button>
+                    <button class="format-btn" onclick="insertFormat('action')">📝 动作描写</button>
+                    <button class="format-btn" onclick="insertFormat('character')">👤 角色名</button>
+                    <button class="format-btn" onclick="insertFormat('dialogue')">💬 对话</button>
+                    <button class="format-btn" onclick="insertFormat('paren')">() 括号备注</button>
+                    <button class="format-btn" onclick="insertFormat('transition')">🔄 转场</button>
+                </div>
+
+                <div class="script-editor">
+                    <textarea id="scriptContent" rows="25" placeholder="开始编写你的剧本...
+
+示例格式：
+
+内景 咖啡厅 - 日
+
+温馨的小咖啡厅，午后的阳光透过落地窗洒进来。
+
+小明（28岁）独自坐在角落，面前放着一杯冷掉的咖啡，眼神空洞地望向窗外。
+
+                    小明
+            （自言自语）
+    又是无所事事的一天...
+
+小红（26岁）推门而入，风铃响起。她环顾四周，
+目光落在小明身上，犹豫了一下，走了过去。
+
+                    小红
+    这里有人坐吗？
+
+小明抬头，愣了一下。
+
+                    小明
+    没...没有。
+
+切至："></textarea>
+                </div>
+
+                <div class="card" style="margin-top: 1.5rem;">
+                    <div class="card-header">
+                        <h3>常用转场术语</h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; font-size: 0.85rem;">
+                        <div><strong>切至</strong> - 直接切换</div>
+                        <div><strong>淡入</strong> - 从黑渐显</div>
+                        <div><strong>淡出</strong> - 渐隐至黑</div>
+                        <div><strong>溶</strong> - 画面叠加过渡</div>
+                        <div><strong>闪回</strong> - 回忆场景</div>
+                        <div><strong>插入</strong> - 特写镜头</div>
+                    </div>
+                </div>
+
+                <div class="panel-nav">
+                    <button class="btn" onclick="prevStep()">← 上一步</button>
+                    <button class="btn btn-primary" onclick="nextStep()">下一步：检查导出 →</button>
+                </div>
+            </div>
+
+            <!-- 步骤6：检查导出 -->
+            <div class="step-panel" id="panel-5">
+                <div class="panel-header">
+                    <h2>📄 检查与导出</h2>
+                    <p>预览剧本，检查完整性，导出标准格式</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📋 剧本信息</h3>
+                    </div>
+                    <div id="scriptInfo" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                        <!-- 动态填充 -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>✅ 检查清单</h3>
+                    </div>
+                    <div id="checklist" style="display: grid; gap: 0.5rem;">
+                        <!-- 动态填充 -->
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>📖 剧本预览</h3>
+                        <button class="btn" onclick="refreshPreview()">刷新预览</button>
+                    </div>
+                    <div class="export-preview" id="previewArea">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="exportAsTXT()">📥 导出 TXT</button>
+                    <button class="btn" onclick="exportAsPDF()">📥 导出 PDF</button>
+                    <button class="btn" onclick="exportAsJSON()">📥 导出项目文件</button>
+                </div>
+
+                <div class="panel-nav">
+                    <button class="btn" onclick="prevStep()">← 上一步</button>
+                    <button class="btn btn-primary" onclick="alert('🎉 剧本创作完成！')">完成创作 🎉</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 数据存储
+        let scriptData = {
+            // 步骤1：故事设定
+            title: '',
+            type: '',
+            duration: '',
+            genre: '',
+            theme: '',
+            logline: '',
+            inspiration: '',
+            
+            // 步骤2：角色
+            characters: [],
+            relationships: '',
+            
+            // 步骤3：结构
+            act1: { world: '', incident: '', end: '' },
+            act2: { trials: '', midpoint: '', dark: '' },
+            act3: { climax: '', end: '', theme: '' },
+            plotPoints: '',
+            
+            // 步骤4：场景
+            scenes: [],
+            
+            // 步骤5：正文
+            content: ''
+        };
+
+        let currentStep = 0;
+        const totalSteps = 6;
+
+        // 步骤导航
+        function goToStep(step) {
+            saveCurrentStep();
+            currentStep = step;
+            updateUI();
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps - 1) {
+                saveCurrentStep();
+                currentStep++;
+                updateUI();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                saveCurrentStep();
+                currentStep--;
+                updateUI();
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function updateUI() {
+            // 更新面板显示
+            document.querySelectorAll('.step-panel').forEach((panel, index) => {
+                panel.classList.toggle('active', index === currentStep);
+            });
+
+            // 更新步骤导航
+            document.querySelectorAll('.step-item').forEach((item, index) => {
+                item.classList.remove('active');
+                if (index === currentStep) {
+                    item.classList.add('active');
+                }
+                if (index < currentStep) {
+                    item.classList.add('completed');
+                } else {
+                    item.classList.remove('completed');
+                }
+            });
+
+            // 更新进度条
+            const progress = ((currentStep + 1) / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            // 如果是最后一步，更新预览
+            if (currentStep === 5) {
+                updateExportPreview();
+            }
+        }
+
+        // 保存当前步骤数据
+        function saveCurrentStep() {
+            switch (currentStep) {
+                case 0:
+                    scriptData.title = document.getElementById('scriptTitle').value;
+                    scriptData.type = document.getElementById('scriptType').value;
+                    scriptData.duration = document.getElementById('scriptDuration').value;
+                    scriptData.genre = document.getElementById('scriptGenre').value;
+                    scriptData.theme = document.getElementById('scriptTheme').value;
+                    scriptData.logline = document.getElementById('scriptLogline').value;
+                    scriptData.inspiration = document.getElementById('scriptInspiration').value;
+                    break;
+                case 1:
+                    scriptData.relationships = document.getElementById('charRelationships').value;
+                    break;
+                case 2:
+                    scriptData.act1.world = document.getElementById('act1World').value;
+                    scriptData.act1.incident = document.getElementById('act1Incident').value;
+                    scriptData.act1.end = document.getElementById('act1End').value;
+                    scriptData.act2.trials = document.getElementById('act2Trials').value;
+                    scriptData.act2.midpoint = document.getElementById('act2Midpoint').value;
+                    scriptData.act2.dark = document.getElementById('act2Dark').value;
+                    scriptData.act3.climax = document.getElementById('act3Climax').value;
+                    scriptData.act3.end = document.getElementById('act3End').value;
+                    scriptData.act3.theme = document.getElementById('act3Theme').value;
+                    scriptData.plotPoints = document.getElementById('keyPlotPoints').value;
+                    break;
+                case 4:
+                    scriptData.content = document.getElementById('scriptContent').value;
+                    break;
+            }
+        }
+
+        // 添加角色
+        function addCharacter() {
+            const char = {
+                name: document.getElementById('charName').value,
+                role: document.getElementById('charRole').value,
+                age: document.getElementById('charAge').value,
+                job: document.getElementById('charJob').value,
+                personality: document.getElementById('charPersonality').value,
+                goal: document.getElementById('charGoal').value,
+                background: document.getElementById('charBackground').value,
+                arc: document.getElementById('charArc').value
+            };
+
+            if (!char.name) {
+                alert('请输入角色名称');
+                return;
+            }
+
+            scriptData.characters.push(char);
+            renderCharacters();
+
+            // 清空表单
+            document.getElementById('charName').value = '';
+            document.getElementById('charAge').value = '';
+            document.getElementById('charJob').value = '';
+            document.getElementById('charPersonality').value = '';
+            document.getElementById('charGoal').value = '';
+            document.getElementById('charBackground').value = '';
+            document.getElementById('charArc').value = '';
+        }
+
+        function renderCharacters() {
+            const list = document.getElementById('characterList');
+            if (scriptData.characters.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">暂无角色，请添加</p>';
+                return;
+            }
+
+            list.innerHTML = scriptData.characters.map((char, index) => `
+                <div class="character-card">
+                    <div class="char-name">${char.name}</div>
+                    <div class="char-role">${char.role} | ${char.age} | ${char.job}</div>
+                    <div class="char-desc">${char.personality || '暂无性格描述'}</div>
+                    <button class="btn" style="margin-top: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="removeCharacter(${index})">删除</button>
+                </div>
+            `).join('');
+        }
+
+        function removeCharacter(index) {
+            scriptData.characters.splice(index, 1);
+            renderCharacters();
+        }
+
+        // 添加场景
+        function addScene() {
+            const scene = {
+                number: document.getElementById('sceneNumber').value || scriptData.scenes.length + 1,
+                type: document.getElementById('sceneType').value,
+                location: document.getElementById('sceneLocation').value,
+                content: document.getElementById('sceneContent').value,
+                pages: document.getElementById('scenePages').value
+            };
+
+            if (!scene.location) {
+                alert('请输入场景地点');
+                return;
+            }
+
+            scriptData.scenes.push(scene);
+            renderScenes();
+
+            // 清空表单
+            document.getElementById('sceneNumber').value = scriptData.scenes.length + 1;
+            document.getElementById('sceneLocation').value = '';
+            document.getElementById('sceneContent').value = '';
+            document.getElementById('scenePages').value = '';
+        }
+
+        function renderScenes() {
+            const list = document.getElementById('sceneList');
+            document.getElementById('sceneCount').textContent = scriptData.scenes.length + ' 个场景';
+
+            if (scriptData.scenes.length === 0) {
+                list.innerHTML = '<p style="color: var(--text-muted); text-align: center; padding: 1rem;">暂无场景，请添加</p>';
+                return;
+            }
+
+            list.innerHTML = scriptData.scenes.map((scene, index) => `
+                <div class="scene-item">
+                    <div class="scene-number">${scene.number}</div>
+                    <div class="scene-content">
+                        <input type="text" value="${scene.type} - ${scene.location}" readonly style="font-weight: 600;">
+                        <textarea readonly>${scene.content}</textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">预估：${scene.pages || '未设置'}</span>
+                            <button class="btn" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="removeScene(${index})">删除</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeScene(index) {
+            scriptData.scenes.splice(index, 1);
+            renderScenes();
+        }
+
+        // 插入格式
+        function insertFormat(type) {
+            const textarea = document.getElementById('scriptContent');
+            const cursorPos = textarea.selectionStart;
+            let insert = '';
+
+            switch (type) {
+                case 'scene':
+                    insert = '\n\n内景/外景 地点 - 日/夜\n\n';
+                    break;
+                case 'action':
+                    insert = '\n动作描述...\n\n';
+                    break;
+                case 'character':
+                    insert = '\n                    角色名\n';
+                    break;
+                case 'dialogue':
+                    insert = '\n            对话内容\n\n';
+                    break;
+                case 'paren':
+                    insert = '\n            （情绪/动作）\n';
+                    break;
+                case 'transition':
+                    insert = '\n\n切至：\n\n';
+                    break;
+            }
+
+            const text = textarea.value;
+            textarea.value = text.slice(0, cursorPos) + insert + text.slice(cursorPos);
+            textarea.focus();
+            textarea.selectionStart = textarea.selectionEnd = cursorPos + insert.length;
+        }
+
+        // 更新导出预览
+        function updateExportPreview() {
+            saveCurrentStep();
+
+            // 更新信息卡片
+            const infoHtml = `
+                <div><strong>剧本名称：</strong>${scriptData.title || '未设置'}</div>
+                <div><strong>类型：</strong>${scriptData.type || '未设置'}</div>
+                <div><strong>时长：</strong>${scriptData.duration || '未设置'}</div>
+                <div><strong>题材：</strong>${scriptData.genre || '未设置'}</div>
+                <div><strong>主题：</strong>${scriptData.theme || '未设置'}</div>
+                <div><strong>角色数：</strong>${scriptData.characters.length}</div>
+                <div><strong>场景数：</strong>${scriptData.scenes.length}</div>
+                <div><strong>正文字数：</strong>${scriptData.content.length}</div>
+            `;
+            document.getElementById('scriptInfo').innerHTML = infoHtml;
+
+            // 更新检查清单
+            const checks = [
+                { label: '剧本名称', done: !!scriptData.title },
+                { label: '剧本类型', done: !!scriptData.type },
+                { label: '故事主题', done: !!scriptData.theme },
+                { label: '故事梗概', done: !!scriptData.logline },
+                { label: '至少1个角色', done: scriptData.characters.length > 0 },
+                { label: '第一幕设定', done: !!scriptData.act1.incident },
+                { label: '第二幕设定', done: !!scriptData.act2.midpoint },
+                { label: '第三幕设定', done: !!scriptData.act3.climax },
+                { label: '至少1个场景', done: scriptData.scenes.length > 0 },
+                { label: '剧本正文', done: scriptData.content.length > 100 }
+            ];
+
+            const checklistHtml = checks.map(c => `
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <span style="color: ${c.done ? 'var(--success)' : '#f85149'};">${c.done ? '✅' : '❌'}</span>
+                    <span>${c.label}</span>
+                </div>
+            `).join('');
+            document.getElementById('checklist').innerHTML = checklistHtml;
+
+            // 更新预览
+            refreshPreview();
+        }
+
+        function refreshPreview() {
+            const preview = document.getElementById('previewArea');
+            const title = scriptData.title || '未命名剧本';
+            const content = scriptData.content || '（暂无内容）';
+
+            // 简单的格式化
+            let formatted = content
+                .replace(/\n{3,}/g, '\n\n')
+                .split('\n').map(line => {
+                    line = line.trim();
+                    if (!line) return '<br>';
+
+                    // 场景标题
+                    if (/^(内景|外景|INT\.|EXT\.)/i.test(line)) {
+                        return `<div class="scene-heading">${line}</div>`;
+                    }
+
+                    // 角色名（居中的大写或带空格的短行）
+                    if (/^\s{10,}[A-Z\u4e00-\u9fa5]+(\s+\(.*\))?\s*$/.test(line) || 
+                        (/^[A-Z\u4e00-\u9fa5]{2,10}$/.test(line) && line.length < 10)) {
+                        return `<div class="character-name">${line.trim()}</div>`;
+                    }
+
+                    // 括号备注
+                    if (/^\s*（.*）\s*$/.test(line) || /^\s*\(.*\)\s*$/.test(line)) {
+                        return `<div class="dialogue" style="font-style: italic; font-size: 0.85rem;">${line.trim()}</div>`;
+                    }
+
+                    // 缩进的对话
+                    if (/^\s{8,}/.test(line)) {
+                        return `<div class="dialogue">${line.trim()}</div>`;
+                    }
+
+                    // 转场
+                    if (/^(切至|淡入|淡出|溶|闪回|插入|CUT TO|FADE)/i.test(line)) {
+                        return `<div style="text-align: right; font-weight: bold; margin: 1rem 0;">${line}</div>`;
+                    }
+
+                    return `<div class="action">${line}</div>`;
+                }).join('');
+
+            preview.innerHTML = `
+                <div class="title-page">
+                    <h1>${title}</h1>
+                    <p>${scriptData.type || ''} ${scriptData.genre ? '| ' + scriptData.genre : ''}</p>
+                    <p style="margin-top: 2rem; font-size: 0.9rem;">作者：________</p>
+                    <p style="font-size: 0.9rem;">联系方式：________</p>
+                </div>
+                <hr style="margin: 2rem 0; border: none; border-top: 1px solid #ccc;">
+                ${formatted}
+            `;
+        }
+
+        // 导出功能
+        function exportAsTXT() {
+            saveCurrentStep();
+            const title = scriptData.title || '未命名剧本';
+            let output = `${title}\n${'='.repeat(40)}\n\n`;
+            output += `类型：${scriptData.type || '未设置'}\n`;
+            output += `时长：${scriptData.duration || '未设置'}\n`;
+            output += `题材：${scriptData.genre || '未设置'}\n`;
+            output += `主题：${scriptData.theme || '未设置'}\n\n`;
+            output += `故事梗概：\n${scriptData.logline || '未设置'}\n\n`;
+            output += `${'='.repeat(40)}\n\n`;
+            output += scriptData.content || '（暂无正文）';
+
+            downloadFile(output, `${title}.txt`, 'text/plain');
+        }
+
+        function exportAsJSON() {
+            saveCurrentStep();
+            const output = JSON.stringify(scriptData, null, 2);
+            const title = scriptData.title || '未命名剧本';
+            downloadFile(output, `${title}_project.json`, 'application/json');
+        }
+
+        function exportAsPDF() {
+            alert('PDF导出需要后端支持，当前可使用浏览器打印功能：\n\n1. 按 Ctrl+P\n2. 选择"另存为PDF"\n3. 保存文件');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type: type + ';charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // 保存/加载项目
+        function saveProject() {
+            saveCurrentStep();
+            localStorage.setItem('scriptProject', JSON.stringify(scriptData));
+            alert('💾 项目已保存到浏览器');
+        }
+
+        function loadProject() {
+            const saved = localStorage.getItem('scriptProject');
+            if (saved) {
+                scriptData = JSON.parse(saved);
+                loadToForm();
+                alert('📂 项目已加载');
+            } else {
+                alert('没有找到已保存的项目');
+            }
+        }
+
+        function loadToForm() {
+            // 步骤1
+            document.getElementById('scriptTitle').value = scriptData.title || '';
+            document.getElementById('scriptType').value = scriptData.type || '';
+            document.getElementById('scriptDuration').value = scriptData.duration || '';
+            document.getElementById('scriptGenre').value = scriptData.genre || '';
+            document.getElementById('scriptTheme').value = scriptData.theme || '';
+            document.getElementById('scriptLogline').value = scriptData.logline || '';
+            document.getElementById('scriptInspiration').value = scriptData.inspiration || '';
+
+            // 步骤2
+            renderCharacters();
+            document.getElementById('charRelationships').value = scriptData.relationships || '';
+
+            // 步骤3
+            document.getElementById('act1World').value = scriptData.act1?.world || '';
+            document.getElementById('act1Incident').value = scriptData.act1?.incident || '';
+            document.getElementById('act1End').value = scriptData.act1?.end || '';
+            document.getElementById('act2Trials').value = scriptData.act2?.trials || '';
+            document.getElementById('act2Midpoint').value = scriptData.act2?.midpoint || '';
+            document.getElementById('act2Dark').value = scriptData.act2?.dark || '';
+            document.getElementById('act3Climax').value = scriptData.act3?.climax || '';
+            document.getElementById('act3End').value = scriptData.act3?.end || '';
+            document.getElementById('act3Theme').value = scriptData.act3?.theme || '';
+            document.getElementById('keyPlotPoints').value = scriptData.plotPoints || '';
+
+            // 步骤4
+            renderScenes();
+
+            // 步骤5
+            document.getElementById('scriptContent').value = scriptData.content || '';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 尝试加载保存的项目
+            const saved = localStorage.getItem('scriptProject');
+            if (saved) {
+                if (confirm('发现未完成的项目，是否继续编辑？')) {
+                    loadProject();
+                }
+            }
+            updateUI();
+        });
+    </script>
+</body>
+</html>

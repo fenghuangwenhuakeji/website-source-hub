@@ -1,0 +1,7 @@
+{
+    "playtime": 3600,
+    "gold": 150,
+    "floor": 5,
+    "character": "Warrior",
+    "deck": ["Strike", "Defend", "Bash"]
+}

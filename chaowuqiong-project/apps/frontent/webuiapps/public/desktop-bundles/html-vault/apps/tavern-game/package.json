@@ -1,0 +1,38 @@
+{
+  "name": "ai-tavern-rpg",
+  "version": "1.0.0",
+  "description": "AI酒馆 RPG - 完整的角色扮演游戏系统",
+  "main": "index_full.html",
+  "scripts": {
+    "start": "node start.js",
+    "start:python": "python3 start.py",
+    "start:py": "python start.py",
+    "dev": "node start.js"
+  },
+  "keywords": [
+    "rpg",
+    "game",
+    "ai",
+    "javascript",
+    "web-game",
+    "card-game",
+    "text-adventure"
+  ],
+  "author": "HyperInfinity",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1",
+    "live-server": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/ai-tavern-rpg.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/ai-tavern-rpg/issues"
+  },
+  "homepage": "https://github.com/yourusername/ai-tavern-rpg#readme"
+}

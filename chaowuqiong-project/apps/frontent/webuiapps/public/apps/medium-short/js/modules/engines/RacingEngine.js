@@ -1,0 +1,1 @@
+export class RacingEngine extends BaseGameEngine { constructor(c){super(c); Modules.games.type='racing'; Modules.games.ctx=this.ctx; Modules.games.initRacing(); this.draw=()=>{Modules.games.loop();}} }

@@ -18,6 +18,8 @@ secrets/
 *.key
 *.ppk
 *.crt
+*.p12
+*.pfx
 
 # local data
 data/

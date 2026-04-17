@@ -1,0 +1,1304 @@
+/**
+ * 响应式布局 - 手机/平板/PC 适配
+ */
+
+/* ========== 设备切换按钮 ========== */
+.device-switcher {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 9999;
+    display: flex;
+    gap: 3px;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 5px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.device-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.device-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.device-btn.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+}
+
+.device-btn[data-device="mobile"]::before { content: "📱"; }
+.device-btn[data-device="tablet"]::before { content: "📱"; font-size: 14px; }
+.device-btn[data-device="pc"]::before { content: "🖥️"; }
+
+/* 游戏中隐藏设备切换器 */
+#game-view.active ~ .device-switcher,
+body.in-game .device-switcher {
+    display: none !important;
+}
+
+/* 手机模式下设备切换器更小 */
+body.device-mobile .device-switcher {
+    padding: 3px 5px;
+    gap: 2px;
+}
+
+body.device-mobile .device-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 10px;
+}
+
+/* ========== 基础变量 ========== */
+:root {
+    --card-width: 140px;
+    --card-height: 190px;
+    --card-font-size: 12px;
+    --enemy-size: 120px;
+    --top-bar-height: 60px;
+    --bottom-bar-height: 220px;
+    --hand-card-overlap: -30px;
+}
+
+/* ========== PC 模式 (默认) ========== */
+body.device-pc {
+    --card-width: 140px;
+    --card-height: 190px;
+    --card-font-size: 12px;
+    --enemy-size: 120px;
+    --top-bar-height: 60px;
+    --bottom-bar-height: 220px;
+}
+
+/* ========== 平板模式 ========== */
+body.device-tablet {
+    --card-width: 110px;
+    --card-height: 150px;
+    --card-font-size: 10px;
+    --enemy-size: 100px;
+    --top-bar-height: 50px;
+    --bottom-bar-height: 180px;
+    --hand-card-overlap: -25px;
+}
+
+body.device-tablet .top-bar {
+    padding: 8px 15px;
+    flex-wrap: wrap;
+}
+
+body.device-tablet .player-info {
+    gap: 8px;
+}
+
+body.device-tablet .player-portrait {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+}
+
+body.device-tablet .floor-info {
+    font-size: 12px;
+}
+
+body.device-tablet .btn-icon-only {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+}
+
+body.device-tablet .card {
+    width: var(--card-width);
+    height: var(--card-height);
+}
+
+body.device-tablet .card-name {
+    font-size: 10px;
+}
+
+body.device-tablet .card-desc {
+    font-size: 8px;
+    padding: 4px;
+}
+
+body.device-tablet .card-cost {
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+}
+
+body.device-tablet .enemy {
+    width: var(--enemy-size);
+}
+
+body.device-tablet .enemy-sprite {
+    font-size: 48px;
+}
+
+body.device-tablet .energy-orb {
+    width: 50px;
+    height: 50px;
+    font-size: 16px;
+}
+
+body.device-tablet .btn-end-turn {
+    padding: 10px 20px;
+    font-size: 14px;
+}
+
+/* ========== 手机模式 ========== */
+body.device-mobile {
+    --card-width: 60px;
+    --card-height: 82px;
+    --card-font-size: 8px;
+    --enemy-size: 70px;
+    --top-bar-height: 40px;
+    --bottom-bar-height: 100px;
+    --hand-card-overlap: -5px;
+}
+
+body.device-mobile .top-bar {
+    padding: 3px 8px;
+    height: var(--top-bar-height);
+    flex-wrap: nowrap;
+    gap: 5px;
+}
+
+body.device-mobile .player-info {
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+body.device-mobile .player-portrait {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+body.device-mobile .player-stats {
+    min-width: 0;
+    gap: 2px;
+}
+
+body.device-mobile #player-name {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+}
+
+body.device-mobile .hp-bar-container {
+    height: 12px;
+    gap: 5px;
+}
+
+body.device-mobile .hp-bar-bg {
+    width: 70px;
+    height: 10px;
+}
+
+body.device-mobile .hp-text {
+    font-size: 8px;
+}
+
+body.device-mobile .gold-display {
+    font-size: 10px;
+    padding: 2px 5px;
+}
+
+body.device-mobile .floor-info {
+    display: none;
+}
+
+body.device-mobile .floor-info-mobile {
+    display: flex !important;
+    position: absolute;
+    top: var(--top-bar-height);
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2px 8px;
+    font-size: 9px;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+body.device-mobile .top-right {
+    gap: 2px;
+}
+
+body.device-mobile .btn-icon-only {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+}
+
+body.device-mobile .btn-back {
+    padding: 3px 6px;
+    font-size: 9px;
+}
+
+body.device-mobile .relics-bar {
+    display: none;
+}
+
+body.device-mobile .exp-bar {
+    display: none;
+}
+
+/* 手机模式 - 战斗区域 - 优化布局 */
+body.device-mobile .scene-container {
+    padding-top: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+body.device-mobile #combat-scene {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+body.device-mobile .enemies-container {
+    gap: 8px;
+    padding: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    flex: 0 0 auto;
+}
+
+body.device-mobile .enemy {
+    width: 70px;
+    padding: 5px;
+    border-radius: 8px;
+}
+
+body.device-mobile .enemy-sprite {
+    font-size: 28px;
+}
+
+body.device-mobile .enemy-name {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60px;
+}
+
+body.device-mobile .enemy-hp {
+    font-size: 8px;
+}
+
+body.device-mobile .enemy-hp .hp-bar {
+    width: 55px;
+    height: 5px;
+}
+
+body.device-mobile .enemy-intent {
+    font-size: 9px;
+    padding: 2px 5px;
+}
+
+body.device-mobile .enemy-buffs {
+    font-size: 9px;
+}
+
+body.device-mobile .player-area {
+    padding: 5px 0 10px 10%;
+    flex: 0 0 auto;
+}
+
+body.device-mobile .player-avatar {
+    width: 55px;
+    height: auto;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+body.device-mobile .player-sprite {
+    font-size: 26px;
+}
+
+body.device-mobile .player-block {
+    font-size: 9px;
+    padding: 2px 5px;
+}
+
+body.device-mobile .player-buffs {
+    font-size: 9px;
+}
+
+/* 手机模式 - 底部栏 - 重新设计为紧凑横向布局 */
+body.device-mobile .bottom-bar {
+    height: auto;
+    min-height: 100px;
+    max-height: 130px;
+    padding: 8px 5px;
+    gap: 8px;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(0deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.85) 100%);
+}
+
+body.device-mobile .left-panel {
+    flex-direction: column;
+    gap: 4px;
+    min-width: 45px;
+    align-items: center;
+}
+
+body.device-mobile .right-panel {
+    flex-direction: column;
+    gap: 4px;
+    min-width: 45px;
+    align-items: center;
+}
+
+body.device-mobile .energy-orb {
+    width: 36px;
+    height: 36px;
+    font-size: 11px;
+}
+
+body.device-mobile .pile {
+    width: 36px;
+    padding: 3px;
+    gap: 2px;
+}
+
+body.device-mobile .pile-icon {
+    font-size: 14px;
+}
+
+body.device-mobile .pile-count {
+    font-size: 10px;
+    padding: 1px 4px;
+}
+
+body.device-mobile .pile-label {
+    font-size: 7px;
+    display: none;
+}
+
+body.device-mobile .btn-end-turn {
+    padding: 6px 10px;
+    font-size: 10px;
+    min-width: 50px;
+    border-radius: 8px;
+}
+
+body.device-mobile .btn-hotkey {
+    display: none;
+}
+
+body.device-mobile .btn-text {
+    font-size: 9px;
+}
+
+/* 手机模式 - 卡牌 - 横向滚动卡牌列表 */
+body.device-mobile .hand-container {
+    flex: 1;
+    display: flex;
+    gap: 0;
+    padding: 0 5px;
+    height: 90px;
+    max-height: 90px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    align-items: center;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+body.device-mobile .hand-container::-webkit-scrollbar {
+    display: none;
+}
+
+body.device-mobile .card {
+    width: 60px;
+    height: 82px;
+    flex-shrink: 0;
+    scroll-snap-align: center;
+    margin: 0 -5px;
+    transform: rotate(0deg) !important;
+    border-width: 2px;
+    border-radius: 8px;
+}
+
+body.device-mobile .card:hover,
+body.device-mobile .card:active {
+    transform: translateY(-8px) scale(1.1) !important;
+    z-index: 100;
+}
+
+body.device-mobile .card-frame {
+    padding: 2px;
+}
+
+body.device-mobile .card-cost {
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    top: 1px;
+    left: 1px;
+}
+
+body.device-mobile .card-art {
+    font-size: 18px;
+    height: 25px;
+    margin: 12px 0 3px;
+}
+
+body.device-mobile .card-name-plate {
+    padding: 1px;
+}
+
+body.device-mobile .card-name {
+    font-size: 6px;
+}
+
+body.device-mobile .card-desc-box {
+    display: none;
+}
+
+body.device-mobile .card-type-badge {
+    display: none;
+}
+
+/* ========== 弹窗响应式 ========== */
+body.device-mobile .modal-content {
+    width: 95vw;
+    max-height: 85vh;
+    margin: 5vh auto;
+    padding: 10px;
+}
+
+body.device-mobile .modal-header h3 {
+    font-size: 16px;
+}
+
+body.device-mobile .btn-close {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+}
+
+/* 地图弹窗 */
+body.device-mobile .map-content {
+    padding: 10px;
+}
+
+body.device-mobile .map-container {
+    transform: scale(0.7);
+    transform-origin: top center;
+}
+
+/* 牌组弹窗 */
+body.device-mobile .deck-cards {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    gap: 8px;
+}
+
+/* 商店弹窗 */
+body.device-mobile .shop-content {
+    padding: 10px;
+}
+
+body.device-mobile .shop-sections {
+    gap: 10px;
+}
+
+body.device-mobile .shop-section h4 {
+    font-size: 12px;
+}
+
+body.device-mobile .shop-items {
+    gap: 8px;
+}
+
+body.device-mobile .shop-item {
+    padding: 8px;
+    min-width: 70px;
+}
+
+body.device-mobile .item-icon {
+    font-size: 20px;
+}
+
+body.device-mobile .item-name {
+    font-size: 10px;
+}
+
+body.device-mobile .item-price {
+    font-size: 10px;
+}
+
+/* 奖励弹窗 */
+body.device-mobile .reward-content {
+    padding: 15px;
+}
+
+body.device-mobile .reward-item {
+    padding: 10px;
+    font-size: 12px;
+}
+
+body.device-mobile .reward-icon {
+    font-size: 20px;
+}
+
+/* 卡牌选择弹窗 */
+body.device-mobile .card-choices {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+body.device-mobile .card-choices .card {
+    width: 120px;
+    height: 165px;
+}
+
+/* ========== 主菜单响应式 ========== */
+body.device-mobile #main-menu {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile .menu-container {
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+body.device-mobile .logo-icon.large {
+    font-size: 48px;
+}
+
+body.device-mobile .game-title {
+    font-size: 28px;
+}
+
+body.device-mobile .game-subtitle {
+    font-size: 14px;
+}
+
+body.device-mobile .menu-buttons {
+    gap: 10px;
+}
+
+body.device-mobile .btn-primary,
+body.device-mobile .btn-secondary {
+    padding: 12px 24px;
+    font-size: 14px;
+}
+
+/* ========== 角色选择响应式 ========== */
+body.device-mobile #character-select {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 100px;
+}
+
+body.device-mobile #character-select .screen-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 1) 0%, rgba(26, 26, 46, 0.95) 100%);
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+body.device-mobile #character-select .screen-header h2 {
+    font-size: 16px;
+}
+
+body.device-mobile .character-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 10px;
+}
+
+body.device-mobile .character-card {
+    padding: 10px;
+}
+
+body.device-mobile .char-icon {
+    font-size: 32px;
+}
+
+body.device-mobile .char-name {
+    font-size: 14px;
+}
+
+body.device-mobile .char-desc {
+    font-size: 10px;
+    display: none;
+}
+
+body.device-mobile .char-stats {
+    font-size: 11px;
+}
+
+body.device-mobile .char-starter {
+    font-size: 9px;
+}
+
+body.device-mobile .char-locked {
+    font-size: 10px;
+}
+
+/* 立绘选择区域 */
+body.device-mobile .portrait-section {
+    padding: 10px;
+}
+
+body.device-mobile .portrait-section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+body.device-mobile .portrait-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+body.device-mobile .portrait-card {
+    padding: 8px;
+}
+
+body.device-mobile .portrait-avatar {
+    font-size: 28px;
+}
+
+body.device-mobile .portrait-name {
+    font-size: 11px;
+}
+
+body.device-mobile .portrait-desc {
+    font-size: 9px;
+    line-height: 1.3;
+}
+
+body.device-mobile .portrait-passive {
+    font-size: 9px;
+    padding: 2px 6px;
+}
+
+/* 难度选择区域 */
+body.device-mobile .difficulty-selector {
+    padding: 10px;
+}
+
+body.device-mobile .difficulty-selector h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+body.device-mobile .difficulty-options {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+}
+
+body.device-mobile .difficulty-option {
+    flex: 0 0 calc(50% - 4px);
+}
+
+body.device-mobile .diff-card {
+    padding: 8px 12px;
+    min-width: unset;
+    width: 100%;
+}
+
+body.device-mobile .diff-icon {
+    font-size: 20px;
+}
+
+body.device-mobile .diff-name {
+    font-size: 11px;
+}
+
+body.device-mobile .diff-desc {
+    display: none;
+}
+
+/* 开始按钮固定在底部 */
+body.device-mobile #character-select #btn-start-run {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    border-radius: 0;
+    padding: 15px;
+    font-size: 16px;
+    z-index: 100;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+body.device-mobile #character-select #btn-start-run:disabled {
+    background: #4a4a6a;
+}
+
+/* ========== 平板模式弹窗 ========== */
+body.device-tablet .modal-content {
+    width: 85vw;
+    max-height: 90vh;
+}
+
+body.device-tablet .deck-cards {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+}
+
+body.device-tablet .character-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* ========== 触摸优化 ========== */
+@media (hover: none) and (pointer: coarse) {
+    .card:hover {
+        transform: none !important;
+    }
+    
+    .card.selected {
+        transform: translateY(-15px) scale(1.15) !important;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+        z-index: 200;
+    }
+    
+    /* 手机端卡牌点击态 */
+    body.device-mobile .card:active {
+        transform: translateY(-10px) scale(1.12) !important;
+        box-shadow: 0 0 15px rgba(99, 102, 241, 0.6);
+    }
+    
+    .enemy:hover {
+        transform: none;
+    }
+    
+    .enemy.targeted {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+    }
+    
+    /* 增大点击区域 */
+    .btn-icon-only {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    body.device-mobile .btn-icon-only {
+        min-width: 36px;
+        min-height: 36px;
+    }
+    
+    .shop-item,
+    .reward-item {
+        min-height: 50px;
+    }
+    
+    /* 手机端结束回合按钮更大的点击区域 */
+    body.device-mobile .btn-end-turn {
+        min-width: 55px;
+        min-height: 40px;
+    }
+}
+
+/* ========== 横屏/竖屏适配 ========== */
+@media screen and (orientation: portrait) and (max-width: 768px) {
+    body.device-mobile .enemies-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    body.device-mobile .scene-container {
+        min-height: calc(100vh - var(--top-bar-height) - var(--bottom-bar-height) - 20px);
+    }
+    
+    /* 竖屏时卡牌稍大一点 */
+    body.device-mobile .card {
+        width: 65px;
+        height: 88px;
+    }
+    
+    body.device-mobile .card-art {
+        font-size: 20px;
+    }
+}
+
+@media screen and (orientation: landscape) and (max-height: 500px) {
+    /* 横屏时更紧凑 */
+    body.device-mobile .top-bar {
+        height: 35px;
+        padding: 2px 8px;
+    }
+    
+    body.device-mobile .player-portrait {
+        width: 24px;
+        height: 24px;
+        font-size: 14px;
+    }
+    
+    body.device-mobile .hp-bar-bg {
+        width: 60px;
+        height: 8px;
+    }
+    
+    body.device-mobile .bottom-bar {
+        min-height: 80px;
+        max-height: 90px;
+        padding: 5px;
+    }
+    
+    body.device-mobile .hand-container {
+        height: 75px;
+        max-height: 75px;
+    }
+    
+    body.device-mobile .card {
+        width: 52px;
+        height: 70px;
+    }
+    
+    body.device-mobile .card-art {
+        font-size: 16px;
+        height: 22px;
+        margin: 10px 0 2px;
+    }
+    
+    body.device-mobile .card-cost {
+        width: 14px;
+        height: 14px;
+        font-size: 9px;
+    }
+    
+    body.device-mobile .energy-orb {
+        width: 32px;
+        height: 32px;
+        font-size: 10px;
+    }
+    
+    body.device-mobile .pile {
+        width: 32px;
+    }
+    
+    body.device-mobile .enemy {
+        width: 60px;
+        padding: 4px;
+    }
+    
+    body.device-mobile .enemy-sprite {
+        font-size: 24px;
+    }
+    
+    body.device-mobile .player-avatar {
+        width: 45px;
+        padding: 5px;
+    }
+    
+    body.device-mobile .player-sprite {
+        font-size: 22px;
+    }
+    
+    body.device-mobile .floor-info-mobile {
+        display: none !important;
+    }
+}
+
+/* ========== 自动媒体查询 (当未手动选择时) ========== */
+@media screen and (max-width: 480px) {
+    body:not(.device-pc):not(.device-tablet):not(.device-mobile) {
+        /* 自动应用手机样式 - 由 JS 处理 */
+        font-size: 14px;
+    }
+}
+
+@media screen and (min-width: 481px) and (max-width: 1024px) {
+    body:not(.device-pc):not(.device-tablet):not(.device-mobile) {
+        /* 自动应用平板样式 - 由 JS 处理 */
+        font-size: 15px;
+    }
+}
+
+/* ========== 升级奖励弹窗响应式 ========== */
+body.device-mobile .level-reward-modal {
+    padding: 10px;
+}
+
+body.device-mobile .level-reward-content {
+    padding: 15px;
+}
+
+body.device-mobile .level-reward-title {
+    font-size: 16px;
+}
+
+body.device-mobile .level-rewards {
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.device-mobile .level-reward-option {
+    padding: 12px;
+}
+
+body.device-mobile .level-reward-icon {
+    font-size: 28px;
+}
+
+body.device-mobile .level-reward-name {
+    font-size: 13px;
+}
+
+body.device-mobile .level-reward-desc {
+    font-size: 10px;
+}
+
+/* ========== 隐藏移动端楼层信息占位 ========== */
+.floor-info-mobile {
+    display: none;
+}
+
+/* ========== 安全区域适配 (刘海屏等) ========== */
+@supports (padding: env(safe-area-inset-top)) {
+    body.device-mobile .top-bar {
+        padding-top: calc(5px + env(safe-area-inset-top));
+    }
+    
+    body.device-mobile .bottom-bar {
+        padding-bottom: calc(5px + env(safe-area-inset-bottom));
+    }
+    
+    .device-switcher {
+        bottom: calc(20px + env(safe-area-inset-bottom));
+        left: calc(20px + env(safe-area-inset-left));
+    }
+}
+
+/* ========== 伤害数字响应式 ========== */
+body.device-mobile .damage-number {
+    font-size: 18px;
+}
+
+body.device-mobile .damage-number.crit {
+    font-size: 24px;
+}
+
+body.device-tablet .damage-number {
+    font-size: 22px;
+}
+
+/* ========== 战斗开始/胜利特效响应式 ========== */
+body.device-mobile .combat-start-text,
+body.device-mobile .level-up-text {
+    font-size: 24px;
+}
+
+body.device-tablet .combat-start-text,
+body.device-tablet .level-up-text {
+    font-size: 32px;
+}
+
+
+/* ========== 设置界面设备选择器 ========== */
+.option-select {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.option-select:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+.option-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.option-select option {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 8px;
+}
+
+/* 手机模式下的设置界面 */
+body.device-mobile .options-container {
+    padding: 10px;
+}
+
+body.device-mobile .option-group {
+    padding: 10px;
+}
+
+body.device-mobile .option-group h3 {
+    font-size: 14px;
+}
+
+body.device-mobile .option-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+body.device-mobile .option-row label:first-child {
+    font-size: 13px;
+}
+
+body.device-mobile .option-select {
+    width: 100%;
+}
+
+body.device-mobile input[type="range"] {
+    width: 100%;
+}
+
+
+/* ========== 图鉴页面响应式 ========== */
+body.device-mobile #compendium {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile #compendium .screen-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 1) 0%, rgba(26, 26, 46, 0.95) 100%);
+    padding: 10px 15px;
+}
+
+body.device-mobile .compendium-tabs {
+    position: sticky;
+    top: 50px;
+    z-index: 9;
+    background: rgba(26, 26, 46, 0.98);
+    padding: 8px;
+    gap: 5px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile .tab-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+body.device-mobile .compendium-content {
+    padding: 10px;
+    padding-bottom: 80px;
+}
+
+body.device-mobile .card-gallery,
+body.device-mobile .relic-gallery,
+body.device-mobile .enemy-gallery,
+body.device-mobile .event-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+body.device-mobile .gallery-card {
+    padding: 8px;
+}
+
+body.device-mobile .gallery-card .icon {
+    font-size: 24px;
+}
+
+body.device-mobile .gallery-card .name {
+    font-size: 10px;
+}
+
+body.device-mobile .gallery-card .info {
+    font-size: 9px;
+}
+
+body.device-mobile .filter-bar {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+body.device-mobile .filter-bar select {
+    width: 100%;
+    padding: 8px;
+    font-size: 13px;
+}
+
+/* ========== 设置页面响应式 ========== */
+body.device-mobile #options-screen {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile #options-screen .screen-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 1) 0%, rgba(26, 26, 46, 0.95) 100%);
+    padding: 10px 15px;
+}
+
+body.device-mobile .options-container {
+    padding: 10px;
+    padding-bottom: 80px;
+}
+
+body.device-mobile .option-group {
+    padding: 12px;
+    margin-bottom: 10px;
+}
+
+body.device-mobile .option-group h3 {
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+body.device-mobile .option-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.device-mobile .option-row:last-child {
+    border-bottom: none;
+}
+
+body.device-mobile .option-row label:first-child {
+    font-size: 13px;
+    flex: 1;
+}
+
+body.device-mobile .option-row input[type="range"] {
+    width: 120px;
+}
+
+body.device-mobile .vol-value {
+    width: 40px;
+    text-align: right;
+    font-size: 12px;
+}
+
+body.device-mobile .toggle {
+    flex-shrink: 0;
+}
+
+/* ========== 制作人员页面响应式 ========== */
+body.device-mobile #credits-screen {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-mobile #credits-screen .screen-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 1) 0%, rgba(26, 26, 46, 0.95) 100%);
+    padding: 10px 15px;
+}
+
+body.device-mobile .credits-content {
+    padding: 15px;
+    padding-bottom: 80px;
+}
+
+body.device-mobile .credits-section {
+    margin-bottom: 20px;
+}
+
+body.device-mobile .credits-section h3 {
+    font-size: 14px;
+}
+
+body.device-mobile .credits-section p {
+    font-size: 13px;
+}
+
+body.device-mobile .credits-thanks {
+    padding: 15px;
+}
+
+body.device-mobile .credits-thanks p {
+    font-size: 14px;
+}
+
+body.device-mobile .emoji-row {
+    font-size: 20px;
+}
+
+/* ========== 通用屏幕滚动修复 ========== */
+body.device-mobile .screen {
+    height: 100vh;
+    height: 100dvh; /* 动态视口高度，解决移动端地址栏问题 */
+    overflow: visible; /* 覆盖 layout.css 中的 overflow: hidden */
+}
+
+body.device-mobile .screen.active {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* 游戏视图保持不滚动 */
+body.device-mobile #game-view {
+    overflow: hidden;
+}
+
+/* 平板模式也需要滚动支持 */
+body.device-tablet #character-select,
+body.device-tablet #compendium,
+body.device-tablet #options-screen,
+body.device-tablet #credits-screen {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+body.device-tablet #character-select {
+    padding-bottom: 80px;
+}
+
+body.device-tablet #btn-start-run {
+    position: sticky;
+    bottom: 20px;
+    margin-top: 20px;
+}

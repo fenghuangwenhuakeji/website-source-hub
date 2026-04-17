@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>API设置 - 星语心伴</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <style>
+        .api-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .api-card.active {
+            border: 2px solid var(--accent-color);
+        }
+        
+        .api-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .api-name {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .api-provider {
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .api-details {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+        
+        .api-details p {
+            margin-bottom: 4px;
+        }
+        
+        .api-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 16px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        .form-group select option {
+            background: #1a1a2e;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #E74C3C, #C0392B);
+            color: white;
+        }
+        
+        .btn-sm:hover {
+            transform: scale(1.05);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+        
+        .modal-overlay.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+        
+        .test-result {
+            padding: 12px;
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+            font-size: 13px;
+        }
+        
+        .test-result.success {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ECC71;
+        }
+        
+        .test-result.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #E74C3C;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .status-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        
+        .status-badge.active {
+            background: linear-gradient(135deg, #2ECC71, #27AE60);
+        }
+        
+        .status-badge.inactive {
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <!-- 星空背景 -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <!-- 主应用容器 -->
+    <div class="app-container">
+        <!-- 页面头部 -->
+        <div class="page-header" style="padding: 16px;">
+            <a href="profile.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="page-title">API设置</h1>
+            <div class="placeholder"></div>
+        </div>
+
+        <!-- 内容区域 -->
+        <main class="content-section" style="padding-top: 0;">
+            <!-- 说明卡片 -->
+            <div class="api-card">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-info-circle" style="font-size: 24px; color: var(--accent-color);"></i>
+                    <div>
+                        <h4 style="margin-bottom: 4px;">配置大模型API</h4>
+                        <p style="font-size: 12px; color: var(--text-muted);">配置OpenAI或Gemini等大模型API，启用AI聊天功能</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 添加按钮 -->
+            <button class="btn btn-primary btn-block" id="addApiBtn" style="margin-bottom: 16px;">
+                <i class="fas fa-plus"></i> 添加新API
+            </button>
+
+            <!-- API列表 -->
+            <div id="apiList">
+                <!-- API配置将动态加载 -->
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="horoscope.html" class="nav-item">
+                <i class="fas fa-star"></i>
+                <span>星座</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>AI聊天</span>
+            </a>
+            <a href="tarot.html" class="nav-item">
+                <i class="fas fa-hat-wizard"></i>
+                <span>占卜</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- 添加/编辑API弹窗 -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">添加API配置</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            
+            <form id="apiForm">
+                <input type="hidden" id="apiId">
+                
+                <div class="form-group">
+                    <label>配置名称</label>
+                    <input type="text" id="apiName" placeholder="例如: 我的GPT-4" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>API提供商</label>
+                    <select id="apiProvider">
+                        <option value="openai">OpenAI</option>
+                        <option value="gemini">Google Gemini</option>
+                        <option value="custom">自定义(OpenAI兼容)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>API Base URL</label>
+                    <input type="url" id="apiBaseUrl" placeholder="https://api.openai.com/v1">
+                </div>
+                
+                <div class="form-group">
+                    <label>API Key</label>
+                    <input type="password" id="apiKey" placeholder="sk-..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label>模型名称</label>
+                    <input type="text" id="apiModel" placeholder="gpt-3.5-turbo">
+                </div>
+                
+                <div style="display: flex; gap: 12px;">
+                    <button type="button" class="btn btn-secondary" style="flex:1;" id="testApiBtn">
+                        <i class="fas fa-vial"></i> 测试连接
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="flex:1;">
+                        <i class="fas fa-save"></i> 保存
+                    </button>
+                </div>
+                
+                <div class="test-result" id="testResult" style="display:none;"></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/api-config.js"></script>
+    <script>
+        // 生成星空背景
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        });
+
+        class ApiSettingsPage {
+            constructor() {
+                this.editingId = null;
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadApiList();
+            }
+
+            bindEvents() {
+                document.getElementById('addApiBtn').addEventListener('click', () => this.openModal());
+                document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
+                document.getElementById('apiModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'apiModal') this.closeModal();
+                });
+                document.getElementById('apiForm').addEventListener('submit', (e) => this.handleSubmit(e));
+                document.getElementById('testApiBtn').addEventListener('click', () => this.testApi());
+                
+                document.getElementById('apiProvider').addEventListener('change', (e) => {
+                    this.updateDefaultValues(e.target.value);
+                });
+            }
+
+            updateDefaultValues(provider) {
+                const baseUrlInput = document.getElementById('apiBaseUrl');
+                const modelInput = document.getElementById('apiModel');
+                
+                const defaults = {
+                    openai: { url: 'https://api.openai.com/v1', model: 'gpt-3.5-turbo' },
+                    gemini: { url: 'https://generativelanguage.googleapis.com/v1beta/models', model: 'gemini-pro' },
+                    custom: { url: '', model: '' }
+                };
+                
+                const preset = defaults[provider] || defaults.custom;
+                if (!baseUrlInput.value || this.isDefaultUrl(baseUrlInput.value)) {
+                    baseUrlInput.value = preset.url;
+                }
+                if (!modelInput.value) {
+                    modelInput.value = preset.model;
+                }
+            }
+
+            isDefaultUrl(url) {
+                const defaultUrls = [
+                    'https://api.openai.com/v1',
+                    'https://generativelanguage.googleapis.com/v1beta/models'
+                ];
+                return defaultUrls.includes(url);
+            }
+
+            loadApiList() {
+                const configs = ApiManager.getConfigs();
+                const container = document.getElementById('apiList');
+                
+                if (configs.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-plug"></i>
+                            <p>暂无API配置</p>
+                            <p style="font-size: 12px;">点击上方按钮添加新的API配置</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = configs.map(config => `
+                    <div class="api-card ${config.isActive ? 'active' : ''}">
+                        <div class="api-card-header">
+                            <span class="api-name">
+                                ${config.name || '未命名'}
+                                <span class="status-badge ${config.isActive ? 'active' : 'inactive'}">
+                                    ${config.isActive ? '已激活' : '未激活'}
+                                </span>
+                            </span>
+                            <span class="api-provider">${this.getProviderName(config.provider)}</span>
+                        </div>
+                        <div class="api-details">
+                            <p><i class="fas fa-link"></i> ${this.maskUrl(config.baseUrl)}</p>
+                            <p><i class="fas fa-robot"></i> ${config.model}</p>
+                            <p><i class="fas fa-key"></i> ${this.maskKey(config.apiKey)}</p>
+                        </div>
+                        <div class="api-actions">
+                            ${!config.isActive ? `
+                                <button class="btn-sm btn-primary" onclick="apiPage.activateApi('${config.id}')">
+                                    <i class="fas fa-check"></i> 激活
+                                </button>
+                            ` : ''}
+                            <button class="btn-sm btn-secondary" onclick="apiPage.editApi('${config.id}')">
+                                <i class="fas fa-edit"></i> 编辑
+                            </button>
+                            <button class="btn-sm btn-danger" onclick="apiPage.deleteApi('${config.id}')">
+                                <i class="fas fa-trash"></i> 删除
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            getProviderName(provider) {
+                const names = {
+                    openai: 'OpenAI',
+                    gemini: 'Gemini',
+                    custom: '自定义'
+                };
+                return names[provider] || provider;
+            }
+
+            maskUrl(url) {
+                if (!url) return '未设置';
+                try {
+                    const urlObj = new URL(url);
+                    return urlObj.hostname;
+                } catch {
+                    return url;
+                }
+            }
+
+            maskKey(key) {
+                if (!key) return '未设置';
+                if (key.length <= 8) return '****';
+                return key.substring(0, 4) + '****' + key.substring(key.length - 4);
+            }
+
+            openModal(config = null) {
+                this.editingId = config ? config.id : null;
+                
+                document.getElementById('modalTitle').textContent = config ? '编辑API配置' : '添加API配置';
+                document.getElementById('apiId').value = config ? config.id : '';
+                document.getElementById('apiName').value = config ? config.name : '';
+                document.getElementById('apiProvider').value = config ? config.provider : 'openai';
+                document.getElementById('apiBaseUrl').value = config ? config.baseUrl : 'https://api.openai.com/v1';
+                document.getElementById('apiKey').value = config ? config.apiKey : '';
+                document.getElementById('apiModel').value = config ? config.model : 'gpt-3.5-turbo';
+                
+                document.getElementById('testResult').style.display = 'none';
+                document.getElementById('apiModal').classList.add('show');
+            }
+
+            closeModal() {
+                document.getElementById('apiModal').classList.remove('show');
+                this.editingId = null;
+            }
+
+            async handleSubmit(e) {
+                e.preventDefault();
+                
+                const config = {
+                    name: document.getElementById('apiName').value,
+                    provider: document.getElementById('apiProvider').value,
+                    baseUrl: document.getElementById('apiBaseUrl').value,
+                    apiKey: document.getElementById('apiKey').value,
+                    model: document.getElementById('apiModel').value
+                };
+
+                if (!config.name || !config.apiKey) {
+                    alert('请填写完整信息');
+                    return;
+                }
+
+                if (this.editingId) {
+                    ApiManager.updateConfig(this.editingId, config);
+                } else {
+                    ApiManager.addConfig(config);
+                }
+
+                this.closeModal();
+                this.loadApiList();
+            }
+
+            async testApi() {
+                const config = {
+                    provider: document.getElementById('apiProvider').value,
+                    baseUrl: document.getElementById('apiBaseUrl').value,
+                    apiKey: document.getElementById('apiKey').value,
+                    model: document.getElementById('apiModel').value
+                };
+
+                if (!config.apiKey) {
+                    this.showTestResult(false, '请输入API Key');
+                    return;
+                }
+
+                const resultEl = document.getElementById('testResult');
+                resultEl.style.display = 'block';
+                resultEl.className = 'test-result';
+                resultEl.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 正在测试连接...';
+
+                const result = await ApiManager.testConfig(config);
+                
+                this.showTestResult(result.success, result.success ? '连接成功！API配置有效' : result.error);
+            }
+
+            showTestResult(success, message) {
+                const resultEl = document.getElementById('testResult');
+                resultEl.style.display = 'block';
+                resultEl.className = `test-result ${success ? 'success' : 'error'}`;
+                resultEl.innerHTML = `<i class="fas fa-${success ? 'check' : 'times'}-circle"></i> ${message}`;
+            }
+
+            editApi(id) {
+                const configs = ApiManager.getConfigs();
+                const config = configs.find(c => c.id === id);
+                if (config) {
+                    this.openModal(config);
+                }
+            }
+
+            deleteApi(id) {
+                if (confirm('确定要删除这个API配置吗？')) {
+                    ApiManager.deleteConfig(id);
+                    this.loadApiList();
+                }
+            }
+
+            activateApi(id) {
+                ApiManager.activateConfig(id);
+                this.loadApiList();
+            }
+        }
+
+        const apiPage = new ApiSettingsPage();
+    </script>
+</body>
+</html>

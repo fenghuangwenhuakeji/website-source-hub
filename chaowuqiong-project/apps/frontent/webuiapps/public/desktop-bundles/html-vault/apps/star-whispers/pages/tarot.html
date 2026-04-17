@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>塔罗占卜 - 星语心伴</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <style>
+        /* 牌阵选择 */
+        .spread-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .spread-item {
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            text-align: center;
+        }
+        
+        .spread-item:hover, .spread-item.active {
+            background: rgba(255,255,255,0.1);
+            border-color: var(--accent-color);
+        }
+        
+        .spread-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .spread-name {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .spread-desc {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* 塔罗牌显示 */
+        .tarot-cards-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px;
+        }
+        
+        .tarot-card {
+            width: 100px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-md);
+            padding: 12px 8px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .tarot-card.reversed {
+            transform: rotate(180deg);
+        }
+        
+        .tarot-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .tarot-card.reversed:hover {
+            transform: rotate(180deg) scale(1.05);
+        }
+        
+        .card-position {
+            font-size: 10px;
+            opacity: 0.8;
+            margin-bottom: 6px;
+        }
+        
+        .card-emoji {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        
+        .card-name {
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .card-status {
+            font-size: 10px;
+            opacity: 0.8;
+        }
+        
+        /* 单张牌解读 */
+        .card-reading {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin: 16px;
+        }
+        
+        .card-reading-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .card-reading-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .card-reading-info h4 {
+            font-size: 15px;
+            margin-bottom: 2px;
+        }
+        
+        .card-reading-info span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .card-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        
+        .keyword-tag {
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            font-size: 11px;
+        }
+        
+        .card-meaning-text {
+            font-size: 13px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+        
+        /* 解读结果区域 */
+        .reading-section {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin: 16px;
+        }
+        
+        .reading-section h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* AI解读按钮 */
+        .ai-analysis-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: calc(100% - 32px);
+            padding: 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 16px;
+            margin-bottom: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .ai-analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .ai-analysis-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .ai-analysis-result {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            display: none;
+        }
+        
+        .ai-analysis-result.active {
+            display: block;
+        }
+        
+        /* 每日指引 */
+        .daily-guidance {
+            text-align: center;
+            padding: 24px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            margin: 16px;
+        }
+        
+        .daily-card-display {
+            padding: 16px;
+        }
+        
+        .daily-card-display .card-emoji {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .daily-card-display .card-name {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .daily-card-display .card-meaning {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        /* 问题输入 */
+        .question-section {
+            margin: 16px;
+        }
+        
+        .question-input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 14px;
+            resize: none;
+        }
+        
+        .question-input::placeholder {
+            color: var(--text-muted);
+        }
+        
+        /* 结果操作 */
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .result-actions .btn {
+            flex: 1;
+        }
+        
+        /* 抽牌动画 */
+        @keyframes cardReveal {
+            0% { opacity: 0; transform: scale(0.8) rotateY(180deg); }
+            100% { opacity: 1; transform: scale(1) rotateY(0); }
+        }
+        
+        .card-reveal {
+            animation: cardReveal 0.6s ease forwards;
+        }
+        
+        /* 牌阵形状 - 三张 */
+        .spread-three {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        /* 牌阵形状 - 凯尔特十字 */
+        .spread-celtic {
+            position: relative;
+            width: 240px;
+            height: 280px;
+            margin: 0 auto;
+        }
+        
+        .spread-celtic .tarot-card {
+            position: absolute;
+            width: 70px;
+        }
+        
+        /* 隐藏视图 */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <!-- 星空背景 -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <!-- 顶部区域 -->
+        <header class="page-header">
+            <div class="header-top">
+                <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="page-title">🔮 塔罗占卜</h1>
+                <div class="placeholder"></div>
+            </div>
+            <p class="page-subtitle">探索命运的指引，获取心灵的启示</p>
+        </header>
+
+        <!-- 内容区域 -->
+        <main class="content-section" style="padding-top: 0;">
+            <!-- 选择视图 -->
+            <div id="selectView">
+                <!-- 每日指引 -->
+                <div class="daily-guidance" id="dailyGuidance">
+                    <h3 style="font-size: 16px; margin-bottom: 16px;">☀️ 今日指引</h3>
+                    <button id="daily-btn" class="btn btn-primary btn-lg">✨ 抽取今日牌</button>
+                </div>
+                
+                <!-- 选择牌阵 -->
+                <div class="reading-section">
+                    <h3><i class="fas fa-th-large"></i> 选择牌阵</h3>
+                    <div class="spread-grid" id="spread-list">
+                        <div class="spread-item" data-spread="single">
+                            <div class="spread-icon">🃏</div>
+                            <div class="spread-name">单张指引</div>
+                            <div class="spread-desc">简单快捷，获取今日指引</div>
+                        </div>
+                        <div class="spread-item" data-spread="three">
+                            <div class="spread-icon">⏳</div>
+                            <div class="spread-name">时间之流</div>
+                            <div class="spread-desc">过去、现在、未来</div>
+                        </div>
+                        <div class="spread-item" data-spread="love">
+                            <div class="spread-icon">💕</div>
+                            <div class="spread-name">爱情牌阵</div>
+                            <div class="spread-desc">深入分析感情关系</div>
+                        </div>
+                        <div class="spread-item" data-spread="celtic">
+                            <div class="spread-icon">✝️</div>
+                            <div class="spread-name">凯尔特十字</div>
+                            <div class="spread-desc">经典综合牌阵</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 问题输入 -->
+                <div class="question-section">
+                    <label style="font-size: 14px; margin-bottom: 8px; display: block;">❓ 你的问题（可选）</label>
+                    <textarea id="question-input" class="question-input" rows="2" placeholder="写下你想探索的问题..."></textarea>
+                </div>
+                
+                <!-- 开始占卜按钮 -->
+                <button id="divine-btn" class="btn btn-primary btn-block btn-lg" style="margin: 16px;">✨ 开始占卜</button>
+            </div>
+
+            <!-- 结果视图 -->
+            <div id="resultView" style="display: none;">
+                <!-- 牌面展示 -->
+                <div class="reading-section">
+                    <h3><i class="fas fa-layer-group"></i> 抽到的牌</h3>
+                    <div class="tarot-cards-display" id="cards-display"></div>
+                </div>
+                
+                <!-- 单牌解读 -->
+                <div id="cards-reading-list"></div>
+                
+                <!-- 综合解读 -->
+                <div class="reading-section">
+                    <h3><i class="fas fa-book-open"></i> 综合解读</h3>
+                    <div id="summary-text" style="font-size: 14px; line-height: 1.8; color: var(--text-secondary);"></div>
+                </div>
+                
+                <!-- AI深度解读 -->
+                <button class="ai-analysis-btn" id="aiAnalysisBtn">
+                    <i class="fas fa-robot"></i>
+                    <span>AI深度解读牌面</span>
+                </button>
+                
+                <div class="ai-analysis-result" id="aiAnalysisResult"></div>
+                
+                <div class="result-actions">
+                    <button class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> 重新占卜
+                    </button>
+                    <a href="../index.html" class="btn btn-primary">
+                        <i class="fas fa-home"></i> 返回首页
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="horoscope.html" class="nav-item"><i class="fas fa-star"></i><span>星座</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI聊天</span></a>
+            <a href="tarot.html" class="nav-item active"><i class="fas fa-hat-wizard"></i><span>占卜</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>我的</span></a>
+        </nav>
+    </div>
+
+    <script src="../js/api-config.js"></script>
+    <script src="../js/tarot-bundle.js"></script>
+    <script>
+        // 生成星空背景
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        });
+
+        class TarotPageEnhanced {
+            constructor() {
+                this.tarot = new TarotModule();
+                this.selectedSpread = null;
+                this.currentResult = null;
+                this.initUI();
+                this.bindEvents();
+            }
+
+            initUI() {
+                this.tarot.loadHistory?.();
+            }
+
+            bindEvents() {
+                // 牌阵选择
+                const spreadList = document.getElementById('spread-list');
+                spreadList?.addEventListener('click', (e) => {
+                    const item = e.target.closest('.spread-item');
+                    if (item) {
+                        this.selectSpread(item.dataset.spread);
+                        spreadList.querySelectorAll('.spread-item').forEach(el => el.classList.remove('active'));
+                        item.classList.add('active');
+                    }
+                });
+
+                // 每日指引
+                document.getElementById('daily-btn')?.addEventListener('click', () => this.getDailyGuidance());
+                
+                // 开始占卜
+                document.getElementById('divine-btn')?.addEventListener('click', () => this.startDivination());
+                
+                // 重新占卜
+                document.getElementById('resetBtn')?.addEventListener('click', () => this.reset());
+                
+                // AI解读
+                document.getElementById('aiAnalysisBtn')?.addEventListener('click', () => this.getAIAnalysis());
+            }
+
+            selectSpread(spreadId) {
+                this.selectedSpread = spreadId;
+            }
+
+            getDailyGuidance() {
+                const result = this.tarot.getDailyGuidance();
+                const card = result.card;
+                
+                const dailyGuidance = document.getElementById('dailyGuidance');
+                dailyGuidance.innerHTML = `
+                    <div class="daily-card-display card-reveal">
+                        <div class="card-emoji">${card.symbol || '🃏'}</div>
+                        <div class="card-name">${card.name}${card.isReversed ? ' (逆位)' : ''}</div>
+                        <div class="card-meaning">${result.interpretation.meaning}</div>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" onclick="location.reload()" style="margin-top: 16px;">
+                        <i class="fas fa-redo"></i> 重新抽取
+                    </button>
+                `;
+            }
+
+            async startDivination() {
+                if (!this.selectedSpread) {
+                    alert('请先选择一个牌阵');
+                    return;
+                }
+
+                const questionInput = document.getElementById('question-input');
+                const question = questionInput?.value?.trim() || '';
+
+                // 切换视图
+                document.getElementById('selectView').style.display = 'none';
+                document.getElementById('resultView').style.display = 'block';
+
+                try {
+                    this.currentResult = await this.tarot.divine(this.selectedSpread, question);
+                    this.displayResult(this.currentResult);
+                } catch (error) {
+                    console.error('占卜失败:', error);
+                    document.getElementById('cards-display').innerHTML = '<div style="text-align: center; color: #E74C3C;">占卜失败，请重试</div>';
+                }
+            }
+
+            displayResult(result) {
+                // 显示牌面
+                const cardsDisplay = document.getElementById('cards-display');
+                cardsDisplay.innerHTML = result.cards.map((card, index) => `
+                    <div class="tarot-card card-reveal ${card.isReversed ? 'reversed' : ''}" style="animation-delay: ${index * 0.15}s">
+                        <div class="card-position">${card.position?.name || ''}</div>
+                        <div class="card-emoji">${card.symbol || '🃏'}</div>
+                        <div class="card-name">${card.name}</div>
+                        <div class="card-status">${card.isReversed ? '逆位' : '正位'}</div>
+                    </div>
+                `).join('');
+
+                // 单牌解读
+                const readingList = document.getElementById('cards-reading-list');
+                readingList.innerHTML = result.cards.map((card, index) => {
+                    const meaning = card.isReversed ? card.reversedMeaning : card.uprightMeaning;
+                    const keywords = card.keywords || [];
+                    return `
+                        <div class="card-reading card-reveal" style="animation-delay: ${index * 0.15 + 0.3}s">
+                            <div class="card-reading-header">
+                                <div class="card-reading-icon">${card.symbol || '🃏'}</div>
+                                <div class="card-reading-info">
+                                    <h4>${card.name}${card.isReversed ? ' (逆位)' : ''}</h4>
+                                    <span>${card.position?.name || ''} · ${card.isReversed ? '逆位' : '正位'}</span>
+                                </div>
+                            </div>
+                            <div class="card-keywords">
+                                ${keywords.map(k => `<span class="keyword-tag">${k}</span>`).join('')}
+                            </div>
+                            <div class="card-meaning-text">${meaning}</div>
+                        </div>
+                    `;
+                }).join('');
+
+                // 综合解读
+                document.getElementById('summary-text').innerHTML = result.interpretation?.summary || '请查看单牌解读获取更多信息。';
+                
+                // 重置AI分析
+                document.getElementById('aiAnalysisResult').classList.remove('active');
+                document.getElementById('aiAnalysisResult').innerHTML = '';
+            }
+
+            reset() {
+                document.getElementById('selectView').style.display = 'block';
+                document.getElementById('resultView').style.display = 'none';
+                this.selectedSpread = null;
+                this.currentResult = null;
+                
+                document.querySelectorAll('.spread-item').forEach(el => el.classList.remove('active'));
+                document.getElementById('question-input').value = '';
+            }
+
+            async getAIAnalysis() {
+                if (!this.currentResult) return;
+
+                const btn = document.getElementById('aiAnalysisBtn');
+                const result = document.getElementById('aiAnalysisResult');
+
+                btn.classList.add('loading');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>正在解读中...</span>';
+
+                const cards = this.currentResult.cards;
+                const question = this.currentResult.question || '无特定问题';
+                const spreadName = this.currentResult.spreadName;
+
+                const cardsInfo = cards.map(card => {
+                    const meaning = card.isReversed ? card.reversedMeaning : card.uprightMeaning;
+                    return `- ${card.position?.name || '位置'}: ${card.name}(${card.isReversed ? '逆位' : '正位'})
+  含义: ${meaning}
+  关键词: ${(card.keywords || []).join('、')}`;
+                }).join('\n\n');
+
+                const prompt = `请作为专业的塔罗占卜师，为用户进行深度牌面解读：
+
+【牌阵类型】${spreadName}
+
+【用户问题】${question}
+
+【抽到的牌】
+${cardsInfo}
+
+请从以下几个方面进行专业解读（每项80-100字）：
+
+1. 整体能量分析：牌面整体呈现的能量和氛围
+2. 各牌关联解读：牌与牌之间的相互作用和影响
+3. 问题指引：针对用户问题（如有）的具体建议
+4. 行动建议：接下来应该采取的行动方向
+5. 注意事项：需要警惕或注意的方面
+6. 未来展望：按照当前趋势可能的发展
+
+请用温暖专业的语气，给予用户积极的指引和启发。注意正位和逆位的含义区别，综合分析牌面信息。`;
+
+                try {
+                    const config = ApiManager.getActiveConfig();
+                    if (!config) {
+                        throw new Error('请先在设置中配置并激活API');
+                    }
+
+                    let fullResponse = '';
+                    await ApiManager.callLLM([
+                        { role: 'system', content: '你是一位专业的塔罗占卜师，拥有深厚的塔罗知识和灵性洞察力，善于用温暖专业的语言为人们解读牌面，给予积极的指引和启发。' },
+                        { role: 'user', content: prompt }
+                    ], (chunk, full) => {
+                        fullResponse = full;
+                        result.innerHTML = fullResponse.replace(/\n/g, '<br>');
+                        result.classList.add('active');
+                    });
+
+                } catch (error) {
+                    result.innerHTML = `<div style="color: #E74C3C;">解读失败：${error.message}</div>`;
+                    result.classList.add('active');
+                } finally {
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '<i class="fas fa-robot"></i> <span>AI深度解读牌面</span>';
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => new TarotPageEnhanced());
+    </script>
+</body>
+</html>

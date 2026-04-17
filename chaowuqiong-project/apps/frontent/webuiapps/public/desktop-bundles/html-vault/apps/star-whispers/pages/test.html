@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>心理测试 - 星语心伴</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <style>
+        .test-intro {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .test-intro-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E8E 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+        }
+        
+        .test-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            margin: 16px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .test-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .test-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .test-item-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .test-item-content {
+            flex: 1;
+        }
+        
+        .test-item-title {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+        
+        .test-item-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        /* 进度条 */
+        .progress-section {
+            padding: 16px;
+        }
+        
+        .progress-bar-container {
+            background: rgba(255,255,255,0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        
+        /* 问题卡片 */
+        .question-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin: 16px;
+        }
+        
+        .question-number {
+            font-size: 12px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+        
+        .question-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+        
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option-item {
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-fast);
+            font-size: 14px;
+        }
+        
+        .option-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .option-item.selected {
+            border-color: var(--accent-color);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .test-nav {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+        
+        .test-nav .btn {
+            flex: 1;
+        }
+        
+        /* 结果页面 */
+        .result-card {
+            text-align: center;
+            padding: 32px 24px;
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            margin: 16px;
+        }
+        
+        .result-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .result-title {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .result-score {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+        
+        .result-level {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+        
+        .result-description {
+            font-size: 14px;
+            opacity: 0.85;
+            line-height: 1.6;
+        }
+        
+        .analysis-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin: 16px;
+        }
+        
+        .analysis-card h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .dimension-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .dimension-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .dimension-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+        
+        .dimension-bar {
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .dimension-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        /* AI解读按钮 */
+        .ai-analysis-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: calc(100% - 32px);
+            padding: 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            margin: 16px;
+            margin-bottom: 0;
+            transition: all 0.2s ease;
+        }
+        
+        .ai-analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .ai-analysis-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .ai-analysis-result {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            display: none;
+        }
+        
+        .ai-analysis-result.active {
+            display: block;
+        }
+        
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+        }
+        
+        .result-actions .btn {
+            flex: 1;
+        }
+        
+        /* 建议列表 */
+        .suggestion-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+        }
+        
+        .suggestion-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+        
+        .suggestion-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <!-- 星空背景 -->
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <!-- 顶部区域 -->
+        <header class="page-header">
+            <div class="header-top">
+                <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="page-title">🧠 心理测试</h1>
+                <div class="placeholder"></div>
+            </div>
+            <p class="page-subtitle">科学心理测评，深度了解自己</p>
+        </header>
+
+        <!-- 内容区域 -->
+        <main class="content-section" style="padding-top: 0;">
+            <!-- 测试列表视图 -->
+            <div id="test-list-view">
+                <div class="test-intro">
+                    <div class="test-intro-icon">🧠</div>
+                    <h2>心理测试</h2>
+                    <p style="font-size: 14px; color: var(--text-secondary);">
+                        科学的心理测评工具，帮助你更好地了解自己
+                    </p>
+                </div>
+                
+                <div class="test-card">
+                    <h3 style="font-size: 16px; margin-bottom: 16px;">🔥 热门测试</h3>
+                    <div id="test-grid">
+                        <a href="mbti.html" class="test-item">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">🧩</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">MBTI性格测试</div>
+                                <div class="test-item-desc">探索你的16型人格类型 · 128.5万人测过</div>
+                            </div>
+                        </a>
+                        <div class="test-item" data-test="stress">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #FF6B6B, #FF8E8E);">😓</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">压力指数测试</div>
+                                <div class="test-item-desc">评估你当前的压力水平 · 45.3万人测过</div>
+                            </div>
+                        </div>
+                        <div class="test-item" data-test="eq">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #4ECDC4, #44A08D);">❤️</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">情商EQ测试</div>
+                                <div class="test-item-desc">了解你的情绪智力水平 · 89.3万人测过</div>
+                            </div>
+                        </div>
+                        <div class="test-item" data-test="anxiety">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #F39C12, #E67E22);">😰</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">焦虑程度测试</div>
+                                <div class="test-item-desc">评估你的焦虑倾向 · 32.1万人测过</div>
+                            </div>
+                        </div>
+                        <div class="test-item" data-test="depression">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #3498DB, #2980B9);">😔</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">抑郁倾向测试</div>
+                                <div class="test-item-desc">了解你的情绪状态 · 28.7万人测过</div>
+                            </div>
+                        </div>
+                        <div class="test-item" data-test="sleep">
+                            <div class="test-item-icon" style="background: linear-gradient(135deg, #9B59B6, #8E44AD);">😴</div>
+                            <div class="test-item-content">
+                                <div class="test-item-title">睡眠质量测试</div>
+                                <div class="test-item-desc">评估你的睡眠状况 · 56.2万人测过</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 测试进行视图 -->
+            <div id="test-taking-view" style="display: none;">
+                <div class="progress-section">
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-fill" style="width: 10%;"></div>
+                    </div>
+                    <div class="progress-text" id="progress-text">1 / 10</div>
+                </div>
+                
+                <div class="question-card">
+                    <div class="question-number" id="question-number">问题 1</div>
+                    <div class="question-text" id="question-text">题目加载中...</div>
+                    <div class="options-list" id="options-list"></div>
+                </div>
+                
+                <div class="test-nav">
+                    <button class="btn btn-secondary" id="prev-btn" disabled>
+                        <i class="fas fa-arrow-left"></i> 上一题
+                    </button>
+                    <button class="btn btn-primary" id="next-btn">
+                        下一题 <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 测试结果视图 -->
+            <div id="test-result-view" style="display: none;">
+                <div class="result-card" id="result-card">
+                    <div class="result-icon" id="result-icon">🎯</div>
+                    <div class="result-title" id="result-title">测试结果</div>
+                    <div class="result-score" id="result-score">85</div>
+                    <div class="result-level" id="result-level">表现优秀</div>
+                    <div class="result-description" id="result-description">各项指标均衡发展良好！</div>
+                </div>
+                
+                <div class="analysis-card">
+                    <h3><i class="fas fa-chart-bar"></i> 维度分析</h3>
+                    <div class="dimension-list" id="dimension-list"></div>
+                </div>
+                
+                <div class="analysis-card">
+                    <h3><i class="fas fa-lightbulb"></i> 改善建议</h3>
+                    <div class="suggestion-list" id="suggestion-list"></div>
+                </div>
+                
+                <!-- AI深度解读 -->
+                <button class="ai-analysis-btn" id="aiAnalysisBtn">
+                    <i class="fas fa-robot"></i>
+                    <span>AI深度解读报告</span>
+                </button>
+                
+                <div class="ai-analysis-result" id="aiAnalysisResult"></div>
+                
+                <div class="result-actions">
+                    <button class="btn btn-secondary" id="retake-btn">
+                        <i class="fas fa-redo"></i> 重新测试
+                    </button>
+                    <a href="../index.html" class="btn btn-primary">
+                        <i class="fas fa-home"></i> 返回首页
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部导航栏 -->
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="horoscope.html" class="nav-item"><i class="fas fa-star"></i><span>星座</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI聊天</span></a>
+            <a href="tarot.html" class="nav-item"><i class="fas fa-hat-wizard"></i><span>占卜</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>我的</span></a>
+        </nav>
+    </div>
+
+    <script src="../js/api-config.js"></script>
+    <script>
+        // 生成星空背景
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+        });
+
+        // 测试题库
+        const testQuestions = {
+            stress: {
+                name: '压力指数测试',
+                icon: '😓',
+                color: 'linear-gradient(135deg, #FF6B6B, #FF8E8E)',
+                description: '评估你当前的压力水平',
+                dimensions: ['身体症状', '情绪状态', '认知表现', '行为变化'],
+                questions: [
+                    { text: '最近你是否经常感到疲劳或精力不足？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否会因为小事而感到烦躁或生气？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否感到难以集中注意力？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你的睡眠质量如何？', options: ['很好', '一般', '较差', '很差'] },
+                    { text: '你是否经常头痛或身体不适？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否感到对未来感到担忧？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否发现自己食欲发生变化？', options: ['没有变化', '略有变化', '变化明显', '变化很大'] },
+                    { text: '你是否感到工作和生活难以平衡？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否容易忘记事情？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否感到人际关系变得紧张？', options: ['从不', '偶尔', '经常', '总是'] }
+                ]
+            },
+            eq: {
+                name: '情商EQ测试',
+                icon: '❤️',
+                color: 'linear-gradient(135deg, #4ECDC4, #44A08D)',
+                description: '了解你的情绪智力水平',
+                dimensions: ['自我认知', '自我管理', '社会意识', '关系管理'],
+                questions: [
+                    { text: '你是否能够准确识别自己的情绪？', options: ['非常准确', '比较准确', '一般', '不太准确'] },
+                    { text: '当你生气时，你能否控制自己的行为？', options: ['完全能够', '大部分能够', '有时能够', '很难控制'] },
+                    { text: '你是否能够理解他人的感受？', options: ['非常能够', '比较能够', '一般', '不太能够'] },
+                    { text: '面对挫折时，你能否快速恢复？', options: ['很快恢复', '较快恢复', '需要一些时间', '恢复很慢'] },
+                    { text: '你是否善于表达自己的情感？', options: ['非常善于', '比较善于', '一般', '不太善于'] },
+                    { text: '你是否能够有效地化解冲突？', options: ['非常有效', '比较有效', '一般', '不太有效'] },
+                    { text: '你是否能够接受他人的批评？', options: ['虚心接受', '能够接受', '勉强接受', '难以接受'] },
+                    { text: '你是否能够激励自己和他人？', options: ['非常能够', '比较能够', '一般', '不太能够'] },
+                    { text: '你是否善于建立和维护人际关系？', options: ['非常善于', '比较善于', '一般', '不太善于'] },
+                    { text: '你是否能够适应不同的社交场合？', options: ['非常能够', '比较能够', '一般', '不太能够'] }
+                ]
+            },
+            anxiety: {
+                name: '焦虑程度测试',
+                icon: '😰',
+                color: 'linear-gradient(135deg, #F39C12, #E67E22)',
+                description: '评估你的焦虑倾向',
+                dimensions: ['紧张程度', '担忧频率', '身体反应', '回避行为'],
+                questions: [
+                    { text: '你是否经常感到紧张或不安？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否难以控制自己的担忧？', options: ['完全能够', '大部分能够', '有时能够', '很难控制'] },
+                    { text: '你是否因为担心而影响睡眠？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否容易出汗、心慌或呼吸急促？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否因为害怕而回避某些场合？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否经常预想最坏的结果？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否感到坐立不安？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否容易受到惊吓？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否因为焦虑而难以完成任务？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否经常需要他人的安慰？', options: ['从不', '偶尔', '经常', '总是'] }
+                ]
+            },
+            depression: {
+                name: '抑郁倾向测试',
+                icon: '😔',
+                color: 'linear-gradient(135deg, #3498DB, #2980B9)',
+                description: '了解你的情绪状态',
+                dimensions: ['情绪状态', '兴趣活力', '自我评价', '身体症状'],
+                questions: [
+                    { text: '最近你是否经常感到心情低落？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否对以前感兴趣的事物失去兴趣？', options: ['没有', '略有', '明显', '完全失去'] },
+                    { text: '你是否感到自己毫无价值？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否经常感到疲惫无力？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否难以集中精力做事情？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你的食欲是否有明显变化？', options: ['没有变化', '略有变化', '明显变化', '变化很大'] },
+                    { text: '你是否经常失眠或睡眠过多？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否感到生活没有意义？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否难以做出决定？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你是否回避与他人交往？', options: ['从不', '偶尔', '经常', '总是'] }
+                ]
+            },
+            sleep: {
+                name: '睡眠质量测试',
+                icon: '😴',
+                color: 'linear-gradient(135deg, #9B59B6, #8E44AD)',
+                description: '评估你的睡眠状况',
+                dimensions: ['入睡情况', '睡眠时长', '睡眠深度', '日间影响'],
+                questions: [
+                    { text: '你通常需要多长时间才能入睡？', options: ['15分钟内', '15-30分钟', '30-60分钟', '超过60分钟'] },
+                    { text: '你每晚的实际睡眠时间是多少？', options: ['7小时以上', '6-7小时', '5-6小时', '少于5小时'] },
+                    { text: '你半夜醒来的频率是多少？', options: ['从不', '偶尔', '经常', '每晚'] },
+                    { text: '你早上醒来时感觉如何？', options: ['精力充沛', '比较清醒', '有些疲惫', '非常疲惫'] },
+                    { text: '你是否经常做噩梦？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你白天是否感到困倦？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你的作息时间是否规律？', options: ['非常规律', '比较规律', '不太规律', '很不规律'] },
+                    { text: '你是否依赖药物才能入睡？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '睡前你是否经常使用电子设备？', options: ['从不', '偶尔', '经常', '总是'] },
+                    { text: '你的睡眠环境是否舒适？', options: ['非常舒适', '比较舒适', '一般', '不太舒适'] }
+                ]
+            }
+        };
+
+        class TestPage {
+            constructor() {
+                this.currentTest = null;
+                this.currentQuestionIndex = 0;
+                this.answers = [];
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+            }
+
+            bindEvents() {
+                document.querySelectorAll('[data-test]').forEach(item => {
+                    item.addEventListener('click', () => this.startTest(item.dataset.test));
+                });
+
+                document.getElementById('prev-btn')?.addEventListener('click', () => this.prevQuestion());
+                document.getElementById('next-btn')?.addEventListener('click', () => this.nextQuestion());
+                document.getElementById('retake-btn')?.addEventListener('click', () => this.backToList());
+                document.getElementById('aiAnalysisBtn')?.addEventListener('click', () => this.getAIAnalysis());
+            }
+
+            startTest(testId) {
+                this.currentTest = testQuestions[testId];
+                if (!this.currentTest) {
+                    alert('测试开发中，敬请期待！');
+                    return;
+                }
+                
+                this.currentQuestionIndex = 0;
+                this.answers = [];
+
+                document.getElementById('test-list-view').style.display = 'none';
+                document.getElementById('test-taking-view').style.display = 'block';
+                document.getElementById('test-result-view').style.display = 'none';
+
+                this.loadQuestion();
+            }
+
+            loadQuestion() {
+                const questions = this.currentTest.questions;
+                const question = questions[this.currentQuestionIndex];
+                const progress = ((this.currentQuestionIndex + 1) / questions.length) * 100;
+
+                document.getElementById('progress-fill').style.width = progress + '%';
+                document.getElementById('progress-text').textContent = `${this.currentQuestionIndex + 1} / ${questions.length}`;
+                document.getElementById('question-number').textContent = `问题 ${this.currentQuestionIndex + 1}`;
+                document.getElementById('question-text').textContent = question.text;
+
+                const optionsList = document.getElementById('options-list');
+                optionsList.innerHTML = question.options.map((option, index) => `
+                    <div class="option-item ${this.answers[this.currentQuestionIndex] === index ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `).join('');
+
+                optionsList.querySelectorAll('.option-item').forEach(item => {
+                    item.addEventListener('click', () => this.selectOption(parseInt(item.dataset.index)));
+                });
+
+                document.getElementById('prev-btn').disabled = this.currentQuestionIndex === 0;
+                document.getElementById('next-btn').innerHTML = this.currentQuestionIndex === questions.length - 1 
+                    ? '完成测试 <i class="fas fa-check"></i>' 
+                    : '下一题 <i class="fas fa-arrow-right"></i>';
+            }
+
+            selectOption(index) {
+                this.answers[this.currentQuestionIndex] = index;
+                document.querySelectorAll('.option-item').forEach((item, i) => {
+                    item.classList.toggle('selected', i === index);
+                });
+            }
+
+            prevQuestion() {
+                if (this.currentQuestionIndex > 0) {
+                    this.currentQuestionIndex--;
+                    this.loadQuestion();
+                }
+            }
+
+            nextQuestion() {
+                if (this.answers[this.currentQuestionIndex] === undefined) {
+                    alert('请选择一个选项');
+                    return;
+                }
+
+                const questions = this.currentTest.questions;
+                if (this.currentQuestionIndex < questions.length - 1) {
+                    this.currentQuestionIndex++;
+                    this.loadQuestion();
+                } else {
+                    this.showResult();
+                }
+            }
+
+            showResult() {
+                document.getElementById('test-taking-view').style.display = 'none';
+                document.getElementById('test-result-view').style.display = 'block';
+
+                const result = this.calculateResult();
+
+                // 更新结果卡片
+                document.getElementById('result-card').style.background = this.currentTest.color;
+                document.getElementById('result-icon').textContent = result.icon;
+                document.getElementById('result-title').textContent = this.currentTest.name + '结果';
+                document.getElementById('result-score').textContent = result.score + '分';
+                document.getElementById('result-level').textContent = result.level;
+                document.getElementById('result-description').textContent = result.description;
+
+                // 维度分析
+                document.getElementById('dimension-list').innerHTML = result.dimensions.map(dim => `
+                    <div class="dimension-item">
+                        <div class="dimension-header">
+                            <span>${dim.name}</span>
+                            <span>${dim.score}%</span>
+                        </div>
+                        <div class="dimension-bar">
+                            <div class="dimension-fill" style="width: ${dim.score}%; background: ${dim.color};"></div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // 改善建议
+                document.getElementById('suggestion-list').innerHTML = result.suggestions.map(sug => `
+                    <div class="suggestion-item">
+                        <div class="suggestion-icon">${sug.icon}</div>
+                        <div class="suggestion-text">${sug.text}</div>
+                    </div>
+                `).join('');
+                
+                // 重置AI分析
+                document.getElementById('aiAnalysisResult').classList.remove('active');
+                document.getElementById('aiAnalysisResult').innerHTML = '';
+            }
+
+            calculateResult() {
+                // 计算总分
+                const totalScore = Math.round(this.answers.reduce((sum, ans) => sum + (3 - ans) * 25, 0) / this.answers.length);
+                
+                // 计算各维度分数
+                const dims = this.currentTest.dimensions;
+                const dimScores = dims.map((dim, i) => {
+                    const startIdx = Math.floor(i * this.answers.length / 4);
+                    const endIdx = Math.floor((i + 1) * this.answers.length / 4);
+                    const dimSum = this.answers.slice(startIdx, endIdx).reduce((s, a) => s + (3 - a) * 25, 0);
+                    const dimLen = endIdx - startIdx;
+                    return Math.round(dimSum / (dimLen || 1));
+                });
+
+                const colors = ['#FF6B6B', '#4ECDC4', '#F39C12', '#3498DB'];
+
+                // 确定等级
+                let icon, level, description;
+                if (totalScore >= 75) {
+                    icon = '🌟';
+                    level = '状态良好';
+                    description = '你的各项指标表现优秀，继续保持！';
+                } else if (totalScore >= 50) {
+                    icon = '📊';
+                    level = '轻度关注';
+                    description = '部分指标需要关注，建议适当调整。';
+                } else if (totalScore >= 25) {
+                    icon = '⚠️';
+                    level = '中度关注';
+                    description = '建议采取积极措施改善当前状态。';
+                } else {
+                    icon = '🆘';
+                    level = '高度关注';
+                    description = '强烈建议寻求专业帮助。';
+                }
+
+                // 生成建议
+                const suggestions = [];
+                if (dimScores[0] < 60) {
+                    suggestions.push({ icon: '🏃', text: '增加运动量，每天至少30分钟有氧运动可以帮助改善状态' });
+                }
+                if (dimScores[1] < 60) {
+                    suggestions.push({ icon: '😴', text: '保证充足睡眠，建立规律的作息时间' });
+                }
+                if (dimScores[2] < 60) {
+                    suggestions.push({ icon: '🧘', text: '尝试冥想或深呼吸练习，帮助放松身心' });
+                }
+                if (dimScores[3] < 60) {
+                    suggestions.push({ icon: '👥', text: '多与朋友家人交流，建立良好的社交支持系统' });
+                }
+                if (suggestions.length === 0) {
+                    suggestions.push({ icon: '✨', text: '继续保持健康的生活方式，定期进行自我检查' });
+                }
+
+                return {
+                    score: totalScore,
+                    icon,
+                    level,
+                    description,
+                    dimensions: dims.map((name, i) => ({
+                        name,
+                        score: dimScores[i],
+                        color: colors[i]
+                    })),
+                    suggestions
+                };
+            }
+
+            backToList() {
+                document.getElementById('test-list-view').style.display = 'block';
+                document.getElementById('test-taking-view').style.display = 'none';
+                document.getElementById('test-result-view').style.display = 'none';
+                this.currentTest = null;
+                this.currentQuestionIndex = 0;
+                this.answers = [];
+            }
+
+            async getAIAnalysis() {
+                if (!this.currentTest) return;
+
+                const btn = document.getElementById('aiAnalysisBtn');
+                const result = document.getElementById('aiAnalysisResult');
+
+                btn.classList.add('loading');
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>正在生成报告...</span>';
+
+                const totalScore = Math.round(this.answers.reduce((sum, ans) => sum + (3 - ans) * 25, 0) / this.answers.length);
+                const dims = this.currentTest.dimensions;
+                const dimScores = dims.map((dim, i) => {
+                    const startIdx = Math.floor(i * this.answers.length / 4);
+                    const endIdx = Math.floor((i + 1) * this.answers.length / 4);
+                    const dimSum = this.answers.slice(startIdx, endIdx).reduce((s, a) => s + (3 - a) * 25, 0);
+                    const dimLen = endIdx - startIdx;
+                    return Math.round(dimSum / (dimLen || 1));
+                });
+
+                const prompt = `请作为专业的心理咨询师，为用户解读${this.currentTest.name}结果：
+
+【测试信息】
+- 测试类型：${this.currentTest.name}
+- 测试说明：${this.currentTest.description}
+
+【测试结果】
+- 总分：${totalScore}分（满分100分）
+- 等级：${totalScore >= 75 ? '状态良好' : totalScore >= 50 ? '轻度关注' : totalScore >= 25 ? '中度关注' : '高度关注'}
+
+【维度分析】
+${dims.map((dim, i) => `- ${dim}：${dimScores[i]}分`).join('\n')}
+
+【用户回答分布】
+- 选择第一选项（最优）：${this.answers.filter(a => a === 0).length}次
+- 选择第二选项：${this.answers.filter(a => a === 1).length}次  
+- 选择第三选项：${this.answers.filter(a => a === 2).length}次
+- 选择第四选项（最差）：${this.answers.filter(a => a === 3).length}次
+
+请从以下几个方面进行专业解读（每项60-80字）：
+1. 整体评估：对用户整体状态的客观分析
+2. 优势领域：指出用户表现较好的方面
+3. 关注重点：需要关注的潜在问题
+4. 改善建议：具体可行的改善方案
+5. 日常贴士：日常生活中的小技巧
+
+请用专业但温暖的语气，给予用户积极的支持和鼓励。如发现较严重问题，建议寻求专业帮助。`;
+
+                try {
+                    const config = ApiManager.getActiveConfig();
+                    if (!config) {
+                        throw new Error('请先在设置中配置并激活API');
+                    }
+
+                    let fullResponse = '';
+                    await ApiManager.callLLM([
+                        { role: 'system', content: '你是一位专业的心理咨询师，拥有丰富的心理学知识，善于用温暖专业的语言解读心理测试结果，给予用户建设性的建议和支持。' },
+                        { role: 'user', content: prompt }
+                    ], (chunk, full) => {
+                        fullResponse = full;
+                        result.innerHTML = fullResponse.replace(/\n/g, '<br>');
+                        result.classList.add('active');
+                    });
+
+                } catch (error) {
+                    result.innerHTML = `<div style="color: #E74C3C;">分析失败：${error.message}</div>`;
+                    result.classList.add('active');
+                } finally {
+                    btn.classList.remove('loading');
+                    btn.innerHTML = '<i class="fas fa-robot"></i> <span>AI深度解读报告</span>';
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => new TestPage());
+    </script>
+</body>
+</html>

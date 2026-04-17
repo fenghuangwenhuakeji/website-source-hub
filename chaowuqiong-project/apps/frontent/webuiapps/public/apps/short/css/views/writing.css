@@ -1,0 +1,628 @@
+/* ===== 写作模式卡片网格 ===== */
+.writing-mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.writing-mode-card {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 10px;
+    cursor: pointer;
+    text-align: center;
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+.writing-mode-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(88,166,255,0.08), transparent 70%);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+.writing-mode-card:hover {
+    border-color: rgba(88, 166, 255, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+}
+.writing-mode-card:hover::after { opacity: 0.6; }
+
+.writing-mode-card.active {
+    border-color: var(--accent-blue);
+    background: linear-gradient(180deg, rgba(88,166,255,0.06), var(--bg-dark));
+    box-shadow: 0 0 20px rgba(88,166,255,0.08);
+}
+.writing-mode-card.active::after { opacity: 1; }
+
+.wmode-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+    position: relative;
+    z-index: 1;
+}
+.wmode-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text-primary);
+    position: relative;
+    z-index: 1;
+    margin-bottom: 2px;
+}
+.writing-mode-card.active .wmode-title { color: var(--accent-blue); }
+
+.wmode-desc {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    position: relative;
+    z-index: 1;
+    line-height: 1.3;
+}
+
+/* ===== 写作参数面板 ===== */
+.writing-params {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.wparam-group { display: flex; flex-direction: column; gap: 6px; }
+.wparam-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.wparam-ref-btn {
+    padding: 3px 10px !important;
+    font-size: 11px !important;
+    margin-left: auto;
+}
+
+.wparam-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+.wparam-half { min-width: 0; }
+
+/* ===== 题材芯片 ===== */
+.genre-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.genre-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 12px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+.genre-chip:hover {
+    border-color: rgba(88, 166, 255, 0.4);
+    color: var(--text-primary);
+}
+.genre-chip.active {
+    border-color: var(--accent-blue);
+    background: rgba(88, 166, 255, 0.1);
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+/* ===== 文风选择 ===== */
+.writing-select {
+    padding: 8px 10px !important;
+    font-size: 12.5px !important;
+}
+
+/* ===== 字数滑块 ===== */
+.wordcount-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.wordcount-slider {
+    flex: 1;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--border);
+    border-radius: 2px;
+    outline: none;
+}
+.wordcount-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(88,166,255,0.3);
+}
+.wordcount-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent-blue);
+    cursor: pointer;
+    border: none;
+}
+.wordcount-value {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-blue);
+    min-width: 55px;
+    text-align: right;
+}
+
+/* ===== 参考素材 ===== */
+.writing-refs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    min-height: 38px;
+    align-items: center;
+}
+.writing-refs-empty {
+    font-size: 11px;
+    color: var(--text-tertiary);
+}
+.writing-ref-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(88,166,255,0.08);
+    border: 1px solid rgba(88,166,255,0.2);
+    border-radius: 16px;
+    font-size: 12px;
+}
+.writing-ref-title { color: var(--accent-blue); font-weight: 500; }
+.writing-ref-meta { color: var(--text-tertiary); font-size: 10px; }
+
+/* ===== 提示词头部 ===== */
+.writing-prompt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.writing-prompt-reset {
+    padding: 3px 10px !important;
+    font-size: 11px !important;
+    color: var(--text-tertiary) !important;
+}
+
+/* ===== 输入底部信息 ===== */
+.writing-input-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+    padding: 0 2px;
+}
+.writing-char-count {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+}
+.writing-mode-hint {
+    font-size: 11px;
+    color: var(--accent-blue);
+    font-weight: 500;
+}
+
+/* ===== 操作栏 ===== */
+.writing-action-bar {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+}
+.writing-start-btn {
+    flex: 1;
+    padding: 14px !important;
+    font-size: 15px !important;
+    gap: 8px !important;
+}
+.writing-start-btn.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+.writing-start-btn.loading .writing-start-icon {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.writing-start-icon { font-size: 16px; }
+.writing-draft-btn {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+}
+
+/* ===== 提示词设置按钮 ===== */
+.writing-prompt-settings-btn {
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+    background: rgba(139, 92, 246, 0.12) !important;
+    border-color: rgba(139, 92, 246, 0.25) !important;
+    color: #a78bfa !important;
+}
+.writing-prompt-settings-btn:hover {
+    background: rgba(139, 92, 246, 0.25) !important;
+    border-color: rgba(139, 92, 246, 0.4) !important;
+}
+.writing-prompt-settings-btn.active {
+    background: rgba(139, 92, 246, 0.2) !important;
+    border-color: #8b5cf6 !important;
+    color: #c4b5fd !important;
+}
+
+/* ===== 提示词设置面板 ===== */
+.writing-prompt-settings-panel {
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--bg-dark);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: var(--radius-md);
+    animation: wps-fadein 0.2s ease;
+}
+@keyframes wps-fadein {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.writing-ps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+.writing-ps-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #a78bfa;
+}
+.writing-ps-textarea {
+    width: 100%;
+    min-height: 100px;
+    max-height: 260px;
+    background: rgba(0,0,0,0.25);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 10px;
+    resize: vertical;
+    font-family: inherit;
+}
+.writing-ps-textarea:focus {
+    border-color: rgba(139, 92, 246, 0.4);
+    outline: none;
+    box-shadow: 0 0 10px rgba(139, 92, 246, 0.06);
+}
+.writing-ps-hint {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-top: 6px;
+}
+
+/* ===== 结果工具栏 ===== */
+.writing-result-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.writing-result-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+.writing-result-stats span {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+.writing-result-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.writing-result-output {
+    min-height: 200px;
+}
+
+/* ===== 写作历史 ===== */
+.writing-history-bar {
+    margin-top: 12px;
+}
+.writing-history-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+.writing-history-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+.wh-icon { font-size: 14px; }
+.wh-info { color: var(--text-secondary); flex: 1; }
+.wh-time { color: var(--text-tertiary); font-size: 11px; font-family: var(--font-mono); }
+
+/* ===== 小说设定卡片 ===== */
+.novel-settings-card {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+}
+.novel-settings-display {
+    margin-bottom: 12px;
+}
+.novel-setting-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+.novel-setting-label {
+    color: var(--text-tertiary);
+    flex-shrink: 0;
+}
+.novel-setting-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+.novel-settings-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ===== 融合后的设定与参数（黑色背景） ===== */
+.settings-params-dark {
+    background: #1a1a2e;
+    border: 1px solid #2d2d44;
+}
+.settings-params-dark .card-title {
+    color: #fff;
+    border-bottom-color: #2d2d44;
+}
+.settings-params-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+@media (max-width: 768px) {
+    .settings-params-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.settings-params-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.settings-params-dark .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.settings-params-dark label {
+    font-size: 12px;
+    color: #a0a0b0;
+    font-weight: 500;
+}
+.settings-params-dark input[type="text"],
+.settings-params-dark textarea {
+    background: #0f0f1a;
+    border: 1px solid #2d2d44;
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: #fff;
+    font-size: 13px;
+}
+.settings-params-dark input[type="text"]:focus,
+.settings-params-dark textarea:focus {
+    outline: none;
+    border-color: #4f46e5;
+}
+.settings-params-dark textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+.tags-container.dark {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tags-container.dark .settings-tag {
+    background: #0f0f1a;
+    border: 1px solid #2d2d44;
+    color: #a0a0b0;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.tags-container.dark .settings-tag:hover {
+    border-color: #4f46e5;
+    color: #fff;
+}
+.tags-container.dark .settings-tag.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}
+
+/* ===== 提示词预设 ===== */
+.prompt-preset-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+.prompt-preset-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+.prompt-preset-btn.active {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ===== 流式对话 ===== */
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+    max-height: 60vh;
+    min-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px;
+    scroll-behavior: smooth;
+}
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+.chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
+}
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+.chat-message {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+}
+.chat-message.user {
+    background: rgba(59, 130, 246, 0.08);
+    border-color: rgba(59, 130, 246, 0.3);
+    margin-left: 10%;
+}
+.chat-message.assistant {
+    margin-right: 10%;
+}
+.chat-message-header {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-light);
+}
+.chat-message-time {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-weight: normal;
+    margin-left: 8px;
+}
+.chat-message-content {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+}
+.streaming-cursor {
+    animation: blink 1s infinite;
+    color: var(--primary);
+}
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+.chat-welcome {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-tertiary);
+}
+.chat-welcome-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+.chat-welcome-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+}
+.chat-welcome-desc {
+    font-size: 13px;
+}
+.chat-input-wrapper {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+}
+.chat-input-area {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.chat-input {
+    flex: 1;
+    padding: 12px 14px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 13px;
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+.chat-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+.chat-send-btn {
+    padding: 0 20px;
+    font-size: 16px;
+}
+.chat-input-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-tertiary);
+}

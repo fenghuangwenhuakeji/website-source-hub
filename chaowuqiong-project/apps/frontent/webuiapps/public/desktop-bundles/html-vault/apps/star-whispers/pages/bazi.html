@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>八字命理 - 星语心伴</title>
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <style>
+        .bazi-intro {
+            text-align: center;
+            padding: 24px;
+        }
+        
+        .bazi-intro-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #E67E22 0%, #F39C12 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 16px;
+        }
+        
+        .input-section { padding: 16px; }
+        
+        .input-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .input-group label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .input-group select {
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 14px;
+        }
+        
+        .input-group select option { background: #1a1a2e; }
+        
+        .gender-select {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .gender-option {
+            flex: 1;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+        
+        .gender-option.active {
+            border-color: var(--accent-color);
+            background: rgba(255, 215, 0, 0.1);
+        }
+        
+        .gender-option i {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 4px;
+        }
+        
+        .result-section { padding: 16px; }
+        
+        /* 四柱卡片 */
+        .four-pillars-card {
+            background: var(--primary-gradient);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+        
+        .pillars-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 12px;
+        }
+        
+        .pillar-item { text-align: center; }
+        
+        .pillar-label {
+            font-size: 12px;
+            opacity: 0.7;
+            margin-bottom: 8px;
+        }
+        
+        .pillar-chars {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .pillar-char {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .pillar-char.bottom { background: rgba(255,255,255,0.1); }
+        
+        /* 纳音显示 */
+        .nayin-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .nayin-item {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        /* 分析卡片 */
+        .analysis-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        
+        .analysis-card h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .analysis-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        
+        .analysis-content p { margin-bottom: 12px; }
+        
+        .destiny-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--accent-color);
+            border-radius: 12px;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+        
+        /* 五行图表 */
+        .wuxing-chart {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        
+        .wuxing-item { flex: 1; text-align: center; }
+        
+        .wuxing-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-size: 16px;
+        }
+        
+        .wuxing-icon.jin { background: linear-gradient(135deg, #F1C40F, #F39C12); }
+        .wuxing-icon.mu { background: linear-gradient(135deg, #2ECC71, #27AE60); }
+        .wuxing-icon.shui { background: linear-gradient(135deg, #3498DB, #2980B9); }
+        .wuxing-icon.huo { background: linear-gradient(135deg, #E74C3C, #C0392B); }
+        .wuxing-icon.tu { background: linear-gradient(135deg, #9B59B6, #8E44AD); }
+        
+        .wuxing-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .wuxing-fill { height: 100%; border-radius: 3px; }
+        .wuxing-fill.jin { background: #F1C40F; }
+        .wuxing-fill.mu { background: #2ECC71; }
+        .wuxing-fill.shui { background: #3498DB; }
+        .wuxing-fill.huo { background: #E74C3C; }
+        .wuxing-fill.tu { background: #9B59B6; }
+        
+        .wuxing-percent {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        /* 神煞标签 */
+        .shensha-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .shensha-tag {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .shensha-tag.daji { background: rgba(46, 204, 113, 0.2); color: #2ECC71; }
+        .shensha-tag.ji { background: rgba(52, 152, 219, 0.2); color: #3498DB; }
+        .shensha-tag.zhong { background: rgba(241, 196, 15, 0.2); color: #F1C40F; }
+        .shensha-tag.xiong { background: rgba(231, 76, 60, 0.2); color: #E74C3C; }
+        
+        /* 大运列表 */
+        .dayun-list {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding-bottom: 8px;
+        }
+        
+        .dayun-item {
+            flex-shrink: 0;
+            width: 80px;
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+        }
+        
+        .dayun-item.active { background: var(--primary-gradient); }
+        
+        .dayun-age {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        
+        .dayun-item.active .dayun-age { color: rgba(255,255,255,0.8); }
+        
+        .dayun-gz {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .dayun-nayin {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        
+        /* 十神表格 */
+        .shishen-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .shishen-table th, .shishen-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .shishen-table th {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+        
+        .shishen-table td {
+            font-size: 14px;
+        }
+        
+        .shishen-main {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        .shishen-hidden {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        /* 详情面板 */
+        .detail-panel {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+        
+        .detail-header {
+            padding: 16px 20px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        
+        .detail-header h4 {
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .detail-body {
+            padding: 16px 20px;
+            display: none;
+        }
+        
+        .detail-panel.expanded .detail-body { display: block; }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .detail-row:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            width: 80px;
+            flex-shrink: 0;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .detail-value {
+            flex: 1;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        /* AI解读按钮 */
+        .ai-analysis-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: all 0.2s ease;
+        }
+        
+        .ai-analysis-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .ai-analysis-btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .ai-analysis-result {
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            display: none;
+        }
+        
+        .ai-analysis-result.active { display: block; }
+        
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px 16px;
+        }
+        
+        .result-actions .btn { flex: 1; }
+        
+        /* 喜用神显示 */
+        .xiyong-display {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .xiyong-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-md);
+        }
+        
+        .xiyong-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        
+        .xiyong-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+        
+        /* 空亡显示 */
+        .kongwang-display {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .kongwang-item {
+            padding: 6px 16px;
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 16px;
+            font-size: 13px;
+            color: #E74C3C;
+        }
+        
+        /* 命格标签 */
+        .mingge-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .mingge-tag {
+            padding: 8px 16px;
+            background: var(--primary-gradient);
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        
+        /* 隐藏滚动条 */
+        .content-section::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .content-section {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="page-header">
+            <div class="header-top">
+                <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="page-title">☯️ 八字命理</h1>
+                <div class="placeholder"></div>
+            </div>
+            <p class="page-subtitle">解读生辰八字，了解五行运势</p>
+        </header>
+
+        <main class="content-section" style="padding-top: 0; height: calc(100vh - 140px); overflow-y: auto; -webkit-overflow-scrolling: touch;">
+            <!-- 输入页面 -->
+            <div id="inputView">
+                <div class="bazi-intro">
+                    <div class="bazi-intro-icon">☯️</div>
+                    <h2>专业八字命理分析</h2>
+                    <p>基于传统命理学，提供四柱八字、五行分析、十神关系、神煞判断、大运走势等专业解读。</p>
+                </div>
+                
+                <div class="input-section">
+                    <div class="input-card">
+                        <h3 style="font-size: 16px; margin-bottom: 16px;"><i class="fas fa-calendar-alt"></i> 输入生辰信息</h3>
+                        
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>出生年份</label>
+                                <select id="birthYear"></select>
+                            </div>
+                            <div class="input-group">
+                                <label>出生月份</label>
+                                <select id="birthMonth"></select>
+                            </div>
+                            <div class="input-group">
+                                <label>出生日期</label>
+                                <select id="birthDay"></select>
+                            </div>
+                            <div class="input-group">
+                                <label>出生时辰</label>
+                                <select id="birthHour"></select>
+                            </div>
+                        </div>
+                        
+                        <div class="gender-select">
+                            <div class="gender-option active" data-gender="male" onclick="selectGender('male')">
+                                <i>👨</i>
+                                <span>男命</span>
+                            </div>
+                            <div class="gender-option" data-gender="female" onclick="selectGender('female')">
+                                <i>👩</i>
+                                <span>女命</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-primary btn-lg btn-block" id="analyzeBtn">
+                            <i class="fas fa-search"></i> 开始分析
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 结果页面 -->
+            <div id="resultView" style="display: none;">
+                <div class="result-section">
+                    <!-- 四柱八字 -->
+                    <div class="four-pillars-card">
+                        <div style="font-size: 14px; opacity: 0.9; margin-bottom: 16px;">🏛️ 四柱八字</div>
+                        <div class="pillars-row">
+                            <div class="pillar-item">
+                                <div class="pillar-label">年柱</div>
+                                <div class="pillar-chars">
+                                    <div class="pillar-char" id="yearGan">甲</div>
+                                    <div class="pillar-char bottom" id="yearZhi">子</div>
+                                </div>
+                            </div>
+                            <div class="pillar-item">
+                                <div class="pillar-label">月柱</div>
+                                <div class="pillar-chars">
+                                    <div class="pillar-char" id="monthGan">乙</div>
+                                    <div class="pillar-char bottom" id="monthZhi">丑</div>
+                                </div>
+                            </div>
+                            <div class="pillar-item">
+                                <div class="pillar-label">日柱</div>
+                                <div class="pillar-chars">
+                                    <div class="pillar-char" id="dayGan">丙</div>
+                                    <div class="pillar-char bottom" id="dayZhi">寅</div>
+                                </div>
+                            </div>
+                            <div class="pillar-item">
+                                <div class="pillar-label">时柱</div>
+                                <div class="pillar-chars">
+                                    <div class="pillar-char" id="hourGan">丁</div>
+                                    <div class="pillar-char bottom" id="hourZhi">卯</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nayin-row" id="nayinRow">
+                            <div class="nayin-item" id="nayinYear">海中金</div>
+                            <div class="nayin-item" id="nayinMonth">炉中火</div>
+                            <div class="nayin-item" id="nayinDay">大林木</div>
+                            <div class="nayin-item" id="nayinHour">路旁土</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 命格类型 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-crown"></i> 命格类型</h3>
+                        <div class="mingge-tags" id="minggeTags"></div>
+                    </div>
+                    
+                    <!-- 日主信息 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-user"></i> 日主信息</h3>
+                        <div class="analysis-content" id="dayMasterInfo"></div>
+                    </div>
+                    
+                    <!-- 五行分析 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-chart-pie"></i> 五行能量</h3>
+                        <div class="wuxing-chart" id="wuxingChart"></div>
+                    </div>
+                    
+                    <!-- 喜用神 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-yin-yang"></i> 喜用神分析</h3>
+                        <div class="xiyong-display" id="xiyongDisplay"></div>
+                        <div class="analysis-content" id="xiyongAnalysis"></div>
+                    </div>
+                    
+                    <!-- 十神关系 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-network-wired"></i> 十神关系</h3>
+                        <table class="shishen-table" id="shishenTable">
+                            <thead>
+                                <tr>
+                                    <th>柱位</th>
+                                    <th>天干</th>
+                                    <th>地支（藏干）</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shishenBody"></tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- 神煞 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-star"></i> 四柱神煞</h3>
+                        <div class="shensha-tags" id="shenshaTags"></div>
+                    </div>
+                    
+                    <!-- 空亡 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-moon"></i> 空亡</h3>
+                        <div class="kongwang-display" id="kongwangDisplay"></div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                            空亡之支，逢合则解，逢冲则动
+                        </div>
+                    </div>
+                    
+                    <!-- 大运 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-road"></i> 大运走势</h3>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;" id="dayunInfo">
+                            起运年龄：8岁 | 方向：顺行
+                        </div>
+                        <div class="dayun-list" id="dayunList"></div>
+                    </div>
+                    
+                    <!-- AI深度解读 -->
+                    <button class="ai-analysis-btn" id="aiAnalysisBtn">
+                        <i class="fas fa-robot"></i>
+                        <span>AI深度解读命盘</span>
+                    </button>
+                    
+                    <div class="ai-analysis-result" id="aiAnalysisResult"></div>
+                    
+                    <!-- 性格分析 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-user-circle"></i> 性格分析</h3>
+                        <div class="analysis-content" id="personalityAnalysis"></div>
+                    </div>
+                    
+                    <!-- 运势建议 -->
+                    <div class="analysis-card">
+                        <h3><i class="fas fa-lightbulb"></i> 运势建议</h3>
+                        <div class="analysis-content" id="fortuneAdvice"></div>
+                    </div>
+                    
+                    <!-- 详细解读面板 -->
+                    <div class="detail-panel" id="tiganDetail">
+                        <div class="detail-header" onclick="toggleDetail('tiganDetail')">
+                            <h4><i class="fas fa-info-circle"></i> 天干详解</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="detail-body" id="tiganDetailBody"></div>
+                    </div>
+                    
+                    <div class="detail-panel" id="dizhiDetail">
+                        <div class="detail-header" onclick="toggleDetail('dizhiDetail')">
+                            <h4><i class="fas fa-info-circle"></i> 地支详解</h4>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="detail-body" id="dizhiDetailBody"></div>
+                    </div>
+                </div>
+                
+                <div class="result-actions">
+                    <button class="btn btn-secondary" onclick="resetAnalysis()">
+                        <i class="fas fa-redo"></i> 重新测算
+                    </button>
+                    <a href="../index.html" class="btn btn-primary">
+                        <i class="fas fa-home"></i> 返回首页
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="horoscope.html" class="nav-item"><i class="fas fa-star"></i><span>星座</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI聊天</span></a>
+            <a href="tarot.html" class="nav-item"><i class="fas fa-hat-wizard"></i><span>占卜</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-user"></i><span>我的</span></a>
+        </nav>
+    </div>
+
+    <script src="../js/api-config.js"></script>
+    <script src="../js/data/bazi-data.js"></script>
+    <script>
+        // 生成星空背景
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('starsBg');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(star);
+            }
+            initSelects();
+        });
+
+        let selectedGender = 'male';
+        let currentAnalysis = null;
+
+        function initSelects() {
+            const yearSelect = document.getElementById('birthYear');
+            const currentYear = new Date().getFullYear();
+            for (let y = currentYear; y >= 1940; y--) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y + '年';
+                yearSelect.appendChild(opt);
+            }
+
+            const monthSelect = document.getElementById('birthMonth');
+            for (let m = 1; m <= 12; m++) {
+                const opt = document.createElement('option');
+                opt.value = m;
+                opt.textContent = m + '月';
+                monthSelect.appendChild(opt);
+            }
+
+            const daySelect = document.getElementById('birthDay');
+            for (let d = 1; d <= 31; d++) {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d + '日';
+                daySelect.appendChild(opt);
+            }
+
+            const hourSelect = document.getElementById('birthHour');
+            const hours = ['子时(23-1点)', '丑时(1-3点)', '寅时(3-5点)', '卯时(5-7点)', 
+                          '辰时(7-9点)', '巳时(9-11点)', '午时(11-13点)', '未时(13-15点)',
+                          '申时(15-17点)', '酉时(17-19点)', '戌时(19-21点)', '亥时(21-23点)'];
+            hours.forEach((h, i) => {
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.textContent = h;
+                hourSelect.appendChild(opt);
+            });
+        }
+
+        function selectGender(gender) {
+            selectedGender = gender;
+            document.querySelectorAll('.gender-option').forEach(el => {
+                el.classList.toggle('active', el.dataset.gender === gender);
+            });
+        }
+
+        document.getElementById('analyzeBtn').addEventListener('click', function() {
+            const year = document.getElementById('birthYear').value;
+            const month = document.getElementById('birthMonth').value;
+            const day = document.getElementById('birthDay').value;
+            const hour = document.getElementById('birthHour').value;
+
+            if (!year || !month || !day) {
+                alert('请填写完整的出生信息');
+                return;
+            }
+
+            analyzeBazi(parseInt(year), parseInt(month), parseInt(day), parseInt(hour));
+        });
+
+        function analyzeBazi(year, month, day, hour) {
+            // 计算四柱
+            const siZhu = BaziDataLoader.calculateSiZhu(year, month, day, hour);
+            
+            // 综合分析
+            currentAnalysis = BaziDataLoader.comprehensiveAnalysis(siZhu, selectedGender, year);
+            
+            // 更新四柱显示
+            document.getElementById('yearGan').textContent = siZhu.year.gan;
+            document.getElementById('yearZhi').textContent = siZhu.year.zhi;
+            document.getElementById('monthGan').textContent = siZhu.month.gan;
+            document.getElementById('monthZhi').textContent = siZhu.month.zhi;
+            document.getElementById('dayGan').textContent = siZhu.day.gan;
+            document.getElementById('dayZhi').textContent = siZhu.day.zhi;
+            document.getElementById('hourGan').textContent = siZhu.hour.gan;
+            document.getElementById('hourZhi').textContent = siZhu.hour.zhi;
+            
+            // 纳音
+            document.getElementById('nayinYear').textContent = currentAnalysis.naYin.year;
+            document.getElementById('nayinMonth').textContent = currentAnalysis.naYin.month;
+            document.getElementById('nayinDay').textContent = currentAnalysis.naYin.day;
+            document.getElementById('nayinHour').textContent = currentAnalysis.naYin.hour;
+            
+            // 命格类型
+            document.getElementById('minggeTags').innerHTML = currentAnalysis.mingGe.map(mg => 
+                `<span class="mingge-tag">${mg.type}</span>`
+            ).join('');
+            
+            // 日主信息
+            const dm = currentAnalysis.dayMaster;
+            document.getElementById('dayMasterInfo').innerHTML = `
+                <p><span class="destiny-tag">${dm.gan}${dm.element}</span>
+                ${dm.nature}性${dm.element}命，${dm.info?.meaning || ''}</p>
+                <p><span class="destiny-tag">特质</span>${dm.info?.traits || ''}</p>
+                <p><span class="destiny-tag">方位</span>${dm.info?.direction || ''} | 
+                <span class="destiny-tag">季节</span>${dm.info?.season || ''} | 
+                <span class="destiny-tag">颜色</span>${dm.info?.color || ''}</p>
+            `;
+            
+            // 五行图表
+            const wuXing = currentAnalysis.wuXing;
+            document.getElementById('wuxingChart').innerHTML = `
+                <div class="wuxing-item">
+                    <div class="wuxing-icon jin">金</div>
+                    <div class="wuxing-bar"><div class="wuxing-fill jin" style="width: ${wuXing.percentages['金']}%"></div></div>
+                    <div class="wuxing-percent">${wuXing.percentages['金']}%</div>
+                </div>
+                <div class="wuxing-item">
+                    <div class="wuxing-icon mu">木</div>
+                    <div class="wuxing-bar"><div class="wuxing-fill mu" style="width: ${wuXing.percentages['木']}%"></div></div>
+                    <div class="wuxing-percent">${wuXing.percentages['木']}%</div>
+                </div>
+                <div class="wuxing-item">
+                    <div class="wuxing-icon shui">水</div>
+                    <div class="wuxing-bar"><div class="wuxing-fill shui" style="width: ${wuXing.percentages['水']}%"></div></div>
+                    <div class="wuxing-percent">${wuXing.percentages['水']}%</div>
+                </div>
+                <div class="wuxing-item">
+                    <div class="wuxing-icon huo">火</div>
+                    <div class="wuxing-bar"><div class="wuxing-fill huo" style="width: ${wuXing.percentages['火']}%"></div></div>
+                    <div class="wuxing-percent">${wuXing.percentages['火']}%</div>
+                </div>
+                <div class="wuxing-item">
+                    <div class="wuxing-icon tu">土</div>
+                    <div class="wuxing-bar"><div class="wuxing-fill tu" style="width: ${wuXing.percentages['土']}%"></div></div>
+                    <div class="wuxing-percent">${wuXing.percentages['土']}%</div>
+                </div>
+            `;
+            
+            // 喜用神
+            const xy = currentAnalysis.xiYongShen;
+            document.getElementById('xiyongDisplay').innerHTML = `
+                <div class="xiyong-item">
+                    <div class="xiyong-label">喜神</div>
+                    <div class="xiyong-value">${xy.xiShen}</div>
+                </div>
+                <div class="xiyong-item">
+                    <div class="xiyong-label">用神</div>
+                    <div class="xiyong-value">${xy.yongShen}</div>
+                </div>
+                <div class="xiyong-item">
+                    <div class="xiyong-label">忌神</div>
+                    <div class="xiyong-value" style="color: #E74C3C;">${xy.jinShen}</div>
+                </div>
+            `;
+            document.getElementById('xiyongAnalysis').innerHTML = `<p>${xy.analysis}</p>`;
+            
+            // 十神表格
+            const shiShen = currentAnalysis.shiShen;
+            const pillars = [
+                { name: '年柱', ganKey: 'year_gan', zhiKey: 'year_zhi' },
+                { name: '月柱', ganKey: 'month_gan', zhiKey: 'month_zhi' },
+                { name: '日柱', ganKey: 'day_gan', zhiKey: 'day_zhi' },
+                { name: '时柱', ganKey: 'hour_gan', zhiKey: 'hour_zhi' }
+            ];
+            
+            document.getElementById('shishenBody').innerHTML = pillars.map(p => {
+                const hiddenShiShen = shiShen[p.zhiKey] || [];
+                return `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td class="shishen-main">${shiShen[p.ganKey] || '-'}</td>
+                        <td>
+                            ${hiddenShiShen.map(h => `<span class="shishen-hidden">${h.gan}:${h.shiShen}</span>`).join(' ')}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            
+            // 神煞
+            const shenSha = currentAnalysis.shenSha;
+            if (shenSha.length > 0) {
+                document.getElementById('shenshaTags').innerHTML = shenSha.map(ss => {
+                    const levelClass = ss.level === '大吉' ? 'daji' : ss.level === '吉' ? 'ji' : ss.level === '凶' ? 'xiong' : 'zhong';
+                    const icon = ss.level === '大吉' ? '✨' : ss.level === '吉' ? '🌟' : ss.level === '凶' ? '⚠️' : '💫';
+                    return `<span class="shensha-tag ${levelClass}" title="${ss.effect}">${icon} ${ss.name}</span>`;
+                }).join('');
+            } else {
+                document.getElementById('shenshaTags').innerHTML = '<span style="color: var(--text-muted);">无明显神煞</span>';
+            }
+            
+            // 空亡
+            const kw = currentAnalysis.kongWang;
+            if (kw.length > 0) {
+                document.getElementById('kongwangDisplay').innerHTML = kw.map(k => 
+                    `<span class="kongwang-item">${k}</span>`
+                ).join('');
+            } else {
+                document.getElementById('kongwangDisplay').innerHTML = '<span style="color: var(--text-muted);">无空亡</span>';
+            }
+            
+            // 大运
+            const daYun = currentAnalysis.daYun;
+            document.getElementById('dayunInfo').textContent = 
+                `起运年龄：${daYun.qiYunAge}岁 | 方向：${daYun.direction}`;
+            
+            const currentAge = new Date().getFullYear() - year;
+            document.getElementById('dayunList').innerHTML = daYun.daYun.map(dy => `
+                <div class="dayun-item ${currentAge >= dy.startAge && currentAge <= dy.endAge ? 'active' : ''}">
+                    <div class="dayun-age">${dy.ageRange}</div>
+                    <div class="dayun-gz">${dy.ganZhi}</div>
+                    <div class="dayun-nayin">${dy.naYin}</div>
+                </div>
+            `).join('');
+            
+            // 性格分析
+            const personalities = {
+                '金': '您是一个意志坚定、做事果断的人。具有很强的正义感和责任心，凡事追求完美。外表刚强，内心细腻。',
+                '木': '您是一个心地善良、富有同情心的人。具有很强的上进心和创造力，善于学习新事物。性格温和，人缘良好。',
+                '水': '您是一个聪明机智、善于思考的人。具有很强的适应能力和洞察力，思维灵活。内心丰富，富有智慧。',
+                '火': '您是一个热情奔放、积极乐观的人。具有很强的表达能力和感染力，善于社交。热情开朗，充满活力。',
+                '土': '您是一个稳重踏实、诚实可靠的人。具有很强的耐心和毅力，做事有条理。为人厚道，值得信赖。'
+            };
+            
+            const strongElements = wuXing.strong;
+            document.getElementById('personalityAnalysis').innerHTML = `
+                <p>${personalities[dm.element]}</p>
+                <p>五行分析：您的八字中${strongElements.length > 0 ? strongElements.join('、') + '较旺' : '五行相对平衡'}，
+                建议多接触${xy.xiShen}属性的事物来平衡命局。</p>
+            `;
+            
+            // 运势建议
+            const careerAdvice = {
+                '金': '适合从事金融、法律、管理、机械等行业',
+                '木': '适合从事教育、医疗、艺术、设计等行业',
+                '水': '适合从事商业、传媒、物流、贸易等行业',
+                '火': '适合从事创意、娱乐、销售、IT等行业',
+                '土': '适合从事房地产、建筑、农业、服务等行业'
+            };
+            
+            document.getElementById('fortuneAdvice').innerHTML = `
+                <p>💼 <strong>事业</strong>：${careerAdvice[dm.element]}，发挥您的${dm.element}属性优势。</p>
+                <p>💕 <strong>感情</strong>：${wuXing.counts['火'] > 2 ? '感情丰富，注意专一' : '感情稳定，多表达爱意'}，
+                与${xy.xiShen}旺的人更投缘。</p>
+                <p>💰 <strong>财运</strong>：财运${wuXing.counts['金'] > 2 ? '旺盛' : '平稳'}，
+                适合${wuXing.counts['土'] > 2 ? '稳健投资' : '积极开拓'}。</p>
+                <p>🏥 <strong>健康</strong>：注意${dm.info?.organ || '身体'}的保养，
+                饮食宜${dm.info?.flavor || '清淡'}。</p>
+            `;
+            
+            // 天干详解
+            document.getElementById('tiganDetailBody').innerHTML = Object.entries(BaziDataLoader.tianGan).map(([gan, info]) => `
+                <div class="detail-row">
+                    <div class="detail-label">${gan}</div>
+                    <div class="detail-value">
+                        ${info.element}${info.nature} | ${info.meaning}<br>
+                        <span style="color: var(--text-muted); font-size: 12px;">${info.traits}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // 地支详解
+            document.getElementById('dizhiDetailBody').innerHTML = Object.entries(BaziDataLoader.diZhi).map(([zhi, info]) => `
+                <div class="detail-row">
+                    <div class="detail-label">${zhi} (${info.animal})</div>
+                    <div class="detail-value">
+                        ${info.element} | 藏干: ${info.hidden.join('')}<br>
+                        <span style="color: var(--text-muted); font-size: 12px;">${info.meaning}</span>
+                    </div>
+                </div>
+            `).join('');
+            
+            // 显示结果页面
+            document.getElementById('inputView').style.display = 'none';
+            document.getElementById('resultView').style.display = 'block';
+        }
+
+        function resetAnalysis() {
+            document.getElementById('inputView').style.display = 'block';
+            document.getElementById('resultView').style.display = 'none';
+            document.getElementById('aiAnalysisResult').classList.remove('active');
+        }
+
+        function toggleDetail(id) {
+            document.getElementById(id).classList.toggle('expanded');
+        }
+
+        // AI深度解读
+        document.getElementById('aiAnalysisBtn').addEventListener('click', async function() {
+            if (!currentAnalysis) return;
+            
+            const btn = this;
+            const result = document.getElementById('aiAnalysisResult');
+            
+            btn.classList.add('loading');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>正在分析中...</span>';
+            
+            const { siZhu, dayMaster, wuXing, mingGe, xiYongShen, shenSha } = currentAnalysis;
+            
+            const prompt = `请作为专业的八字命理师，对以下八字命盘进行详细解读：
+
+【四柱八字】
+- 年柱：${siZhu.year.gan}${siZhu.year.zhi}
+- 月柱：${siZhu.month.gan}${siZhu.month.zhi}
+- 日柱：${siZhu.day.gan}${siZhu.day.zhi}
+- 时柱：${siZhu.hour.gan}${siZhu.hour.zhi}
+
+【日主】${dayMaster.gan}${dayMaster.element}${dayMaster.nature}命
+
+【五行比例】金${wuXing.percentages['金']}% 木${wuXing.percentages['木']}% 水${wuXing.percentages['水']}% 火${wuXing.percentages['火']}% 土${wuXing.percentages['土']}%
+
+【命格】${mingGe.map(m => m.type).join('、')}
+
+【喜用神】喜${xiYongShen.xiShen}、用${xiYongShen.yongShen}
+
+【神煞】${shenSha.map(s => s.name).join('、') || '无明显神煞'}
+
+请从以下几个方面进行专业解读（每项80-100字）：
+1. 命局总评：整体命格特点与层次
+2. 性格特质：基于日主和五行分析
+3. 事业方向：适合的发展领域
+4. 财运分析：财富运势特点
+5. 感情婚姻：感情方面的特点
+6. 健康建议：需注意的健康问题
+7. 开运建议：如何趋吉避凶
+
+请用温和专业的语气，给出积极正面的解读。`;
+
+            try {
+                const config = ApiManager.getActiveConfig();
+                if (!config) {
+                    throw new Error('请先配置API');
+                }
+
+                let fullResponse = '';
+                await ApiManager.callLLM([
+                    { role: 'system', content: '你是一位专业的八字命理师，拥有深厚的命理学知识，善于用温和专业的语言为人们解读命盘。' },
+                    { role: 'user', content: prompt }
+                ], (chunk, full) => {
+                    fullResponse = full;
+                    result.innerHTML = fullResponse.replace(/\n/g, '<br>');
+                    result.classList.add('active');
+                });
+
+            } catch (error) {
+                result.innerHTML = `<div style="color: #E74C3C;">分析失败：${error.message}</div>`;
+                result.classList.add('active');
+            } finally {
+                btn.classList.remove('loading');
+                btn.innerHTML = '<i class="fas fa-robot"></i> <span>AI深度解读命盘</span>';
+            }
+        });
+    </script>
+</body>
+</html>

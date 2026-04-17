@@ -1,0 +1,208 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: cyber.$color-bg;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 36px;
+  padding: 0 cyber.$spacing-md;
+  background: cyber.$color-surface;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.1);
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: cyber.$spacing-md;
+    font-size: 12px;
+    font-weight: 600;
+    color: cyber.$color-text;
+
+    .stats {
+      display: flex;
+      align-items: center;
+      gap: cyber.$spacing-sm;
+      font-size: 11px;
+
+      .added {
+        color: #4ade80;
+        font-weight: 600;
+      }
+
+      .removed {
+        color: #ef4444;
+        font-weight: 600;
+      }
+
+      .unchanged {
+        color: cyber.$color-text-muted;
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: none;
+  border: none;
+  color: cyber.$color-text-muted;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-accent;
+  }
+}
+
+.applyBtn {
+  padding: 4px 12px;
+  background: cyber.$color-accent;
+  border: none;
+  border-radius: 4px;
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #f5e85c;
+  }
+}
+
+.diffContent {
+  flex: 1;
+  display: flex;
+  overflow: auto;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 4px;
+  }
+}
+
+.lineNumbers {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.2);
+  border-right: 1px solid rgba(250, 234, 95, 0.1);
+  user-select: none;
+}
+
+.lineNumber {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  font-size: 11px;
+  color: cyber.$color-text-muted;
+
+  .oldNum,
+  .newNum {
+    display: inline-block;
+    width: 30px;
+    text-align: right;
+    padding-right: 8px;
+  }
+
+  &.added {
+    background: rgba(74, 222, 128, 0.1);
+    .newNum {
+      color: #4ade80;
+    }
+  }
+
+  &.removed {
+    background: rgba(239, 68, 68, 0.1);
+    .oldNum {
+      color: #ef4444;
+    }
+  }
+}
+
+.codeLines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.codeLine {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  padding: 0 8px;
+  white-space: pre;
+  overflow: hidden;
+
+  .marker {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    color: cyber.$color-text-muted;
+    user-select: none;
+  }
+
+  .content {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &.added {
+    background: rgba(74, 222, 128, 0.1);
+
+    .marker {
+      color: #4ade80;
+    }
+
+    .content {
+      color: #4ade80;
+    }
+  }
+
+  &.removed {
+    background: rgba(239, 68, 68, 0.1);
+
+    .marker {
+      color: #ef4444;
+    }
+
+    .content {
+      color: #ef4444;
+    }
+  }
+
+  &.unchanged {
+    color: cyber.$color-text;
+  }
+}

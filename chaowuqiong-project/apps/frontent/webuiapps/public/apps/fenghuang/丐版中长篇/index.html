@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>丐版中长篇</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">中长篇骨架</p>
+        <h1>卷级推进与角色成长分配</h1>
+        <p>这页针对中长篇的节奏和卷结构，把主线、支线、人物成长拆成能继续细化的大块骨架。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">卷结构</span>
+        <span class="pill">主支线分配</span>
+        <span class="pill">角色成长</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>输入区</h2><p>用最少的信息先把长线骨架搭起来。</p></div></div>
+        <form id="workspace-form" class="form-grid">
+          <label class="field"><span>主线</span><input name="mainline" placeholder="例如：被流放的王子夺回边境"></label>
+          <label class="field"><span>支线</span><input name="subline" placeholder="例如：旧友背叛、宗教阴谋、血脉秘密"></label>
+          <div class="inline-grid">
+            <label class="field"><span>卷数</span><input name="volumes" value="3"></label>
+            <label class="field"><span>每卷章节</span><input name="chapters" value="18"></label>
+          </div>
+          <label class="field"><span>角色成长</span><input name="growth" placeholder="例如：从自保到承担王权责任"></label>
+          <label class="field"><span>补充说明</span><textarea name="notes" placeholder="写你想保留的世界观设定或高潮章节。"></textarea></label>
+        </form>
+        <div class="button-row">
+          <button id="generate-button" class="primary-btn" type="button">生成卷纲</button>
+          <button id="reset-button" class="ghost-btn" type="button">清空草稿</button>
+        </div>
+      </div></section>
+
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>结果区</h2><p id="result-summary">输出每一卷的主推进、高潮和人物成长任务。</p></div><span id="status-text" class="pill">等待生成</span></div>
+        <div id="result-grid" class="result-grid"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initGeneratorPage({
+        storageKey: 'fh-fenghuang-midlong',
+        summary: '输出每一卷的主推进、高潮和人物成长任务。',
+        generate(data) {
+          const volumeCount = Math.max(1, Math.min(6, Number(data.volumes || 3)));
+          const cards = [];
+          for (let index = 0; index < volumeCount; index += 1) {
+            cards.push({
+              title: `第 ${index + 1} 卷`,
+              bullets: [
+                `主推进：围绕“${data.mainline || '主线'}”推进一个阶段目标。`,
+                `支线投放：在本卷引入或回收“${data.subline || '支线'}”中的一部分。`,
+                `人物成长：把“${data.growth || '成长弧线'}”推进到下一层。`,
+                '卷末高潮：安排一场能迫使主角做出新决定的冲突。',
+                `章节密度：约 ${data.chapters || 18} 章，前中后段各有一次明显节奏切换。`
+              ],
+            });
+          }
+          cards.push({
+            title: '总控提醒',
+            paragraphs: [
+              `把“${data.notes || '你最看重的设定'}”分散到不同卷，不要在第一卷一次性讲完。`,
+              '长篇最怕推进停滞，所以每卷都必须让人物、局势、关系至少有一项不可逆变化。'
+            ],
+          });
+          return cards;
+        },
+      });
+    });
+  </script>
+</body>
+</html>

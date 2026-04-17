@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="D:\\HTML 内容展柜，把单页原型、完整项目和压缩包项目整理成适合桌面平台统一查看与打开的入口。"
+  />
+  <title>HTML 内容展柜</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="vault-shell">
+    <div class="vault-bg"></div>
+    <header class="hero-card panel">
+      <div class="hero-copy">
+        <p class="eyebrow">Phoenix Desktop Content Vault</p>
+        <h1>HTML 内容展柜</h1>
+        <p class="hero-text">
+          这里把 <code>D:\HTML</code> 里的单页工具、完整项目、游戏原型和压缩包工程整理成一个统一入口，
+          先解决“能被桌面平台稳定承接”，再逐个做深度升级。
+        </p>
+        <div class="hero-actions">
+          <button id="showAllButton" class="primary-button" type="button">查看全部项目</button>
+          <a
+            id="openSelectedButton"
+            class="ghost-button disabled"
+            href="./apps/star-whispers/index.html"
+            target="_blank"
+            rel="noreferrer"
+            aria-disabled="true"
+          >
+            新窗口打开当前项目
+          </a>
+        </div>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </header>
+
+    <section class="workspace">
+      <aside class="panel sidebar">
+        <div class="sidebar-block">
+          <label class="search-label" for="searchInput">快速筛选</label>
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="搜索项目名、分类、标签"
+            autocomplete="off"
+          />
+        </div>
+        <div class="sidebar-block">
+          <p class="block-title">分类</p>
+          <div id="categoryFilters" class="filter-group"></div>
+        </div>
+        <div class="sidebar-block">
+          <p class="block-title">状态说明</p>
+          <ul class="hint-list">
+            <li><span class="dot ready"></span> 可直接接入：已经适合先放进桌面内容库。</li>
+            <li><span class="dot enhance"></span> 待增强：能跑，但还值得继续补交互或业务链路。</li>
+            <li><span class="dot verify"></span> 待验证：已纳入入口，但建议再做专项测试。</li>
+            <li><span class="dot research"></span> 资料型：偏阅读或研究展示，适合归档浏览。</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content-column">
+        <section class="panel list-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Desktop-ready Inventory</p>
+              <h2>项目清单</h2>
+            </div>
+            <p id="resultMeta" class="result-meta"></p>
+          </div>
+          <div id="projectGrid" class="project-grid"></div>
+        </section>
+      </main>
+
+      <aside class="panel preview-panel">
+        <div id="previewMeta" class="preview-meta"></div>
+        <div class="preview-actions">
+          <a id="launchLink" class="primary-button" href="./apps/star-whispers/index.html" target="_blank" rel="noreferrer">
+            全屏打开
+          </a>
+          <button id="copyLinkButton" class="ghost-button" type="button">复制相对路径</button>
+        </div>
+        <div class="preview-frame-wrap">
+          <iframe
+            id="previewFrame"
+            class="preview-frame"
+            title="HTML 内容预览"
+            loading="lazy"
+            src="./apps/star-whispers/index.html"
+          ></iframe>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

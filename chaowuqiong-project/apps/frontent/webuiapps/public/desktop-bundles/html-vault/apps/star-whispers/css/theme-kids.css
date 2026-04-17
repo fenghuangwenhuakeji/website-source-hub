@@ -1,0 +1,55 @@
+/* theme-kids.css - 儿童版主题 */
+:root {
+    --primary-color: #FF9F43;
+    --bg-color: #FECA57;
+    --text-color: #222f3e;
+}
+
+body {
+    font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+}
+
+.onboarding-container button {
+    background: #54a0ff;
+    border: 3px solid #2e86de;
+    border-radius: 20px;
+    padding: 15px 30px;
+    font-size: 18px;
+    margin: 10px;
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #2e86de;
+    transition: transform 0.1s;
+}
+
+.onboarding-container button:active {
+    transform: translateY(4px);
+    box-shadow: none;
+}
+
+.message.user {
+    background-color: #48dbfb;
+    border-radius: 15px 15px 0 15px;
+    padding: 10px;
+    margin: 5px;
+    align-self: flex-end;
+}
+
+.message.ai {
+    background-color: #fff;
+    border: 2px solid #ff9ff3;
+    border-radius: 15px 15px 15px 0;
+    padding: 10px;
+    margin: 5px;
+}
+
+.chat-messages {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+    background: rgba(255,255,255,0.5);
+    border-radius: 10px;
+}

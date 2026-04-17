@@ -1,0 +1,170 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #0d0d0f;
+  border-top: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+  padding: 0 cyber.$spacing-md;
+  background: cyber.$color-surface;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.1);
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: cyber.$spacing-sm;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: cyber.$color-accent;
+
+    svg {
+      color: cyber.$color-accent;
+    }
+  }
+
+  .actions {
+    display: flex;
+    gap: cyber.$spacing-xs;
+  }
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: none;
+  color: cyber.$color-text-muted;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-accent;
+  }
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-md;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(250, 234, 95, 0.2);
+    border-radius: 4px;
+  }
+}
+
+.message {
+  margin-bottom: cyber.$spacing-sm;
+
+  .content {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  &.input {
+    color: cyber.$color-accent;
+
+    .content::before {
+      content: '> ';
+      color: cyber.$color-accent;
+    }
+  }
+
+  &.output {
+    color: #e4e4e7;
+  }
+
+  &.error {
+    color: #ef4444;
+
+    .content::before {
+      content: '✗ ';
+    }
+  }
+
+  &.info {
+    color: #22d3ee;
+    font-style: italic;
+  }
+}
+
+.inputArea {
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  padding: cyber.$spacing-sm cyber.$spacing-md;
+  background: cyber.$color-surface;
+  border-top: 1px solid rgba(250, 234, 95, 0.1);
+
+  .prompt {
+    color: cyber.$color-accent;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-weight: bold;
+    font-size: 12px;
+  }
+
+  .input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: cyber.$color-text;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 12px;
+    outline: none;
+
+    &::placeholder {
+      color: cyber.$color-text-muted;
+    }
+  }
+
+  .executeBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(250, 234, 95, 0.2);
+    border: none;
+    border-radius: 3px;
+    color: cyber.$color-accent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: cyber.$color-accent;
+      color: #000;
+    }
+
+    &:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+  }
+}

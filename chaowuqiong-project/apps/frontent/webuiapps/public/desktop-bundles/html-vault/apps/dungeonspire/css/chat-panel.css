@@ -1,0 +1,722 @@
+/**
+ * 聊天面板样式
+ */
+
+/* ========== 聊天面板容器 ========== */
+.chat-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 350px;
+    background: linear-gradient(180deg, rgba(26, 26, 46, 0.98) 0%, rgba(15, 15, 30, 0.98) 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    transform: translateX(0);
+    transition: transform 0.3s ease, width 0.3s ease;
+    /* 移除 backdrop-filter 避免影响整个页面 */
+}
+
+.chat-panel.collapsed {
+    transform: translateX(calc(100% - 40px));
+}
+
+.chat-panel.collapsed .chat-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ========== 折叠按钮 ========== */
+.chat-toggle-btn {
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: 10px 0 0 10px;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: -3px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.chat-toggle-btn:hover {
+    background: linear-gradient(135deg, #764ba2, #667eea);
+    width: 45px;
+}
+
+.chat-toggle-btn::before {
+    content: "💬";
+    transition: transform 0.3s ease;
+}
+
+.chat-panel.collapsed .chat-toggle-btn::before {
+    transform: scaleX(-1);
+}
+
+/* ========== 聊天头部 ========== */
+.chat-header {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #fff;
+    flex: 1;
+}
+
+.chat-header .close-btn {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.chat-header .close-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+}
+
+/* ========== NPC 选择器 ========== */
+.npc-selector {
+    padding: 10px 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.npc-selector::-webkit-scrollbar {
+    height: 4px;
+}
+
+.npc-selector::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.npc-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.npc-avatar:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.npc-avatar.active {
+    border-color: #667eea;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+}
+
+.npc-avatar .npc-name-tooltip {
+    position: absolute;
+    bottom: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.npc-avatar:hover .npc-name-tooltip {
+    opacity: 1;
+}
+
+/* 在线状态指示器 */
+.npc-avatar::after {
+    content: "";
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #22c55e;
+    border: 2px solid rgba(26, 26, 46, 0.98);
+}
+
+.npc-avatar.offline::after {
+    background: #6b7280;
+}
+
+/* ========== 消息列表 ========== */
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    scrollbar-width: thin;
+}
+
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+/* ========== 消息气泡 ========== */
+.chat-message {
+    display: flex;
+    gap: 10px;
+    max-width: 90%;
+    animation: messageSlideIn 0.3s ease;
+}
+
+@keyframes messageSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.chat-message.user {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+}
+
+.chat-message.npc {
+    align-self: flex-start;
+}
+
+.chat-message.system {
+    align-self: center;
+    max-width: 100%;
+}
+
+.message-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.message-content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 14px;
+    border-radius: 15px;
+    position: relative;
+}
+
+.chat-message.user .message-content {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px 15px 5px 15px;
+}
+
+.chat-message.npc .message-content {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px 15px 15px 5px;
+}
+
+.chat-message.system .message-content {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    font-size: 12px;
+    color: #fbbf24;
+    text-align: center;
+}
+
+.message-sender {
+    font-size: 11px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.message-text {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #fff;
+    word-break: break-word;
+}
+
+.message-time {
+    font-size: 10px;
+    color: #666;
+    margin-top: 4px;
+    text-align: right;
+}
+
+/* 打字指示器 */
+.typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 10px 14px;
+}
+
+.typing-indicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #888;
+    animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1); opacity: 1; }
+}
+
+/* ========== 输入区域 ========== */
+.chat-input-area {
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chat-input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+}
+
+.chat-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 10px 15px;
+    color: #fff;
+    font-size: 14px;
+    resize: none;
+    max-height: 100px;
+    min-height: 40px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+.chat-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.chat-input::placeholder {
+    color: #666;
+}
+
+.chat-send-btn {
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.chat-send-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+}
+
+.chat-send-btn:active {
+    transform: scale(0.95);
+}
+
+.chat-send-btn:disabled {
+    background: #4a4a6a;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ========== 快捷回复 ========== */
+.quick-replies {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.quick-reply-btn {
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    color: #ccc;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-reply-btn:hover {
+    background: rgba(102, 126, 234, 0.3);
+    border-color: #667eea;
+    color: #fff;
+}
+
+/* ========== 动作标记高亮 ========== */
+.action-marker {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+}
+
+/* ========== 空状态 ========== */
+.chat-empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    text-align: center;
+    padding: 30px;
+}
+
+.chat-empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.chat-empty-state .empty-text {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.chat-empty-state .empty-hint {
+    font-size: 12px;
+    color: #555;
+}
+
+/* ========== 响应式适配 ========== */
+body.device-tablet .chat-panel {
+    width: 300px;
+}
+
+body.device-mobile .chat-panel {
+    width: 100%;
+    transform: translateX(100%);
+}
+
+body.device-mobile .chat-panel.open {
+    transform: translateX(0);
+}
+
+body.device-mobile .chat-panel.collapsed {
+    transform: translateX(100%);
+}
+
+body.device-mobile .chat-toggle-btn {
+    left: -50px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    top: auto;
+    bottom: 100px;
+}
+
+body.device-mobile .chat-header {
+    padding: 10px;
+}
+
+body.device-mobile .npc-selector {
+    padding: 8px 10px;
+}
+
+body.device-mobile .npc-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+}
+
+body.device-mobile .chat-messages {
+    padding: 10px;
+}
+
+body.device-mobile .message-text {
+    font-size: 13px;
+}
+
+body.device-mobile .chat-input-area {
+    padding: 10px;
+}
+
+body.device-mobile .chat-input {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+body.device-mobile .chat-send-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+}
+
+/* ========== 好感度显示 ========== */
+.npc-relationship {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+}
+
+.npc-relationship.high {
+    background: linear-gradient(135deg, #22c55e, #10b981);
+}
+
+.npc-relationship.medium {
+    background: linear-gradient(135deg, #f59e0b, #eab308);
+}
+
+
+/* ========== NPC 信息卡片 ========== */
+.npc-info-card {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.1));
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    animation: cardSlideIn 0.4s ease;
+}
+
+@keyframes cardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.npc-info-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.npc-info-avatar {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 3px solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.npc-info-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.npc-info-name {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f0e6d3;
+    margin-bottom: 4px;
+}
+
+.npc-info-title {
+    font-size: 12px;
+    color: #888;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 2px 8px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.npc-info-background {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.npc-info-more {
+    background: transparent;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    color: #6366f1;
+    padding: 6px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+}
+
+.npc-info-more:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+}
+
+.npc-info-full {
+    display: none;
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.7;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.npc-info-card.expanded .npc-info-background {
+    display: none;
+}
+
+.npc-info-card.expanded .npc-info-full {
+    display: block;
+}
+
+.npc-info-card.expanded .npc-info-more {
+    display: none;
+}
+
+/* ========== 设置按钮 ========== */
+.chat-settings-btn {
+    position: absolute;
+    top: 12px;
+    right: 50px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #888;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-settings-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* ========== API 状态指示 ========== */
+.npc-avatar.has-llm::after {
+    background: #22c55e;
+    box-shadow: 0 0 6px #22c55e;
+}
+
+/* ========== 手机端 NPC 信息卡片 ========== */
+body.device-mobile .npc-info-card {
+    padding: 12px;
+}
+
+body.device-mobile .npc-info-avatar {
+    width: 45px;
+    height: 45px;
+    font-size: 26px;
+}
+
+body.device-mobile .npc-info-name {
+    font-size: 16px;
+}
+
+body.device-mobile .npc-info-background,
+body.device-mobile .npc-info-full {
+    font-size: 12px;
+}
+
+
+/* 清除历史按钮 */
+.npc-clear-history {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+    margin-left: auto;
+}
+
+.npc-clear-history:hover {
+    background: rgba(239, 68, 68, 0.4);
+}
+
+/* 系统消息样式 */
+.chat-message.system {
+    justify-content: center;
+}
+
+.chat-message.system .message-content {
+    background: rgba(100, 100, 100, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 12px;
+    text-align: center;
+}

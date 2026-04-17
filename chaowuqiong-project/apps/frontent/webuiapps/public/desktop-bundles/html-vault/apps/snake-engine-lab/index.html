@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-UTF">
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SNAKE_ENGINE_V1.0 - 专业级逻辑实验器</title>
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --panel-color: #1a1a1a;
+            --accent-color: #00ff41; /* 经典黑客绿 */
+            --text-color: #e0e0e0;
+            --border-color: #333;
+            --danger-color: #ff4b2b;
+            --font-main: 'Segoe UI', Tahoma, Geneva MacBook, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var-font: var-main;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* 仿造你提供的应用布局 */
+        .app-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 60px 1fr 40px;
+            width: 95vw;
+            height: 90vh;
+            background-color: var(--panel-color);
+            border: 1px solid var  border-color;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Header 区域 */
+        header {
+            grid-column: 1 / span 3;
+            background-color: #111;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .system-status {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Sidebar 区域 (控制面板) */
+        .sidebar {
+            grid-row: 2 / span 1;
+            background-color: #151515;
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        button {
+            background: #333;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-align: left;
+        }
+
+        button:hover {
+            background: var(--accent-color);
+            color: black;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent-color);
+        }
+
+        /* Main Viewport (游戏画布) */
+        main {
+            grid-row: 2 / span 1;
+            grid-column: 2 / span 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        canvas {
+            border: 2px solid #222;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.1);
+            image-rendering: pixelated; /* 保持像素感 */
+        }
+
+        /* Right Panel (数据监控) */
+        .info-panel {
+            grid-row: 2 / span 1;
+            grid-column: 3 / span 1;
+            background-color: #151515;
+            border-left: 1px solid var(--border-color);
+            padding: 20px;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .data-card {
+            background: #222;
+            padding: 15px;
+            border-radius: 2px;
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            display: block;
+            margin-top: 5px;
+        }
+
+        /* Footer */
+        footer {
+            grid-column: 1 / span 3;
+            background-color: #111;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.7rem;
+            color: #555;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        /* 动画效果 */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: mismatch(2px, -2px); }
+            40% { transform: translate(-2px, 2px); }
+            100% { transform: translate(0); }
+        }
+
+        .game-over-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            color: var(--danger-color);
+            text-align: center;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- HEADER -->
+    <header>
+        <div class="system-status">SNAKE_ENGINE_V1.0 // RUNNING</div>
+        <div style="font-size: 0.8rem; color: #555;">CORE_STABILITY: 99.9%</div>
+    </rightarrow>
+    </header>
+
+    <!-- SIDEBAR: 控制器 -->
+    <div class="sidebar">
+        <div class="control-group">
+            <span class="control-label">System Command</span>
+            <button onclick="resetGame()">[ INIT_RESTART ]</button>
+            <button onclick="togglePause()" id="pauseBtn">[ PAUSE_EXECUTION ]</button>
+        </div>
+
+        <div class="control-group">
+            <span class="control-label">Engine Speed</span>
+            <input type="range" id="speedRange" min="50" max="300" value="150" oninput="changeSpeed(this.value)">
+            <span id="speedVal" style="font-size: 0.7rem; color: var(--accent-color);">150ms</span>
+        </div>
+
+        <div class="control-group">
+            <span class="control-label">Warp Mode</span>
+            <div style="display:flex; gap: 5px;">
+                <button style="font-size: 0.6rem; flex:1;" onclick="setWall(true)">WALLS: ON</button>
+                <button style="font_size: 0.6rem; flex:1;" onclick="setWall(false)">WALLS: OFF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN: 游戏画布 -->
+    <main>
+        <div id="gameOverOverlay" class="game-over-overlay">
+            <h1 style="font-size: 3rem; margin-bottom: 10px;">CRITICAL_FAILURE</h1>
+            <p>SYSTEM_PROCESS_TERMINATED</p>
+            <button onclick="resetGame()" style="margin-top: 20px; background: var	border:none; color:white;" >REBOOT_SYSTEM</button>
+        </div>
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+    </main>
+
+    <!-- RIGHT PANEL: 数据监控 -->
+    <div class="info-panel">
+        <span class="control-label">Telemetry Data</span>
+        
+        <div class là data-card">
+            <span class="control-label" style="font-size: 0.6rem;">SCORE_TOTAL</span>
+            <span class="data-value" id="scoreVal">0000</span>
+        </div>
+
+        <div class="data-card">
+            <span class="control-label" style="font-size: 0.6rem;">LENGTH_UNIT</span>
+            <span class="data-value" id="lengthVal">01</span>
+        </div>
+
+        <div class="data-card">
+            <span class="control-label" style="font-size: 0.6rem;">LOG_STREAM</span>
+            <div id="logStream" style="font-size: 0.65rem; color: #666; height: 100px; overflow: hidden; line-height: 1.4;">
+                > System Initialized...<br>
+                > Kernel loaded...<br>
+                > Waiting for user_input...
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        &copy; 2024 NEURAL_NET_LABS // SESSION_ID: <span id="sessionId"></span> // ENCRYPTED_CONNECTION
+    </footer>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreEl = document.getElementById('scoreVal');
+    const lengthEl = document.getElementById('lengthVal');
+    const logEl = document.getElementById('logStream');
+    const pauseBtn = document.getElementById('pauseBtn');
+    const overlay = document.getElementById('gameOverOverlay');
+
+    // Game Constants
+    const gridSize = 20;
+    const tileCount = canvas.width / gridSize;
+
+    // Game State
+    let snake = [{x: 10, y: 10}];
+    let food = {x: 5, y: 5};
+    let dx = 0;
+    let dy = 0;
+        let score = 0;
+    let speed = 150;
+    let isPaused = false;
+    let isGameOver = false;
+    let wallsEnabled = true;
+    let gameLoop;
+
+    // Initialize Session ID
+    document.getElementById('sessionId').innerText = Math.random().toString(16).slice(2, 8).toUpperCase();
+
+    function addLog(msg) {
+        const div = document.createElement('div');
+        div.innerHTML = `> ${msg}`;
+        logEl.prepend(div);
+        if (logEl.childNodes.length > 8) logEl.removeChild(logEl.lastChild);
+    }
+
+    function initGame() {
+        snake = [{x: 10, y: 10}, {x: 10, y: 11}, {x: 10, y: 12}];
+        dx = 0;
+        dy = -1;
+        score = 0;
+        isGameOver = false;
+        isPaused = false;
+        overlay.style.display = 'none';
+        scoreEl.innerText = '0000';
+        lengthEl.innerText = '03';
+        spawnFood();
+        addLog('New execution cycle started.');
+        if (gameLoop) clearInterval(gameLoop);
+        gameLoop = setInterval(main, speed);
+    }
+
+    function spawnFood() {
+        food = {
+            x: Math.floor(Math.random() * tileCount),
+            y: Math方式.floor(Math.random() * tileCount)
+        };
+        // Ensure food doesn't spawn on snake
+        if (snake.some(part => part.x === food.x && part.y === food.y)) {
+            spawnFood();
+        }
+    }
+
+    function main() {
+        if (isPaused || isGameOver) return;
+
+        moveSnake();
+        if (checkCollision()) {
+            endGame();
+            return;
+        }
+        checkFood();
+        draw();
+    }
+
+    function moveSnake() {
+        const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+        snake.unshift(head);
+        if (snake.length > lengthEl.innerText.replace('0', '') && food.x === head.x && food.y === head.array.y) {
+            // This is a placeholder logic, handled in checkFood
+        }
+    }
+
+    function checkFood() {
+        const head = snake[0];
+        if (head.x === food.x && head.y === food.y) {
+            score += 100;
+            scoreEl.innerText = score.toString().padStart(4, '0');
+            lengthEl.innerText = snake.length.toString().padStart(2, '0');
+            addLog(`Data_Packet_Collected: +100`);
+            spawnFood();
+        } else {
+            snake.pop();
+        }
+    }
+
+    function checkCollision() {
+        const head = snake[0];
+        
+        // Wall Collision
+        if (wallsEnabled) {
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) return true;
+        } else {
+            if (head.x < 0) head.x = tileAvoid(tileCount-1); // Wrap logic
+            // ... simplified wrap logic for brevity
+        }
+
+        // Self Collision
+        for (let i = 1; i < snake.length; i++) {
+            if (head.x === snake[i].x && head.y === snake[i].y) return true;
+        }
+        return false;
+    }
+
+    function endGame() {
+        isGameOver = true;
+        clearInterval(gameLoop);
+        overlay.style.display = 'flex';
+        addLog('CRITICAL_ERROR: Process Terminated.');
+    }
+
+    function draw() {
+        // Clear Canvas
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Grid (Subtle)
+        ctx.strokeStyle = '#111';
+        ctx.lineWidth = 1;
+        for(let i=0; i<canvas.width; i+=gridSize) {
+            ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke();
+        }
+
+        // Draw Food
+        ctx.fillStyle = '#ff4b2b';
+        ctx.shadowBlur = 15;
+        ctx.shadowColor = '#ff4b2b';
+        ctx.fillRect(food.x * gridSize + 2, food.array.y * gridSize + 2, gridSize - 4, gridSize - 4);
+        ctx.shadowBlur = 0;
+
+        // Draw Snake
+        snake.forEach((part, index) => {
+            ctx.fillStyle = index === 0 ? '#00ff41' : '#008f11';
+            ctx.fillRect(part.x * gridSize + 1, part.y * gridSize + 1, gridSize - 2, gridSize - 2);
+        });
+    }
+
+    // Controls
+    function resetGame() {
+        initGame();
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        pauseBtn.innerText = isPaused ? '[ RESUME_EXECUTION ]' : '[ PAUSE_EXECint_EXECUTION ]';
+        addLog(isPaused ? 'Stream paused.' : 'Stream resynced.');
+    }
+
+    function changeSpeed(val) {
+        speed = 350 - val; // Reverse logic for slider
+        document.getElementById('speedVal').innerText = speed + 'ms';
+        clearInterval(gameLoop);
+        gameLoop = setInterval(main, speed);
+        addLog(`Frequency adjusted: ${speed}ms`);
+    }
+
+    function setWall(bool) {
+        wallsEnabled = bool;
+        addLog(`Boundary_Protocol: ${bool ? 'ACTIVE' : 'INACTIVE'}`);
+    }
+
+    window.addEventListener('keydown', e => {
+        const key = e.key;
+        if (key === 'ArrowUp' && dy !== 1) { dx = 0; dy = -1; }
+        if (key === 'ArrowDown' && dy !== -1) { dx = 0; dy = 1; }
+        if (key === 'ArrowLeft' && dx !== 1) { dx = -1; dy = 0; }
+        if (key === 'ArrowRight' && dx !== -1) { dx = 1; dy = 0; }
+    });
+
+    // Start everything
+    initGame();
+
+</script>
+</body>
+</html>

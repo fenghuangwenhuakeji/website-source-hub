@@ -1,0 +1,126 @@
+﻿/* ===== 移动端全面适配 v3.0 ===== */
+
+/* 触摸设备：增大点击区域 + 防iOS缩放 */
+@media (pointer: coarse) {
+    .btn, .nav-item, .mode-card, .tab, .chat-action-btn, .book-btn, .picker-tab,
+    .genre-chip, .writing-mode-card, .dimension-chip, .lib-tag-chip,
+    .preset-chip, .prompt-editor-header, .lib-view-btn, .chat-quick-btn,
+    .chat-msg-btn, .writing-ref-item {
+        min-height: 44px;
+    }
+    textarea, .form-input, select, input[type="text"], input[type="password"],
+    .prompt-editor-textarea {
+        font-size: 16px !important;
+    }
+    .book-card:hover { transform: none !important; box-shadow: none !important; }
+    .btn:hover { transform: none !important; }
+    .mode-card:hover { transform: none !important; box-shadow: none !important; }
+    .writing-mode-card:hover { transform: none !important; box-shadow: none !important; }
+    .lib-stat-card:hover { transform: none !important; }
+    .chat-quick-btn:hover { transform: none !important; }
+    .btn:active, .nav-item:active, .mode-card:active, .book-card:active,
+    .genre-chip:active, .writing-mode-card:active, .preset-chip:active,
+    .prompt-editor-header:active, .chat-quick-btn:active {
+        opacity: 0.7;
+    }
+    /* 滑块触摸优化 */
+    input[type="range"] {
+        height: 36px;
+        cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+    }
+    /* 消息操作始终可见 */
+    .chat-msg-actions { opacity: 1; }
+}
+
+/* 折叠面板箭头 */
+.section-arrow { display: inline; font-size: 10px; color: var(--text-tertiary); }
+.section-toggle { cursor: pointer; user-select: none; }
+
+
+/* ===== 手机+平板 (<=768px) ===== */
+@media screen and (max-width: 768px) {
+
+    /* --- 通用卡片 --- */
+    .card { padding: 12px; margin-bottom: 10px; }
+    .card-title { font-size: 13px; margin-bottom: 10px; }
+    .section-card[data-section="closed"] .card-title {
+        margin-bottom: 0; padding-bottom: 0; border-bottom: none;
+    }
+
+    /* --- 融合模式 --- */
+    .mode-grid { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+    .mode-card { padding: 12px 6px; }
+    .mode-icon { font-size: 20px; }
+    .mode-label { font-size: 12px; }
+
+    /* --- 记忆面板 --- */
+    .memory-panel { grid-template-columns: 1fr 1fr !important; gap: 8px; }
+    .memory-block { padding: 10px; }
+    .memory-block-value { font-size: 20px; }
+
+    /* --- IO监控 --- */
+    .io-monitor {
+        display: flex; flex-direction: column; gap: 8px;
+        grid-template-columns: none;
+    }
+    .io-monitor > div:nth-child(2) { order: -1; display: flex; justify-content: center; }
+    .io-box { min-height: 60px; max-height: 120px; }
+
+    /* --- 表单通用 --- */
+    textarea { min-height: 80px; }
+    .btn { padding: 10px 14px; font-size: 13px; }
+    .result-output { min-height: 80px; max-height: 300px; font-size: 13px; }
+
+    /* --- 聊天 --- */
+    .chat-container { max-height: 300px; min-height: 200px; }
+    .chat-message { max-width: 92%; padding: 10px 12px; }
+    .chat-message-content { font-size: 13px; }
+    .chat-input { min-height: 38px; max-height: 80px; font-size: 14px; }
+    .chat-input-area { padding: 6px 6px 6px 12px; }
+    .chat-send-btn { width: 38px; height: 38px; min-height: 38px; align-self: flex-end; flex-shrink: 0; }
+    .chat-input-hint { font-size: 9px; }
+    .chat-welcome { padding: 24px 12px; }
+    .chat-welcome-icon { font-size: 32px; }
+    .chat-welcome-title { font-size: 14px; }
+    .chat-welcome-desc { font-size: 11px; }
+    .chat-quick-btn { padding: 6px 10px; font-size: 11px; }
+    .chat-quick-actions { gap: 6px; }
+    .chat-toolbar { flex-wrap: wrap; gap: 4px; }
+    .chat-action-btn { padding: 5px 8px; font-size: 10.5px; }
+    .chat-msg-actions { opacity: 1; }
+
+    /* --- 上下文统计 --- */
+    .context-stats { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+    .context-stat-item { padding: 8px 4px; }
+    .context-stat-value { font-size: 14px; }
+    .context-stat-label { font-size: 8px; }
+    .memory-indicator { font-size: 11px; padding: 6px 10px; }
+}
+
+/* ===== 小屏手机 (<=480px) ===== */
+@media screen and (max-width: 480px) {
+    .library-dashboard { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .lib-stat-card { padding: 12px; }
+    .lib-stat-icon { font-size: 22px; }
+    .lib-stat-value { font-size: 18px; }
+    .library-toolbar { flex-direction: column; align-items: stretch; }
+    .library-toolbar-right { flex-wrap: wrap; }
+    .library-container { grid-template-columns: 1fr !important; }
+    .writing-mode-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .wparam-row { grid-template-columns: 1fr; }
+    .writing-action-bar { flex-direction: column; }
+    .writing-start-btn { width: 100%; }
+    .modal-content { width: 96%; padding: 16px; border-radius: var(--radius-lg); }
+    .notification { bottom: 70px; right: 8px; left: 8px; min-width: auto; }
+}
+
+/* ===== 大屏桌面优化 (>1400px) ===== */
+@media screen and (min-width: 1401px) {
+    .market-control-panel { width: 400px; }
+    .market-result-panel { padding: 32px 40px; }
+    .fb-side-panel { width: 300px; }
+}
