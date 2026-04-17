@@ -284,6 +284,18 @@ npm run build
 - 桥接脚本只适合在了解当前服务器约束的前提下使用
 - 如果要补新的部署动作，同时更新 `docs/` 或 `history/`
 
+## 9.1 GitHub 上传注意事项
+
+如果本机启用了 Clash 或类似代理，向 GitHub 推送仓库前，建议先把全局模式切到 `DIRECT`。
+
+当前这套环境里，`git push` 在代理链路下偶发会出现连接被重置；切到 `DIRECT` 后更稳定。
+
+可直接使用现成脚本：
+
+```powershell
+node .\cloud-bridge\scripts\set-clash-global.js --exact DIRECT
+```
+
 ## 10. 团队协作建议
 
 - 只改你当前负责的子项目目录，避免一次提交同时混入官网、后台、后端三类改动
