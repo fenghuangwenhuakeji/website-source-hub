@@ -70,6 +70,13 @@ website-source-hub/
 2. `cloud-bridge/docs/01-ssh-bridge-playbook.md`
 3. `cloud-bridge/docs/02-separate-mysql-deploy-plan.md`
 
+## 版权与许可
+
+- 本仓库默认不是宽松开源仓库
+- 代码、脚本、文档与配置的版权归 `凤煌科技有限公司` 所有
+- 未经书面许可，不得直接商用、二次分发、镜像部署或改作他用
+- 详细条款见 [`LICENSE`](./LICENSE)
+
 ## 协作建议
 
 - 新功能优先在对应子项目目录内开发，不要把官网、管理端、后端改动混成一团
