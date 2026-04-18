@@ -1,0 +1,402 @@
+/*
+ * 创世纪引擎 V76.0 - 完美形态重生版
+ * 全局样式表
+ * ✨✨✨ (博士重构 - 最终布局修正 V2) ✨✨✨
+ * 1. 【核心修正】完全遵照您的指令，以您提供的经典V76.0样式文件为基础。
+ * 2. 【保留经典】原有的拆解室、写作区、卡牌库、辅助工具箱等所有模块的布局和样式，都已恢复到您最习惯的原始形态，原封不动。
+ * 3. 【精准优化】只针对“执笔写作台”（您唯一允许修改的模块）的布局，精准植入了布局优化代码，实现了“设置区缩小，正文区扩大”的效果。
+ */
+
+/* --- 核心变量 (V3.0 完美形态 & 融合思路 兼容版) --- */
+:root {
+    --font-main: 'Noto Sans SC', sans-serif;
+    --font-display: 'Orbitron', sans-serif; /* V3.0 标题字体 */
+    --font-code: 'Roboto Mono', monospace;
+    --border-radius: 8px;
+    --transition-speed: 0.3s;
+    --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* --- 主题定义 --- */
+/* 默认主题: V3.0 赛博朋克 (已设为基础) */
+body, body.theme-cyberpunk {
+    --primary-color: #00f5d4;
+    --primary-hover: #00e0c4;
+    --glow-color: rgba(0, 245, 212, 0.3);
+    --bg-color: #1a1a1a;
+    --content-bg: #2a2a2a;
+    --sidebar-bg: #111;
+    --text-color: #e0e0e0;
+    --text-muted: #888;
+    --border-color: #444;
+    --border-color-light: #555;
+    --success-color: #28a745;
+    --error-color: #dc3545;
+    --warning-color: #ffc107;
+    
+    /* 融合思路 变量映射 */
+    --bg-primary: var(--bg-color);
+    --bg-secondary: var(--content-bg);
+    --bg-tertiary: #3c3c3c;
+    --text-primary: var(--text-color);
+    --text-secondary: var(--text-muted);
+    --accent-primary: var(--primary-color);
+    --accent-primary-hover: var(--primary-hover);
+    --accent-secondary: #10b981;
+    --accent-danger: var(--error-color);
+    --shadow-color: rgba(0,0,0,0.25);
+    --scrollbar-thumb: var(--border-color);
+    --scrollbar-track: var(--sidebar-bg);
+
+    /* V3.0 卡牌颜色体系 */
+    --card-worldview-bg: #2a2a4a;
+    --card-character-bg: #2a4a2a;
+    --card-plot-bg: #4a2a2a;
+    --card-scene-bg: #2a4a2a;
+    --card-vocab-bg: #2a4a4a; /* 核心词汇 */
+    --card-sentence-bg: #4a2a4a; /* 句式卡 */
+    --card-rhetoric-bg: #4a4a2a; /* 修辞手法 */
+    --card-sensory-bg: #2a2a2a; /* 感官描写 */
+}
+
+/* 融合思路 暗色主题 */
+body.theme-dark {
+    --primary-color: #6366f1;
+    --primary-hover: #818cf8;
+    --glow-color: rgba(99, 102, 241, 0.3);
+    --bg-color: #111827;
+    --content-bg: #1f2937;
+    --sidebar-bg: #111827;
+    --text-color: #f9fafb;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --border-color-light: #4b5563;
+}
+
+/* 融合思路 亮色主题 */
+body.theme-light {
+    --primary-color: #4f46e5;
+    --primary-hover: #6366f1;
+    --glow-color: rgba(79, 70, 229, 0.3);
+    --bg-color: #f9fafb;
+    --content-bg: #ffffff;
+    --sidebar-bg: #f9fafb;
+    --text-color: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --border-color-light: #f3f4f6;
+}
+
+
+/* --- 全局样式 --- */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-main); background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow: hidden; }
+.hidden { display: none !important; }
+
+/* --- 滚动条样式 --- */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
+
+/* --- 主布局 (融合) --- */
+#app-container { display: flex; height: 100vh; }
+#main-nav { width: 260px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; padding: 1.5rem; border-right: 1px solid var(--border-color); flex-shrink: 0; }
+#main-content { flex-grow: 1; padding: 20px; overflow-y: auto; }
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.5s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* --- 左侧导航栏 (融合) --- */
+#main-nav .logo h1 { font-family: var(--font-display); color: var(--accent-primary); }
+.nav-link { display: flex; align-items: center; gap: 10px; padding: 12px 15px; border-radius: var(--border-radius); color: var(--text-primary); text-decoration: none; transition: all var(--transition-speed) ease; margin-bottom: 8px; font-size: 1.1em; }
+.nav-link:hover { background-color: var(--bg-secondary); color: var(--accent-primary); }
+.nav-link.active { background-color: var(--accent-primary); color: var(--bg-primary); font-weight: bold; }
+.nav-link i { width: 22px; text-align: center; }
+.nav-footer { margin-top: auto; }
+.theme-switcher { display: flex; justify-content: center; gap: 0.5rem; margin-top: 1.5rem; }
+.theme-btn { font-size: 1rem; padding: 0.5rem 0.8rem; }
+
+/* --- 通用组件 (融合 V3.0 风格) --- */
+.card { background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+.card-header h2, .card-header h3, .card-header h4 { color: var(--accent-primary); font-family: var(--font-display); margin: 0; }
+.placeholder-text { color: var(--text-muted); text-align: center; padding: 40px; font-style: italic; user-select: none; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+input, textarea, select { width: 100%; padding: 12px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--border-radius); color: var(--text-primary); font-family: var(--font-main); font-size: 1em; transition: border-color 0.3s, box-shadow 0.3s; }
+textarea { resize: vertical; line-height: 1.8; }
+input:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent-primary); box-shadow: 0 0 10px var(--glow-color); }
+button, .action-btn, .settings-btn { padding: 12px 18px; border-radius: var(--border-radius); border: none; cursor: pointer; transition: all var(--transition-speed) ease; font-weight: bold; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.action-btn { background-color: var(--accent-primary); color: var(--bg-primary); }
+.action-btn:hover { background-color: var(--primary-hover); transform: translateY(-2px); }
+.action-btn:disabled { background-color: var(--text-muted); color: var(--bg-primary); cursor: not-allowed; transform: translateY(0); }
+.settings-btn { background-color: transparent; color: var(--text-muted); border: 1px solid var(--border-color); }
+.settings-btn:hover { background-color: var(--bg-secondary); color: var(--accent-primary); border-color: var(--accent-primary); }
+
+/* --- ✨ V3.0 经典布局样式 (原封不动保留) --- */
+.deconstruction-layout, .card-library-layout { display: grid; grid-template-columns: 350px 1fr; gap: 20px; height: calc(100vh - 80px); }
+.writing-layout-v2 { display: grid; grid-template-columns: 1fr 320px 1fr; gap: 20px; height: calc(100vh - 80px); }
+
+.deconstruction-input .card, .filter-sidebar .card, .writing-panel-column .card { height: 100%; margin-bottom: 0; display: flex; flex-direction: column; }
+.deconstruction-input textarea, .writing-panel-column textarea { flex-grow: 1; resize: none; }
+.deconstruction-output-area, .card-grid-container, .filter-options { overflow-y: auto; padding-right: 10px; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+.card-library-toolbar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; }
+
+/* --- ✨ V3.0 多维创作矩阵样式 (原封不动保留) --- */
+.filter-main-title { color: var(--accent-primary); font-family: var(--font-display); font-size: 1.2em; margin-top: 25px; margin-bottom: 15px; padding-bottom: 8px; border-bottom: 2px solid var(--accent-primary); }
+.filter-main-title:first-child { margin-top: 0; }
+.filter-group { margin-bottom: 20px; }
+.filter-group-title { color: var(--text-muted); font-weight: bold; margin-bottom: 10px; }
+.tags-container { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-item { background-color: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-muted); padding: 5px 12px; border-radius: 15px; cursor: pointer; transition: all 0.2s ease; font-size: 0.9em; user-select: none; }
+.tag-item:hover { color: var(--accent-primary); border-color: var(--accent-primary); }
+.tag-item.active { background-color: var(--accent-primary); color: var(--bg-primary); border-color: var(--accent-primary); font-weight: bold; }
+
+/* --- ✨ V3.0 创作调色盘样式 (原封不动保留) --- */
+.palette-column .card { padding: 15px; }
+.palette-controls { display: flex; flex-direction: column; height: 100%; }
+.palette-header { text-align: center; margin-bottom: 15px; color: var(--accent-primary); font-family: var(--font-display); }
+.palette-body { flex-grow: 1; overflow-y: auto; padding: 10px; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+.palette-footer { padding-top: 15px; }
+.palette-limit-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 8px; background-color: var(--bg-primary); border-radius: var(--border-radius); }
+.palette-limit-group label { font-weight: bold; }
+.palette-limit-group input[type="number"] { width: 60px; text-align: center; padding: 8px; }
+#writing-output-area { flex-grow: 1; overflow-y: auto; padding: 15px; background-color: var(--bg-primary); border-radius: var(--border-radius); white-space: pre-wrap; line-height: 1.8; }
+.polished-output-controls { padding-top: 15px; display: flex; gap: 10px; border-top: 1px solid var(--border-color); margin-top: 15px;}
+
+/* --- ✨ V3.0 卡牌样式 (原封不动保留) --- */
+.story-card {
+    border: 1px solid var(--border-color); border-radius: var(--border-radius); padding: 15px 20px;
+    display: flex; flex-direction: column; transition: all 0.3s ease; position: relative;
+    cursor: grab; min-height: 220px;
+}
+.story-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px var(--glow-color); border-color: var(--accent-primary); }
+.story-card .card-header { padding: 0; margin-bottom: 12px; border: none; }
+.story-card .card-full-title { font-family: var(--font-main); font-size: 1.2em; font-weight: bold; flex-grow: 1; color: var(--text-primary); }
+.story-card .card-type { color: var(--accent-primary); font-weight: bold; }
+.card-delete-btn { position: absolute; top: 10px; right: 10px; background: none; border: none; color: var(--text-muted); font-size: 1.1em; cursor: pointer; transition: color 0.2s; padding: 5px; opacity: 0.5; }
+.story-card:hover .card-delete-btn { opacity: 1; }
+.card-delete-btn:hover { color: var(--error-color); }
+.card-section-title { font-weight: bold; color: var(--text-muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; margin-top: 10px; }
+.card-example, .card-analysis { font-size: 0.95em; padding: 8px 10px; background-color: rgba(0,0,0,0.2); border-radius: 4px; margin-top: 5px; white-space: pre-wrap; word-break: break-word; }
+.card-analysis { color: var(--text-primary); }
+.card-example { color: #c0c0c0; border-left: 2px solid var(--accent-primary); }
+.story-card .card-footer { margin-top: 15px; padding-top: 10px; border-top: 1px solid var(--border-color); font-size: 0.8em; color: var(--text-muted); }
+.story-card[data-card-type="世界观"] { background-color: var(--card-worldview-bg); }
+.story-card[data-card-type="情节"] { background-color: var(--card-plot-bg); }
+.story-card[data-card-type="场景"] { background-color: var(--card-scene-bg); }
+.story-card[data-card-type="核心词汇"] { background-color: var(--card-vocab-bg); }
+.story-card[data-card-type="句式卡"] { background-color: var(--card-sentence-bg); }
+.story-card[data-card-type="修辞手法"] { background-color: var(--card-rhetoric-bg); }
+.story-card[data-card-type="感官描写"] { background-color: var(--card-sensory-bg); }
+.story-card[data-card-type="角色"] { background-color: var(--card-character-bg); }
+
+/* --- ✨ V3.0 模态框样式 (原封不动保留) --- */
+.modal-overlay, .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1000; animation: fadeIn 0.3s; }
+.modal-content { background-color: var(--content-bg); padding: 30px; border-radius: var(--border-radius); width: 90%; max-width: 600px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid var(--border-color); max-height: 90vh; display: flex; flex-direction: column; }
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; flex-shrink: 0; }
+.modal-header h2 { color: var(--accent-primary); }
+.modal-body { overflow-y: auto; flex-grow: 1; }
+.modal-footer { margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; flex-shrink: 0; }
+.close-btn { background: none; border: none; font-size: 2em; color: var(--text-muted); cursor: pointer; transition: color 0.3s; }
+.close-btn:hover { color: var(--accent-primary); }
+#card-selection-modal .modal-content { max-width: 900px; }
+.card-selection-list { list-style: none; padding: 0; margin: 0; }
+.card-selection-item { display: flex; align-items: center; padding: 10px; border-bottom: 1px solid var(--border-color); transition: background-color 0.2s; }
+.card-selection-item:hover { background-color: rgba(255,255,255,0.05); }
+.card-selection-item input[type="checkbox"] { margin-right: 15px; width: 20px; height: 20px; }
+.card-selection-item label { display: flex; flex-direction: column; cursor: pointer; flex-grow: 1; }
+.card-selection-item .item-title { font-weight: bold; color: var(--text-primary); }
+.card-selection-item .item-type { font-size: 0.8em; color: var(--accent-primary); }
+
+/* --- 融合思路模块样式 (原封不动保留) --- */
+.pipeline-grid-container { display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; }
+.dashboard-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+
+/* --- ✨ 博士的最终布局修正 (精准植入) --- */
+/* 1. 重写写作台整体布局 */
+.writing-cockpit-container { 
+    display: grid; 
+    grid-template-columns: 240px 1fr; /* 左侧列表更窄 */
+    gap: 20px; 
+    height: calc(100vh - 40px); /* 占满可用高度 */
+}
+.cockpit-panel { 
+    display: flex; 
+    flex-direction: column; 
+    overflow: hidden; 
+    margin: 0; 
+    height: 100%;
+}
+.cockpit-main-area {
+    display: grid;
+    grid-template-rows: 1fr 20px 1fr; /* 主编辑区和下方区域均分 */
+    gap: 0; 
+    overflow: hidden;
+    height: 100%;
+}
+.cockpit-bottom-row { 
+    display: grid; 
+    grid-template-columns: minmax(0, 1fr) 20px minmax(0, 1fr); 
+    gap: 0; 
+    padding: 0; 
+    border: none; 
+    background: none; 
+    box-shadow: none; 
+    margin: 0; 
+}
+/* 2. 重写核心编辑器内部布局 (解决设置区过大的问题) */
+#cockpit-editor.card {
+    padding: 0; /* 移除内边距，交由子元素控制 */
+    display: flex;
+    flex-direction: column;
+}
+#cockpit-editor > .card-header,
+#cockpit-editor > .card-footer {
+    flex-shrink: 0; /* 固定头部和尾部高度 */
+    padding-left: 20px;
+    padding-right: 20px;
+}
+#cockpit-editor > .card-header { padding-top: 20px; }
+#cockpit-editor > .card-footer { padding-bottom: 20px; border-top: 1px solid var(--border-color); margin-top: 0; }
+#cockpit-editor .writing-settings-panel {
+    flex-shrink: 0; /* 固定设置区高度 */
+    padding: 10px 20px;
+    margin-bottom: 0;
+    border-bottom: 1px solid var(--border-color);
+    display: flex; /* 让内部元素横向排列 */
+    flex-wrap: wrap; /* 允许换行 */
+    gap: 20px;
+}
+#cockpit-editor .writing-settings-panel .form-group {
+    margin-bottom: 0; /* 移除表单组的下边距 */
+}
+#cockpit-editor #chapter-editor-area {
+    flex-grow: 1; /* 关键：让正文区占据所有剩余空间 */
+    resize: none;
+    border: none;
+    border-radius: 0;
+    padding: 20px;
+    line-height: 1.8;
+    background-color: var(--bg-primary); /* 让背景色与主背景一致，更具沉浸感 */
+}
+#cockpit-editor #chapter-editor-area:focus {
+    box-shadow: none; /* 移除聚焦时的辉光 */
+}
+
+/* --- ✨ 博士修复：章节状态指示灯样式 --- */
+.chapter-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.chapter-item:hover {
+    background-color: var(--bg-tertiary);
+}
+.chapter-item.active {
+    background-color: var(--accent-primary);
+    color: var(--bg-primary);
+    font-weight: bold;
+}
+.chapter-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-left: 10px;
+}
+.chapter-status.pending {
+    background-color: var(--text-muted);
+}
+.chapter-status.generating {
+    background-color: var(--warning-color);
+    animation: pulse 1.5s infinite;
+}
+.chapter-status.completed {
+    background-color: var(--success-color);
+}
+.chapter-status.failed {
+    background-color: var(--error-color);
+}
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.4; }
+    100% { opacity: 1; }
+}
+
+/* --- 通知与加载动画 --- */
+#notification-container { position: fixed; top: 20px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; }
+.notification { padding: 15px 20px; border-radius: var(--border-radius); color: #fff; background-color: var(--bg-secondary); box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: slideIn 0.5s forwards; min-width: 250px; }
+.notification.success { background-color: var(--success-color); }
+.notification.error { background-color: var(--error-color); }
+.notification.warning { background-color: var(--warning-color); }
+.notification.info { background-color: #17a2b8; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+#loading-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+#loading-overlay.active { opacity: 1; pointer-events: all; }
+#loading-overlay .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-left-color: var(--accent-primary); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+#loading-text { color: white; margin-top: 20px; }
+
+/* --- 项目管理器样式增强 --- */
+
+/* 章节列表项的基础样式 */
+.chapter-item {
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* 鼠标悬停时的样式 */
+.chapter-item:hover {
+    background-color: #e9ecef; /* 一个淡淡的灰色背景 */
+}
+
+/* 被选中（激活）的章节项样式 */
+.chapter-item.active {
+    background-color: #007bff; /* 蓝色背景 */
+    color: white; /* 白色文字 */
+    font-weight: bold;
+}
+
+/* --- 写作区章节细纲显示样式 --- */
+.chapter-detail-view {
+    padding: 20px;
+    font-family: 'Microsoft YaHei', sans-serif;
+    color: #333;
+}
+
+.chapter-detail-view h2 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #0056b3;
+}
+
+.detail-section {
+    margin-bottom: 25px;
+}
+
+.detail-section h3 {
+    color: #555;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    border-left: 4px solid #007bff;
+    padding-left: 10px;
+}
+
+.detail-section p {
+    line-height: 1.8;
+    color: #444;
+    padding-left: 14px;
+    text-align: justify;
+}

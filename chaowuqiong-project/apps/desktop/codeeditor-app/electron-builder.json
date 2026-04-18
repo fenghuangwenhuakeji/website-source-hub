@@ -1,0 +1,54 @@
+{
+  "appId": "com.chaowuqiong.codeeditor",
+  "productName": "超无穹代码编辑器",
+  "directories": {
+    "output": "dist-release-v20"
+  },
+  "files": [
+    "electron/**/*",
+    "app/**/*",
+    "!node_modules"
+  ],
+  "asarUnpack": [
+    "app/**/*"
+  ],
+  "extraResources": [
+    {
+      "from": "server",
+      "to": "server",
+      "filter": ["**/*.ts"]
+    },
+    {
+      "from": "server-node_modules",
+      "to": "node_modules",
+      "filter": ["**/*"]
+    }
+  ],
+  "electronDist": "../electron-v39.8.2-win32-x64",
+  "electronVersion": "39.8.2",
+  "win": {
+    "target": [
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      },
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "requestedExecutionLevel": "asInvoker",
+    "signAndEditExecutable": false
+  },
+  "portable": {
+    "artifactName": "超无穹代码编辑器-${version}-Portable.exe"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "超无穹代码编辑器",
+    "artifactName": "超无穹代码编辑器-${version}-Setup.exe"
+  }
+}

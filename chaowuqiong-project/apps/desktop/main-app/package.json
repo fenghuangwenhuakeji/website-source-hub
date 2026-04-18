@@ -1,0 +1,14 @@
+{
+  "name": "fenghuang-desktop",
+  "productName": "凤煌",
+  "version": "1.0.0",
+  "description": "凤煌桌面客户端 - 主程序",
+  "main": "electron/main.js",
+  "author": "凤煌团队",
+  "license": "MIT",
+  "scripts": {
+    "electron:dev": "set CLOUD_SERVER_ORIGIN=https://fhwhkj.top && electron .",
+    "electron:start": "electron .",
+    "electron:build": "electron-builder --config electron-builder.json --win"
+  }
+}

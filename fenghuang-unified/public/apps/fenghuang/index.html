@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="凤煌创世纪引擎官方静态展示页，聚合主站演示、资料能力与扩展版本入口。">
+    <title>创世纪引擎 V79.0 - 凤凰涅槃</title>
+    <link rel="stylesheet" href="/apps/fenghuang/vendor/fontawesome/css/all.min.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="./style.css">
+    <script src="/apps/fenghuang/vendor/Sortable.min.js" defer></script>
+    <script src="/apps/fenghuang/vendor/showdown.min.js" defer></script>
+</head>
+<body class="theme-cyberpunk">
+    <div class="app-layout">
+        <!-- 纵向侧边栏 -->
+        <aside class="sidebar-nav" id="sidebar-nav">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-atom"></i> 创世纪引擎</h1>
+                <span class="version-tag">V79.1</span>
+            </div>
+            
+            <div class="sidebar-scroll">
+                <div class="nav-section">
+                    <div class="nav-section-title">核心功能</div>
+                    <button class="sidebar-tab active" data-target="pipeline-panel"><i class="fas fa-project-diagram"></i><span>创作流水线</span></button>
+                    <button class="sidebar-tab" data-target="outline-detail-panel"><i class="fas fa-sitemap"></i><span>大纲细纲</span></button>
+                    <button class="sidebar-tab" data-target="writing-desk-panel"><i class="fas fa-feather-alt"></i><span>执笔写作台</span></button>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">智能辅助</div>
+                    <button class="sidebar-tab database-tab" data-target="rag-panel"><i class="fas fa-magnifying-glass-chart"></i><span>RAG上下文</span></button>
+                    <button class="sidebar-tab database-tab" data-target="memory-panel"><i class="fas fa-brain"></i><span>三层记忆</span></button>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">资料库</div>
+                    <button class="sidebar-tab database-tab" data-target="library-panel"><i class="fas fa-book-bookmark"></i><span>图书馆</span></button>
+                    <button class="sidebar-tab database-tab" data-target="vector-panel"><i class="fas fa-atom"></i><span>向量库</span></button>
+                    <button class="sidebar-tab database-tab" data-target="canon-panel"><i class="fas fa-book-open"></i><span>叙事圣典</span></button>
+                    <button class="sidebar-tab database-tab" data-target="character-panel"><i class="fas fa-book-user"></i><span>角色系统</span></button>
+                    <button class="sidebar-tab database-tab" data-target="archetype-panel"><i class="fas fa-theater-masks"></i><span>角色原型</span></button>
+                    <button class="sidebar-tab database-tab" data-target="plot-panel"><i class="fas fa-sitemap"></i><span>情节系统</span></button>
+                    <button class="sidebar-tab database-tab" data-target="emotion-panel"><i class="fas fa-chart-line"></i><span>情绪系统</span></button>
+                </div>
+                
+                <div class="nav-section">
+                    <div class="nav-section-title">扩展版本</div>
+                    <button class="sidebar-tab" data-target="promax-panel" data-iframe="网页promax/Gemini聊天室.html"><i class="fas fa-brain"></i><span>智能创作</span></button>
+                    <button class="sidebar-tab" data-target="short-panel" data-iframe="丐版短篇/index.html"><i class="fas fa-pen-nib"></i><span>短篇写作</span></button>
+                    <button class="sidebar-tab" data-target="card-engine-panel" data-iframe="卡牌引擎/index.html"><i class="fas fa-clone"></i><span>卡牌引擎</span></button>
+                    <button class="sidebar-tab" data-target="v5-50-panel" data-iframe="5.50完全体/index.html"><i class="fas fa-star"></i><span>5.50完全体</span></button>
+                    <button class="sidebar-tab" data-target="fourth-idea-panel" data-iframe="第四种融合思路/index.html"><i class="fas fa-lightbulb"></i><span>第四种融合</span></button>
+                    <button class="sidebar-tab" data-target="gaiban-zhongchangpian-panel" data-iframe="丐版中长篇/index.html"><i class="fas fa-book-reader"></i><span>丐版中长篇</span></button>
+                    <button class="sidebar-tab" data-target="xunhuan-xigang-panel" data-iframe="循环细纲版/index.html"><i class="fas fa-sync-alt"></i><span>循环细纲版</span></button>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="theme-switcher">
+                    <button class="theme-btn active" data-theme="cyberpunk" title="赛博朋克"><i class="fas fa-robot"></i></button>
+                    <button class="theme-btn" data-theme="fantasy" title="西方奇幻"><i class="fas fa-scroll"></i></button>
+                </div>
+                <button class="sidebar-toggle-btn" id="sidebar-toggle-btn" title="折叠侧边栏">
+                    <i class="fas fa-angles-left"></i>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- 主内容区 -->
+        <div class="main-area">
+            <header class="main-header">
+                <div class="header-left">
+                    <button class="mobile-menu-btn" id="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                    <span id="current-page-title">创作流水线</span>
+                </div>
+                <div class="user-auth-section">
+                    <span id="welcome-message">请先登录</span>
+                    <button id="login-btn" class="settings-btn">登录</button>
+                    <button id="register-btn" class="settings-btn">注册</button>
+                    <button id="logout-btn" class="settings-btn hidden">登出</button>
+                    <button id="project-manager-btn" class="settings-btn" title="项目管理"><i class="fas fa-folder-open"></i></button>
+                    <button id="toggle-database-btn" class="settings-btn" title="隐藏资料库"><i class="fas fa-database"></i></button>
+                    <button id="api-settings-btn" class="settings-btn" title="API设置"><i class="fas fa-cog"></i></button>
+                </div>
+            </header>
+            
+            <main class="main-content" id="main-content">
+                <div id="pipeline-panel" class="tab-content active"></div>
+                <div id="outline-detail-panel" class="tab-content document-panel"></div>
+                <div id="writing-desk-panel" class="tab-content"></div>
+                <div id="rag-panel" class="tab-content"></div>
+                <div id="memory-panel" class="tab-content"></div>
+                <div id="library-panel" class="tab-content document-panel"></div>
+                <div id="vector-panel" class="tab-content"></div>
+                <div id="canon-panel" class="tab-content document-panel"></div>
+                <div id="character-panel" class="tab-content document-panel"></div>
+                <div id="archetype-panel" class="tab-content document-panel"></div>
+                <div id="plot-panel" class="tab-content document-panel"></div>
+                <div id="emotion-panel" class="tab-content document-panel"></div>
+                
+                <!-- iframe 面板 - 懒加载 -->
+                <div id="promax-panel" class="tab-content iframe-panel" data-src="网页promax/Gemini聊天室.html"></div>
+                <div id="short-panel" class="tab-content iframe-panel" data-src="丐版短篇/index.html"></div>
+                <div id="card-engine-panel" class="tab-content iframe-panel" data-src="卡牌引擎/index.html"></div>
+                <div id="v5-50-panel" class="tab-content iframe-panel" data-src="5.50完全体/index.html"></div>
+                <div id="fourth-idea-panel" class="tab-content iframe-panel" data-src="第四种融合思路/index.html"></div>
+                <div id="gaiban-zhongchangpian-panel" class="tab-content iframe-panel" data-src="丐版中长篇/index.html"></div>
+                <div id="xunhuan-xigang-panel" class="tab-content iframe-panel" data-src="循环细纲版/index.html"></div>
+            </main>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+    
+    <!-- API 设置模态框 -->
+    <div id="api-modal" class="modal-overlay hidden" style="z-index: 3000;">
+        <div class="modal-content" style="width: 480px; max-width: 90vw; max-height: 90vh; overflow-y: auto; position: relative;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(to right, #3b82f6, #8b5cf6, #ec4899);"></div>
+            <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+                <h3 style="color: var(--text-color); font-size: 1rem; font-weight: bold;" id="api-modal-title">API 配置</h3>
+                <button class="close-btn" style="background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer;" onclick="document.getElementById('api-modal').classList.add('hidden')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <div style="padding: 12px; border-radius: 8px; border: 2px solid rgba(99, 102, 241, 0.3); background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);">
+                    <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <i class="fa-solid fa-circle-info" style="color: #6366f1; margin-top: 2px;"></i>
+                        <div style="font-size: 12px; line-height: 1.5; color: var(--text-color); font-weight: 600;">
+                            <strong>快速开始：</strong>选择服务商后，系统将自动填充默认 API 地址。输入 API Key 后点击"获取模型列表"按钮，即可看到该服务商下所有可用模型。
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-tag" style="color: #6366f1;"></i>
+                        配置名称
+                    </span>
+                    <input id="api-name" style="border-radius: 8px; height: 36px; font-size: 14px; padding: 0 12px; background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-color); width: 100%;" placeholder="例如：GPT-4o 生产环境">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-sliders" style="color: #6366f1;"></i>
+                        服务商
+                    </span>
+                    <select id="api-provider" style="height: 36px; padding: 0 12px; font-size: 14px; font-weight: bold; border-radius: 8px; background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-color); min-width: 200px;" onchange="onApiProviderChange()">
+                        <option value="zhipu">🧠 智谱清言 (Zhipu AI)</option>
+                        <option value="volcark">🌋 火山方舟 (VolcArk)</option>
+                        <option value="volcano_coding">💻 火山Coding Plan</option>
+                        <option value="kimi">🌙 月之暗面 (Kimi)</option>
+                        <option value="minimax">🤖 MiniMax</option>
+                        <option value="deepseek">🔍 深度求索 (DeepSeek)</option>
+                        <option value="baichuan">📚 百川智能</option>
+                        <option value="stepfun">🚀 阶跃星辰</option>
+                        <option value="openai">🟢 OpenAI</option>
+                        <option value="azure">💠 Azure OpenAI</option>
+                        <option value="openai_compat">🔗 OpenAI 兼容 (自定义)</option>
+                    </select>
+                </div>
+                <div id="api-url-group" style="display: none; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-link" style="color: #6366f1;"></i>
+                        API 地址 (Base URL)
+                    </span>
+                    <input id="api-url" style="border-radius: 8px; height: 36px; font-size: 14px; padding: 0 12px; font-family: monospace; background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-color); width: 100%;" placeholder="https://api.openai.com/v1">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-key" style="color: #6366f1;"></i>
+                        API 密钥
+                    </span>
+                    <input id="api-key" style="border-radius: 8px; height: 36px; font-size: 14px; padding: 0 12px; font-family: monospace; background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-color); width: 100%;" type="password" placeholder="sk-...">
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <span style="font-size: 12px; font-weight: bold; color: var(--text-color); display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-box" style="color: #6366f1;"></i>
+                        模型选择
+                    </span>
+                    <div style="display: flex; gap: 8px;">
+                        <select id="api-model-select" style="flex: 1; border-radius: 8px; height: 36px; font-size: 14px; font-weight: bold; padding: 0 12px; background: var(--bg-color); border: 2px solid var(--border-color); color: var(--text-color);">
+                            <option value="">- 请先获取模型列表 -</option>
+                        </select>
+                        <button style="padding: 0 12px; border-radius: 8px; color: white; border: none; background: #6366f1; cursor: pointer;" onclick="fetchApiModels()" title="获取可用模型列表">
+                            <i class="fa-solid fa-rotate"></i>
+                        </button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
+                        <span style="font-size: 10px; white-space: nowrap; color: var(--text-muted);">或自定义模型:</span>
+                        <input id="api-model-custom" style="flex: 1; border-radius: 8px; height: 28px; font-size: 12px; padding: 0 8px; font-family: monospace; background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color);" placeholder="输入自定义模型名称" oninput="onCustomModelInput()">
+                    </div>
+                    <input id="api-model" type="hidden" value="">
+                </div>
+                <input id="api-temp" type="hidden" value="">
+                <input id="api-tokens" type="hidden" value="">
+            </div>
+            <div class="modal-footer" style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                <button style="padding: 10px 24px; border-radius: 8px; color: white; border: none; background: #6b7280; cursor: pointer;" onclick="document.getElementById('api-modal').classList.add('hidden')">取消</button>
+                <button style="padding: 10px 24px; border-radius: 8px; color: white; border: none; font-weight: bold; background: #6366f1; cursor: pointer;" onclick="saveApiConfig()">保存配置</button>
+            </div>
+        </div>
+    </div>
+    <div id="project-manager-modal" class="modal-overlay hidden">
+        <div class="modal-content large">
+            <div class="modal-header"><h2><i class="fas fa-folder-open"></i> 项目管理中心</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body"><div id="project-list-container"></div></div>
+            <div class="modal-footer"><span id="project-status-message"></span><button id="save-current-project-btn" class="action-btn"><i class="fas fa-save"></i> 保存当前工作</button><button id="save-as-new-project-btn" class="settings-btn"><i class="fas fa-plus"></i> 另存为新项目</button></div>
+        </div>
+    </div>
+    <div id="character-editor-modal" class="modal-overlay hidden"></div>
+    <div id="save-as-new-project-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-plus"></i> 另存为新项目</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body"><div class="form-group"><label for="new-project-name-input">请输入新项目的名称:</label><input type="text" id="new-project-name-input" placeholder="例如：我的史诗级作品"></div></div>
+            <div class="modal-footer"><button class="settings-btn close-btn">取消</button><button id="confirm-save-as-new-btn" class="action-btn">确认保存</button></div>
+        </div>
+    </div>
+    <div id="rename-project-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-edit"></i> 重命名项目</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body"><div class="form-group"><label for="rename-project-name-input">请输入新的项目名称:</label><input type="text" id="rename-project-name-input"></div></div>
+            <div class="modal-footer"><button class="settings-btn close-btn">取消</button><button id="confirm-rename-btn" class="action-btn">确认重命名</button></div>
+        </div>
+    </div>
+    <div id="delete-project-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-trash-alt"></i> 删除项目确认</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body"><p>您确定要永久删除项目 "<strong id="delete-project-name-display"></strong>" 吗？此操作无法撤销。</p></div>
+            <div class="modal-footer"><button class="settings-btn close-btn">取消</button><button id="confirm-delete-btn" class="action-btn" style="background-color: var(--error-color);">确认删除</button></div>
+        </div>
+    </div>
+    <div id="overwrite-project-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-save"></i> 保存项目确认</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body"><p>项目 "<strong id="overwrite-project-name-display"></strong>" 已存在。您确定要覆盖它吗？</p></div>
+            <div class="modal-footer"><button class="settings-btn close-btn">取消</button><button id="confirm-overwrite-btn" class="action-btn">确认覆盖</button></div>
+        </div>
+    </div>
+    
+    <!-- 核心依赖 -->
+    <script src="js/core/01_状态管理.js"></script>
+    <script src="js/core/02_通用工具.js"></script>
+    <script src="js/core/03_API接口.js"></script>
+    <script src="js/core/04_用户认证.js"></script>
+    <script src="js/core/05_database.js"></script>
+    <script src="js/core/06_vector_database.js"></script>
+    
+    <!-- 新增智能辅助模块 -->
+    <script src="js/core/rag.js"></script>
+    <script src="js/core/memory.js"></script>
+    <script src="js/core/library.js"></script>
+    
+    <!-- 数据文件 -->
+    <script src="js/data/叙事圣典数据.js"></script>
+    <script src="js/data/角色系统数据.js"></script>
+    <script src="js/data/角色原型数据.js"></script>
+    <script src="js/data/情节系统数据.js"></script>
+    <script src="js/data/情绪系统数据.js"></script>
+    <script src="js/data/世界观数据.js"></script>
+    <script src="js/data/伏笔数据.js"></script>
+    <script src="js/data/地图数据.js"></script>
+    <script src="js/data/prompts.js"></script>
+    
+    <!-- UI 模块 -->
+    <script src="js/modules/project_manager.js"></script>
+    <script src="js/character-manager.js"></script>
+
+    <!-- 数据库面板 -->
+    <script src="js/database_panels/叙事圣典面板.js"></script>
+    <script src="js/database_panels/角色系统面板.js"></script>
+    <script src="js/database_panels/角色原型面板.js"></script>
+    <script src="js/database_panels/情节系统面板.js"></script>
+    <script src="js/database_panels/情绪系统面板.js"></script>
+    <script src="js/database_panels/向量库面板.js"></script>
+    
+    <!-- 新版功能模块 -->
+    <script src="js/modules/pipeline.js"></script>
+    <script src="js/modules/02_大纲写作.js"></script>
+    <script src="js/modules/03_长篇写作.js"></script>
+    <script src="js/modules/module-writing-desk.js"></script>
+    
+    <!-- 主入口 -->
+    <script src="js/main.js"></script>
+</body>
+</html>

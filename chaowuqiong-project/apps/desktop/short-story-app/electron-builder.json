@@ -1,0 +1,48 @@
+{
+  "appId": "com.chaowuqiong.short-story",
+  "productName": "短篇拆书版",
+  "directories": {
+    "output": "dist-release"
+  },
+  "files": [
+    "electron/**/*",
+    "!node_modules"
+  ],
+  "extraResources": [
+    {
+      "from": "app",
+      "to": "app",
+      "filter": ["**/*"]
+    }
+  ],
+  "electronDist": "../electron-v39.8.2-win32-x64",
+  "electronVersion": "39.8.2",
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "electron/assets/icon.ico",
+    "uninstallerIcon": "electron/assets/icon.ico",
+    "installerHeaderIcon": "electron/assets/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "短篇拆书版"
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-Portable.exe"
+  }
+}

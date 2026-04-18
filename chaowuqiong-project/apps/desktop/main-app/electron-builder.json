@@ -1,0 +1,45 @@
+{
+  "appId": "com.fenghuang.desktop",
+  "productName": "凤煌",
+  "directories": {
+    "output": "dist-release"
+  },
+  "files": [
+    "electron/**/*",
+    "dist/**/*",
+    "!node_modules",
+    "!src"
+  ],
+  "electronDist": "../toolchains/electron/electron-v39.8.2-win32-x64",
+  "electronVersion": "39.8.2",
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "electron/assets/icon.ico",
+    "uninstallerIcon": "electron/assets/icon.ico",
+    "installerHeaderIcon": "electron/assets/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "menuCategory": "凤煌",
+    "shortcutName": "打开凤煌",
+    "uninstallDisplayName": "卸载凤煌"
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-Portable.exe"
+  }
+}

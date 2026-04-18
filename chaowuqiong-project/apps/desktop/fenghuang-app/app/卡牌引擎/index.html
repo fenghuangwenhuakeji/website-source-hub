@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创世纪引擎 V115.3 - 博士热修复版</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="theme-cyberpunk">
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1>创世纪引擎</h1>
+                <span class="version">V115.3 - 博士热修复版</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active" data-tab="ai-director"><a><i class="icon fa-solid fa-satellite-dish"></i> AI总监</a></li>
+                <li class="nav-item" data-tab="card-library"><a><i class="icon fa-solid fa-box-archive"></i> 卡牌库</a></li>
+                <li class="nav-item" data-tab="inspiration-room"><a><i class="icon fa-solid fa-lightbulb"></i> 灵感室</a></li>
+                <li class="nav-item" data-tab="deconstruction-room"><a><i class="icon fa-solid fa-atom"></i> 拆解室</a></li>
+                <li class="nav-item" data-tab="character-module"><a><i class="icon fa-solid fa-users"></i> 角色模块</a></li>
+                <li class="nav-item" data-tab="map-system"><a><i class="icon fa-solid fa-map-location-dot"></i> 地图系统</a></li>
+                <li class="nav-item" data-tab="sociology-engine"><a><i class="icon fa-solid fa-sitemap"></i> 派系与社会学</a></li>
+                <li class="nav-item" data-tab="world-simulator"><a><i class="icon fa-solid fa-chart-line"></i> 世界模拟器</a></li>
+                <li class="nav-item" data-tab="outline-module"><a><i class="icon fa-solid fa-scroll"></i> 大纲模块</a></li>
+                <li class="nav-item" data-tab="detailed-outline-module"><a><i class="icon fa-solid fa-feather-pointed"></i> 细纲模块</a></li>
+                <li class="nav-item" data-tab="prose-module"><a><i class="icon fa-solid fa-pen-nib"></i> 正文模块</a></li>
+                <li class="nav-item" data-tab="clue-network"><a><i class="icon fa-solid fa-code-fork"></i> 伏笔网络</a></li>
+                <li class="nav-item" data-tab="multimodal-suite"><a><i class="icon fa-solid fa-cubes"></i> 多模态创生</a></li>
+                <li class="nav-item" data-tab="publishing-suite"><a><i class="icon fa-solid fa-file-export"></i> 导出与发布</a></li>
+                <li class="nav-item" data-tab="collab-marketplace"><a><i class="icon fa-solid fa-handshake"></i> 云协作与市场</a></li>
+            </ul>
+            <div class="sidebar-footer">
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div id="ai-director" class="tab-content active">
+                 <div class="module-header">
+                    <h1><i class="fa-solid fa-satellite-dish"></i> AI总监</h1>
+                    <p>我是您的创世伙伴，随时准备提供建议、预警逻辑冲突、并推演世界的无限可能。</p>
+                </div>
+                <div class="director-layout">
+                    <div class="director-main">
+                        <div class="chat-window" id="director-chat-window"></div>
+                        <div class="chat-input-area">
+                            <textarea id="director-input" placeholder="向AI总监下达指令或进行对话..."></textarea>
+                            <button id="director-send-btn" class="glow-button"><i class="fa-solid fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                    <div class="director-sidebar">
+                        <div class="status-panel widget">
+                            <h3><i class="fa-solid fa-tachometer-alt"></i> 世界状态仪表盘</h3>
+                            <ul>
+                                <li><strong>当前时间:</strong> <span id="status-time">初始纪元 D001</span></li>
+                                <li><strong>角色总数:</strong> <span id="status-chars">0</span></li>
+                                <li><strong>逻辑冲突:</strong> <span id="status-conflicts" class="ok">0</span></li>
+                                <li><strong>信息熵:</strong> <span id="status-entropy" class="ok">低</span></li>
+                            </ul>
+                        </div>
+                        <div class="personality-panel widget">
+                            <h3><i class="fa-solid fa-brain"></i> AI性格设定</h3>
+                            <select id="director-personality">
+                                <option value="logical">逻辑至上 (严谨的分析师)</option>
+                                <option value="creative">创意无限 (天马行空的艺术家)</option>
+                                <option value="balanced" selected>均衡发展 (可靠的副驾驶)</option>
+                                <option value="critical">批判性思维 (尖锐的评论家)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="card-library" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-box-archive"></i> 卡牌库</h1>
+                    <p>这里是您创世至今的所有卡牌。宇宙的每一个概念，都已在此归档。<b>（提示：请从这里将【情节卡】拖拽到【大纲模块】中）</b></p>
+                </div>
+                <div class="card-library-layout">
+                    <div class="card-filters">
+                        <button class="filter-btn active" data-filter="all">所有卡牌</button>
+                        <button class="filter-btn" data-filter="inspiration">灵感卡</button>
+                        <button class="filter-btn" data-filter="character">角色卡</button>
+                        <button class="filter-btn" data-filter="plot">情节卡</button>
+                        <button class="filter-btn" data-filter="location">地点卡</button>
+                        <button class="filter-btn" data-filter="faction">派系卡</button>
+                        <button class="filter-btn" data-filter="clue">线索卡</button>
+                    </div>
+                    <div class="card-library-canvas" id="card-library-canvas">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="inspiration-room" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-lightbulb"></i> 灵感室</h1>
+                    <p>捕捉转瞬即逝的念头与火花。投入任何想法，AI将为您提炼核心元素，生成可用的【灵感卡】。</p>
+                </div>
+                <div class="inspiration-layout">
+                    <div class="inspiration-input-area">
+                        <textarea id="inspiration-input" placeholder="在这里输入您的灵感，可以是一句话、一段描述、一个设定，甚至是一个梦境..."></textarea>
+                        <button id="inspiration-generate-btn" class="glow-button">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> 生成灵感卡
+                        </button>
+                    </div>
+                    <div class="inspiration-canvas" id="inspiration-canvas">
+                    </div>
+                </div>
+            </div>
+
+            <div id="deconstruction-room" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-atom"></i> 拆解室</h1>
+                    <p>叙事基因测序中心。粘贴任何文本，选择精拆策略，引擎将为您逆向工程出其核心的叙事单元。</p>
+                </div>
+                <div class="deconstruction-layout">
+                    <div class="decon-input-panel">
+                        <h3><i class="fa-solid fa-paste"></i> 1. 粘贴源文本</h3>
+                        <textarea id="decon-input-text" placeholder="请在此处粘贴您想要分析的小说章节、剧本、新闻稿等..."></textarea>
+                        
+                        <h3><i class="fa-solid fa-sliders"></i> 2. 选择精拆策略</h3>
+                        <div class="decon-strategy-grid">
+                            <div class="form-group">
+                                <label for="decon-strategy-genre">按题材</label>
+                                <select id="decon-strategy-genre">
+                                    <option value="general" selected>通用模型</option>
+                                    <option value="suspense">悬疑</option>
+                                    <option value="sci-fi">科幻</option>
+                                    <option value="romance">言情</option>
+                                    <option value="fantasy">奇幻</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="decon-strategy-length">按篇幅</label>
+                                <select id="decon-strategy-length">
+                                    <option value="short" selected>短篇/章节</option>
+                                    <option value="long">长篇</option>
+                                    <option value="series">系列</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button id="decon-generate-btn" class="glow-button">
+                            <i class="fa-solid fa-atom"></i> 开始拆解
+                        </button>
+                    </div>
+                    <div class="decon-output-panel">
+                        <h3><i class="fa-solid fa-dna"></i> 3. 拆解产出 (叙事基因)</h3>
+                        <div id="decon-output-loader" class="loader-container hidden">
+                            <div class="loader"></div>
+                            <p>正在进行深度叙事解析，请稍候...</p>
+                        </div>
+                        <div id="decon-output-results" class="decon-results-grid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="character-module" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-users"></i> 角色模块</h1>
+                    <p>自主意识代理(AI Agent)的孕育室。在此深度定制、管理所有角色，并通过关系线构建动态的社会网络。</p>
+                </div>
+                <div class="character-layout">
+                    <div class="char-toolbar">
+                        <button id="char-add-new-btn" class="glow-button"><i class="fa-solid fa-user-plus"></i> 创建新角色</button>
+                        <button id="add-selected-to-blueprint-btn" class="glow-button"><i class="fa-solid fa-paper-plane"></i> 将选中项加入蓝图</button>
+                    </div>
+                    <div id="char-canvas" class="character-deck-grid">
+                    </div>
+                </div>
+            </div>
+
+            <div id="map-system" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-map-location-dot"></i> 地图系统</h1>
+                    <p>动态地理沙盘。上传您的世界地图，将【地点卡】钉在上面，直观地构建您的世界地理。</p>
+                </div>
+                <div class="map-layout">
+                    <div id="map-toolbar" class="map-toolbar">
+                        <button id="map-upload-btn" class="glow-button"><i class="fa-solid fa-image"></i> 上传地图背景</button>
+                        <input type="file" id="map-upload-input" accept="image/*" style="display: none;">
+                    </div>
+                    <div id="map-canvas" class="map-canvas">
+                        <img id="map-background-image" class="map-background" style="display:none;">
+                        </div>
+                </div>
+            </div>
+
+            <div id="sociology-engine" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-sitemap"></i> 派系与社会学引擎</h1>
+                    <p>文明的动力学模型。创建国家、组织、公司等派系，定义他们的政体、文化与科技，观察文明的兴衰荣辱。</p>
+                </div>
+                <div class="sociology-layout">
+                    <div class="sociology-toolbar">
+                        <button id="faction-add-new-btn" class="glow-button"><i class="fa-solid fa-plus-circle"></i> 创建新派系</button>
+                    </div>
+                    <div id="sociology-canvas" class="sociology-canvas">
+                        </div>
+                </div>
+            </div>
+            
+            <div id="world-simulator" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-chart-line"></i> 世界模拟器</h1>
+                    <p>历史的推演引擎。启动模拟器，观察您的世界如何随着时间的流逝而自行演化。</p>
+                </div>
+                <div class="simulator-layout">
+                    <div class="simulator-controls">
+                        <h3><i class="fa-solid fa-gamepad"></i> 控制面板</h3>
+                        <div class="control-group">
+                            <label>模拟器控制</label>
+                            <div class="button-group">
+                                <button id="simulator-start-btn" class="glow-button"><i class="fa-solid fa-play"></i> 开始</button>
+                                <button id="simulator-pause-btn" class="glow-button"><i class="fa-solid fa-pause"></i> 暂停</button>
+                            </div>
+                            <button id="simulator-tick-btn" class="glow-button"><i class="fa-solid fa-forward-step"></i> 手动步进</button>
+                        </div>
+                        <div class="control-group">
+                            <label for="simulator-speed-select">时间流速</label>
+                            <select id="simulator-speed-select">
+                                <option value="3000">慢速 (3秒/天)</option>
+                                <option value="1000" selected>中速 (1秒/天)</option>
+                                <option value="200">快速 (0.2秒/天)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="simulator-log-panel">
+                        <h3><i class="fa-solid fa-book-open"></i> 世界历史年报</h3>
+                        <div id="simulator-log-canvas" class="simulator-log-canvas">
+                            <p>模拟器已就绪，等待您的指令...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="outline-module" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-scroll"></i> 大纲模块</h1>
+                    <p>宿命与混沌的交织。在此搭建故事的骨架，编排关键事件，并为AI的自由意志留下空间。</p>
+                </div>
+                <div class="outline-layout">
+                    <div id="outline-toolbar" class="outline-toolbar">
+                        <label for="narrative-structure-select">选择叙事框架:</label>
+                        <select id="narrative-structure-select">
+                            <option value="three-act" selected>三幕剧</option>
+                            <option value="hero-journey">英雄之旅</option>
+                            <option value="eight-point">八点序列</option>
+                            <option value="free-form">自由创作</option>
+                        </select>
+                    </div>
+                    <div id="outline-canvas" class="outline-canvas-grid">
+                        </div>
+                </div>
+            </div>
+
+            <div id="detailed-outline-module" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-feather-pointed"></i> 细纲模块</h1>
+                    <p>历史的记录官。将每一个【情节卡】展开为具体的【场景卡】，为故事注入血肉与细节。</p>
+                </div>
+                <div id="detailed-outline-canvas" class="detailed-outline-layout">
+                    </div>
+            </div>
+            
+            <div id="prose-module" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-pen-nib"></i> 正文模块</h1>
+                    <p>风格的模仿者与创造者。沉浸式的写作环境，AI总监将在此为您提供草稿生成与潜文本分析。</p>
+                </div>
+                <div id="prose-canvas" class="prose-layout">
+                    <div class="prose-welcome-message">
+                        <h2>欢迎来到作家圣殿</h2>
+                        <p>请先前往【细纲模块】，在任意一个场景卡上点击【 <i class="fa-solid fa-pen-to-square"></i> 撰写】按钮，以载入场景并开始创作。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="clue-network" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-code-fork"></i> 伏笔网络</h1>
+                    <p>因果的编织者。在此可视化地管理所有线索，设定它们的埋藏与揭示条件，并监控整个故事的逻辑严谨度。</p>
+                </div>
+                <div class="clue-network-layout">
+                    <div id="clue-canvas" class="clue-canvas">
+                        </div>
+                    <div id="clue-sidebar" class="clue-sidebar">
+                        <h3><i class="fa-solid fa-info-circle"></i> 线索详情</h3>
+                        <div class="sidebar-content">
+                            <p>请在左侧的网络图中选择一个【线索】节点以查看和编辑其详情。</p>
+                        </div>
+                        <div class="entropy-widget">
+                            <h4><i class="fa-solid fa-chart-pie"></i> 全局信息熵监控</h4>
+                            <p>信息熵衡量了当前故事中“未解之谜”的数量和混乱程度。熵值过高可能意味着伏笔过多而解密太少，故事将难以理解。</p>
+                            <div class="entropy-meter-container">
+                                <div id="entropy-meter-bar" class="entropy-meter-bar" style="width: 100%;"></div>
+                            </div>
+                            <p><strong>当前熵值:</strong> <span id="entropy-value" class="entropy-value ok">0.00</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="multimodal-suite" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-cubes"></i> 多模态创生</h1>
+                    <p>想象的具现化。将您的文本设定转化为概念美术、场景配乐与角色配音。</p>
+                </div>
+                <div class="multimodal-layout">
+                    <div class="multimodal-panel">
+                        <h3><i class="fa-solid fa-palette"></i> 概念美术工坊</h3>
+                        <div class="multimodal-controls">
+                            <select id="multimodal-art-source-select">
+                                <option value="">请选择一个角色或地点卡...</option>
+                            </select>
+                            <button id="multimodal-generate-art-btn" class="glow-button" disabled><i class="fa-solid fa-image"></i> 生成美术概念</button>
+                        </div>
+                        <div id="multimodal-art-gallery" class="multimodal-gallery">
+                            <p class="empty-message">美术作品将在此处展示</p>
+                        </div>
+                    </div>
+                    <div class="multimodal-panel">
+                        <h3><i class="fa-solid fa-music"></i> 场景配乐师</h3>
+                         <div class="multimodal-controls">
+                            <select id="multimodal-music-source-select">
+                                <option value="">请选择一个场景...</option>
+                            </select>
+                            <button id="multimodal-generate-music-btn" class="glow-button" disabled><i class="fa-solid fa-record-vinyl"></i> 生成氛围音乐</button>
+                        </div>
+                        <div id="multimodal-music-player" class="multimodal-player">
+                            <p class="empty-message">生成的音乐将在此处播放</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="publishing-suite" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-file-export"></i> 导出与发布</h1>
+                    <p>文明的封装与分享。将您的创世成果转化为专业作品。</p>
+                </div>
+                <div class="publishing-layout">
+                    <div class="publishing-card">
+                        <h3><i class="fa-solid fa-book-open"></i> 小说手稿</h3>
+                        <p>将所有【正文模块】中的内容按章节顺序汇编，导出一个标准格式的 .txt 文本文稿。</p>
+                        <button id="export-novel-btn" class="glow-button"><i class="fa-solid fa-download"></i> 导出为 .txt</button>
+                    </div>
+                    <div class="publishing-card">
+                        <h3><i class="fa-solid fa-sitemap"></i> 世界维基</h3>
+                        <p>自动将您所有的卡牌（角色、地点、派系等）生成一个带内部链接的静态网站，作为世界的“官方维基百科”。</p>
+                        <button id="export-wiki-btn" class="glow-button"><i class="fa-solid fa-download"></i> 导出为 .html</button>
+                    </div>
+                    <div class="publishing-card">
+                        <h3><i class="fa-solid fa-gamepad"></i> 游戏引擎数据</h3>
+                        <p>将所有卡牌数据导出为一个完整的 .json 文件，包含所有结构化信息，可无缝对接到游戏开发流程中。</p>
+                        <button id="export-json-btn" class="glow-button"><i class="fa-solid fa-download"></i> 导出为 .json</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="collab-marketplace" class="tab-content">
+                <div class="module-header">
+                    <h1><i class="fa-solid fa-handshake"></i> 云协作与市场</h1>
+                    <p>众神的万神殿。将创世从孤独的狂想变为集体的狂欢。</p>
+                </div>
+                <div class="collab-layout">
+                    <div class="collab-main">
+                        <h3><i class="fa-solid fa-rss"></i> 世界动态 (模拟)</h3>
+                        <div id="collab-activity-log" class="collab-log-window"></div>
+                    </div>
+                    <div class="collab-sidebar">
+                        <div class="widget">
+                            <h3><i class="fa-solid fa-users"></i> 在线创世神 (模拟)</h3>
+                            <ul id="collab-user-list" class="collab-users">
+                            </ul>
+                        </div>
+                         <div class="widget">
+                            <h3><i class="fa-solid fa-store"></i> 创世纪市场 (预览)</h3>
+                            <ul class="collab-market-list">
+                                <li><i class="fa-solid fa-cube"></i> 世界观包: [赛博洪荒]</li>
+                                <li><i class="fa-solid fa-user"></i> 角色模板: [高冷恶魔猎手]</li>
+                                <li><i class="fa-solid fa-flag"></i> 派系蓝图: [深空商业联盟]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="char-editor-modal" class="modal-backdrop hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 id="char-editor-title"><i class="fa-solid fa-user-pen"></i> 创建新角色</h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="char-editor-form">
+                    <input type="hidden" id="modal-char-id">
+                    <input type="hidden" id="modal-char-timeline-index" value="0">
+                    <div id="timeline-nav-wrapper">
+                        <div id="timeline-nav-bar"></div>
+                    </div>
+                    <div class="modal-char-grid">
+                        <div class="modal-char-column">
+                            <h4>核心基础</h4>
+                            <div class="form-group"><label for="char-name">姓名 (当前阶段)</label><input type="text" id="char-name"></div>
+                            <div class="form-group"><label for="char-role">角色定位</label><select id="char-role"></select></div>
+                            <div class="form-group"><label for="char-tags">关键词标签 (逗号分隔)</label><input type="text" id="char-tags"></div>
+                            <div class="form-group"><label for="char-summary">一句话简介</label><textarea id="char-summary" rows="3"></textarea></div>
+                        </div>
+                        <div class="modal-char-column">
+                            <h4>内在与心理</h4>
+                            <div class="form-group"><label for="char-personality">性格</label><textarea id="char-personality" rows="4"></textarea></div>
+                            <div class="form-group"><label for="char-motive">人生目标/驱动力</label><textarea id="char-motive" rows="3"></textarea></div>
+                            <div class="form-group"><label for="char-flaws">心理缺陷/原始缺陷</label><textarea id="char-flaws" rows="3"></textarea></div>
+                            <div class="form-group"><label for="char-arc">成长弧光</label><textarea id="char-arc" rows="3"></textarea></div>
+                        </div>
+                        <div class="modal-char-column">
+                            <h4>背景与能力</h4>
+                            <div class="form-group"><label for="char-background">出身/背景故事</label><textarea id="char-background" rows="6"></textarea></div>
+                            <div class="form-group"><label for="char-abilities">能力/独有技能</label><textarea id="char-abilities" rows="6"></textarea></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="char-editor-delete-btn" class="glow-button" style="background-color: #c0392b; margin-right: auto;">删除此角色</button>
+                <button type="button" id="char-editor-save-btn" class="glow-button"><i class="fa-solid fa-save"></i> 保存角色</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="faction-editor-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+             <div class="modal-header">
+                <h2 id="faction-editor-title"><i class="fa-solid fa-flag"></i> 创建新派系</h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="faction-editor-form">
+                    <input type="hidden" id="modal-faction-id">
+                    <div class="form-group">
+                        <label for="faction-name">派系名称</label>
+                        <input type="text" id="faction-name" placeholder="例如：银河帝国">
+                    </div>
+                    <div class="form-group">
+                        <label for="faction-type">派系类型</label>
+                        <select id="faction-type">
+                            <option value="国家">国家</option>
+                            <option value="组织">组织</option>
+                            <option value="公司">公司</option>
+                            <option value="宗教">宗教</option>
+                             <option value="家族">家族</option>
+                        </select>
+                    </div>
+                     <div class="form-group">
+                        <label for="faction-government">政体</label>
+                        <input type="text" id="faction-government" placeholder="例如：君主立宪制、联邦共和国">
+                    </div>
+                     <div class="form-group">
+                        <label for="faction-tech-level">科技水平</label>
+                        <input type="text" id="faction-tech-level" placeholder="例如：中世纪、工业时代、太空歌剧">
+                    </div>
+                    <div class="form-group">
+                        <label for="faction-culture">核心文化 (逗号分隔)</label>
+                        <input type="text" id="faction-culture" placeholder="例如：崇尚荣誉, 科技至上, 艺术气息">
+                    </div>
+                    <div class="form-group">
+                        <label for="faction-description">简要描述</label>
+                        <textarea id="faction-description" rows="4" placeholder="描述该派系的核心特点、目标和影响力。"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="faction-editor-delete-btn" class="glow-button" style="background-color: #c0392b; margin-right: auto;">删除此派系</button>
+                <button type="button" id="faction-editor-save-btn" class="glow-button"><i class="fa-solid fa-save"></i> 保存派系</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="api-settings-modal" class="modal-backdrop hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fa-solid fa-sliders"></i> API 连接设置</h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                 <div class="form-group">
+                    <label for="api-provider-select">选择API服务商</label>
+                    <select id="api-provider-select">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="claude">Anthropic Claude</option> 
+                        <option value="openai">OpenAI</option>
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="siliconflow">硅基流动 (SiliconFlow)</option>
+                        <option value="ollama">Ollama (本地)</option>
+                        <option value="custom">自定义 (兼容OpenAI)</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="api-gemini-model-group">
+                    <label for="api-gemini-model-select">选择 Gemini 模型</label>
+                    <select id="api-gemini-model-select">
+                        <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+                        <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="api-claude-model-group">
+                    <label for="api-claude-model-select">选择 Claude 模型</label>
+                    <select id="api-claude-model-select">
+                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                        <option value="claude-3-sonnet-20240229">Claude 3 Sonnet</option>
+                        <option value="claude-3-haiku-20240307">Claude 3 Haiku</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="api-deepseek-model-group">
+                    <label for="api-deepseek-model-select">选择 DeepSeek 模型</label>
+                    <select id="api-deepseek-model-select">
+                        <option value="deepseek-chat">deepseek-chat</option>
+                        <option value="deepseek-coder">deepseek-coder</option>
+                    </select>
+                </div>
+                <div class="form-group" id="api-key-group">
+                    <label for="api-key-input">API Key</label>
+                    <input type="password" id="api-key-input" placeholder="在此处粘贴您的 API Key">
+                </div>
+                <div class="form-group hidden" id="api-base-url-group">
+                    <label for="api-base-url-input">API Base URL (代理或本地地址)</label>
+                    <input type="text" id="api-base-url-input" placeholder="例如: http://localhost:11434/v1">
+                </div>
+                <div class="form-group hidden" id="api-model-name-group">
+                    <label for="api-model-name-input">模型名称</label>
+                    <input type="text" id="api-model-name-input" placeholder="例如: llama3:latest">
+                </div>
+                <small>您的API密钥将仅保存在您的浏览器本地。</small>
+            </div>
+            <div class="modal-footer">
+                <div id="modal-api-status" class="api-status-indicator"></div>
+                <button id="save-api-settings-modal-btn" class="glow-button"><i class="fa-solid fa-save"></i> 保存并关闭</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="scene-editor-modal" class="modal-backdrop hidden">
+        <div class="modal-content large">
+            <div class="modal-header">
+                <h2 id="scene-editor-title"><i class="fa-solid fa-feather-pointed"></i> 编辑场景</h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="scene-editor-form">
+                    <input type="hidden" id="modal-scene-id">
+                    <div class="scene-editor-grid">
+                        <div class="form-group grid-span-2">
+                            <label for="scene-name">场景名称</label>
+                            <input type="text" id="scene-name" placeholder="例如：主角与导师的初次相遇">
+                        </div>
+                        <div class="form-group">
+                            <label for="scene-time">时间</label>
+                            <input type="text" id="scene-time" placeholder="例如：黄昏、雨夜">
+                        </div>
+                        <div class="form-group">
+                            <label for="scene-location">地点</label>
+                            <input type="text" id="scene-location" placeholder="例如：迷雾森林的深处">
+                        </div>
+                        <div class="form-group grid-span-2">
+                            <label for="scene-characters">出场角色 (逗号分隔)</label>
+                            <input type="text" id="scene-characters" placeholder="例如：阿尔德, 老法师">
+                        </div>
+                        <div class="form-group grid-span-2">
+                            <label for="scene-event">核心事件/情节梗概</label>
+                            <textarea id="scene-event" rows="4" placeholder="简要描述这个场景发生了什么。"></textarea>
+                        </div>
+                        <div class="form-group grid-span-2">
+                            <label for="scene-dialogue">关键对话/台词要点</label>
+                            <textarea id="scene-dialogue" rows="4" placeholder="记录重要的对话内容或要点。"></textarea>
+                        </div>
+                        <div class="form-group grid-span-2">
+                            <label for="scene-purpose">场景目的/功能</label>
+                            <textarea id="scene-purpose" rows="3" placeholder="这个场景在整个故事中的作用是什么？（例如：揭示线索、塑造人物关系、推动情节发展）"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="scene-editor-delete-btn" class="glow-button" style="background-color: #c0392b; margin-right: auto;">删除此场景</button>
+                <button type="button" id="scene-editor-save-btn" class="glow-button"><i class="fa-solid fa-save"></i> 保存场景</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/core/05_api-settings.js"></script>
+    <script src="js/core/04_api-interface.js"></script>
+    <script src="js/core/06_card-manager.js"></script>
+    <script src="js/data/archetypes.js"></script>
+    <script src="js/engine/01_ai-director.js"></script>
+    <script src="js/engine/02_inspiration-room.js"></script>
+    <script src="js/engine/03_card-library.js"></script>
+    <script src="js/engine/04_deconstruction-room.js"></script>
+    <script src="js/engine/05_character-module.js"></script>
+    <script src="js/engine/06_map-system.js"></script>
+    <script src="js/engine/07_sociology-engine.js"></script>
+    <script src="js/engine/08_world-simulator.js"></script>
+    <script src="js/engine/09_outline-module.js"></script>
+    <script src="js/engine/10_detailed-outline-module.js"></script> 
+    <script src="js/engine/11_prose-module.js"></script> 
+    <script src="js/engine/12_clue-network.js"></script> 
+    <script src="js/engine/13_multimodal-suite.js"></script>
+    <script src="js/engine/14_publishing-suite.js"></script>
+    <script src="js/engine/15_collab-marketplace.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

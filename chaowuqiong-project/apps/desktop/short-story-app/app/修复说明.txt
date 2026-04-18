@@ -1,0 +1,16 @@
+=== StoryForge 启动报错修复说明 ===
+
+您遇到的错误：
+"Access to script ... blocked by CORS policy"
+"Uncaught ReferenceError: app is not defined"
+
+原因：
+您是直接双击 index.html 打开的。现代浏览器出于安全考虑，禁止本地文件（file:// 协议）加载 ES6 模块脚本，导致程序核心无法运行。
+
+如何正确启动：
+1. 确保您的电脑已安装 Python（或者 Node.js）。
+2. 双击运行当前目录下的 【start_server.bat】。
+3. 脚本会自动启动一个本地服务器，并自动打开浏览器访问正确地址（http://localhost:8000）。
+
+备选方案：
+如果您使用 VS Code 开发，也可以安装 "Live Server" 插件，右键 index.html 选择 "Open with Live Server"。

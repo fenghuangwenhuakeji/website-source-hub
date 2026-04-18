@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#F8F9FA">
+    <title>AI 写作中心 - 创世旗舰版 (Genesis Archon Ultimate)</title>
+    <link href="assets/css/all.min.css" rel="stylesheet">
+    <link href="css/variables.css" rel="stylesheet">
+    <link href="css/core.css" rel="stylesheet">
+    <link href="css/layout.css" rel="stylesheet">
+    <link href="css/components.css" rel="stylesheet">
+    <link href="css/utility.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="css/mobile.css" rel="stylesheet">
+    <script src="assets/js/marked.min.js"></script>
+    <script src="assets/js/echarts.min.js"></script>
+    <script src="assets/js/jszip.min.js"></script>
+    <script src="assets/js/epub.min.js"></script>
+    <script src="assets/js/pdf.min.js"></script>
+
+    <!-- Tailwind CSS (Local) -->
+    <script src="assets/js/tailwindcss.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                accent: '#6366F1',
+                                dim: '#6B7280',
+                                main: '#1A1A2E',
+                                panel: 'rgba(255, 255, 255, 0.85)',
+                                border: 'rgba(0, 0, 0, 0.08)'
+                            },
+                            fontFamily: {
+                                mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                            },
+                            animation: {
+                                'fade-in': 'fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                                'spin-slow': 'spin 3s linear infinite',
+                            },
+                            keyframes: {
+                                fadeIn: {
+                                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+
+<div id="toast-area" style="z-index: 9999;"></div>
+
+<!-- Mobile Header -->
+<div class="mobile-header" id="mobile-header">
+    <button class="mobile-hamburger" id="mobile-hamburger" onclick="App.toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="mobile-title" id="mobile-title" onclick="App.nav('home')">创世中心</div>
+    <button class="mobile-home-btn" onclick="App.nav('home')">
+        <img src="assets/images/phoenix.png" class="w-6 h-6 object-contain" alt="首页">
+    </button>
+</div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="App.closeMobileMenu()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-item active" onclick="App.nav('home')" title="首页"><img src="assets/images/phoenix.png" class="w-5 h-5 object-contain" alt="创世中心"><span>创世中心</span></div>
+    <div class="sidebar-divider"></div>
+    
+    <div class="sidebar-item" onclick="App.nav('novella_writer')" title="中篇创作"><i class="fa-solid fa-pen-nib"></i><span>中篇创作</span></div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="App.nav('rag_context')" title="RAG上下文"><i class="fa-solid fa-magnifying-glass-chart"></i><span>RAG 上下文</span></div>
+    <div class="sidebar-item" onclick="App.nav('memory_system')" title="三层记忆"><i class="fa-solid fa-brain"></i><span>三层记忆</span></div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-item" onclick="App.nav('reader_center')" title="阅读中心"><i class="fa-solid fa-book-open"></i><span>阅读中心</span></div>
+    <div class="sidebar-divider"></div>
+
+
+    <div style="flex:1"></div>
+    <!-- 本地同步状态指示器 -->
+    <div id="local-sync-indicator" class="items-center gap-1 px-3 py-1.5 cursor-pointer hover:bg-white/5 rounded-lg mx-1" style="display:none" onclick="App.nav('settings');setTimeout(()=>Modules.settings.switchTab('data'),100)" title="本地同步状态"></div>
+    <div class="sidebar-item" onclick="App.nav('settings')" title="设置"><i class="fa-solid fa-gear"></i><span>系统设置</span></div>
+    <div class="sidebar-item" onclick="App.toggleSidebar()" title="折叠/展开" id="sidebar-toggle-btn"><i class="fa-solid fa-angles-left" id="sidebar-toggle-icon"></i><span>收起导航</span></div>
+</div>
+
+<!-- Main Viewport -->
+<div class="viewport" id="viewport">
+    <!-- Dynamic Content -->
+</div>
+
+<!-- Core Scripts -->
+<script src="assets/js/core/db.js"></script>
+<script src="assets/js/core/utils.js"></script>
+<script src="assets/js/core/ui.js"></script>
+<script src="assets/js/core/ai.js"></script>
+
+<!-- Modules -->
+<script src="assets/js/modules/base.js"></script>
+<script src="assets/js/modules/library.js"></script>
+<script src="assets/js/modules/settings.js"></script>
+<script src="assets/js/modules/memory.js"></script>
+<script src="assets/js/modules/rag.js"></script>
+<script src="assets/js/modules/novella_writer.js"></script>
+<script src="assets/js/modules/rag_ui.js"></script>
+<script src="assets/js/modules/memory_ui.js"></script>
+<!-- App Entry -->
+<script src="assets/js/core/app.js"></script>
+
+</body>
+</html>

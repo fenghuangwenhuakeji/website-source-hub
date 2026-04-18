@@ -1,0 +1,13 @@
+{
+  "name": "chaowuqiong-desktop-suite",
+  "version": "1.0.0",
+  "description": "超无穹桌面客户端套装",
+  "scripts": {
+    "build:main": "cd ../frontent/webuiapps && npm run build",
+    "build:admin": "cd ../frontent/web-manage && npm run build",
+    "package": "echo '请使用 build-all.bat 打包'"
+  },
+  "devDependencies": {
+    "esbuild": "^0.27.4"
+  }
+}

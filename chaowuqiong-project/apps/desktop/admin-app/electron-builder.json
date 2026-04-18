@@ -1,0 +1,46 @@
+{
+  "appId": "com.fenghuang.admin",
+  "productName": "凤煌管理后台",
+  "directories": {
+    "output": "dist-release"
+  },
+  "files": [
+    "electron/**/*",
+    "dist/**/*",
+    "!node_modules",
+    "!src"
+  ],
+  "electronDist": "../toolchains/electron/electron-v39.8.2-win32-x64",
+  "electronVersion": "39.8.2",
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "artifactName": "${productName}-${version}-Setup.${ext}",
+    "installerIcon": "electron/assets/icon.ico",
+    "uninstallerIcon": "electron/assets/icon.ico",
+    "installerHeaderIcon": "electron/assets/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "menuCategory": "凤煌",
+    "shortcutName": "打开凤煌管理后台",
+    "uninstallDisplayName": "卸载凤煌管理后台"
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-Portable.exe"
+  }
+}
