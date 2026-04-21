@@ -688,10 +688,10 @@ function jsonFilePlugin(name: string, apiPath: string, filePath: string): Plugin
 
 /** Serve external static files (长篇/短篇/小说漫剧) from disk */
 function staticExternalPlugin(): PluginOption {
-  const projectRoot = resolve(__dirname, '../../');
-  const longBookPath = resolve(projectRoot, '../超无穹/备份3/长篇');
-  const shortBookPath = resolve(projectRoot, '../超无穹/备份3/短篇');
-  const novelComicsPath = resolve(projectRoot, '../超无穹/备份3/小说漫剧');
+  const staticContentRoot = resolve(__dirname, 'static-content');
+  const longBookPath = resolve(staticContentRoot, 'long');
+  const shortBookPath = resolve(staticContentRoot, 'short');
+  const novelComicsPath = resolve(staticContentRoot, 'novel');
 
   return {
     name: 'static-external',

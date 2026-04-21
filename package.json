@@ -1,0 +1,18 @@
+{
+  "name": "website-source-hub",
+  "private": true,
+  "scripts": {
+    "install:website": "npm --prefix apps/website install",
+    "install:client-web": "npm --prefix apps/client-web install",
+    "install:admin-web": "npm --prefix apps/admin-web install",
+    "install:backend": "npm --prefix apps/backend install",
+    "install:desktop-main": "npm --prefix apps/client-desktop install",
+    "install:acceptance:win": "npm run install:website && npm run install:client-web && npm run install:admin-web && npm run install:desktop-main",
+    "build:website": "npm --prefix apps/website run build",
+    "build:client-web": "npm --prefix apps/client-web run build",
+    "build:admin-web": "npm --prefix apps/admin-web run build",
+    "build:backend": "npm --prefix apps/backend run build",
+    "build:desktop-main": "npm --prefix apps/client-desktop run build:win",
+    "build:acceptance:win": "npm run install:acceptance:win && npm run build:website && npm run build:client-web && npm run build:admin-web && npm run build:desktop-main"
+  }
+}

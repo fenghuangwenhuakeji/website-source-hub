@@ -3,8 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "license": "MIT",
-  "description": "超无穹桌面客户端",
-  "main": "electron/main.js",
+  "description": "超无穹主 Web 客户端",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -16,11 +15,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "electron:dev": "vite build && electron .",
-    "electron:start": "electron .",
-    "electron:build": "vite build && electron-builder --config electron-builder.json",
-    "electron:build:win": "vite build && electron-builder --config electron-builder.json --win",
-    "copy-static": "node -e \"const fs=require('fs');const path=require('path');const srcDir=path.join(__dirname,'..','..');const distDir=path.join(__dirname,'dist','static');['long','short','novel'].forEach(dir=>{const src=path.join(srcDir,dir==='long'?'长篇':dir==='short'?'短篇':'小说漫剧');const dest=path.join(distDir,dir);if(fs.existsSync(src)){fs.mkdirSync(dest,{recursive:true});fs.cpSync(src,dest,{recursive:true});console.log('Copied',src,'to',dest);}});console.log('Static files copied successfully!');\""
+    "electron:dev": "npm run build && npm --prefix ../client-desktop run prepare:dist && npm --prefix ../client-desktop run start",
+    "electron:start": "npm --prefix ../client-desktop run prepare:dist && npm --prefix ../client-desktop run start",
+    "electron:build": "npm run build && npm --prefix ../client-desktop run build:win",
+    "electron:build:win": "npm run build && npm --prefix ../client-desktop run build:win",
+    "copy-static": "node -e \"const fs=require('fs');const path=require('path');const srcDir=path.join(__dirname,'static-content');const distDir=path.join(__dirname,'dist','static');[['long','long'],['short','short'],['novel','novel']].forEach(([name,folder])=>{const src=path.join(srcDir,folder);const dest=path.join(distDir,name);if(fs.existsSync(src)){fs.mkdirSync(dest,{recursive:true});fs.cpSync(src,dest,{recursive:true});console.log('Copied',src,'to',dest);}});console.log('Static files copied successfully!');\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
@@ -83,8 +82,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/coverage-istanbul": "^1.6.1",
     "@vitest/coverage-v8": "^1.6.1",
-    "electron": "^33.0.0",
-    "electron-builder": "^25.1.8",
     "happy-dom": "^14.0.0",
     "jsdom": "^25.0.0",
     "sass": "^1.77.8",

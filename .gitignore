@@ -49,6 +49,7 @@ temp/
 staging/
 artifacts/
 coverage/
+*.timestamp-*.mjs
 
 # editors
 .vscode/
