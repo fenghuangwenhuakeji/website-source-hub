@@ -7,12 +7,12 @@
     "install:admin-web": "npm --prefix apps/admin-web ci",
     "install:backend": "npm --prefix apps/backend ci",
     "install:desktop-main": "npm --prefix apps/client-desktop ci",
-    "install:acceptance:win": "npm run install:website && npm run install:client-web && npm run install:admin-web && npm run install:desktop-main",
+    "install:acceptance:win": "npm run install:website && npm run install:client-web && npm run install:admin-web && npm run install:backend && npm run install:desktop-main",
     "build:website": "npm --prefix apps/website run build",
     "build:client-web": "npm --prefix apps/client-web run build",
     "build:admin-web": "npm --prefix apps/admin-web run build",
     "build:backend": "npm --prefix apps/backend run build",
     "build:desktop-main": "npm --prefix apps/client-desktop run build:win",
-    "build:acceptance:win": "npm run install:acceptance:win && npm run build:website && npm run build:client-web && npm run build:admin-web && npm run build:desktop-main"
+    "build:acceptance:win": "npm run install:acceptance:win && npm run build:website && npm run build:client-web && npm run build:admin-web && npm run build:backend && npm run build:desktop-main"
   }
 }

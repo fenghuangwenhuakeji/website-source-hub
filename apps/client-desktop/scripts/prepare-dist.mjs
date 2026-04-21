@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, rmSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -8,6 +8,7 @@ const packageRoot = path.resolve(__dirname, '..');
 const sourceDist = path.resolve(packageRoot, '..', 'client-web', 'dist');
 const targetDist = path.resolve(packageRoot, 'dist');
 const sourceIndex = path.join(sourceDist, 'index.html');
+const acceptanceModeEnabled = process.env.LOCAL_ACCEPTANCE_MODE === '1';
 
 if (!existsSync(sourceIndex)) {
   throw new Error(
@@ -19,4 +20,21 @@ rmSync(targetDist, { recursive: true, force: true });
 mkdirSync(targetDist, { recursive: true });
 cpSync(sourceDist, targetDist, { recursive: true });
 
-console.log(`Prepared desktop bundle from ${sourceDist}`);
+if (acceptanceModeEnabled) {
+  writeFileSync(
+    path.join(targetDist, '.acceptance-mode.json'),
+    JSON.stringify(
+      {
+        enabled: true,
+        source: 'LOCAL_ACCEPTANCE_MODE',
+      },
+      null,
+      2,
+    ),
+    'utf8',
+  );
+}
+
+console.log(
+  `Prepared desktop bundle from ${sourceDist}${acceptanceModeEnabled ? ' (LOCAL_ACCEPTANCE_MODE=1)' : ''}`,
+);

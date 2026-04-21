@@ -1,6 +1,6 @@
 # Website Source Hub
 
-`website-source-hub` is the normalized source repository for the website, web clients, admin UI, backend, desktop shell, shared packages, and cloud bridge references.
+`website-source-hub` is the normalized source repository for the 凤煌平台线: website, user web client, admin UI, backend, desktop shell, shared packages, and cloud bridge references.
 
 ## Repository Layout
 
@@ -40,10 +40,13 @@ The repository exposes these root-level commands:
 - `npm run build:website`
 - `npm run build:client-web`
 - `npm run build:admin-web`
+- `npm run build:backend`
 - `npm run build:desktop-main`
 - `npm run build:acceptance:win`
 
 `build:acceptance:win` is the Windows acceptance path and is designed to run from a fresh clone on `Win-Workstation` under `F:\work`.
+
+For desktop UI acceptance, set `LOCAL_ACCEPTANCE_MODE=1` before running the Windows build chain so the packaged Electron app enters `/main` without needing production login state.
 
 ## Legacy Material
 
@@ -55,3 +58,5 @@ Those directories are intentionally preserved for reference, but they are not pa
 ## Start Here
 
 Read [`SETUP.md`](./SETUP.md) for the Win-Workstation onboarding and build flow.
+
+Read [`docs/source-coverage.md`](./docs/source-coverage.md) for the source-of-truth mapping from `D:\网站部署` and `D:\HTML`.

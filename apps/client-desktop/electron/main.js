@@ -8,6 +8,7 @@ const APP_ID = 'com.fenghuang.desktop';
 const DEFAULT_CLOUD_ORIGIN = 'https://fhwhkj.top';
 const DEFAULT_ENTRY_PATH = '/login';
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
+const ACCEPTANCE_MODE_MARKER = path.join(DIST_DIR, '.acceptance-mode.json');
 
 const MIME_TYPES = {
     '.css': 'text/css; charset=utf-8',
@@ -31,6 +32,14 @@ const MIME_TYPES = {
 let mainWindow = null;
 let localServer = null;
 let localAppOrigin = '';
+
+function isLocalAcceptanceMode() {
+    return process.env.LOCAL_ACCEPTANCE_MODE === '1' || fs.existsSync(ACCEPTANCE_MODE_MARKER);
+}
+
+function getEntryPath() {
+    return isLocalAcceptanceMode() ? '/main?localAcceptance=1' : DEFAULT_ENTRY_PATH;
+}
 
 function resolveCloudOrigin(...candidates) {
     for (const candidate of candidates) {
@@ -262,7 +271,7 @@ function startLocalServer() {
 
 function resolveNavigationUrl(url) {
     try {
-        return new URL(url, `${localAppOrigin}${DEFAULT_ENTRY_PATH}`);
+        return new URL(url, `${localAppOrigin}${getEntryPath()}`);
     } catch {
         return null;
     }
@@ -320,7 +329,7 @@ function createWindow() {
         show: false,
     });
 
-    mainWindow.loadURL(`${localAppOrigin}${DEFAULT_ENTRY_PATH}`);
+    mainWindow.loadURL(`${localAppOrigin}${getEntryPath()}`);
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
         if (!isAppUrl(url)) {

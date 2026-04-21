@@ -20,7 +20,7 @@ The reference acceptance environment is:
 
 ```powershell
 cd F:\work
-git clone https://github.com/a1803186117/website-source-hub.git
+git clone https://github.com/Nike232/website-source-hub.git
 cd .\website-source-hub
 ```
 
@@ -58,13 +58,8 @@ Individual installs:
 npm run install:website
 npm run install:client-web
 npm run install:admin-web
-npm run install:desktop-main
-```
-
-Optional backend install:
-
-```powershell
 npm run install:backend
+npm run install:desktop-main
 ```
 
 ## Acceptance Build Order
@@ -74,11 +69,13 @@ The required Windows acceptance order is fixed:
 1. `npm run build:website`
 2. `npm run build:client-web`
 3. `npm run build:admin-web`
-4. `npm run build:desktop-main`
+4. `npm run build:backend`
+5. `npm run build:desktop-main`
 
 Or run the full acceptance chain:
 
 ```powershell
+set LOCAL_ACCEPTANCE_MODE=1
 npm run build:acceptance:win
 ```
 
@@ -94,14 +91,7 @@ That means:
 
 ## Backend Notes
 
-Backend is part of the normalized repository but not part of the Windows acceptance gate for this round.
-
-To build it separately:
-
-```powershell
-npm run install:backend
-npm run build:backend
-```
+Backend is part of the required Windows acceptance gate for this round.
 
 ## Legacy Notes
 
