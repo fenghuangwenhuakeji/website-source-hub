@@ -5,7 +5,7 @@
     "install:website": "npm --prefix apps/website ci",
     "install:client-web": "npm --prefix apps/client-web ci",
     "install:admin-web": "npm --prefix apps/admin-web ci",
-    "install:backend": "npm --prefix apps/backend ci",
+    "install:backend": "npm --prefix apps/backend install",
     "install:desktop-main": "npm --prefix apps/client-desktop ci",
     "install:acceptance:win": "npm run install:website && npm run install:client-web && npm run install:admin-web && npm run install:backend && npm run install:desktop-main",
     "build:website": "npm --prefix apps/website run build",
