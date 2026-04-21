@@ -22,7 +22,8 @@ secrets/
 *.pfx
 
 # local data
-data/
+/data/
+apps/backend/data/
 *.sqlite
 *.db
 
