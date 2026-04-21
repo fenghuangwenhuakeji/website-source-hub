@@ -10,7 +10,7 @@ call npm run build
 echo.
 echo [2/3] 准备桌面壳资源...
 cd /d "%~dp0..\client-desktop"
-call npm install
+call npm ci
 
 echo.
 echo [3/3] 启动桌面壳...

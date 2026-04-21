@@ -6,7 +6,7 @@ echo ========================================
 echo.
 
 echo [1/5] 检查前端依赖...
-call npm install
+call npm ci
 
 echo.
 echo [2/5] 构建前端...
@@ -18,7 +18,7 @@ cd /d "%~dp0..\client-desktop"
 
 echo.
 echo [4/5] 检查桌面壳依赖...
-call npm install
+call npm ci
 
 echo.
 echo [5/5] 打包Electron应用...
