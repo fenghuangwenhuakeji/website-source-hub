@@ -32,9 +32,6 @@ interface AgentChatPanelProps {
 
 type AgentView = 'chat' | 'agents' | 'skills' | 'import';
 
-const TRAE_MAIN_ROOT = 'D:/网站部署/.trae/skills';
-const TRAE_AGENT_PLUS_ROOT = 'D:/网站部署/Agent+Agent制造机/Agent阵法/.trae/skills';
-
 const formatTime = (value?: string | number | Date) => {
   if (!value) return '--:--';
   const date = new Date(value);
@@ -254,6 +251,42 @@ export default function AgentChatPanel({ className, onOpenApiSettings }: AgentCh
     setStatusText(`已从 ${label} 导入 ${result.agents.length} 个 Agent。`);
   };
 
+  const pickFolder = useCallback(async (): Promise<string | null> => {
+    const electronAPI = (window as any).electronAPI;
+    if (!electronAPI?.selectFolder) {
+      setStatusText('当前环境不支持目录选择，请手动输入本地路径。');
+      return null;
+    }
+
+    const result = await electronAPI.selectFolder();
+    if (result?.canceled || !Array.isArray(result?.filePaths) || !result.filePaths[0]) {
+      return null;
+    }
+
+    return result.filePaths[0];
+  }, []);
+
+  const pickAndImportRoot = useCallback(async (label: string) => {
+    const folderPath = await pickFolder();
+    if (!folderPath) {
+      setStatusText(`未选择 ${label} 目录。`);
+      return;
+    }
+
+    await importFromRoot(folderPath, label);
+  }, [pickFolder, currentAgent, currentConversation]);
+
+  const pickImportFolder = useCallback(async () => {
+    const folderPath = await pickFolder();
+    if (!folderPath) {
+      setStatusText('未选择导入目录。');
+      return;
+    }
+
+    setImportPath(folderPath);
+    setStatusText('已选择导入目录。');
+  }, [pickFolder]);
+
   return (
     <div className={`${styles.panelRoot} ${className ?? ''}`}>
       <header className={styles.panelHeader}>
@@ -336,8 +369,8 @@ export default function AgentChatPanel({ className, onOpenApiSettings }: AgentCh
 
         {activeView === 'import' ? (
           <div className={styles.importView}>
-            <section className={styles.importCard}><div className={styles.sectionHeader}><span><FileText size={16} />文本导入</span></div><p>支持直接粘贴 Agent 文本或 Skill 文档。</p><textarea value={importText} onChange={(event) => setImportText(event.target.value)} rows={12} placeholder="把 Agent 文本粘贴到这里。" /><button type="button" className={styles.primaryButton} onClick={() => void importFromText()}><Upload size={14} />导入文本</button><div className={styles.cardActions}><button type="button" className={styles.secondaryButton} onClick={() => void importFromRoot(TRAE_MAIN_ROOT, 'Trae 主库')}>导入 Trae 主库</button><button type="button" className={styles.secondaryButton} onClick={() => void importFromRoot(TRAE_AGENT_PLUS_ROOT, 'Agent+Agent')}>导入 Agent+Agent</button></div></section>
-            <section className={styles.importCard}><div className={styles.sectionHeader}><span><FolderOpen size={16} />文件夹导入</span></div><p>适合本地 Agent 目录。</p><input value={importPath} onChange={(event) => setImportPath(event.target.value)} placeholder="例如：D:\\AgentLibrary\\writer-agent" /><button type="button" className={styles.primaryButton} onClick={() => void importFromFolder()}><Upload size={14} />导入文件夹</button></section>
+            <section className={styles.importCard}><div className={styles.sectionHeader}><span><FileText size={16} />文本导入</span></div><p>支持直接粘贴 Agent 文本或 Skill 文档。</p><textarea value={importText} onChange={(event) => setImportText(event.target.value)} rows={12} placeholder="把 Agent 文本粘贴到这里。" /><button type="button" className={styles.primaryButton} onClick={() => void importFromText()}><Upload size={14} />导入文本</button><div className={styles.cardActions}><button type="button" className={styles.secondaryButton} onClick={() => void pickAndImportRoot('Trae 主库')}>选择 Trae 目录</button><button type="button" className={styles.secondaryButton} onClick={() => void pickAndImportRoot('Agent 库')}>选择 Agent 目录</button></div></section>
+            <section className={styles.importCard}><div className={styles.sectionHeader}><span><FolderOpen size={16} />文件夹导入</span></div><p>适合本地 Agent 目录，也可以先点“选择目录”自动填入路径。</p><input value={importPath} onChange={(event) => setImportPath(event.target.value)} placeholder="例如：F:\\work\\agents\\writer-agent" /><div className={styles.cardActions}><button type="button" className={styles.secondaryButton} onClick={() => void pickImportFolder()}>选择目录</button><button type="button" className={styles.primaryButton} onClick={() => void importFromFolder()}><Upload size={14} />导入文件夹</button></div></section>
           </div>
         ) : null}
       </section>

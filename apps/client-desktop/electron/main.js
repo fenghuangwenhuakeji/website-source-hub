@@ -1,4 +1,5 @@
-const { app, BrowserWindow, shell, ipcMain } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
+const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
@@ -32,6 +33,180 @@ const MIME_TYPES = {
 let mainWindow = null;
 let localServer = null;
 let localAppOrigin = '';
+const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
+const MAX_DIRECTORY_ENTRIES = 500;
+const SKIPPED_DIRECTORY_NAMES = new Set([
+    '$RECYCLE.BIN',
+    '.git',
+    'Config.Msi',
+    'System Volume Information',
+    'hiberfil.sys',
+    'node_modules',
+    'pagefile.sys',
+    'swapfile.sys',
+]);
+
+function normalizeFsPath(inputPath) {
+    if (typeof inputPath !== 'string') {
+        return '';
+    }
+
+    const normalized = inputPath.replace(/\//g, path.sep).trim();
+    return normalized ? path.normalize(normalized) : '';
+}
+
+function resolveCommandCwd(inputPath) {
+    const normalizedPath = normalizeFsPath(inputPath);
+    if (normalizedPath && fs.existsSync(normalizedPath)) {
+        return normalizedPath;
+    }
+
+    return app.getPath('home');
+}
+
+function stringifyFileContent(content) {
+    if (typeof content === 'string') {
+        return content;
+    }
+
+    if (content == null) {
+        return '';
+    }
+
+    if (Buffer.isBuffer(content)) {
+        return content.toString('utf8');
+    }
+
+    return JSON.stringify(content, null, 2);
+}
+
+function trimCommandOutput(output, limit = 200_000) {
+    if (output.length <= limit) {
+        return output;
+    }
+
+    return output.slice(output.length - limit);
+}
+
+function getAvailableDrives() {
+    if (process.platform !== 'win32') {
+        return [{ name: '/', path: '/', sizeGB: 0, freeGB: 0, usedGB: 0 }];
+    }
+
+    return Array.from({ length: 26 }, (_, index) => String.fromCharCode(65 + index))
+        .map((letter) => `${letter}:\\`)
+        .filter((drivePath) => fs.existsSync(drivePath))
+        .map((drivePath) => ({
+            name: `${drivePath.slice(0, 2)} 驱动器`,
+            path: drivePath,
+            sizeGB: 0,
+            freeGB: 0,
+            usedGB: 0,
+        }));
+}
+
+async function listDirectoryEntries(dirPath) {
+    const normalizedPath = normalizeFsPath(dirPath);
+    const entries = await fs.promises.readdir(normalizedPath, { withFileTypes: true });
+    const visibleEntries = entries
+        .filter((entry) => !entry.name.startsWith('.') && !SKIPPED_DIRECTORY_NAMES.has(entry.name))
+        .sort((left, right) => {
+            if (left.isDirectory() !== right.isDirectory()) {
+                return left.isDirectory() ? -1 : 1;
+            }
+
+            return left.name.localeCompare(right.name, 'zh-CN');
+        })
+        .slice(0, MAX_DIRECTORY_ENTRIES);
+
+    return Promise.all(
+        visibleEntries.map(async (entry) => {
+            const fullPath = path.join(normalizedPath, entry.name);
+            const stats = await fs.promises.stat(fullPath);
+
+            return {
+                name: entry.name,
+                path: fullPath,
+                type: entry.isDirectory() ? 'directory' : 'file',
+                size: stats.size,
+                modified: stats.mtime.toISOString(),
+                modifiedAt: stats.mtime.toISOString(),
+                extension: entry.isFile() ? path.extname(entry.name).slice(1) : undefined,
+            };
+        }),
+    );
+}
+
+function executeSystemCommand(payload = {}) {
+    const command = typeof payload.command === 'string' ? payload.command.trim() : '';
+    const cwd = resolveCommandCwd(payload.cwd);
+    const timeoutMs =
+        typeof payload.timeout === 'number' && Number.isFinite(payload.timeout) && payload.timeout > 0
+            ? Math.min(payload.timeout, DEFAULT_COMMAND_TIMEOUT_MS)
+            : DEFAULT_COMMAND_TIMEOUT_MS;
+
+    if (!command) {
+        return Promise.resolve({ success: true, exitCode: 0, stdout: '', stderr: '' });
+    }
+
+    return new Promise((resolve) => {
+        const isWindows = process.platform === 'win32';
+        const commandFile = isWindows ? 'powershell.exe' : 'sh';
+        const commandArgs = isWindows
+            ? ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', command]
+            : ['-lc', command];
+        const child = spawn(commandFile, commandArgs, {
+            cwd,
+            env: process.env,
+            windowsHide: true,
+        });
+
+        let stdout = '';
+        let stderr = '';
+        let resolved = false;
+
+        const finish = (result) => {
+            if (resolved) {
+                return;
+            }
+
+            resolved = true;
+            clearTimeout(timeoutId);
+            resolve(result);
+        };
+
+        const timeoutId = setTimeout(() => {
+            stderr = trimCommandOutput(`${stderr}${stderr ? '\n' : ''}Command timed out after ${timeoutMs}ms`);
+            child.kill();
+        }, timeoutMs);
+
+        child.stdout.on('data', (chunk) => {
+            stdout = trimCommandOutput(`${stdout}${chunk.toString()}`);
+        });
+
+        child.stderr.on('data', (chunk) => {
+            stderr = trimCommandOutput(`${stderr}${chunk.toString()}`);
+        });
+
+        child.on('error', (error) => {
+            finish({
+                success: false,
+                exitCode: 1,
+                stdout,
+                stderr: trimCommandOutput(`${stderr}${stderr ? '\n' : ''}${error.message}`),
+            });
+        });
+
+        child.on('close', (exitCode) => {
+            finish({
+                success: exitCode === 0,
+                exitCode: typeof exitCode === 'number' ? exitCode : 1,
+                stdout,
+                stderr,
+            });
+        });
+    });
+}
 
 function isLocalAcceptanceMode() {
     return process.env.LOCAL_ACCEPTANCE_MODE === '1' || fs.existsSync(ACCEPTANCE_MODE_MARKER);
@@ -388,11 +563,155 @@ function setupApiHandler() {
     });
 }
 
+function setupDesktopBridgeHandlers() {
+    ipcMain.handle('get-performance-metrics', () => ({
+        memory: process.memoryUsage(),
+        cpu: process.cpuUsage(),
+    }));
+
+    ipcMain.handle('clear-cache', async () => {
+        if (!mainWindow) {
+            return false;
+        }
+
+        await mainWindow.webContents.session.clearCache();
+        return true;
+    });
+
+    ipcMain.handle('select-folder', async () => {
+        if (!mainWindow) {
+            return { canceled: true, filePaths: [] };
+        }
+
+        return dialog.showOpenDialog(mainWindow, {
+            properties: ['openDirectory'],
+            title: '选择文件夹',
+        });
+    });
+
+    ipcMain.handle('read-directory', async (_event, dirPath) => {
+        try {
+            const data = await listDirectoryEntries(dirPath);
+            return { success: true, data };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('read-file', async (_event, filePath) => {
+        try {
+            const normalizedPath = normalizeFsPath(filePath);
+            const content = await fs.promises.readFile(normalizedPath, 'utf8');
+            return {
+                success: true,
+                data: content,
+                content,
+                encoding: 'utf-8',
+                size: Buffer.byteLength(content),
+                name: path.basename(normalizedPath),
+                path: normalizedPath,
+            };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('write-file', async (_event, filePath, content) => {
+        try {
+            const normalizedPath = normalizeFsPath(filePath);
+            await fs.promises.mkdir(path.dirname(normalizedPath), { recursive: true });
+            await fs.promises.writeFile(normalizedPath, stringifyFileContent(content), 'utf8');
+            return { success: true, path: normalizedPath };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('get-drives', async () => ({ success: true, data: getAvailableDrives() }));
+
+    ipcMain.handle('create-file', async (_event, filePath, type) => {
+        try {
+            const normalizedPath = normalizeFsPath(filePath);
+            if (type === 'directory') {
+                await fs.promises.mkdir(normalizedPath, { recursive: true });
+            } else {
+                await fs.promises.mkdir(path.dirname(normalizedPath), { recursive: true });
+                await fs.promises.writeFile(normalizedPath, '', 'utf8');
+            }
+
+            return { success: true, path: normalizedPath };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('delete-file', async (_event, filePath) => {
+        try {
+            const normalizedPath = normalizeFsPath(filePath);
+            const stats = await fs.promises.stat(normalizedPath);
+
+            if (stats.isDirectory()) {
+                await fs.promises.rm(normalizedPath, { recursive: true, force: true });
+            } else {
+                await fs.promises.unlink(normalizedPath);
+            }
+
+            return { success: true };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('rename-file', async (_event, oldPath, newPath) => {
+        try {
+            const normalizedOldPath = normalizeFsPath(oldPath);
+            const normalizedNewPath = normalizeFsPath(newPath);
+            await fs.promises.rename(normalizedOldPath, normalizedNewPath);
+            return { success: true, path: normalizedNewPath };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('move-file', async (_event, sourcePath, targetPath) => {
+        try {
+            const normalizedSourcePath = normalizeFsPath(sourcePath);
+            const normalizedTargetPath = normalizeFsPath(targetPath);
+            await fs.promises.rename(normalizedSourcePath, normalizedTargetPath);
+            return { success: true, path: normalizedTargetPath };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('get-file-stats', async (_event, filePath) => {
+        try {
+            const normalizedPath = normalizeFsPath(filePath);
+            const stats = await fs.promises.stat(normalizedPath);
+            return {
+                success: true,
+                data: {
+                    size: stats.size,
+                    modified: stats.mtime.toISOString(),
+                    created: stats.birthtime.toISOString(),
+                    isDirectory: stats.isDirectory(),
+                    isFile: stats.isFile(),
+                },
+            };
+        } catch (error) {
+            return { success: false, error: error instanceof Error ? error.message : String(error) };
+        }
+    });
+
+    ipcMain.handle('execute-command', async (_event, payload) => executeSystemCommand(payload));
+}
+
 app.whenReady().then(async () => {
     app.setName(APP_NAME);
     app.setAppUserModelId(APP_ID);
 
     setupApiHandler();
+    setupDesktopBridgeHandlers();
 
     try {
         localAppOrigin = await startLocalServer();
