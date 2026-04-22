@@ -59,7 +59,7 @@ That command now packages the desktop in local acceptance mode automatically, so
 ## Legacy Material
 
 - `legacy/desktop-experiments` keeps non-default desktop variants and historical Electron experiments.
-- `legacy/chaowuqiong-project-support` keeps old deployment helpers, SQL references, and support files that are not part of the default build path.
+- `legacy/chaowuqiong-project-support` keeps old deployment helpers, SQL references, support files, and `D:\网站部署` support-material imports that are not part of the default build path.
 
 Those directories are intentionally preserved for reference, but they are not part of the default acceptance build.
 

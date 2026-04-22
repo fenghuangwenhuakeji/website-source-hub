@@ -1,0 +1,26 @@
+========================================
+  超无穹 - 部署验证命令清单
+========================================
+
+服务器: root@115.190.158.182
+密码: gong134135
+
+请复制以下命令到 SSH 终端执行:
+
+---
+命令1 - 查看服务状态:
+ssh root@115.190.158.182 "pm2 list"
+---
+命令2 - 测试API健康检查:
+ssh root@115.190.158.182 "curl -s http://localhost:3001/health"
+---
+命令3 - 确认代码已更新(检查middleware/auth.js):
+ssh root@115.190.158.182 "ls -la /var/www/license-backend/src/middleware/auth.js"
+ssh root@115.190.158.182 "grep -A3 'checkRechargeRequired' /var/www/license-backend/src/middleware/auth.js"
+---
+命令4 - 查看最近日志:
+ssh root@115.190.158.182 "pm2 logs license-backend --lines 50 --nostream"
+---
+命令5 - 数据库修复(如果需要):
+ssh root@115.190.158.182 "mysql -u root -p -e 'RENAME TABLE license_system.points_records TO license_system.points_logs;' 2>/dev/null || echo 'Table may not exist or already renamed'"
+========================================

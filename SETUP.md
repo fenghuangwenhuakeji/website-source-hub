@@ -121,5 +121,6 @@ Backend is part of the required Windows acceptance gate for this round.
 
 - `legacy/desktop-experiments` contains historical desktop variants and should not be used as the default build target.
 - `legacy/chaowuqiong-project-support` contains old deployment scripts, SQL references, and support files kept for reference only.
+- `legacy/chaowuqiong-project-support/source-archive/website-deploy-root-support` also keeps a read-only import of `D:\网站部署` support materials such as `docs`, `ops`, `workspace-audit`, `mobile-adaptation-center`, and selected root scripts/docs.
 - `infra/cloud-bridge/history` may still mention the original `D:\网站部署` paths because those files are historical records.
 - `Nike232/super-wuqiong-app` is an archive/launcher repo for the older super-wuqiong namespace. Do not move required 凤煌 desktop source out of this repository.

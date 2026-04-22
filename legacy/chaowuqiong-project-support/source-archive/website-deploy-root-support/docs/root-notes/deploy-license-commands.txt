@@ -1,0 +1,39 @@
+# 超无穹 license-backend 部署命令
+# 请复制以下命令到 SSH 终端执行
+
+# 1. 上传文件 (在本地执行)
+# scp D:\网站部署\chaowuqiong-project\deploy\license-backend-fixed.zip root@115.190.158.182:/tmp/
+
+# 2. 在服务器执行以下命令:
+
+# === 在服务器上执行 ===
+# 停止旧服务
+pm2 stop license-backend 2>/dev/null || true
+
+# 备份
+cp -r /var/www/license-backend /var/www/license-backend.bak.$(date +%Y%m%d%H%M%S) 2>/dev/null || true
+
+# 解压新版本
+cd /tmp
+rm -rf src package.json 2>/dev/null || true
+tar -xzf license-backend-fixed.zip
+
+# 复制文件
+cp -r src/* /var/www/license-backend/src/
+cp package.json /var/www/license-backend/
+
+# 检查修改的文件
+ls -la /var/www/license-backend/src/middleware/
+ls -la /var/www/license-backend/src/routes/
+
+# 重启服务
+pm2 restart license-backend || pm2 start src/app.js --name license-backend
+
+# 查看状态
+pm2 list
+
+# 查看日志
+pm2 logs license-backend --lines 20
+
+# 测试 API
+curl -s http://localhost:3001/health
