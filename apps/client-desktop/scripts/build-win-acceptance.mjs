@@ -11,21 +11,10 @@ const baseConfigPath = path.join(packageRoot, 'electron-builder.json');
 const acceptanceStamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
 const acceptanceConfigPath = path.join(packageRoot, `.electron-builder.acceptance.${acceptanceStamp}.json`);
 
-const runCommand =
-  process.platform === 'win32'
-    ? (command) => ({
-        file: process.env.ComSpec || 'cmd.exe',
-        args: ['/d', '/s', '/c', command],
-      })
-    : (command) => ({
-        file: 'sh',
-        args: ['-lc', command],
-      });
+const resolveBinary = (command) => (process.platform === 'win32' ? `${command}.cmd` : command);
 
-const spawnCommand = (command) => {
-  const commandSpec = runCommand(command);
-
-  return spawnSync(commandSpec.file, commandSpec.args, {
+const spawnCommand = (file, args) => {
+  return spawnSync(resolveBinary(file), args, {
     cwd: packageRoot,
     env: {
       ...process.env,
@@ -49,7 +38,7 @@ const writeAcceptanceBuilderConfig = () => {
 };
 
 const runBuild = () => {
-  const prepareResult = spawnCommand('npm run prepare:dist');
+  const prepareResult = spawnCommand('npm', ['run', 'prepare:dist']);
   if (prepareResult.status !== 0) {
     return prepareResult;
   }
@@ -57,7 +46,7 @@ const runBuild = () => {
   const acceptanceConfig = writeAcceptanceBuilderConfig();
 
   try {
-    return spawnCommand(`npx electron-builder --config "${acceptanceConfig}" --win`);
+    return spawnCommand('npx', ['electron-builder', '--config', acceptanceConfig, '--win']);
   } finally {
     fs.rmSync(acceptanceConfig, { force: true });
   }
