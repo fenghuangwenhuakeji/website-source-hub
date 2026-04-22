@@ -9,7 +9,8 @@
   "scripts": {
     "prepare:dist": "node ./scripts/prepare-dist.mjs",
     "start": "electron .",
-    "build:win": "npm run prepare:dist && electron-builder --config electron-builder.json --win"
+    "build:win": "npm run prepare:dist && electron-builder --config electron-builder.json --win",
+    "build:win:acceptance": "node ./scripts/build-win-acceptance.mjs"
   },
   "devDependencies": {
     "electron": "^33.2.1",

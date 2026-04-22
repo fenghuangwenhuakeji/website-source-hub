@@ -47,6 +47,7 @@ const DESKTOP_STORAGE_SCOPE: idb.StorageScope = 'desktop-global';
 const LEGACY_DESKTOP_STORAGE_SCOPE: idb.StorageScope = 'session-apps';
 
 const buildStaticBundleRoute = (bundleName: string) => `/access/desktop-bundles/${bundleName}/index.html`;
+const buildStaticAppRoute = (appName: string) => `/apps/${appName}/index.html`;
 
 const normalizeStaticBundleRoute = (route?: string): string | undefined => {
   if (!route) {
@@ -267,7 +268,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'terminal',
-    title: '缁堢',
+    title: '终端',
     description: 'Check command output, runtime status, and system operations.',
     icon: 'Terminal',
     color: '#2d3647',
@@ -279,7 +280,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'settings',
-    title: '绯荤粺璁剧疆',
+    title: '系统设置',
     description: 'Manage desktop appearance, behavior, and runtime preferences.',
     icon: 'Settings',
     color: '#8c919c',
@@ -291,7 +292,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'kui-chat',
-    title: '鑱婂ぉ',
+    title: '聊天',
     description: 'Role chat, context exchange, and message workflow workspace.',
     icon: 'MessageSquare',
     color: '#5f7cff',
@@ -330,7 +331,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'calendar-app',
-    title: '鏃ュ巻',
+    title: '日历',
     description: 'View today, this month, and desktop time rhythm in one panel.',
     icon: 'CalendarDays',
     color: '#4f8cff',
@@ -354,7 +355,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'alarms-app',
-    title: '闂归挓鎻愰啋',
+    title: '闹钟提醒',
     description: 'Manage reminders, checks, schedules, and pending moments.',
     icon: 'AlarmClock',
     color: '#ff7f66',
@@ -366,7 +367,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'notes-app',
-    title: '渚跨',
+    title: '便签',
     description: 'Capture current goals, notes, and desktop reminders.',
     icon: 'StickyNote',
     color: '#6ac8a8',
@@ -378,7 +379,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'opencode-gui',
-    title: 'OpenCode 妗岄潰闂ㄦ埛',
+    title: 'OpenCode 桌面门户',
     description: 'Graphical OpenCode launcher for navigation, preview, and dispatch.',
     icon: 'LayoutGrid',
     color: '#5f8bff',
@@ -417,7 +418,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'webChat',
-    title: 'Agent 鍒涗綔',
+    title: 'Agent Creator',
     description: 'The legacy WebChat entry is now unified into the Agent Creator workspace.',
     icon: 'Bot',
     color: '#7b66ff',
@@ -431,7 +432,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'codeEditor',
-    title: 'Code Editor',
+    title: '代码编辑器',
     description: 'Unified entry for editing, previewing, running, and debugging code.',
     icon: 'Code2',
     color: '#007acc',
@@ -445,7 +446,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'short-book-lab',
-    title: '鐭瘒鎷嗕功',
+    title: '短篇拆书版',
     description: 'Short-book analysis and mobile-adapted reading workspace.',
     icon: 'BookOpen',
     color: '#f3a43b',
@@ -458,8 +459,22 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
     ...createExperienceMetadata('writing', ['writing', 'reading', 'analysis', 'chapter'], 'primary'),
   },
   {
+    id: 'fenghuang',
+    title: '凤煌创作入口',
+    description: '打开凤煌创作套件，进入完整体、短篇、中长篇、卡牌与融合方案。',
+    icon: 'Sparkles',
+    color: '#ff6a3d',
+    width: 1260,
+    height: 840,
+    kind: 'special',
+    runtime: 'static-web',
+    route: buildStaticAppRoute('fenghuang'),
+    tags: ['imported', 'static-web', 'fenghuang', 'creative-suite', 'writing-suite'],
+    ...createExperienceMetadata('fenghuang', ['fenghuang', 'phoenix', 'suite', 'creative', 'writing'], 'primary'),
+  },
+  {
     id: 'fenghuang-early',
-    title: 'Phoenix Early Suite',
+    title: '凤煌早期合集',
     description: 'Static desktop packaging for the early Phoenix creative suite.',
     icon: 'Sparkles',
     color: '#ff6a3d',
@@ -487,7 +502,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'diary',
-    title: '鏃ヨ',
+    title: '日记',
     description: 'Diary and writing space.',
     icon: 'BookOpen',
     color: '#faea5f',

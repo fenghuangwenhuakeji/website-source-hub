@@ -115,7 +115,17 @@ const CORE_DOCK_APP_IDS = [
   'notes-app',
   'diary',
 ] as const;
-const CORE_ENTRY_APP_IDS = ['kui-chat', 'ai-agent', 'settings', 'frontend-converter', 'codeEditor', 'fenghuang-early'] as const;
+const CORE_ENTRY_APP_IDS = [
+  'kui-chat',
+  'ai-agent',
+  'frontend-converter',
+  'codeEditor',
+  'webChat',
+  'short-book-lab',
+  'html-vault',
+  'fenghuang',
+  'settings',
+] as const;
 const MOBILE_HOME_UTILITY_APP_IDS = [
   'frontend-converter',
   'calendar-app',
@@ -131,7 +141,11 @@ const APP_SUMMARY_MAP: Record<string, string> = {
   settings: '调整主题、窗口和移动端偏好。',
   'frontend-converter': '接入源码、本地程序和外部页面。',
   codeEditor: '直接打开编辑器工作台。',
-  'fenghuang-early': '直接打开凤凰早期创世合集。',
+  webChat: '直接打开 Agent Creator 工作区。',
+  'short-book-lab': '进入短篇拆书与分析工作区。',
+  'html-vault': '浏览并打开 HTML Vault 内置应用。',
+  fenghuang: '直接进入凤煌创作套件主入口。',
+  'fenghuang-early': '打开历史保留的凤煌早期合集。',
   finder: '浏览当前桌面里可直接打开的应用。',
   terminal: '查看当前主程序的运行状态。',
   'calendar-app': '按月查看日历和当天日期。',
@@ -1686,7 +1700,7 @@ const FinderPanel: React.FC<{
   }, [activeAppIds, activeSection, apps, finderQuery, importedApps, utilityApps]);
 
   const quickOpenApps = apps.filter((app) =>
-    ['kui-chat', 'ai-agent', 'frontend-converter', 'codeEditor', 'fenghuang-early', 'settings'].includes(app.id),
+    ['kui-chat', 'ai-agent', 'frontend-converter', 'codeEditor', 'webChat', 'short-book-lab', 'html-vault', 'fenghuang', 'settings'].includes(app.id),
   );
 
   return (
@@ -2109,8 +2123,8 @@ const SettingsPanel: React.FC<{
           <button type="button" className={styles.settingsLaunchButton} onClick={() => onOpenApp('codeEditor')}>
             打开编辑器
           </button>
-          <button type="button" className={styles.settingsLaunchButton} onClick={() => onOpenApp('fenghuang-early')}>
-            打开凤凰早期创世合集
+          <button type="button" className={styles.settingsLaunchButton} onClick={() => onOpenApp('fenghuang')}>
+            打开凤煌创作入口
           </button>
         </div>
       </section>
