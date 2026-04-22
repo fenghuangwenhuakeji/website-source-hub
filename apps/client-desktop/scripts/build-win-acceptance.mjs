@@ -11,15 +11,14 @@ const baseConfigPath = path.join(packageRoot, 'electron-builder.json');
 const acceptanceStamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
 const acceptanceConfigPath = path.join(packageRoot, `.electron-builder.acceptance.${acceptanceStamp}.json`);
 
-const resolveBinary = (command) => (process.platform === 'win32' ? `${command}.cmd` : command);
-
 const spawnCommand = (file, args) => {
-  return spawnSync(resolveBinary(file), args, {
+  return spawnSync(file, args, {
     cwd: packageRoot,
     env: {
       ...process.env,
       LOCAL_ACCEPTANCE_MODE: '1',
     },
+    shell: process.platform === 'win32',
     stdio: 'inherit',
   });
 };
