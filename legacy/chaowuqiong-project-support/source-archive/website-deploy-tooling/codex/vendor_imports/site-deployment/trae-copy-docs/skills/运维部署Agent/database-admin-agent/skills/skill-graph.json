@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "database-admin-agent",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "database",
+                          "integrity",
+                          "migration"
+                      ],
+    "specializations":  [
+                            "model data",
+                            "migrate database",
+                            "protect integrity",
+                            "optimize schema"
+                        ]
+}

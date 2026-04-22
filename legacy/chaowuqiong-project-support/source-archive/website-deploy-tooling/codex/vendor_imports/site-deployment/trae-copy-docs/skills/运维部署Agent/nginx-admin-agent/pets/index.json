@@ -1,0 +1,14 @@
+{
+    "parentAgent":  "agent__nginx-admin-agent",
+    "pets":  [
+
+             ],
+    "petLifecycle":  [
+                         "seed",
+                         "train",
+                         "assist",
+                         "graduate",
+                         "hibernate",
+                         "retire"
+                     ]
+}

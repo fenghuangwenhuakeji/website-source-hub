@@ -1,0 +1,18 @@
+{
+    "intents":  [
+                    "deploy safely",
+                    "configure server",
+                    "restore service",
+                    "prepare rollback"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "deployment",
+                     "agent",
+                     "运维部署agent",
+                     "ops",
+                     "stability",
+                     "deployment-agent agent",
+                     "deployment-agent skill"
+                 ]
+}

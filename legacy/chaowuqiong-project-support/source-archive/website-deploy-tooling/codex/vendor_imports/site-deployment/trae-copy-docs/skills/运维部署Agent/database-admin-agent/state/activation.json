@@ -1,0 +1,19 @@
+{
+    "intents":  [
+                    "model data",
+                    "migrate database",
+                    "protect integrity",
+                    "optimize schema"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "database",
+                     "admin",
+                     "agent",
+                     "运维部署agent",
+                     "integrity",
+                     "migration",
+                     "database-admin-agent agent",
+                     "database-admin-agent skill"
+                 ]
+}

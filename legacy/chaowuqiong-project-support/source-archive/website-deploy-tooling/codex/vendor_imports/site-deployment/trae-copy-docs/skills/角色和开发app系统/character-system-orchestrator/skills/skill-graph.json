@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "character-system-orchestrator",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "orchestrator",
+                          "multi-agent",
+                          "coordination"
+                      ],
+    "specializations":  [
+                            "coordinate work",
+                            "route to specialists",
+                            "manage handoffs",
+                            "stabilize project flow"
+                        ]
+}

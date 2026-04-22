@@ -1,0 +1,20 @@
+{
+    "intents":  [
+                    "deploy safely",
+                    "configure server",
+                    "restore service",
+                    "prepare rollback"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "pm2",
+                     "management",
+                     "agent",
+                     "运维部署agent",
+                     "ops",
+                     "deployment",
+                     "stability",
+                     "pm2-management-agent agent",
+                     "pm2-management-agent skill"
+                 ]
+}

@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "vue3-admin-agent",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "frontend",
+                          "ux",
+                          "product"
+                      ],
+    "specializations":  [
+                            "improve UI",
+                            "fix mobile layout",
+                            "refine interaction",
+                            "organize visual hierarchy"
+                        ]
+}

@@ -1,0 +1,19 @@
+{
+    "intents":  [
+                    "implement feature",
+                    "refactor module",
+                    "stabilize backend",
+                    "improve architecture"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "server",
+                     "management",
+                     "运维部署agent",
+                     "engineering",
+                     "service",
+                     "implementation",
+                     "server-management agent",
+                     "server-management skill"
+                 ]
+}

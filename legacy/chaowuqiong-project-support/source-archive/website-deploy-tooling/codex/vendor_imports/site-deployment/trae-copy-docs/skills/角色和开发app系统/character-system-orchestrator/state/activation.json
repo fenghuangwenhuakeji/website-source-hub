@@ -1,0 +1,19 @@
+{
+    "intents":  [
+                    "coordinate work",
+                    "route to specialists",
+                    "manage handoffs",
+                    "stabilize project flow"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "character",
+                     "system",
+                     "orchestrator",
+                     "角色和开发app系统",
+                     "multi-agent",
+                     "coordination",
+                     "character-system-orchestrator agent",
+                     "character-system-orchestrator skill"
+                 ]
+}

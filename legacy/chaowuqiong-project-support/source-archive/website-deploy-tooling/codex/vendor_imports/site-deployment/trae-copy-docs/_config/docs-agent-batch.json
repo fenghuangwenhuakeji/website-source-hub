@@ -1,0 +1,210 @@
+{
+  "batch_name": "文档生成Agent家族",
+  "output_dir": "D:/AIcreateEngine/标准软件开发范式/.trae/skills",
+  "description": "批量创建各类文档格式生成Agent，每个Agent解决一类文档类型的通用模型",
+  "agents": [
+    {
+      "name": "word-document-agent",
+      "type": "skill",
+      "title": "Word文档生成专家",
+      "description": "基于python-docx库生成标准Word文档，支持中文字体、表格、样式格式化",
+      "core_concept": "一键将结构化数据转换为专业Word文档",
+      "features": [
+        "中文字体设置（宋体、黑体、楷体）",
+        "Word表格生成与样式美化",
+        "多级标题与段落格式",
+        "页眉页脚设置",
+        "文档分页控制"
+      ],
+      "priority": "high",
+      "dependencies": ["python-docx"]
+    },
+    {
+      "name": "excel-document-agent",
+      "type": "skill",
+      "title": "Excel文档生成专家",
+      "description": "基于openpyxl库生成专业Excel表格，支持样式、公式、数据透视表",
+      "core_concept": "将数据一键转化为分析级Excel工作簿",
+      "features": [
+        "多工作表创建与管理",
+        "表格样式美化（表头、边框、配色）",
+        "单元格格式设置",
+        "公式与函数支持",
+        "自动列宽调整",
+        "数据筛选与冻结"
+      ],
+      "priority": "high",
+      "dependencies": ["openpyxl"]
+    },
+    {
+      "name": "ppt-document-agent",
+      "type": "skill",
+      "title": "PPT演示文稿生成专家",
+      "description": "基于python-pptx库生成专业PPT，支持图表、动画、多媒体布局",
+      "core_concept": "将内容快速转化为视觉冲击力演示文稿",
+      "features": [
+        "多种幻灯片布局模板",
+        "标题页与内容页设计",
+        "表格与图表插入",
+        "颜色主题设置",
+        "多页面批量生成",
+        "自定义图形与文本框"
+      ],
+      "priority": "high",
+      "dependencies": ["python-pptx"]
+    },
+    {
+      "name": "pdf-document-agent",
+      "type": "skill",
+      "title": "PDF文档生成专家",
+      "description": "基于reportlab库生成高质量PDF，支持中文、排版、目录生成",
+      "core_concept": "将文档内容转化为高质量PDF出版物",
+      "features": [
+        "中文字体嵌入配置",
+        "多页文档生成",
+        "表格与图片混排",
+        "目录与书签生成",
+        "页眉页脚页码",
+        "多栏排版支持"
+      ],
+      "priority": "high",
+      "dependencies": ["reportlab"]
+    },
+    {
+      "name": "markdown-document-agent",
+      "type": "skill",
+      "title": "Markdown文档生成专家",
+      "description": "生成标准Markdown文档，支持GFM扩展、表格、TOC目录",
+      "core_concept": "快速生成简洁美观的Markdown文档",
+      "features": [
+        "多级标题与目录生成",
+        "Markdown表格与列表",
+        "代码块与语法高亮",
+        "链接与图片嵌入",
+        "任务列表与复选框",
+        "GFM扩展语法支持"
+      ],
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "name": "html-document-agent",
+      "type": "skill",
+      "title": "HTML网页文档生成专家",
+      "description": "生成美观的HTML单页文档，支持响应式布局、CSS样式、打印优化",
+      "core_concept": "将内容转化为精美网页展示",
+      "features": [
+        "响应式HTML5布局",
+        "CSS内联样式系统",
+        "表格与列表美化",
+        "导航与锚点跳转",
+        "打印样式优化",
+        "深色模式支持"
+      ],
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "name": "json-config-agent",
+      "type": "skill",
+      "title": "JSON配置生成专家",
+      "description": "生成标准JSON配置文件，支持Schema验证、嵌套结构、注释扩展",
+      "core_concept": "结构化数据一键转为JSON配置",
+      "features": [
+        "标准JSON格式输出",
+        "嵌套结构构建",
+        "中文Unicode处理",
+        "JSON Schema生成",
+        "注释扩展支持",
+        "数据验证与格式化"
+      ],
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "name": "yaml-config-agent",
+      "type": "skill",
+      "title": "YAML配置生成专家",
+      "description": "生成YAML配置文件，支持多文档格式、复杂嵌套、类型标注",
+      "core_concept": "将数据转化为易读的YAML配置",
+      "features": [
+        "标准YAML格式输出",
+        "多文档格式支持",
+        "复杂嵌套结构",
+        "数据类型标注",
+        "注释添加支持",
+        "JSON互转功能"
+      ],
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "name": "sql-database-agent",
+      "type": "skill",
+      "title": "SQL数据库脚本生成专家",
+      "description": "生成MySQL/SQLite数据库建表脚本，支持DDL、索引、约束",
+      "core_concept": "将数据模型转化为可执行SQL脚本",
+      "features": [
+        "CREATE TABLE语句生成",
+        "多种数据类型支持",
+        "主键外键约束设置",
+        "索引与视图创建",
+        "INSERT数据语句",
+        "多数据库兼容（MySQL/PostgreSQL/SQLite）"
+      ],
+      "priority": "medium",
+      "dependencies": []
+    },
+    {
+      "name": "csv-data-agent",
+      "type": "skill",
+      "title": "CSV数据文件生成专家",
+      "description": "生成CSV数据文件，支持多种分隔符、编码转换、数据校验",
+      "core_concept": "表格数据一键导出为CSV格式",
+      "features": [
+        "标准CSV格式生成",
+        "自定义分隔符",
+        "UTF-8/GBK编码支持",
+        "表头自动生成",
+        "数据校验与清洗",
+        "Excel互转功能"
+      ],
+      "priority": "low",
+      "dependencies": []
+    },
+    {
+      "name": "mindmap-agent",
+      "type": "skill",
+      "title": "思维导图XML生成专家",
+      "description": "生成FreeMind/XMind格式思维导图XML，支持多节点、样式、布局",
+      "core_concept": "将内容结构转化为可视化思维导图",
+      "features": [
+        "FreeMind格式输出",
+        "多级节点结构",
+        "节点样式设置（颜色、字体、图标）",
+        "布局方向控制",
+        "XMind格式兼容",
+        "一键导出可视化"
+      ],
+      "priority": "low",
+      "dependencies": []
+    },
+    {
+      "name": "flowchart-agent",
+      "type": "skill",
+      "title": "流程图XML生成专家",
+      "description": "生成Graphviz DOT格式流程图，支持多种图形、样式、布局",
+      "core_concept": "将流程逻辑转化为专业流程图",
+      "features": [
+        "Graphviz DOT格式输出",
+        "多种节点形状（矩形、菱形、椭圆形）",
+        "连线与箭头样式",
+        "子图与集群布局",
+        "颜色主题支持",
+        "PNG/SVG渲染支持"
+      ],
+      "priority": "low",
+      "dependencies": []
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "pm2-management-agent",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "ops",
+                          "deployment",
+                          "stability"
+                      ],
+    "specializations":  [
+                            "deploy safely",
+                            "configure server",
+                            "restore service",
+                            "prepare rollback"
+                        ]
+}

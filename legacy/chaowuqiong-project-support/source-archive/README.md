@@ -9,6 +9,10 @@ This directory keeps source-like support material imported from `D:\网站部署
 - `website-deploy-root-support/workspace-audit`
 - `website-deploy-root-support/mobile-adaptation-center`
 - `website-deploy-root-support/root-files`
+- `website-deploy-tooling/Agent+Agent制造机/Agent阵法/.trae`
+- `website-deploy-tooling/codex` (current source-bearing subset)
+- `website-deploy-tooling/codex-agents`
+- `website-deploy-tooling/codex-migration`
 
 ## Import Rules
 
