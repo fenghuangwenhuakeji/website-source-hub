@@ -1,0 +1,839 @@
+# ==========================================
+# 50个Agent批量配置文件 - 第二批次
+# 分类：商业 | 装修设计 | 3D设计 | 电商 | 网络运营
+# 生成日期：2026-03-18
+# ==========================================
+
+batch_name: "商业与设计Agent生态系统"
+output_dir: ".trae/skills"
+version: "1.0.0"
+author: "AI Assistant"
+description: "包含50个专业Agent的完整生态系统，覆盖商业、装修设计、3D设计、电商、网络运营五大领域"
+
+# ==========================================
+# 第一类：商业类 Agent (10个)
+# ==========================================
+business_agents:
+  category_name: "商业"
+  description: "覆盖商业全链条的专业Agent"
+  
+  agents:
+    # 商业策略类
+    - name: business-strategy-agent
+      type: skill
+      title: "商业战略专家"
+      description: "制定商业战略，分析市场机会，规划企业发展路径"
+      core_concept: "战略决定方向，方向决定成败"
+      features:
+        - "商业模式设计"
+        - "市场机会分析"
+        - "竞争策略制定"
+        - "增长路径规划"
+        - "风险评估"
+      priority: high
+      tags: ["商业", "战略", "规划"]
+
+    - name: market-research-agent
+      type: skill
+      title: "市场调研专家"
+      description: "进行市场调研，分析用户需求，洞察市场趋势"
+      core_concept: "了解市场是成功的第一步"
+      features:
+        - "用户调研设计"
+        - "竞品分析"
+        - "市场规模估算"
+        - "趋势预测"
+        - "报告撰写"
+      priority: high
+      tags: ["调研", "市场", "用户"]
+
+    - name: financial-planning-agent
+      type: skill
+      title: "财务规划专家"
+      description: "制定财务计划，进行预算管理，分析盈利能力"
+      core_concept: "财务健康是企业生存的基础"
+      features:
+        - "财务预算编制"
+        - "现金流管理"
+        - "盈利能力分析"
+        - "成本控制"
+        - "投资决策"
+      priority: high
+      tags: ["财务", "预算", "成本"]
+
+    # 创业支持类
+    - name: startup-advisor-agent
+      type: skill
+      title: "创业顾问专家"
+      description: "为创业者提供全方位指导，从0到1打造企业"
+      core_concept: "陪伴创业者成长"
+      features:
+        - "创业计划书撰写"
+        - "融资方案设计"
+        - "团队组建建议"
+        - "MVP规划"
+        - "路演准备"
+      priority: high
+      tags: ["创业", "融资", "MVP"]
+
+    - name: pitch-deck-agent
+      type: skill
+      title: "路演PPT专家"
+      description: "制作投资人路演PPT，讲好商业故事，获得融资"
+      core_concept: "好的故事打动人心"
+      features:
+        - "PPT结构设计"
+        - "商业故事讲述"
+        - "数据可视化"
+        - "投资人心理分析"
+        - "演讲稿撰写"
+      priority: high
+      tags: ["路演", "PPT", "融资"]
+
+    # 品牌管理类
+    - name: brand-strategy-agent
+      type: skill
+      title: "品牌战略专家"
+      description: "打造品牌形象，建立品牌认知，提升品牌价值"
+      core_concept: "品牌是企业的无形资产"
+      features:
+        - "品牌定位"
+        - "品牌故事"
+        - "视觉识别系统"
+        - "品牌传播策略"
+        - "品牌资产管理"
+      priority: high
+      tags: ["品牌", "战略", "定位"]
+
+    - name: business-plan-agent
+      type: skill
+      title: "商业计划书专家"
+      description: "撰写专业的商业计划书，展示商业价值和发展潜力"
+      core_concept: "计划书是商业的蓝图"
+      features:
+        - "执行摘要撰写"
+        - "市场分析"
+        - "运营计划"
+        - "财务预测"
+        - "风险分析"
+      priority: medium
+      tags: ["商业计划", "BP", "文档"]
+
+    # 法律合规类
+    - name: legal-compliance-agent
+      type: skill
+      title: "法律合规专家"
+      description: "提供法律咨询，确保合规经营，规避法律风险"
+      core_concept: "合规经营，行稳致远"
+      features:
+        - "合同审查"
+        - "知识产权保护"
+        - "合规检查"
+        - "风险评估"
+        - "政策解读"
+      priority: medium
+      tags: ["法律", "合规", "合同"]
+
+    # 人力资源类
+    - name: hr-management-agent
+      type: skill
+      title: "人力资源专家"
+      description: "管理人力资源，招聘人才，建设企业文化"
+      core_concept: "人才是企业最宝贵的资产"
+      features:
+        - "招聘策略"
+        - "薪酬体系设计"
+        - "绩效考核"
+        - "培训发展"
+        - "企业文化"
+      priority: medium
+      tags: ["人力资源", "招聘", "绩效"]
+
+    # 项目管理类
+    - name: project-management-agent
+      type: skill
+      title: "项目管理专家"
+      description: "管理商业项目，确保按时按质完成目标"
+      core_concept: "优秀的项目管理确保成功交付"
+      features:
+        - "项目规划"
+        - "进度管理"
+        - "资源分配"
+        - "风险控制"
+        - "团队协作"
+      priority: medium
+      tags: ["项目管理", "PM", "交付"]
+
+# ==========================================
+# 第二类：装修设计类 Agent (10个)
+# ==========================================
+interior_design_agents:
+  category_name: "装修设计"
+  description: "覆盖室内装修设计的专业Agent"
+
+  agents:
+    # 空间规划类
+    - name: space-planning-agent
+      type: skill
+      title: "空间规划专家"
+      description: "优化空间布局，提高空间利用率，创造舒适环境"
+      core_concept: "空间是生活的容器"
+      features:
+        - "户型分析"
+        - "功能分区"
+        - "动线设计"
+        - "收纳规划"
+        - "空间改造"
+      priority: high
+      tags: ["空间", "规划", "布局"]
+
+    - name: interior-style-agent
+      type: skill
+      title: "室内风格专家"
+      description: "确定室内设计风格，打造独特的空间氛围"
+      core_concept: "风格是空间的灵魂"
+      features:
+        - "风格定位"
+        - "色彩搭配"
+        - "材质选择"
+        - "软装搭配"
+        - "风格统一"
+      priority: high
+      tags: ["风格", "设计", "美学"]
+
+    - name: lighting-design-agent
+      type: skill
+      title: "灯光设计专家"
+      description: "设计照明方案，营造氛围，满足功能需求"
+      core_concept: "光是空间的魔术师"
+      features:
+        - "照明规划"
+        - "氛围营造"
+        - "灯具选型"
+        - "智能控制"
+        - "节能设计"
+      priority: medium
+      tags: ["灯光", "照明", "氛围"]
+
+    # 材料工艺类
+    - name: material-selection-agent
+      type: skill
+      title: "材料选型专家"
+      description: "选择合适的装修材料，平衡美观、耐用和成本"
+      core_concept: "材料是品质的基石"
+      features:
+        - "材料推荐"
+        - "性价比分析"
+        - "环保评估"
+        - "搭配建议"
+        - "采购指导"
+      priority: high
+      tags: ["材料", "选材", "环保"]
+
+    - name: renovation-budget-agent
+      type: skill
+      title: "装修预算专家"
+      description: "制定装修预算，控制成本，避免超支"
+      core_concept: "预算控制是装修的关键"
+      features:
+        - "预算编制"
+        - "成本分析"
+        - "报价审核"
+        - "省钱技巧"
+        - "预算调整"
+      priority: high
+      tags: ["预算", "成本", "省钱"]
+
+    # 施工管理类
+    - name: construction-management-agent
+      type: skill
+      title: "施工管理专家"
+      description: "管理装修施工，确保质量和进度"
+      core_concept: "好的施工是设计的保障"
+      features:
+        - "施工计划"
+        - "质量监控"
+        - "进度管理"
+        - "验收标准"
+        - "问题处理"
+      priority: high
+      tags: ["施工", "管理", "质量"]
+
+    - name: feng-shui-agent
+      type: skill
+      title: "风水布局专家"
+      description: "结合风水原理，优化空间布局，提升居住品质"
+      core_concept: "天人合一，和谐共生"
+      features:
+        - "风水分析"
+        - "布局优化"
+        - "吉祥物建议"
+        - "禁忌规避"
+        - "能量流动"
+      priority: low
+      tags: ["风水", "布局", "传统"]
+
+    # 软装设计类
+    - name: soft-decoration-agent
+      type: skill
+      title: "软装设计专家"
+      description: "设计软装方案，搭配家具、布艺、装饰品"
+      core_concept: "软装是空间的点睛之笔"
+      features:
+        - "家具搭配"
+        - "布艺选择"
+        - "装饰品陈列"
+        - "绿植配置"
+        - "整体协调"
+      priority: medium
+      tags: ["软装", "搭配", "装饰"]
+
+    - name: kitchen-bath-design-agent
+      type: skill
+      title: "厨卫设计专家"
+      description: "专业设计厨房和卫生间，注重功能性和实用性"
+      core_concept: "厨卫是家的功能核心"
+      features:
+        - "厨房布局"
+        - "卫生间规划"
+        - "水电设计"
+        - "收纳方案"
+        - "防水处理"
+      priority: high
+      tags: ["厨房", "卫生间", "功能"]
+
+    - name: smart-home-agent
+      type: skill
+      title: "智能家居专家"
+      description: "设计智能家居系统，提升生活便利性和舒适度"
+      core_concept: "科技让生活更美好"
+      features:
+        - "智能方案设计"
+        - "设备选型"
+        - "场景配置"
+        - "系统集成"
+        - "安全隐私"
+      priority: medium
+      tags: ["智能家居", "IoT", "科技"]
+
+# ==========================================
+# 第三类：3D设计类 Agent (10个)
+# ==========================================
+3d_design_agents:
+  category_name: "3D设计"
+  description: "覆盖三维设计和可视化的专业Agent"
+
+  agents:
+    # 建模类
+    - name: 3d-modeling-agent
+      type: skill
+      title: "3D建模专家"
+      description: "创建三维模型，包括硬表面、有机体、建筑等"
+      core_concept: "在虚拟中创造真实"
+      features:
+        - "多边形建模"
+        - "曲面建模"
+        - "参数化建模"
+        - "扫描数据处理"
+        - "模型优化"
+      priority: high
+      tags: ["建模", "3D", "几何"]
+
+    - name: architectural-visualization-agent
+      type: skill
+      title: "建筑可视化专家"
+      description: "制作建筑效果图和漫游动画，展示设计方案"
+      core_concept: "让设计提前呈现"
+      features:
+        - "建筑建模"
+        - "材质贴图"
+        - "灯光渲染"
+        - "环境布置"
+        - "动画制作"
+      priority: high
+      tags: ["建筑", "可视化", "渲染"]
+
+    - name: product-visualization-agent
+      type: skill
+      title: "产品可视化专家"
+      description: "制作产品渲染图，用于展示和营销"
+      core_concept: "让产品栩栩如生"
+      features:
+        - "产品建模"
+        - "材质表现"
+        - "场景搭建"
+        - "渲染输出"
+        - "后期处理"
+      priority: high
+      tags: ["产品", "渲染", "展示"]
+
+    # 渲染类
+    - name: rendering-expert-agent
+      type: skill
+      title: "渲染技术专家"
+      description: "掌握各种渲染技术，输出高质量图像"
+      core_concept: "渲染是视觉的魔法"
+      features:
+        - "渲染器选择"
+        - "材质调节"
+        - "灯光设置"
+        - "渲染优化"
+        - "后期合成"
+      priority: high
+      tags: ["渲染", "光照", "材质"]
+
+    - name: animation-agent
+      type: skill
+      title: "动画制作专家"
+      description: "制作三维动画，包括角色动画、产品动画、建筑动画"
+      core_concept: "让静态变为动态"
+      features:
+        - "关键帧动画"
+        - "物理模拟"
+        - "角色绑定"
+        - "相机动画"
+        - "特效制作"
+      priority: medium
+      tags: ["动画", "运动", "特效"]
+
+    # 特效类
+    - name: vfx-design-agent
+      type: skill
+      title: "视觉特效专家"
+      description: "制作视觉特效，增强视觉冲击力和表现力"
+      core_concept: "特效是视觉的盛宴"
+      features:
+        - "粒子系统"
+        - "流体模拟"
+        - "破碎效果"
+        - "光影特效"
+        - "合成技术"
+      priority: medium
+      tags: ["特效", "VFX", "粒子"]
+
+    # VR/AR类
+    - name: vr-ar-design-agent
+      type: skill
+      title: "VR/AR设计专家"
+      description: "设计虚拟现实和增强现实内容，创造沉浸式体验"
+      core_concept: "打破虚拟与现实的边界"
+      features:
+        - "VR场景设计"
+        - "AR内容制作"
+        - "交互设计"
+        - "性能优化"
+        - "设备适配"
+      priority: medium
+      tags: ["VR", "AR", "沉浸式"]
+
+    - name: character-design-3d-agent
+      type: skill
+      title: "3D角色设计专家"
+      description: "设计三维角色，从概念到完整模型"
+      core_concept: "赋予角色生命"
+      features:
+        - "角色概念"
+        - "雕刻建模"
+        - "贴图绘制"
+        - "骨骼绑定"
+        - "表情制作"
+      priority: medium
+      tags: ["角色", "人物", "生物"]
+
+    - name: environment-design-agent
+      type: skill
+      title: "场景环境专家"
+      description: "设计三维场景环境，营造氛围和世界观"
+      core_concept: "环境是故事的舞台"
+      features:
+        - "地形制作"
+        - "植被布置"
+        - "天气系统"
+        - "氛围营造"
+        - "世界构建"
+      priority: medium
+      tags: ["场景", "环境", "世界"]
+
+    - name: 3d-printing-agent
+      type: skill
+      title: "3D打印专家"
+      description: "优化模型用于3D打印，确保打印成功"
+      core_concept: "从虚拟到现实的桥梁"
+      features:
+        - "模型检查"
+        - "支撑设计"
+        - "切片优化"
+        - "材料选择"
+        - "后处理指导"
+      priority: low
+      tags: ["3D打印", "制造", "原型"]
+
+# ==========================================
+# 第四类：电商类 Agent (10个)
+# ==========================================
+ecommerce_agents:
+  category_name: "电商"
+  description: "覆盖电商运营全流程的专业Agent"
+
+  agents:
+    # 店铺运营类
+    - name: store-operation-agent
+      type: skill
+      title: "店铺运营专家"
+      description: "运营电商店铺，提升销量和用户体验"
+      core_concept: "运营是电商的核心"
+      features:
+        - "店铺装修"
+        - "商品上架"
+        - "活动策划"
+        - "数据分析"
+        - "用户运营"
+      priority: high
+      tags: ["运营", "店铺", "销量"]
+
+    - name: product-photography-agent
+      type: skill
+      title: "产品摄影专家"
+      description: "拍摄产品图片，提升商品展示效果"
+      core_concept: "好的图片是最好的销售员"
+      features:
+        - "拍摄方案"
+        - "布光技巧"
+        - "场景搭建"
+        - "后期修图"
+        - "主图设计"
+      priority: high
+      tags: ["摄影", "产品", "图片"]
+
+    - name: product-description-agent
+      type: skill
+      title: "产品文案专家"
+      description: "撰写产品描述，提升转化率和搜索排名"
+      core_concept: "文案是产品的声音"
+      features:
+        - "标题优化"
+        - "卖点提炼"
+        - "详情页撰写"
+        - "SEO优化"
+        - "情感营销"
+      priority: high
+      tags: ["文案", "产品", "转化"]
+
+    # 营销推广类
+    - name: ecommerce-marketing-agent
+      type: skill
+      title: "电商营销专家"
+      description: "制定电商营销策略，提升品牌曝光和销量"
+      core_concept: "营销是增长的引擎"
+      features:
+        - "推广策略"
+        - "广告投放"
+        - "内容营销"
+        - "KOL合作"
+        - "活动运营"
+      priority: high
+      tags: ["营销", "推广", "增长"]
+
+    - name: livestream-commerce-agent
+      type: skill
+      title: "直播带货专家"
+      description: "策划和执行直播带货，提升销售业绩"
+      core_concept: "直播是电商的新风口"
+      features:
+        - "直播策划"
+        - "脚本撰写"
+        - "互动技巧"
+        - "选品策略"
+        - "数据分析"
+      priority: high
+      tags: ["直播", "带货", "销售"]
+
+    # 客服售后类
+    - name: customer-service-agent
+      type: skill
+      title: "电商客服专家"
+      description: "提供专业的客户服务，提升满意度和复购率"
+      core_concept: "服务是最好的营销"
+      features:
+        - "话术设计"
+        - "问题处理"
+        - "售后管理"
+        - "投诉处理"
+        - "客户关系"
+      priority: medium
+      tags: ["客服", "服务", "满意度"]
+
+    # 供应链管理类
+    - name: supply-chain-agent
+      type: skill
+      title: "供应链专家"
+      description: "管理供应链，确保货源稳定和成本控制"
+      core_concept: "供应链是电商的命脉"
+      features:
+        - "供应商管理"
+        - "库存优化"
+        - "物流协调"
+        - "成本控制"
+        - "风险管理"
+      priority: medium
+      tags: ["供应链", "库存", "物流"]
+
+    - name: pricing-strategy-agent
+      type: skill
+      title: "定价策略专家"
+      description: "制定定价策略，平衡利润和竞争力"
+      core_concept: "定价是艺术也是科学"
+      features:
+        - "成本分析"
+        - "竞品定价"
+        - "促销策略"
+        - "动态定价"
+        - "利润优化"
+      priority: medium
+      tags: ["定价", "策略", "利润"]
+
+    - name: review-management-agent
+      type: skill
+      title: "评价管理专家"
+      description: "管理用户评价，维护店铺声誉"
+      core_concept: "口碑是最好的广告"
+      features:
+        - "评价监控"
+        - "差评处理"
+        - "好评引导"
+        - "口碑营销"
+        - "信誉维护"
+      priority: medium
+      tags: ["评价", "口碑", "信誉"]
+
+    - name: crossborder-ecommerce-agent
+      type: skill
+      title: "跨境电商专家"
+      description: "运营跨境电商，拓展海外市场"
+      core_concept: "让商品走向世界"
+      features:
+        - "平台选择"
+        - "海外物流"
+        - "关税合规"
+        - "本地化"
+        - "汇率管理"
+      priority: medium
+      tags: ["跨境", "海外", "出口"]
+
+# ==========================================
+# 第五类：网络运营类 Agent (10个)
+# ==========================================
+digital_operation_agents:
+  category_name: "网络运营"
+  description: "覆盖数字营销和网络运营的专业Agent"
+
+  agents:
+    # 内容运营类
+    - name: content-operation-agent
+      type: skill
+      title: "内容运营专家"
+      description: "策划和运营内容，吸引和留住用户"
+      core_concept: "内容为王"
+      features:
+        - "内容策划"
+        - "选题规划"
+        - "内容创作"
+        - "发布策略"
+        - "数据分析"
+      priority: high
+      tags: ["内容", "运营", "创作"]
+
+    - name: social-media-agent
+      type: skill
+      title: "社交媒体专家"
+      description: "运营社交媒体账号，建立品牌影响力"
+      core_concept: "社交是连接用户的桥梁"
+      features:
+        - "平台运营"
+        - "内容发布"
+        - "粉丝互动"
+        - "话题营销"
+        - "舆情监控"
+      priority: high
+      tags: ["社交", "媒体", "品牌"]
+
+    - name: short-video-agent
+      type: skill
+      title: "短视频运营专家"
+      description: "制作和运营短视频内容，获取流量和关注"
+      core_concept: "短视频是流量的新入口"
+      features:
+        - "选题策划"
+        - "脚本撰写"
+        - "拍摄剪辑"
+        - "发布优化"
+        - "数据分析"
+      priority: high
+      tags: ["短视频", "抖音", "流量"]
+
+    # SEO/SEM类
+    - name: seo-optimization-agent
+      type: skill
+      title: "SEO优化专家"
+      description: "优化网站SEO，提升搜索排名和自然流量"
+      core_concept: "搜索是获取流量的基础"
+      features:
+        - "关键词研究"
+        - "站内优化"
+        - "内容优化"
+        - "外链建设"
+        - "排名监控"
+      priority: high
+      tags: ["SEO", "搜索", "排名"]
+
+    - name: sem-advertising-agent
+      type: skill
+      title: "SEM投放专家"
+      description: "管理搜索引擎广告投放，获取精准流量"
+      core_concept: "精准投放，高效转化"
+      features:
+        - "账户搭建"
+        - "关键词策略"
+        - "创意优化"
+        - "出价策略"
+        - "效果分析"
+      priority: high
+      tags: ["SEM", "广告", "投放"]
+
+    # 数据分析类
+    - name: data-analytics-agent
+      type: skill
+      title: "数据分析专家"
+      description: "分析运营数据，提供决策支持和优化建议"
+      core_concept: "数据驱动运营决策"
+      features:
+        - "数据收集"
+        - "指标分析"
+        - "用户画像"
+        - "转化漏斗"
+        - "报告生成"
+      priority: high
+      tags: ["数据", "分析", "洞察"]
+
+    - name: user-growth-agent
+      type: skill
+      title: "用户增长专家"
+      description: "制定增长策略，获取和留存用户"
+      core_concept: "增长是运营的核心目标"
+      features:
+        - "增长模型"
+        - "获客渠道"
+        - "激活策略"
+        - "留存优化"
+        - "裂变传播"
+      priority: high
+      tags: ["增长", "获客", "留存"]
+
+    # 社群运营类
+    - name: community-operation-agent
+      type: skill
+      title: "社群运营专家"
+      description: "运营用户社群，建立私域流量池"
+      core_concept: "社群是用户的归属地"
+      features:
+        - "社群搭建"
+        - "内容运营"
+        - "活动策划"
+        - "用户分层"
+        - "变现转化"
+      priority: medium
+      tags: ["社群", "私域", "用户"]
+
+    - name: influencer-marketing-agent
+      type: skill
+      title: "达人营销专家"
+      description: "合作KOL/KOC，扩大品牌影响力和销售"
+      core_concept: "借力达人，放大声量"
+      features:
+        - "达人筛选"
+        - "合作洽谈"
+        - "内容把控"
+        - "效果评估"
+        - "长期合作"
+      priority: medium
+      tags: ["达人", "KOL", "合作"]
+
+    - name: crisis-management-agent
+      type: skill
+      title: "危机公关专家"
+      description: "处理网络危机，维护品牌形象"
+      core_concept: "危机是考验，也是机会"
+      features:
+        - "舆情监测"
+        - "危机预警"
+        - "应对策略"
+        - "声明撰写"
+        - "形象修复"
+      priority: medium
+      tags: ["危机", "公关", "舆情"]
+
+# ==========================================
+# 元数据配置
+# ==========================================
+metadata:
+  total_agents: 50
+  categories:
+    - name: "商业"
+      count: 10
+      color: "#9b59b6"
+    - name: "装修设计"
+      count: 10
+      color: "#e67e22"
+    - name: "3D设计"
+      count: 10
+      color: "#1abc9c"
+    - name: "电商"
+      count: 10
+      color: "#f39c12"
+    - name: "网络运营"
+      count: 10
+      color: "#3498db"
+  
+  generation_settings:
+    parallel: true
+    max_concurrent: 10
+    retry_on_failure: true
+    generate_index: true
+    generate_readme: true
+  
+  quality_checks:
+    - "文档完整性"
+    - "命名规范性"
+    - "内容质量"
+    - "标签准确性"
+    - "优先级合理性"
+
+# ==========================================
+# 生成后操作
+# ==========================================
+post_generation:
+  actions:
+    - type: "generate_index"
+      filename: "AGENTS_INDEX.md"
+      description: "生成Agent目录索引"
+    
+    - type: "generate_category_readme"
+      description: "为每个类别生成README"
+    
+    - type: "generate_dependency_graph"
+      description: "生成Agent依赖关系图"
+    
+    - type: "validation_report"
+      description: "生成验证报告"
+
+# ==========================================
+# 使用说明
+# ==========================================
+usage:
+  command: "使用 batch-agent-creator skill 加载此配置文件"
+  example: "根据 business-agents-config.yaml 批量创建所有Agent"
+  notes:
+    - "确保已安装 batch-agent-creator skill"
+    - "配置文件支持YAML和JSON格式"
+    - "可以分批次生成，按优先级筛选"
+    - "生成后可进行质量检查和调整"

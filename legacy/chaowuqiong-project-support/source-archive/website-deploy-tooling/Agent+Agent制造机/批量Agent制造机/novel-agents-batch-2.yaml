@@ -1,0 +1,1129 @@
+# 小说创作Agent配置 - 批次2: 角色塑造 (100个)
+# 基于融合润色进阶版进化.md - 三界炼心法
+
+batch_info:
+  name: "novel-agents-batch-02"
+  description: "小说角色塑造专家Agent"
+  total_agents: 100
+  category: "角色塑造"
+
+categories:
+  # ==================== 1. 八字命运类角色 (10个) ====================
+  bazi_character:
+    category_name: "八字命运角色"
+    description: "基于八字命理的角色命运设计"
+    agents:
+      - name: "正官格角色-agent"
+        title: "正官格角色专家"
+        description: "设计正官格性格的角色：责任感强、守规矩、追求秩序"
+        core_concept: "天生领导者，以责任和荣誉为人生信条"
+        features:
+          - 正官格的性格特征：正直、负责、有威严
+          - 适合的职业设定：管理者、公务员、军人
+          - 正官格的正面与负面表现
+          - 正官格在不同情境下的反应模式
+        tags: ["正官格", "责任", "秩序", "领导"]
+        priority: high
+
+      - name: "七杀格角色-agent"
+        title: "七杀格角色专家"
+        description: "设计七杀格性格的角色：果断、强势、有攻击性"
+        core_concept: "天生的战士，以力量和征服为生存方式"
+        features:
+          - 七杀格的性格特征：果断、强势、有魄力
+          - 适合的职业设定：将军、企业家、创业者
+          - 七杀格的正面与负面表现
+          - 七杀格在权力斗争中的优势
+        tags: ["七杀格", "果断", "强势", "战士"]
+        priority: high
+
+      - name: "食神格角色-agent"
+        title: "食神格角色专家"
+        description: "设计食神格性格的角色：才华横溢、享受生活、温和"
+        core_concept: "天生的艺术家，以才华和享受为人生追求"
+        features:
+          - 食神格的性格特征：温和、有才华、懂得享受
+          - 适合的职业设定：艺术家、美食家、作家
+          - 食神格的正面与负面表现
+          - 食神格在创作领域的优势
+        tags: ["食神格", "才华", "享受", "艺术"]
+        priority: high
+
+      - name: "伤官格角色-agent"
+        title: "伤官格角色专家"
+        description: "设计伤官格性格的角色：叛逆、创新、不拘一格"
+        core_concept: "天生的革命者，以颠覆和创新为使命"
+        features:
+          - 伤官格的性格特征：叛逆、创新、恃才傲物
+          - 适合的职业设定：发明家、改革者、评论家
+          - 伤官格的正面与负面表现
+          - 伤官格在变革中的角色
+        tags: ["伤官格", "叛逆", "创新", "革命"]
+        priority: high
+
+      - name: "财格角色-agent"
+        title: "财格角色专家"
+        description: "设计财格性格的角色：务实、精明、追求财富"
+        core_concept: "天生的商人，以财富和掌控为人生目标"
+        features:
+          - 财格的性格特征：务实、精明、有商业头脑
+          - 适合的职业设定：商人、投资人、财务专家
+          - 财格的正面与负面表现
+          - 财格在商业竞争中的优势
+        tags: ["财格", "财富", "务实", "商人"]
+        priority: high
+
+      - name: "印格角色-agent"
+        title: "印格角色专家"
+        description: "设计印格性格的角色：博学、仁慈、追求知识"
+        core_concept: "天生的学者，以知识和智慧为人生追求"
+        features:
+          - 印格的性格特征：博学、仁慈、有洞察力
+          - 适合的职业设定：学者、教师、顾问
+          - 印格的正面与负面表现
+          - 印格在学术领域的优势
+        tags: ["印格", "知识", "仁慈", "学者"]
+        priority: medium
+
+      - name: "比劫格角色-agent"
+        title: "比劫格角色专家"
+        description: "设计比劫格性格的角色：独立、竞争、自我意识强"
+        core_concept: "天生的竞争者，以自我实现和超越为动力"
+        features:
+          - 比劫格的性格特征：独立、好胜、自我意识强
+          - 适合的职业设定：运动员、创业者、自由职业者
+          - 比劫格的正面与负面表现
+          - 比劫格在竞争环境中的优势
+        tags: ["比劫格", "竞争", "独立", "自我"]
+        priority: medium
+
+      - name: "身弱角色-agent"
+        title: "身弱角色专家"
+        description: "设计身弱性格的角色：敏感、需要支持、容易受影响"
+        core_concept: "需要依靠他人，在支持中成长和强大"
+        features:
+          - 身弱角色的性格特征：敏感、依赖、需要支持
+          - 身弱角色的成长弧线设计
+          - 身弱角色在逆境中的挣扎
+          - 身弱角色如何获得支持和成长
+        tags: ["身弱", "敏感", "成长", "依赖"]
+        priority: medium
+
+      - name: "身旺角色-agent"
+        title: "身旺角色专家"
+        description: "设计身旺性格的角色：自信、独立、有主见"
+        core_concept: "天生的强者，以自我实现和主导为追求"
+        features:
+          - 身旺角色的性格特征：自信、独立、有主见
+          - 身旺角色的领导魅力
+          - 身旺角色在团队中的作用
+          - 身旺角色如何平衡自我与他人
+        tags: ["身旺", "自信", "独立", "主导"]
+        priority: medium
+
+      - name: "特殊格局角色-agent"
+        title: "特殊格局角色专家"
+        description: "设计特殊格局（从格、化气格等）的角色"
+        core_concept: "极端环境下的特殊生存方式，非典型人生"
+        features:
+          - 从格角色的完全依附性
+          - 化气格角色的气质转变
+          - 特殊格局的极端表现
+          - 特殊格局角色的命运起伏
+        tags: ["特殊格局", "极端", "非典型", "命运"]
+        priority: low
+
+  # ==================== 2. 塔罗原型类角色 (12个) ====================
+  tarot_character:
+    category_name: "塔罗原型角色"
+    description: "基于塔罗牌原型的角色设计"
+    agents:
+      - name: "愚人原型-agent"
+        title: "愚人原型角色专家"
+        description: "设计愚人原型的角色：天真、冒险、新的开始"
+        core_concept: "踏上未知旅程的冒险者，充满无限可能"
+        features:
+          - 愚人原型的性格特征：天真、乐观、敢于冒险
+          - 愚人原型的成长弧线
+          - 愚人原型在故事中的作用
+          - 愚人原型的正逆位表现
+        tags: ["愚人", "冒险", "天真", "开始"]
+        priority: high
+
+      - name: "魔术师原型-agent"
+        title: "魔术师原型角色专家"
+        description: "设计魔术师原型的角色：创造力、意志力、掌控"
+        core_concept: "将想法变为现实的创造者，拥有无限潜能"
+        features:
+          - 魔术师原型的性格特征：聪明、有创造力、善于表达
+          - 魔术师原型的能力展现
+          - 魔术师原型在故事中的作用
+          - 魔术师原型的正逆位表现
+        tags: ["魔术师", "创造", "意志", "潜能"]
+        priority: high
+
+      - name: "女祭司原型-agent"
+        title: "女祭司原型角色专家"
+        description: "设计女祭司原型的角色：直觉、智慧、神秘"
+        core_concept: "守护秘密的智者，拥有超越常人的洞察力"
+        features:
+          - 女祭司原型的性格特征：神秘、智慧、直觉敏锐
+          - 女祭司原型的秘密守护
+          - 女祭司原型在故事中的作用
+          - 女祭司原型的正逆位表现
+        tags: ["女祭司", "智慧", "神秘", "直觉"]
+        priority: high
+
+      - name: "女皇原型-agent"
+        title: "女皇原型角色专家"
+        description: "设计女皇原型的角色：丰饶、母性、创造力"
+        core_concept: "滋养万物的母亲，代表丰盛与创造"
+        features:
+          - 女皇原型的性格特征：温柔、包容、有创造力
+          - 女皇原型的滋养与保护
+          - 女皇原型在故事中的作用
+          - 女皇原型的正逆位表现
+        tags: ["女皇", "母性", "丰饶", "创造"]
+        priority: high
+
+      - name: "皇帝原型-agent"
+        title: "皇帝原型角色专家"
+        description: "设计皇帝原型的角色：权威、秩序、责任"
+        core_concept: "建立秩序的统治者，代表权威与结构"
+        features:
+          - 皇帝原型的性格特征：威严、有责任感、善于管理
+          - 皇帝原型的统治方式
+          - 皇帝原型在故事中的作用
+          - 皇帝原型的正逆位表现
+        tags: ["皇帝", "权威", "秩序", "统治"]
+        priority: high
+
+      - name: "教皇原型-agent"
+        title: "教皇原型角色专家"
+        description: "设计教皇原型的角色：传统、信仰、教导"
+        core_concept: "传承智慧的导师，代表传统与信仰"
+        features:
+          - 教皇原型的性格特征：传统、有信仰、善于教导
+          - 教皇原型的教导方式
+          - 教皇原型在故事中的作用
+          - 教皇原型的正逆位表现
+        tags: ["教皇", "传统", "信仰", "教导"]
+        priority: medium
+
+      - name: "恋人原型-agent"
+        title: "恋人原型角色专家"
+        description: "设计恋人原型的角色：选择、结合、和谐"
+        core_concept: "面临重要选择的角色，代表爱与结合"
+        features:
+          - 恋人原型的性格特征：重视关系、面临选择、追求和谐
+          - 恋人原型的选择困境
+          - 恋人原型在故事中的作用
+          - 恋人原型的正逆位表现
+        tags: ["恋人", "选择", "结合", "和谐"]
+        priority: high
+
+      - name: "战车原型-agent"
+        title: "战车原型角色专家"
+        description: "设计战车原型的角色：胜利、意志力、征服"
+        core_concept: "克服困难的战士，代表胜利与掌控"
+        features:
+          - 战车原型的性格特征：有决心、善于战斗、追求胜利
+          - 战车原型的战斗方式
+          - 战车原型在故事中的作用
+          - 战车原型的正逆位表现
+        tags: ["战车", "胜利", "意志", "战斗"]
+        priority: high
+
+      - name: "力量原型-agent"
+        title: "力量原型角色专家"
+        description: "设计力量原型的角色：内在力量、勇气、慈悲"
+        core_concept: "以柔克刚的强者，代表内在力量与勇气"
+        features:
+          - 力量原型的性格特征：有内在力量、勇敢、有同情心
+          - 力量原型的力量展现方式
+          - 力量原型在故事中的作用
+          - 力量原型的正逆位表现
+        tags: ["力量", "勇气", "内在", "慈悲"]
+        priority: high
+
+      - name: "隐士原型-agent"
+        title: "隐士原型角色专家"
+        description: "设计隐士原型的角色：内省、智慧、孤独"
+        core_concept: "寻求真理的孤独者，代表内省与智慧"
+        features:
+          - 隐士原型的性格特征：喜欢独处、有智慧、善于思考
+          - 隐士原型的寻求真理之路
+          - 隐士原型在故事中的作用
+          - 隐士原型的正逆位表现
+        tags: ["隐士", "内省", "智慧", "孤独"]
+        priority: medium
+
+      - name: "命运之轮原型-agent"
+        title: "命运之轮原型角色专家"
+        description: "设计命运之轮原型的角色：命运、转机、循环"
+        core_concept: "经历命运起伏的角色，代表变化与循环"
+        features:
+          - 命运之轮原型的性格特征：适应力强、相信命运、善于把握机遇
+          - 命运之轮原型的命运起伏
+          - 命运之轮原型在故事中的作用
+          - 命运之轮原型的正逆位表现
+        tags: ["命运", "转机", "循环", "变化"]
+        priority: high
+
+      - name: "死神原型-agent"
+        title: "死神原型角色专家"
+        description: "设计死神原型的角色：结束、转变、重生"
+        core_concept: "经历重大转变的角色，代表结束与新生"
+        features:
+          - 死神原型的性格特征：善于放下、勇于改变、接受结束
+          - 死神原型的转变过程
+          - 死神原型在故事中的作用
+          - 死神原型的正逆位表现
+        tags: ["死神", "结束", "转变", "重生"]
+        priority: high
+
+  # ==================== 3. MBTI人格类角色 (16个) ====================
+  mbti_character:
+    category_name: "MBTI人格角色"
+    description: "基于MBTI十六型人格的角色设计"
+    agents:
+      - name: "INTJ角色-agent"
+        title: "INTJ建筑师角色专家"
+        description: "设计INTJ性格的角色：战略家、独立、有远见"
+        core_concept: "用战略和远见重塑世界的建筑师"
+        features:
+          - INTJ的性格特征：独立、有战略眼光、追求完美
+          - INTJ的思维方式与决策模式
+          - INTJ在人际关系中的表现
+          - INTJ的成长与挑战
+        tags: ["INTJ", "战略", "独立", "远见"]
+        priority: high
+
+      - name: "INTP角色-agent"
+        title: "INTP逻辑学家角色专家"
+        description: "设计INTP性格的角色：逻辑、好奇、理论"
+        core_concept: "追求真理的逻辑学家，理解宇宙的逻辑"
+        features:
+          - INTP的性格特征：好奇、逻辑性强、喜欢理论
+          - INTP的思考方式与创造力
+          - INTP在社交中的表现
+          - INTP的成长与挑战
+        tags: ["INTP", "逻辑", "好奇", "理论"]
+        priority: high
+
+      - name: "ENTJ角色-agent"
+        title: "ENTJ指挥官角色专家"
+        description: "设计ENTJ性格的角色：领导、果断、高效"
+        core_concept: "天生的领导者，用领导力实现宏伟目标"
+        features:
+          - ENTJ的性格特征：果断、有领导力、追求效率
+          - ENTJ的领导风格与决策方式
+          - ENTJ在团队中的作用
+          - ENTJ的成长与挑战
+        tags: ["ENTJ", "领导", "果断", "高效"]
+        priority: high
+
+      - name: "ENTP角色-agent"
+        title: "ENTP辩论家角色专家"
+        description: "设计ENTP性格的角色：创新、机智、爱辩论"
+        core_concept: "挑战现状的辩论家，用创新颠覆传统"
+        features:
+          - ENTP的性格特征：机智、喜欢辩论、富有创造力
+          - ENTP的创新思维与表达方式
+          - ENTP在冲突中的表现
+          - ENTP的成长与挑战
+        tags: ["ENTP", "创新", "机智", "辩论"]
+        priority: high
+
+      - name: "INFJ角色-agent"
+        title: "INFJ提倡者角色专家"
+        description: "设计INFJ性格的角色：理想、洞察、助人"
+        core_concept: "用理想和洞察力治愈世界的提倡者"
+        features:
+          - INFJ的性格特征：有理想、洞察力强、乐于助人
+          - INFJ的价值观与使命感
+          - INFJ在人际关系中的深度
+          - INFJ的成长与挑战
+        tags: ["INFJ", "理想", "洞察", "助人"]
+        priority: high
+
+      - name: "INFP角色-agent"
+        title: "INFP调停者角色专家"
+        description: "设计INFP性格的角色：理想、敏感、忠诚"
+        core_concept: "寻找真我的调停者，活出独一无二的自己"
+        features:
+          - INFP的性格特征：理想主义、敏感、忠诚
+          - INFP的内心世界与创造力
+          - INFP在关系中的付出
+          - INFP的成长与挑战
+        tags: ["INFP", "理想", "敏感", "忠诚"]
+        priority: high
+
+      - name: "ENFJ角色-agent"
+        title: "ENFJ主人公角色专家"
+        description: "设计ENFJ性格的角色：魅力、同理心、引导"
+        core_concept: "引导和激励他人的主人公，共同成长"
+        features:
+          - ENFJ的性格特征：有魅力、同理心强、善于引导
+          - ENFJ的社交能力与影响力
+          - ENFJ在团队中的凝聚作用
+          - ENFJ的成长与挑战
+        tags: ["ENFJ", "魅力", "同理心", "引导"]
+        priority: high
+
+      - name: "ENFP角色-agent"
+        title: "ENFP竞选者角色专家"
+        description: "设计ENFP性格的角色：热情、创意、自由"
+        core_concept: "探索可能性的竞选者，拥抱生命的美好"
+        features:
+          - ENFP的性格特征：热情、有创意、追求自由
+          - ENFP的社交风格与感染力
+          - ENFP在关系中的活力
+          - ENFP的成长与挑战
+        tags: ["ENFP", "热情", "创意", "自由"]
+        priority: high
+
+      - name: "ISTJ角色-agent"
+        title: "ISTJ物流师角色专家"
+        description: "设计ISTJ性格的角色：责任、实际、可靠"
+        core_concept: "维护稳定和秩序的物流师，履行责任"
+        features:
+          - ISTJ的性格特征：有责任感、实际、可靠
+          - ISTJ的工作方式与价值观
+          - ISTJ在关系中的忠诚
+          - ISTJ的成长与挑战
+        tags: ["ISTJ", "责任", "实际", "可靠"]
+        priority: medium
+
+      - name: "ISFJ角色-agent"
+        title: "ISFJ守卫者角色专家"
+        description: "设计ISFJ性格的角色：守护、体贴、奉献"
+        core_concept: "守护珍视之人的守卫者，默默奉献"
+        features:
+          - ISFJ的性格特征：体贴、有奉献精神、善于守护
+          - ISFJ的关怀方式与付出
+          - ISFJ在家庭中的角色
+          - ISFJ的成长与挑战
+        tags: ["ISFJ", "守护", "体贴", "奉献"]
+        priority: medium
+
+      - name: "ESTJ角色-agent"
+        title: "ESTJ总经理角色专家"
+        description: "设计ESTJ性格的角色：管理、效率、传统"
+        core_concept: "用务实管理让世界高效运转的总经理"
+        features:
+          - ESTJ的性格特征：善于管理、追求效率、重视传统
+          - ESTJ的管理风格与决策方式
+          - ESTJ在组织中的作用
+          - ESTJ的成长与挑战
+        tags: ["ESTJ", "管理", "效率", "传统"]
+        priority: medium
+
+      - name: "ESFJ角色-agent"
+        title: "ESFJ执政官角色专家"
+        description: "设计ESFJ性格的角色：和谐、社交、关怀"
+        core_concept: "建立和谐社区的执政官，获得归属感"
+        features:
+          - ESFJ的性格特征：善于社交、关怀他人、追求和谐
+          - ESFJ的社交技巧与影响力
+          - ESFJ在群体中的凝聚作用
+          - ESFJ的成长与挑战
+        tags: ["ESFJ", "和谐", "社交", "关怀"]
+        priority: medium
+
+      - name: "ISTP角色-agent"
+        title: "ISTP鉴赏家角色专家"
+        description: "设计ISTP性格的角色：独立、实用、灵活"
+        core_concept: "亲手探索世界的鉴赏家，理解运作原理"
+        features:
+          - ISTP的性格特征：独立、实用主义、灵活
+          - ISTP的问题解决能力
+          - ISTP在危机中的表现
+          - ISTP的成长与挑战
+        tags: ["ISTP", "独立", "实用", "灵活"]
+        priority: medium
+
+      - name: "ISFP角色-agent"
+        title: "ISFP探险家角色专家"
+        description: "设计ISFP性格的角色：艺术、敏感、当下"
+        core_concept: "体验和创造美的探险家，活在当下"
+        features:
+          - ISFP的性格特征：有艺术气质、敏感、活在当下
+          - ISFP的创造力与审美
+          - ISFP在关系中的温柔
+          - ISFP的成长与挑战
+        tags: ["ISFP", "艺术", "敏感", "当下"]
+        priority: medium
+
+      - name: "ESTP角色-agent"
+        title: "ESTP企业家角色专家"
+        description: "设计ESTP性格的角色：行动、冒险、现实"
+        core_concept: "抓住机会的企业家，享受刺激人生"
+        features:
+          - ESTP的性格特征：行动派、喜欢冒险、现实主义
+          - ESTP的冒险精神与执行力
+          - ESTP在社交中的魅力
+          - ESTP的成长与挑战
+        tags: ["ESTP", "行动", "冒险", "现实"]
+        priority: medium
+
+      - name: "ESFP角色-agent"
+        title: "ESFP表演者角色专家"
+        description: "设计ESFP性格的角色：表演、热情、享乐"
+        core_concept: "成为焦点的表演者，分享生活热情"
+        features:
+          - ESFP的性格特征：喜欢表演、热情、享受生活
+          - ESFP的社交魅力与感染力
+          - ESFP在娱乐中的天赋
+          - ESFP的成长与挑战
+        tags: ["ESFP", "表演", "热情", "享乐"]
+        priority: medium
+
+  # ==================== 4. 角色关系类 (12个) ====================
+  character_relationship:
+    category_name: "角色关系"
+    description: "设计角色之间的复杂关系"
+    agents:
+      - name: "宿敌关系-agent"
+        title: "宿敌关系专家"
+        description: "设计相爱相杀的宿敌关系"
+        core_concept: "最了解你的人，往往是最危险的敌人"
+        features:
+          - 宿敌关系的形成原因
+          - 宿敌之间的相互了解与对抗
+          - 宿敌关系的转变可能
+          - 宿敌对决的高潮设计
+        tags: ["宿敌", "对抗", "了解", "转变"]
+        priority: high
+
+      - name: "师徒关系-agent"
+        title: "师徒关系专家"
+        description: "设计师徒之间的传承与羁绊"
+        core_concept: "传道授业解惑，超越血缘的亲情"
+        features:
+          - 师徒关系的建立过程
+          - 师父的教导与徒弟的成长
+          - 师徒之间的情感羁绊
+          - 师父牺牲或徒弟超越的转折
+        tags: ["师徒", "传承", "羁绊", "成长"]
+        priority: high
+
+      - name: "兄弟关系-agent"
+        title: "兄弟关系专家"
+        description: "设计兄弟之间的情义与冲突"
+        core_concept: "打断骨头连着筋，兄弟情义的考验"
+        features:
+          - 兄弟关系的建立基础
+          - 兄弟之间的义气与牺牲
+          - 兄弟反目与和解
+          - 共同面对外敌的团结
+        tags: ["兄弟", "情义", "冲突", "团结"]
+        priority: high
+
+      - name: "姐妹关系-agent"
+        title: "姐妹关系专家"
+        description: "设计姐妹之间的情谊与竞争"
+        core_concept: "女性之间的复杂情感，嫉妒与扶持并存"
+        features:
+          - 姐妹关系的多样性
+          - 姐妹之间的嫉妒与比较
+          - 危机时刻的相互扶持
+          - 共同成长与独立
+        tags: ["姐妹", "情谊", "竞争", "扶持"]
+        priority: high
+
+      - name: "父子关系-agent"
+        title: "父子关系专家"
+        description: "设计父子之间的传承与冲突"
+        core_concept: "父权的阴影与儿子的反抗或继承"
+        features:
+          - 父子关系的权力结构
+          - 父亲的期望与儿子的选择
+          - 代际冲突与理解
+          - 最终的和解或决裂
+        tags: ["父子", "传承", "冲突", "期望"]
+        priority: high
+
+      - name: "母女关系-agent"
+        title: "母女关系专家"
+        description: "设计母女之间的情感纽带与矛盾"
+        core_concept: "最亲密的关系，也是最复杂的羁绊"
+        features:
+          - 母女关系的情感深度
+          - 母亲的控制与女儿的反抗
+          - 代际创伤的传递与打破
+          - 相互理解与独立
+        tags: ["母女", "情感", "矛盾", "独立"]
+        priority: high
+
+      - name: "君臣关系-agent"
+        title: "君臣关系专家"
+        description: "设计君臣之间的忠诚与权谋"
+        core_concept: "权力的博弈，忠诚与背叛的边缘"
+        features:
+          - 君臣关系的权力平衡
+          - 臣子的忠诚与野心
+          - 君主的信任与猜忌
+          - 功高震主或君臣相得
+        tags: ["君臣", "忠诚", "权谋", "博弈"]
+        priority: medium
+
+      - name: "盟友关系-agent"
+        title: "盟友关系专家"
+        description: "设计盟友之间的合作与背叛"
+        core_concept: "利益共同体，暂时的朋友"
+        features:
+          - 盟友关系的建立基础
+          - 合作中的利益分配
+          - 背叛的诱因与时机
+          - 从盟友到敌人或真朋友
+        tags: ["盟友", "合作", "背叛", "利益"]
+        priority: medium
+
+      - name: "主仆关系-agent"
+        title: "主仆关系专家"
+        description: "设计主仆之间的忠诚与超越"
+        core_concept: "身份的界限，情感的跨越"
+        features:
+          - 主仆关系的身份界限
+          - 仆人的忠诚与付出
+          - 主人的信任与依赖
+          - 超越身份的深厚情感
+        tags: ["主仆", "忠诚", "身份", "情感"]
+        priority: medium
+
+      - name: "青梅竹马-agent"
+        title: "青梅竹马关系专家"
+        description: "设计青梅竹马之间的深厚羁绊"
+        core_concept: "从小一起长大，最熟悉也最陌生的关系"
+        features:
+          - 青梅竹马的共同回忆
+          - 从玩伴到恋人的转变
+          - 太熟悉反而难以表白
+          - 共同成长的默契
+        tags: ["青梅竹马", "羁绊", "回忆", "转变"]
+        priority: high
+
+      - name: "三角关系-agent"
+        title: "三角关系专家"
+        description: "设计三人之间的复杂情感纠葛"
+        core_concept: "三个人的世界，总有一个人要退出"
+        features:
+          - 三角关系的形成过程
+          - 三个人的痛苦与挣扎
+          - 选择与放弃的艰难
+          - 最终的结局走向
+        tags: ["三角", "纠葛", "选择", "痛苦"]
+        priority: high
+
+      - name: "替身关系-agent"
+        title: "替身关系专家"
+        description: "设计替身与正主之间的情感冲突"
+        core_concept: "我是替代品，还是独一无二的存在"
+        features:
+          - 替身关系的建立原因
+          - 替身的痛苦与挣扎
+          - 正主回归后的冲击
+          - 最终的身份认同
+        tags: ["替身", "替代", "身份", "认同"]
+        priority: high
+
+  # ==================== 5. 角色成长类 (10个) ====================
+  character_growth:
+    category_name: "角色成长"
+    description: "设计角色的成长弧线与转变"
+    agents:
+      - name: "废柴逆袭-agent"
+        title: "废柴逆袭专家"
+        description: "设计废柴角色的逆袭成长路线"
+        core_concept: "天生废柴，逆天改命"
+        features:
+          - 废柴开局的设计
+          - 获得机遇或金手指
+          - 努力修炼与成长过程
+          - 最终逆袭打脸
+        tags: ["废柴", "逆袭", "成长", "打脸"]
+        priority: high
+
+      - name: "黑化转变-agent"
+        title: "黑化转变专家"
+        description: "设计角色从善良到黑化的转变过程"
+        core_concept: "善良被辜负，最终走向黑暗"
+        features:
+          - 黑化的诱因与触发点
+          - 逐步黑化的心理变化
+          - 黑化后的行为模式
+          - 救赎或彻底沉沦
+        tags: ["黑化", "转变", "黑暗", "救赎"]
+        priority: high
+
+      - name: "救赎之路-agent"
+        title: "救赎之路专家"
+        description: "设计反派或堕落角色的救赎过程"
+        core_concept: "从黑暗中走出，寻找内心的光明"
+        features:
+          - 堕落的原因与背景
+          - 救赎的契机与引导
+          - 救赎过程中的挣扎
+          - 最终获得救赎或牺牲
+        tags: ["救赎", "反派", "光明", "牺牲"]
+        priority: high
+
+      - name: "身份转变-agent"
+        title: "身份转变专家"
+        description: "设计角色身份的重大转变"
+        core_concept: "身份的落差与适应，重新认识自我"
+        features:
+          - 身份转变的触发事件
+          - 新身份的挑战与适应
+          - 身份秘密的维护与揭露
+          - 最终接受新身份或回归
+        tags: ["身份", "转变", "适应", "秘密"]
+        priority: high
+
+      - name: "性格转变-agent"
+        title: "性格转变专家"
+        description: "设计角色性格的重大转变"
+        core_concept: "经历重大事件后，性格的根本改变"
+        features:
+          - 性格转变的触发事件
+          - 转变过程中的内心挣扎
+          - 新性格的形成与表现
+          - 周围人的反应与适应
+        tags: ["性格", "转变", "事件", "成长"]
+        priority: high
+
+      - name: "能力觉醒-agent"
+        title: "能力觉醒专家"
+        description: "设计角色能力觉醒的过程"
+        core_concept: "潜能的爆发，从平凡到非凡"
+        features:
+          - 能力觉醒的契机
+          - 觉醒过程中的痛苦与突破
+          - 新能力的掌握与运用
+          - 能力带来的责任与挑战
+        tags: ["能力", "觉醒", "潜能", "突破"]
+        priority: high
+
+      - name: "价值观转变-agent"
+        title: "价值观转变专家"
+        description: "设计角色价值观的重大转变"
+        core_concept: "世界观的崩塌与重建"
+        features:
+          - 原有价值观的建立
+          - 挑战价值观的事件
+          - 价值观崩塌的痛苦
+          - 新价值观的形成
+        tags: ["价值观", "转变", "崩塌", "重建"]
+        priority: medium
+
+      - name: "从弱到强-agent"
+        title: "从弱到强专家"
+        description: "设计角色从弱小到强大的成长"
+        core_concept: "弱者的奋斗史，一步步走向巅峰"
+        features:
+          - 弱小的开局设定
+          - 成长过程中的磨难
+          - 关键节点的突破
+          - 最终成为强者
+        tags: ["弱小", "强大", "奋斗", "巅峰"]
+        priority: high
+
+      - name: "从强到弱-agent"
+        title: "从强到弱专家"
+        description: "设计角色从强大到弱小的跌落"
+        core_concept: "强者的陨落，重新认识自己"
+        features:
+          - 强大的开局设定
+          - 跌落的原因与过程
+          - 低谷期的挣扎与反思
+          - 重新崛起或接受平凡
+        tags: ["强大", "跌落", "低谷", "反思"]
+        priority: medium
+
+      - name: "成熟蜕变-agent"
+        title: "成熟蜕变专家"
+        description: "设计角色从幼稚到成熟的蜕变"
+        core_concept: "经历风雨后，从孩子变成大人"
+        features:
+          - 幼稚期的表现
+          - 促使人成熟的事件
+          - 成熟过程中的痛苦
+          - 最终成为成熟的大人
+        tags: ["幼稚", "成熟", "蜕变", "成长"]
+        priority: high
+
+  # ==================== 6. 反派角色类 (10个) ====================
+  villain_character:
+    category_name: "反派角色"
+    description: "设计有深度的反派角色"
+    agents:
+      - name: "悲剧反派-agent"
+        title: "悲剧反派专家"
+        description: "设计有悲剧背景的反派角色"
+        core_concept: "可恨之人必有可怜之处"
+        features:
+          - 悲剧背景的设计
+          - 反派行为的合理化
+          - 反派内心的痛苦
+          - 悲剧反派的结局
+        tags: ["悲剧", "反派", "背景", "可怜"]
+        priority: high
+
+      - name: "魅力反派-agent"
+        title: "魅力反派专家"
+        description: "设计有魅力的反派角色"
+        core_concept: "让人又爱又恨的迷人反派"
+        features:
+          - 魅力反派的特质设计
+          - 反派的优雅与风度
+          - 反派与主角的相互欣赏
+          - 魅力反派的结局处理
+        tags: ["魅力", "反派", "优雅", "迷人"]
+        priority: high
+
+      - name: "疯狂反派-agent"
+        title: "疯狂反派专家"
+        description: "设计疯狂偏执的反派角色"
+        core_concept: "疯狂的逻辑，扭曲的世界观"
+        features:
+          - 疯狂反派的心理描写
+          - 疯狂行为的逻辑自洽
+          - 疯狂反派的恐怖感
+          - 疯狂反派的覆灭
+        tags: ["疯狂", "偏执", "扭曲", "恐怖"]
+        priority: high
+
+      - name: "权谋反派-agent"
+        title: "权谋反派专家"
+        description: "设计精于权谋的反派角色"
+        core_concept: "高智商的博弈，步步为营的算计"
+        features:
+          - 权谋反派的智谋设计
+          - 反派与主角的智斗
+          - 权谋反派的布局
+          - 最终的对决与败露
+        tags: ["权谋", "智谋", "算计", "博弈"]
+        priority: high
+
+      - name: "伪君子反派-agent"
+        title: "伪君子反派专家"
+        description: "设计表面正派实则阴险的反派"
+        core_concept: "道貌岸然，内心阴暗"
+        features:
+          - 伪君子的表面形象
+          - 真实面目的逐步揭露
+          - 伪君子的危害与欺骗
+          - 最终的真面目暴露
+        tags: ["伪君子", "阴险", "欺骗", "揭露"]
+        priority: high
+
+      - name: "被迫反派-agent"
+        title: "被迫反派专家"
+        description: "设计被迫成为反派的角色"
+        core_concept: "身不由己，被逼上绝路"
+        features:
+          - 被迫成为反派的原因
+          - 反派行为的无奈
+          - 内心的挣扎与痛苦
+          - 最终的选择与结局
+        tags: ["被迫", "无奈", "挣扎", "选择"]
+        priority: medium
+
+      - name: "理念反派-agent"
+        title: "理念反派专家"
+        description: "设计因理念不同而成为反派的角色"
+        core_concept: "正义的反面，另一种正义"
+        features:
+          - 反派理念的合理性
+          - 理念冲突的不可调和
+          - 反派理念的吸引力
+          - 理念对决的高潮
+        tags: ["理念", "正义", "冲突", "合理"]
+        priority: high
+
+      - name: "复仇反派-agent"
+        title: "复仇反派专家"
+        description: "设计因复仇而成为反派的角色"
+        core_concept: "被仇恨吞噬，成为自己曾经憎恨的人"
+        features:
+          - 复仇动机的合理性
+          - 复仇过程中的扭曲
+          - 复仇成功的空虚
+          - 放下仇恨或彻底沉沦
+        tags: ["复仇", "仇恨", "扭曲", "空虚"]
+        priority: high
+
+      - name: "野心反派-agent"
+        title: "野心反派专家"
+        description: "设计因野心而成为反派的角色"
+        core_concept: "无止境的欲望，权力的奴隶"
+        features:
+          - 野心的起源与膨胀
+          - 为野心付出的代价
+          - 野心反派的魅力
+          - 野心破灭的下场
+        tags: ["野心", "欲望", "权力", "代价"]
+        priority: medium
+
+      - name: "情感受伤反派-agent"
+        title: "情感受伤反派专家"
+        description: "设计因情感受伤而成为反派的角色"
+        core_concept: "被爱所伤，因爱生恨"
+        features:
+          - 情感受伤的经历
+          - 因爱生恨的心理转变
+          - 反派行为的情感驱动
+          - 情感治愈或彻底黑化
+        tags: ["情感", "受伤", "爱恨", "黑化"]
+        priority: high
+
+  # ==================== 7. 女性角色类 (10个) ====================
+  female_character:
+    category_name: "女性角色"
+    description: "设计各种类型的女性角色"
+    agents:
+      - name: "大女主-agent"
+        title: "大女主角色专家"
+        description: "设计独立自强的大女主角色"
+        core_concept: "不靠男人，自己就是女王"
+        features:
+          - 大女主的独立人格
+          - 事业上的拼搏与成就
+          - 感情中的主动权
+          - 从弱小到强大的成长
+        tags: ["大女主", "独立", "自强", "女王"]
+        priority: high
+
+      - name: "小白花女主-agent"
+        title: "小白花女主专家"
+        description: "设计纯洁善良的小白花女主"
+        core_concept: "纯洁如白纸，善良如初生"
+        features:
+          - 小白花的纯真特质
+          - 善良带来的麻烦与机遇
+          - 被保护或自我成长
+          - 纯真与现实的碰撞
+        tags: ["小白花", "纯真", "善良", "保护"]
+        priority: high
+
+      - name: "腹黑女主-agent"
+        title: "腹黑女主专家"
+        description: "设计表面单纯实则腹黑的女主"
+        core_concept: "表面小白兔，内心大灰狼"
+        features:
+          - 腹黑的伪装与真实
+          - 腹黑行为的合理性
+          - 腹黑的智慧与手段
+          - 最终的真实面目
+        tags: ["腹黑", "伪装", "智慧", "手段"]
+        priority: high
+
+      - name: "女强人-agent"
+        title: "女强人角色专家"
+        description: "设计事业有成的女强人角色"
+        core_concept: "职场上的铁娘子，生活中的柔软"
+        features:
+          - 女强人的事业成就
+          - 职场上的强势表现
+          - 生活中的脆弱一面
+          - 事业与情感的平衡
+        tags: ["女强人", "事业", "强势", "平衡"]
+        priority: high
+
+      - name: "病娇女主-agent"
+        title: "病娇女主专家"
+        description: "设计病娇属性的女主"
+        core_concept: "爱得深沉，病态的占有欲"
+        features:
+          - 病娇的心理特征
+          - 病娇行为的触发点
+          - 病娇与正常状态的切换
+          - 病娇的治愈或恶化
+        tags: ["病娇", "占有", "病态", "治愈"]
+        priority: medium
+
+      - name: "白月光角色-agent"
+        title: "白月光角色专家"
+        description: "设计完美无瑕的白月光角色"
+        core_concept: "得不到的永远在骚动，完美的遗憾"
+        features:
+          - 白月光的完美设定
+          - 白月光与主角的关系
+          - 白月光的离去或逝去
+          - 白月光对主角的影响
+        tags: ["白月光", "完美", "遗憾", "影响"]
+        priority: high
+
+      - name: "恶毒女配-agent"
+        title: "恶毒女配专家"
+        description: "设计恶毒但立体的女配角色"
+        core_concept: "可恨之人必有可怜之处"
+        features:
+          - 恶毒行为的动机
+          - 恶毒女配的背景故事
+          - 恶毒与可怜的平衡
+          - 女配的结局走向
+        tags: ["恶毒", "女配", "动机", "可怜"]
+        priority: high
+
+      - name: "闺蜜角色-agent"
+        title: "闺蜜角色专家"
+        description: "设计女主的闺蜜角色"
+        core_concept: "girls help girls，真挚的女性友谊"
+        features:
+          - 闺蜜的性格互补
+          - 闺蜜之间的互助
+          - 闺蜜背叛或忠诚
+          - 共同成长的友谊
+        tags: ["闺蜜", "友谊", "互助", "成长"]
+        priority: medium
+
+      - name: "母亲角色-agent"
+        title: "母亲角色专家"
+        description: "设计各种类型的母亲角色"
+        core_concept: "母爱的多样性，母亲的复杂性"
+        features:
+          - 不同类型的母亲设定
+          - 母爱的表达方式
+          - 母亲与子女的冲突
+          - 母亲角色的成长
+        tags: ["母亲", "母爱", "复杂", "成长"]
+        priority: medium
+
+      - name: "反派女配-agent"
+        title: "反派女配专家"
+        description: "设计有魅力的反派女配"
+        core_concept: "美丽而危险，迷人的反派"
+        features:
+          - 反派女配的魅力设计
+          - 反派女配的动机
+          - 与女主的对抗
+          - 反派女配的结局
+        tags: ["反派", "女配", "魅力", "危险"]
+        priority: high
+
+  # ==================== 8. 男性角色类 (10个) ====================
+  male_character:
+    category_name: "男性角色"
+    description: "设计各种类型的男性角色"
+    agents:
+      - name: "霸道总裁-agent"
+        title: "霸道总裁角色专家"
+        description: "设计霸道总裁类型的男主"
+        core_concept: "强势霸道，却只对你温柔"
+        features:
+          - 霸道总裁的权势与魅力
+          - 霸道与温柔的反差
+          - 对女主的专属宠溺
+          - 总裁的成长与改变
+        tags: ["霸道", "总裁", "宠溺", "反差"]
+        priority: high
+
+      - name: "温柔男二-agent"
+        title: "温柔男二专家"
+        description: "设计温柔体贴的男二角色"
+        core_concept: "男二是大家的，温柔却得不到女主"
+        features:
+          - 温柔男二的体贴入微
+          - 默默守护的付出
+          - 爱而不得的痛苦
+          - 最终的幸福或遗憾
+        tags: ["温柔", "男二", "守护", "遗憾"]
+        priority: high
+
+      - name: "高冷男神-agent"
+        title: "高冷男神专家"
+        description: "设计高冷禁欲的男神角色"
+        core_concept: "高岭之花，只为你融化"
+        features:
+          - 高冷男神的疏离感
+          - 高冷背后的原因
+          - 为女主融化的过程
+          - 从高冷到深情的转变
+        tags: ["高冷", "男神", "融化", "深情"]
+        priority: high
+
+      - name: "阳光少年-agent"
+        title: "阳光少年专家"
+        description: "设计阳光开朗的少年角色"
+        core_concept: "如阳光般温暖，照亮你的世界"
+        features:
+          - 阳光少年的开朗特质
+          - 阳光背后的阴影
+          - 用温暖治愈他人
+          - 阳光少年的成长
+        tags: ["阳光", "少年", "温暖", "治愈"]
+        priority: high
+
+      - name: "病娇男主-agent"
+        title: "病娇男主专家"
+        description: "设计病娇属性的男主"
+        core_concept: "病态的爱，极致的占有欲"
+        features:
+          - 病娇男主的心理特征
+          - 病娇行为的触发点
+          - 病娇与深情的界限
+          - 病娇的治愈与控制
+        tags: ["病娇", "占有", "病态", "深情"]
+        priority: medium
+
+      - name: "年下小奶狗-agent"
+        title: "年下小奶狗专家"
+        description: "设计年下小奶狗类型的男主"
+        core_concept: "年轻、粘人、只对姐姐撒娇"
+        features:
+          - 小奶狗的粘人特质
+          - 年下的年龄差处理
+          - 小奶狗的成长与担当
+          - 姐弟恋的甜蜜与挑战
+        tags: ["年下", "小奶狗", "粘人", "姐弟"]
+        priority: high
+
+      - name: "年上大叔-agent"
+        title: "年上大叔专家"
+        description: "设计成熟稳重的大叔型男主"
+        core_concept: "成熟男人的魅力，稳重与温柔"
+        features:
+          - 大叔的成熟魅力
+          - 年龄差带来的阅历
+          - 大叔的温柔与保护
+          - 成熟爱情的稳重
+        tags: ["年上", "大叔", "成熟", "稳重"]
+        priority: high
+
+      - name: "忠犬男主-agent"
+        title: "忠犬男主专家"
+        description: "设计忠诚专一的忠犬型男主"
+        core_concept: "一生只爱一人，忠诚到骨子里"
+        features:
+          - 忠犬的忠诚特质
+          - 无条件的付出与守护
+          - 忠犬的执着与坚持
+          - 最终获得回应
+        tags: ["忠犬", "忠诚", "守护", "专一"]
+        priority: high
+
+      - name: "邪魅男主-agent"
+        title: "邪魅男主专家"
+        description: "设计邪魅狂狷的男主"
+        core_concept: "亦正亦邪，危险而迷人"
+        features:
+          - 邪魅的气质与魅力
+          - 邪魅行为的危险性
+          - 邪魅与正义的平衡
+          - 为女主改变或坚持
+        tags: ["邪魅", "危险", "迷人", "亦正亦邪"]
+        priority: high
+
+      - name: "禁欲系男主-agent"
+        title: "禁欲系男主专家"
+        description: "设计禁欲系的男主"
+        core_concept: "克制与压抑，只对你失控"
+        features:
+          - 禁欲的外在表现
+          - 禁欲背后的欲望
+          - 为女主失控的过程
+          - 禁欲与热情的反差
+        tags: ["禁欲", "克制", "失控", "反差"]
+        priority: high

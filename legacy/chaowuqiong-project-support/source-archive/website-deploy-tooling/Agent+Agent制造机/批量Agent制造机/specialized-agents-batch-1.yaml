@@ -1,0 +1,1526 @@
+# ==========================================
+# 200个Agent批量配置文件 - 第三批次 (Part 1)
+# 分类：法律 | 医疗 | 教育 | 金融 | 人力资源
+# 生成日期：2026-03-18
+# ==========================================
+
+batch_name: "专业领域Agent生态系统 - 第一辑"
+output_dir: ".trae/skills"
+version: "1.0.0"
+author: "AI Assistant"
+description: "包含100个专业Agent，覆盖法律、医疗、教育、金融、人力资源五大专业领域"
+
+# ==========================================
+# 第一类：法律类 Agent (20个)
+# ==========================================
+legal_agents:
+  category_name: "法律服务"
+  description: "覆盖法律服务的专业Agent，提供法律咨询、文书、合规等服务"
+  
+  agents:
+    - name: legal-consultant-agent
+      type: skill
+      title: "法律顾问专家"
+      description: "提供基础法律咨询，解答常见法律问题，指导法律方向"
+      core_concept: "让法律服务触手可及"
+      features:
+        - "常见法律问题解答"
+        - "法律风险评估"
+        - "维权路径指导"
+        - "法律程序说明"
+        - "权利义务分析"
+      priority: high
+      tags: ["法律", "咨询", "维权"]
+
+    - name: contract-review-agent
+      type: skill
+      title: "合同审查专家"
+      description: "审查各类合同，识别风险条款，提供修改建议"
+      core_concept: "合同是权益的保障"
+      features:
+        - "合同条款审查"
+        - "风险点识别"
+        - "不平等条款标注"
+        - "修改建议"
+        - "补充条款建议"
+      priority: high
+      tags: ["合同", "审查", "风险"]
+
+    - name: contract-drafting-agent
+      type: skill
+      title: "合同起草专家"
+      description: "起草各类标准合同，确保条款完整、合法有效"
+      core_concept: "专业合同，规范保障"
+      features:
+        - "标准合同模板"
+        - "条款定制"
+        - "法律合规检查"
+        - "双方权益平衡"
+        - "争议解决条款"
+      priority: high
+      tags: ["合同", "起草", "模板"]
+
+    - name: labor-law-agent
+      type: skill
+      title: "劳动法律专家"
+      description: "处理劳动争议，提供劳动合同、工伤、社保等法律咨询"
+      core_concept: "保护劳动者合法权益"
+      features:
+        - "劳动合同审查"
+        - "劳动争议处理"
+        - "工伤认定指导"
+        - "社保权益咨询"
+        - "辞退赔偿计算"
+      priority: high
+      tags: ["劳动法", "争议", "赔偿"]
+
+    - name: ip-law-agent
+      type: skill
+      title: "知识产权专家"
+      description: "提供商标、专利、著作权等知识产权保护服务"
+      core_concept: "保护创新成果"
+      features:
+        - "商标注册指导"
+        - "专利申请咨询"
+        - "著作权保护"
+        - "侵权分析"
+        - "知识产权布局"
+      priority: high
+      tags: ["知识产权", "商标", "专利"]
+
+    - name: corporate-law-agent
+      type: skill
+      title: "公司法务专家"
+      description: "处理公司设立、股权、治理、并购等法律事务"
+      core_concept: "为企业发展保驾护航"
+      features:
+        - "公司设立指导"
+        - "股权架构设计"
+        - "公司治理规范"
+        - "投资并购法律"
+        - "合规体系建设"
+      priority: high
+      tags: ["公司法", "股权", "并购"]
+
+    - name: civil-law-agent
+      type: skill
+      title: "民事法律专家"
+      description: "处理婚姻家庭、继承、房产、债务等民事纠纷"
+      core_concept: "化解民事纠纷，维护合法权益"
+      features:
+        - "婚姻法律咨询"
+        - "继承纠纷处理"
+        - "房产交易法律"
+        - "债务追讨指导"
+        - "侵权责任分析"
+      priority: high
+      tags: ["民事", "婚姻", "房产"]
+
+    - name: criminal-law-agent
+      type: skill
+      title: "刑事法律专家"
+      description: "提供刑事辩护、取保候审、量刑分析等法律服务"
+      core_concept: "维护司法公正，保障人权"
+      features:
+        - "罪名分析"
+        - "量刑预测"
+        - "辩护策略"
+        - "取保候审指导"
+        - "刑事程序说明"
+      priority: medium
+      tags: ["刑事", "辩护", "量刑"]
+      disclaimer: "仅供参考，具体案件需聘请专业律师"
+
+    - name: administrative-law-agent
+      type: skill
+      title: "行政法律专家"
+      description: "处理行政处罚、行政复议、行政诉讼等行政法律事务"
+      core_concept: "监督行政权力，保护公民权益"
+      features:
+        - "行政处罚应对"
+        - "行政复议指导"
+        - "行政诉讼代理"
+        - "行政许可咨询"
+        - "政府信息公开"
+      priority: medium
+      tags: ["行政", "复议", "诉讼"]
+
+    - name: international-law-agent
+      type: skill
+      title: "国际法律专家"
+      description: "处理国际贸易、跨境投资、国际仲裁等国际法律事务"
+      core_concept: "跨越国界，法律护航"
+      features:
+        - "国际贸易法律"
+        - "跨境投资合规"
+        - "国际仲裁程序"
+        - "涉外合同审查"
+        - "法律冲突解决"
+      priority: medium
+      tags: ["国际法", "贸易", "仲裁"]
+
+    - name: legal-document-agent
+      type: skill
+      title: "法律文书专家"
+      description: "起草起诉状、答辩状、律师函等各类法律文书"
+      core_concept: "专业文书，精准表达"
+      features:
+        - "起诉状起草"
+        - "答辩状撰写"
+        - "律师函发送"
+        - "证据清单整理"
+        - "法律意见书"
+      priority: high
+      tags: ["文书", "起诉", "律师函"]
+
+    - name: compliance-check-agent
+      type: skill
+      title: "合规检查专家"
+      description: "检查企业合规情况，识别法律风险，提供整改建议"
+      core_concept: "合规经营，行稳致远"
+      features:
+        - "合规体系评估"
+        - "法律风险识别"
+        - "整改方案制定"
+        - "合规培训"
+        - "定期合规审查"
+      priority: high
+      tags: ["合规", "风险", "审查"]
+
+    - name: dispute-resolution-agent
+      type: skill
+      title: "纠纷解决专家"
+      description: "提供调解、仲裁、诉讼等多元化纠纷解决方案"
+      core_concept: "化解矛盾，促进和谐"
+      features:
+        - "调解方案设计"
+        - "仲裁程序指导"
+        - "诉讼策略分析"
+        - "和解谈判"
+        - "执行程序指导"
+      priority: high
+      tags: ["纠纷", "调解", "仲裁"]
+
+    - name: consumer-rights-agent
+      type: skill
+      title: "消费者权益专家"
+      description: "维护消费者权益，处理消费纠纷，提供维权指导"
+      core_concept: "维护消费者合法权益"
+      features:
+        - "消费纠纷处理"
+        - "维权路径指导"
+        - "赔偿标准计算"
+        - "投诉举报指导"
+        - "集体诉讼组织"
+      priority: high
+      tags: ["消费者", "维权", "赔偿"]
+
+    - name: real-estate-law-agent
+      type: skill
+      title: "房产法律专家"
+      description: "处理房产买卖、租赁、拆迁、物业等房产法律事务"
+      core_concept: "守护房产安全"
+      features:
+        - "购房合同审查"
+        - "租房纠纷处理"
+        - "拆迁补偿计算"
+        - "物业纠纷解决"
+        - "房产继承规划"
+      priority: high
+      tags: ["房产", "买卖", "租赁"]
+
+    - name: tax-law-agent
+      type: skill
+      title: "税务法律专家"
+      description: "提供税务筹划、税务争议、税收优惠等法律服务"
+      core_concept: "合法节税，规避风险"
+      features:
+        - "税务筹划方案"
+        - "税务争议处理"
+        - "税收优惠申请"
+        - "税务稽查应对"
+        - "国际税务规划"
+      priority: medium
+      tags: ["税务", "筹划", "优惠"]
+
+    - name: bankruptcy-law-agent
+      type: skill
+      title: "破产法律专家"
+      description: "处理企业破产、重整、清算等破产法律事务"
+      core_concept: "有序退出，重新开始"
+      features:
+        - "破产申请指导"
+        - "重整方案设计"
+        - "债权申报"
+        - "清算程序"
+        - "债务人保护"
+      priority: low
+      tags: ["破产", "重整", "清算"]
+
+    - name: environmental-law-agent
+      type: skill
+      title: "环保法律专家"
+      description: "提供环境保护、污染治理、环评合规等法律服务"
+      core_concept: "绿色发展，法治保障"
+      features:
+        - "环评合规审查"
+        - "污染责任认定"
+        - "环保处罚应对"
+        - "碳排放合规"
+        - "环境公益诉讼"
+      priority: medium
+      tags: ["环保", "环评", "污染"]
+
+    - name: data-privacy-law-agent
+      type: skill
+      title: "数据隐私法律专家"
+      description: "提供数据保护、隐私合规、网络安全等法律服务"
+      core_concept: "保护数据，尊重隐私"
+      features:
+        - "隐私政策起草"
+        - "数据合规审查"
+        - "GDPR/CCPA合规"
+        - "数据泄露应对"
+        - "用户授权管理"
+      priority: high
+      tags: ["数据", "隐私", "合规"]
+
+    - name: legal-research-agent
+      type: skill
+      title: "法律研究专家"
+      description: "进行法律检索、案例分析、法规解读等法律研究"
+      core_concept: "深入研究，精准适用法律"
+      features:
+        - "法规检索"
+        - "案例研究"
+        - "学说整理"
+        - "比较法研究"
+        - "法律趋势分析"
+      priority: medium
+      tags: ["研究", "检索", "案例"]
+
+# ==========================================
+# 第二类：医疗健康类 Agent (20个)
+# ==========================================
+medical_health_agents:
+  category_name: "医疗健康"
+  description: "覆盖医疗健康服务的专业Agent，提供健康咨询、医疗指导等服务"
+  disclaimer: "所有医疗建议仅供参考，不能替代专业医生诊断"
+
+  agents:
+    - name: general-health-agent
+      type: skill
+      title: "全科健康顾问"
+      description: "提供一般性健康咨询，解答常见健康问题"
+      core_concept: "健康第一，预防为主"
+      features:
+        - "常见症状咨询"
+        - "健康生活方式"
+        - "疾病预防知识"
+        - "就医指导"
+        - "体检报告解读"
+      priority: high
+      tags: ["健康", "咨询", "预防"]
+      disclaimer: "仅供参考，不适请就医"
+
+    - name: nutrition-agent
+      type: skill
+      title: "营养膳食专家"
+      description: "提供个性化营养方案，膳食搭配建议"
+      core_concept: "合理营养，健康生活"
+      features:
+        - "营养评估"
+        - "膳食计划"
+        - "减肥饮食方案"
+        - "特殊人群营养"
+        - "营养素补充建议"
+      priority: high
+      tags: ["营养", "膳食", "饮食"]
+
+    - name: mental-health-agent
+      type: skill
+      title: "心理健康顾问"
+      description: "提供心理健康支持，情绪管理指导"
+      core_concept: "关注心理健康，拥抱美好生活"
+      features:
+        - "情绪识别"
+        - "压力管理"
+        - "焦虑抑郁筛查"
+        - "心理调适技巧"
+        - "危机干预指导"
+      priority: high
+      tags: ["心理", "情绪", "健康"]
+      disclaimer: "严重心理问题请寻求专业心理医生"
+
+    - name: chronic-disease-agent
+      type: skill
+      title: "慢病管理专家"
+      description: "管理高血压、糖尿病等慢性疾病，提供日常护理建议"
+      core_concept: "科学管理慢病，提高生活质量"
+      features:
+        - "疾病知识科普"
+        - "用药指导"
+        - "生活方式调整"
+        - "指标监测"
+        - "并发症预防"
+      priority: high
+      tags: ["慢病", "高血压", "糖尿病"]
+      disclaimer: "用药请遵医嘱"
+
+    - name: first-aid-agent
+      type: skill
+      title: "急救知识专家"
+      description: "提供急救知识培训，紧急情况处理指导"
+      core_concept: "掌握急救技能，挽救生命"
+      features:
+        - "心肺复苏CPR"
+        - "创伤处理"
+        - "中毒急救"
+        - "意外伤害"
+        - "急救包配置"
+      priority: high
+      tags: ["急救", "CPR", "创伤"]
+
+    - name: women-health-agent
+      type: skill
+      title: "女性健康专家"
+      description: "提供女性专属健康咨询，包括妇科、孕产、更年期等"
+      core_concept: "关爱女性健康"
+      features:
+        - "妇科健康"
+        - "孕期保健"
+        - "产后恢复"
+        - "更年期管理"
+        - "乳腺健康"
+      priority: high
+      tags: ["女性", "妇科", "孕产"]
+
+    - name: children-health-agent
+      type: skill
+      title: "儿童健康专家"
+      description: "提供儿童生长发育、疫苗接种、常见病等健康指导"
+      core_concept: "守护儿童健康成长"
+      features:
+        - "生长发育评估"
+        - "疫苗接种计划"
+        - "儿童常见病"
+        - "营养喂养"
+        - "安全防护"
+      priority: high
+      tags: ["儿童", "成长", "疫苗"]
+
+    - name: elderly-care-agent
+      type: skill
+      title: "老年护理专家"
+      description: "提供老年人健康管理、护理、养老等指导"
+      core_concept: "关爱老年，安享晚年"
+      features:
+        - "老年健康管理"
+        - "慢病护理"
+        - "跌倒预防"
+        - "认知症照护"
+        - "养老规划"
+      priority: high
+      tags: ["老年", "护理", "养老"]
+
+    - name: sports-medicine-agent
+      type: skill
+      title: "运动医学专家"
+      description: "提供运动损伤预防、康复训练、运动处方等服务"
+      core_concept: "科学运动，远离损伤"
+      features:
+        - "运动损伤预防"
+        - "康复训练方案"
+        - "运动处方"
+        - "体能评估"
+        - "营养补充"
+      priority: medium
+      tags: ["运动", "损伤", "康复"]
+
+    - name: sleep-health-agent
+      type: skill
+      title: "睡眠健康专家"
+      description: "提供睡眠质量评估、失眠治疗、睡眠习惯改善等服务"
+      core_concept: "优质睡眠，健康生活"
+      features:
+        - "睡眠质量评估"
+        - "失眠认知疗法"
+        - "睡眠习惯调整"
+        - "睡眠环境优化"
+        - "助眠技巧"
+      priority: high
+      tags: ["睡眠", "失眠", "休息"]
+
+    - name: dental-health-agent
+      type: skill
+      title: "口腔健康专家"
+      description: "提供口腔护理、牙齿保健、口腔疾病预防等服务"
+      core_concept: "口腔健康，全身健康"
+      features:
+        - "口腔护理指导"
+        - "牙齿美白"
+        - "牙周病预防"
+        - "儿童护牙"
+        - "正畸咨询"
+      priority: medium
+      tags: ["口腔", "牙齿", "护理"]
+
+    - name: eye-care-agent
+      type: skill
+      title: "视力保健专家"
+      description: "提供视力保护、用眼卫生、眼病预防等服务"
+      core_concept: "保护视力，明亮世界"
+      features:
+        - "用眼卫生"
+        - "近视防控"
+        - "干眼症护理"
+        - "老花眼管理"
+        - "护眼食谱"
+      priority: medium
+      tags: ["视力", "眼睛", "护眼"]
+
+    - name: skin-care-agent
+      type: skill
+      title: "皮肤护理专家"
+      description: "提供皮肤护理、问题肌肤、护肤方案等服务"
+      core_concept: "科学护肤，健康美丽"
+      features:
+        - "肤质分析"
+        - "护肤方案"
+        - "痤疮治疗"
+        - "敏感肌护理"
+        - "抗衰老方案"
+      priority: medium
+      tags: ["皮肤", "护肤", "美容"]
+
+    - name: traditional-chinese-medicine-agent
+      type: skill
+      title: "中医养生专家"
+      description: "提供中医养生、体质调理、食疗方案等服务"
+      core_concept: "传承中医智慧，调理身心健康"
+      features:
+        - "体质辨识"
+        - "食疗方案"
+        - "经络养生"
+        - "节气养生"
+        - "中药保健"
+      priority: medium
+      tags: ["中医", "养生", "体质"]
+      disclaimer: "中药使用请咨询执业中医师"
+
+    - name: medical-appointment-agent
+      type: skill
+      title: "就医指导专家"
+      description: "提供医院选择、科室推荐、就医流程指导等服务"
+      core_concept: "让就医更便捷"
+      features:
+        - "医院推荐"
+        - "科室选择"
+        - "专家预约"
+        - "就医流程"
+        - "医保报销"
+      priority: high
+      tags: ["就医", "预约", "医院"]
+
+    - name: medication-guide-agent
+      type: skill
+      title: "用药指导专家"
+      description: "提供药物知识、用药注意事项、药物相互作用查询"
+      core_concept: "安全用药，合理用药"
+      features:
+        - "药物知识"
+        - "用法用量"
+        - "不良反应"
+        - "药物相互作用"
+        - "用药提醒"
+      priority: high
+      tags: ["用药", "药物", "安全"]
+      disclaimer: "用药请遵医嘱，不可自行调整"
+
+    - name: health-records-agent
+      type: skill
+      title: "健康档案专家"
+      description: "管理个人健康档案，追踪健康指标变化"
+      core_concept: "记录健康，管理未来"
+      features:
+        - "健康数据记录"
+        - "体检报告管理"
+        - "健康趋势分析"
+        - "用药记录"
+        - "健康提醒"
+      priority: medium
+      tags: ["档案", "记录", "管理"]
+
+    - name: rehabilitation-agent
+      type: skill
+      title: "康复训练专家"
+      description: "提供术后康复、功能恢复、康复训练方案"
+      core_concept: "科学康复，重获健康"
+      features:
+        - "康复评估"
+        - "训练方案"
+        - "功能恢复"
+        - "辅助器具"
+        - "康复进度跟踪"
+      priority: medium
+      tags: ["康复", "训练", "恢复"]
+
+    - name: infectious-disease-agent
+      type: skill
+      title: "传染病防控专家"
+      description: "提供传染病预防、疫苗知识、疫情信息等服务"
+      core_concept: "预防为主，科学防控"
+      features:
+        - "传染病知识"
+        - "预防措施"
+        - "疫苗接种"
+        - "疫情信息"
+        - "隔离指导"
+      priority: high
+      tags: ["传染病", "疫苗", "防控"]
+
+    - name: health-insurance-agent
+      type: skill
+      title: "健康保险专家"
+      description: "提供医疗保险咨询、理赔指导、保险规划等服务"
+      core_concept: "健康保障，未雨绸缪"
+      features:
+        - "保险方案对比"
+        - "理赔流程指导"
+        - "医保政策解读"
+        - "商业保险规划"
+        - "理赔材料准备"
+      priority: medium
+      tags: ["保险", "医保", "理赔"]
+
+# ==========================================
+# 第三类：教育培训类 Agent (20个)
+# ==========================================
+education_training_agents:
+  category_name: "教育培训"
+  description: "覆盖教育培训全流程的专业Agent"
+
+  agents:
+    - name: course-design-agent
+      type: skill
+      title: "课程设计专家"
+      description: "设计课程体系，制定教学大纲，规划学习路径"
+      core_concept: "好的课程是成功教学的基础"
+      features:
+        - "需求分析"
+        - "课程框架"
+        - "教学目标设定"
+        - "内容编排"
+        - "评估体系"
+      priority: high
+      tags: ["课程", "设计", "教学"]
+
+    - name: lesson-plan-agent
+      type: skill
+      title: "教案编写专家"
+      description: "编写详细教案，设计教学活动，准备教学资源"
+      core_concept: "精心备课，精彩课堂"
+      features:
+        - "教案模板"
+        - "活动设计"
+        - "资源准备"
+        - "时间分配"
+        - "互动环节"
+      priority: high
+      tags: ["教案", "备课", "教学"]
+
+    - name: exam-prep-agent
+      type: skill
+      title: "考试备考专家"
+      description: "制定备考计划，提供复习策略，模拟测试"
+      core_concept: "科学备考，事半功倍"
+      features:
+        - "备考规划"
+        - "知识点梳理"
+        - "模拟试题"
+        - "答题技巧"
+        - "心理辅导"
+      priority: high
+      tags: ["备考", "考试", "复习"]
+
+    - name: language-learning-agent
+      type: skill
+      title: "语言学习专家"
+      description: "提供英语、日语、韩语等语言学习方案"
+      core_concept: "语言是打开世界的钥匙"
+      features:
+        - "学习计划"
+        - "词汇记忆"
+        - "语法讲解"
+        - "口语练习"
+        - "文化背景"
+      priority: high
+      tags: ["语言", "英语", "学习"]
+
+    - name: stem-education-agent
+      type: skill
+      title: "STEM教育专家"
+      description: "提供科学、技术、工程、数学综合教育方案"
+      core_concept: "培养未来创新人才"
+      features:
+        - "项目设计"
+        - "实验指导"
+        - "编程入门"
+        - "工程思维"
+        - "跨学科整合"
+      priority: high
+      tags: ["STEM", "科学", "编程"]
+
+    - name: early-education-agent
+      type: skill
+      title: "早教启蒙专家"
+      description: "提供0-6岁儿童早期教育方案，促进全面发展"
+      core_concept: "启蒙教育，影响一生"
+      features:
+        - "感统训练"
+        - "认知发展"
+        - "语言启蒙"
+        - "社交培养"
+        - "亲子互动"
+      priority: high
+      tags: ["早教", "启蒙", "儿童"]
+
+    - name: special-education-agent
+      type: skill
+      title: "特殊教育专家"
+      description: "为特殊需求儿童提供个性化教育方案"
+      core_concept: "每个孩子都有受教育的权利"
+      features:
+        - "IEP制定"
+        - "行为干预"
+        - "感统训练"
+        - "沟通训练"
+        - "融合教育"
+      priority: medium
+      tags: ["特教", "融合", "IEP"]
+
+    - name: adult-education-agent
+      type: skill
+      title: "成人教育专家"
+      description: "提供职业技能培训、继续教育、终身学习方案"
+      core_concept: "终身学习，持续成长"
+      features:
+        - "职业规划"
+        - "技能提升"
+        - "学历提升"
+        - "时间管理"
+        - "学习方法"
+      priority: high
+      tags: ["成人", "职业", "培训"]
+
+    - name: online-teaching-agent
+      type: skill
+      title: "在线教学专家"
+      description: "提供在线课程设计、直播教学、互动技巧等服务"
+      core_concept: "打破时空限制，优质教育共享"
+      features:
+        - "平台选择"
+        - "直播技巧"
+        - "互动设计"
+        - "录播制作"
+        - "学员管理"
+      priority: high
+      tags: ["在线", "直播", "网课"]
+
+    - name: study-skills-agent
+      type: skill
+      title: "学习方法专家"
+      description: "教授高效学习方法，提升学习效率"
+      core_concept: "方法对了，事半功倍"
+      features:
+        - "记忆技巧"
+        - "笔记方法"
+        - "思维导图"
+        - "时间管理"
+        - "专注力训练"
+      priority: high
+      tags: ["学习", "方法", "效率"]
+
+    - name: homework-tutor-agent
+      type: skill
+      title: "作业辅导专家"
+      description: "辅导各科作业，解答疑难问题"
+      core_concept: "耐心辅导，答疑解惑"
+      features:
+        - "题目解析"
+        - "思路引导"
+        - "错题分析"
+        - "知识巩固"
+        - "举一反三"
+      priority: high
+      tags: ["作业", "辅导", "答疑"]
+
+    - name: career-counseling-agent
+      type: skill
+      title: "职业规划专家"
+      description: "提供职业咨询、规划发展路径、提升职场竞争力"
+      core_concept: "规划职业，成就未来"
+      features:
+        - "职业测评"
+        - "规划路径"
+        - "简历优化"
+        - "面试辅导"
+        - "职场技能"
+      priority: high
+      tags: ["职业", "规划", "发展"]
+
+    - name: teacher-training-agent
+      type: skill
+      title: "教师培训专家"
+      description: "提供教师专业发展、教学技能提升培训"
+      core_concept: "提升教师，惠及学生"
+      features:
+        - "教学技能"
+        - "课堂管理"
+        - "教育技术"
+        - "师德师风"
+        - "专业成长"
+      priority: medium
+      tags: ["教师", "培训", "专业"]
+
+    - name: art-education-agent
+      type: skill
+      title: "艺术教育专家"
+      description: "提供音乐、美术、舞蹈等艺术教育方案"
+      core_concept: "艺术熏陶，美化人生"
+      features:
+        - "艺术启蒙"
+        - "技法指导"
+        - "作品赏析"
+        - "考级辅导"
+        - "创意培养"
+      priority: medium
+      tags: ["艺术", "音乐", "美术"]
+
+    - name: physical-education-agent
+      type: skill
+      title: "体育教育专家"
+      description: "提供体育教学、运动训练、健康教育方案"
+      core_concept: "强健体魄，健全人格"
+      features:
+        - "运动技能"
+        - "体能训练"
+        - "健康教育"
+        - "赛事组织"
+        - "安全防护"
+      priority: medium
+      tags: ["体育", "运动", "健康"]
+
+    - name: reading-promotion-agent
+      type: skill
+      title: "阅读推广专家"
+      description: "培养阅读习惯，推荐书目，指导阅读方法"
+      core_concept: "阅读改变人生"
+      features:
+        - "书目推荐"
+        - "阅读计划"
+        - "阅读方法"
+        - "读书分享"
+        - "写作指导"
+      priority: medium
+      tags: ["阅读", "书目", "推广"]
+
+    - name: parent-education-agent
+      type: skill
+      title: "家庭教育专家"
+      description: "指导家庭教育，改善亲子关系，培养良好习惯"
+      core_concept: "家庭是孩子的第一所学校"
+      features:
+        - "亲子沟通"
+        - "习惯培养"
+        - "情绪管理"
+        - "学习辅导"
+        - "品格教育"
+      priority: high
+      tags: ["家庭", "亲子", "教育"]
+
+    - name: educational-assessment-agent
+      type: skill
+      title: "教育评估专家"
+      description: "设计评估体系，分析学习数据，提供改进建议"
+      core_concept: "科学评估，精准教学"
+      features:
+        - "测试设计"
+        - "数据分析"
+        - "学情诊断"
+        - "改进建议"
+        - "成长记录"
+      priority: medium
+      tags: ["评估", "测试", "诊断"]
+
+    - name: study-abroad-agent
+      type: skill
+      title: "留学规划专家"
+      description: "提供留学咨询、申请指导、文书修改等服务"
+      core_concept: "规划留学，圆梦名校"
+      features:
+        - "院校选择"
+        - "申请规划"
+        - "文书写作"
+        - "面试辅导"
+        - "签证指导"
+      priority: medium
+      tags: ["留学", "申请", "文书"]
+
+    - name: corporate-training-agent
+      type: skill
+      title: "企业培训专家"
+      description: "设计企业内训方案，提升员工能力"
+      core_concept: "培训投资，人才增值"
+      features:
+        - "需求分析"
+        - "方案设计"
+        - "课程开发"
+        - "培训实施"
+        - "效果评估"
+      priority: medium
+      tags: ["企业", "培训", "内训"]
+
+# ==========================================
+# 第四类：金融投资类 Agent (20个)
+# ==========================================
+finance_investment_agents:
+  category_name: "金融投资"
+  description: "覆盖金融投资全流程的专业Agent"
+  disclaimer: "投资有风险，入市需谨慎。所有建议仅供参考，不构成投资建议"
+
+  agents:
+    - name: personal-finance-agent
+      type: skill
+      title: "个人理财专家"
+      description: "提供个人财务规划、资产配置、理财建议"
+      core_concept: "科学理财，财富增值"
+      features:
+        - "财务诊断"
+        - "预算规划"
+        - "资产配置"
+        - "储蓄计划"
+        - "债务管理"
+      priority: high
+      tags: ["理财", "规划", "资产"]
+
+    - name: stock-investment-agent
+      type: skill
+      title: "股票投资专家"
+      description: "提供股票分析、选股策略、投资时机建议"
+      core_concept: "价值投资，长期持有"
+      features:
+        - "基本面分析"
+        - "技术面分析"
+        - "选股策略"
+        - "仓位管理"
+        - "风险控制"
+      priority: high
+      tags: ["股票", "投资", "分析"]
+      disclaimer: "股市有风险，投资需谨慎"
+
+    - name: fund-investment-agent
+      type: skill
+      title: "基金投资专家"
+      description: "提供基金选择、定投策略、组合配置建议"
+      core_concept: "专业管理，分散风险"
+      features:
+        - "基金筛选"
+        - "定投计划"
+        - "组合配置"
+        - "业绩评估"
+        - "费率优化"
+      priority: high
+      tags: ["基金", "定投", "组合"]
+
+    - name: bond-investment-agent
+      type: skill
+      title: "债券投资专家"
+      description: "提供债券分析、利率走势、固定收益投资策略"
+      core_concept: "稳健收益，保值增值"
+      features:
+        - "债券分析"
+        - "利率预测"
+        - "信用评估"
+        - "久期管理"
+        - "收益计算"
+      priority: medium
+      tags: ["债券", "固收", "利率"]
+
+    - name: real-estate-investment-agent
+      type: skill
+      title: "房产投资专家"
+      description: "提供房产投资分析、选址建议、投资回报评估"
+      core_concept: "房产投资，稳健增值"
+      features:
+        - "市场分析"
+        - "选址评估"
+        - "投资回报"
+        - "贷款方案"
+        - "税务规划"
+      priority: medium
+      tags: ["房产", "投资", "回报"]
+
+    - name: crypto-investment-agent
+      type: skill
+      title: "加密货币专家"
+      description: "提供数字货币分析、区块链知识、风险管理"
+      core_concept: "了解新兴资产，理性投资"
+      features:
+        - "币种分析"
+        - "技术分析"
+        - "钱包安全"
+        - "风险管理"
+        - "政策跟踪"
+      priority: medium
+      tags: ["加密货币", "区块链", "数字资产"]
+      disclaimer: "加密货币风险极高，可能损失全部本金"
+
+    - name: retirement-planning-agent
+      type: skill
+      title: "退休规划专家"
+      description: "制定退休计划，养老金规划，晚年财务安排"
+      core_concept: "提前规划，安享晚年"
+      features:
+        - "养老金计算"
+        - "储蓄目标"
+        - "投资组合"
+        - "保险规划"
+        - "遗产安排"
+      priority: high
+      tags: ["退休", "养老", "规划"]
+
+    - name: insurance-planning-agent
+      type: skill
+      title: "保险规划专家"
+      description: "提供保险咨询、方案设计、理赔指导"
+      core_concept: "风险转移，保障生活"
+      features:
+        - "需求分析"
+        - "产品对比"
+        - "方案设计"
+        - "保费优化"
+        - "理赔协助"
+      priority: high
+      tags: ["保险", "规划", "保障"]
+
+    - name: tax-planning-agent
+      type: skill
+      title: "税务筹划专家"
+      description: "提供个人和企业税务筹划，合法节税"
+      core_concept: "合法节税，增加收益"
+      features:
+        - "个税优化"
+        - "专项扣除"
+        - "投资收益税"
+        - "企业税务"
+        - "国际税务"
+      priority: medium
+      tags: ["税务", "筹划", "节税"]
+
+    - name: credit-management-agent
+      type: skill
+      title: "信用管理专家"
+      description: "管理个人信用，提升信用评分，优化借贷"
+      core_concept: "信用是金融生活的通行证"
+      features:
+        - "信用评估"
+        - "征信修复"
+        - "信用卡管理"
+        - "贷款优化"
+        - "信用提升"
+      priority: high
+      tags: ["信用", "征信", "贷款"]
+
+    - name: forex-trading-agent
+      type: skill
+      title: "外汇交易专家"
+      description: "提供外汇市场分析、交易策略、风险管理"
+      core_concept: "全球货币，汇率博弈"
+      features:
+        - "汇率分析"
+        - "交易策略"
+        - "技术分析"
+        - "风险管理"
+        - "平台选择"
+      priority: medium
+      tags: ["外汇", "汇率", "交易"]
+      disclaimer: "外汇交易风险极高"
+
+    - name: commodity-trading-agent
+      type: skill
+      title: "商品期货专家"
+      description: "提供大宗商品、期货期权分析和交易策略"
+      core_concept: "商品投资，对冲风险"
+      features:
+        - "商品分析"
+        - "期货策略"
+        - "套期保值"
+        - "杠杆管理"
+        - "交割规则"
+      priority: low
+      tags: ["期货", "商品", "对冲"]
+      disclaimer: "期货风险极高，不适合普通投资者"
+
+    - name: venture-capital-agent
+      type: skill
+      title: "风险投资专家"
+      description: "提供创业项目评估、投资分析、尽职调查"
+      core_concept: "发现价值，投资未来"
+      features:
+        - "项目评估"
+        - "尽职调查"
+        - "估值分析"
+        - "条款谈判"
+        - "投后管理"
+      priority: medium
+      tags: ["风投", "创业", "投资"]
+
+    - name: wealth-management-agent
+      type: skill
+      title: "财富管理专家"
+      description: "为高净值客户提供综合财富管理服务"
+      core_concept: "财富传承，世代守护"
+      features:
+        - "资产配置"
+        - "家族信托"
+        - "税务筹划"
+        - "遗产规划"
+        - "慈善安排"
+      priority: medium
+      tags: ["财富", "高净值", "传承"]
+
+    - name: financial-analysis-agent
+      type: skill
+      title: "财务分析专家"
+      description: "分析企业财务报表，评估投资价值"
+      core_concept: "数据说话，理性投资"
+      features:
+        - "报表分析"
+        - "比率分析"
+        - "现金流分析"
+        - "估值模型"
+        - "行业对比"
+      priority: medium
+      tags: ["财务", "分析", "报表"]
+
+    - name: macro-economy-agent
+      type: skill
+      title: "宏观经济专家"
+      description: "分析宏观经济形势，预测政策走向"
+      core_concept: "洞察经济，把握趋势"
+      features:
+        - "经济数据分析"
+        - "政策解读"
+        - "周期判断"
+        - "利率预测"
+        - "通胀分析"
+      priority: medium
+      tags: ["宏观", "经济", "政策"]
+
+    - name: esg-investing-agent
+      type: skill
+      title: "ESG投资专家"
+      description: "提供ESG投资分析，可持续投资方案"
+      core_concept: "责任投资，可持续发展"
+      features:
+        - "ESG评估"
+        - "绿色金融"
+        - "影响力投资"
+        - "可持续基金"
+        - "企业社会责任"
+      priority: medium
+      tags: ["ESG", "可持续", "绿色"]
+
+    - name: robo-advisor-agent
+      type: skill
+      title: "智能投顾专家"
+      description: "提供自动化投资建议，智能资产配置"
+      core_concept: "科技赋能，智能理财"
+      features:
+        - "风险评估"
+        - "智能配置"
+        - "再平衡"
+        - "定投策略"
+        - "业绩跟踪"
+      priority: high
+      tags: ["智能投顾", "自动化", "配置"]
+
+    - name: financial-education-agent
+      type: skill
+      title: "财商教育专家"
+      description: "提供金融知识教育，提升财商素养"
+      core_concept: "财商教育，终身受益"
+      features:
+        - "理财基础"
+        - "投资入门"
+        - "风险教育"
+        - "防骗指南"
+        - "财商培养"
+      priority: high
+      tags: ["财商", "教育", "知识"]
+
+    - name: student-loan-agent
+      type: skill
+      title: "助学贷款专家"
+      description: "提供助学贷款咨询、申请指导、还款规划"
+      core_concept: "助学成才，理性借贷"
+      features:
+        - "贷款政策"
+        - "申请流程"
+        - "额度计算"
+        - "还款计划"
+        - "优惠政策"
+      priority: medium
+      tags: ["助学", "贷款", "教育"]
+
+# ==========================================
+# 第五类：人力资源类 Agent (20个)
+# ==========================================
+hr_management_agents:
+  category_name: "人力资源"
+  description: "覆盖人力资源管理全流程的专业Agent"
+
+  agents:
+    - name: recruitment-agent
+      type: skill
+      title: "招聘专家"
+      description: "提供招聘全流程服务，从需求到入职"
+      core_concept: "找到最合适的人才"
+      features:
+        - "需求分析"
+        - "JD撰写"
+        - "渠道选择"
+        - "简历筛选"
+        - "面试安排"
+      priority: high
+      tags: ["招聘", "面试", "入职"]
+
+    - name: talent-assessment-agent
+      type: skill
+      title: "人才测评专家"
+      description: "设计测评方案，评估候选人能力和潜力"
+      core_concept: "科学测评，精准识人"
+      features:
+        - "测评工具"
+        - "能力评估"
+        - "性格测试"
+        - "潜力识别"
+        - "报告解读"
+      priority: high
+      tags: ["测评", "评估", "人才"]
+
+    - name: interview-coach-agent
+      type: skill
+      title: "面试辅导专家"
+      description: "培训面试官，优化面试流程，提升面试效果"
+      core_concept: "专业面试，精准选拔"
+      features:
+        - "面试技巧"
+        - "问题设计"
+        - "评估标准"
+        - "STAR方法"
+        - "面试官培训"
+      priority: high
+      tags: ["面试", "技巧", "培训"]
+
+    - name: onboarding-agent
+      type: skill
+      title: "入职管理专家"
+      description: "设计入职流程，帮助新员工快速融入"
+      core_concept: "好的开始是成功的一半"
+      features:
+        - "入职流程"
+        - "培训计划"
+        - "导师制度"
+        - "文化融入"
+        - "试用期管理"
+      priority: high
+      tags: ["入职", "融入", "培训"]
+
+    - name: performance-management-agent
+      type: skill
+      title: "绩效管理专家"
+      description: "设计绩效体系，实施绩效考核，改进绩效"
+      core_concept: "绩效驱动，持续改进"
+      features:
+        - "KPI设计"
+        - "目标设定"
+        - "绩效评估"
+        - "反馈沟通"
+        - "改进计划"
+      priority: high
+      tags: ["绩效", "KPI", "考核"]
+
+    - name: compensation-benefits-agent
+      type: skill
+      title: "薪酬福利专家"
+      description: "设计薪酬体系，优化福利方案，保持竞争力"
+      core_concept: "公平激励，留住人才"
+      features:
+        - "薪酬调研"
+        - "薪酬结构"
+        - "福利设计"
+        - "激励机制"
+        - "成本控制"
+      priority: high
+      tags: ["薪酬", "福利", "激励"]
+
+    - name: training-development-agent
+      type: skill
+      title: "培训发展专家"
+      description: "设计培训体系，规划员工发展路径"
+      core_concept: "投资人才，发展未来"
+      features:
+        - "培训需求"
+        - "课程设计"
+        - "内训师培养"
+        - "发展规划"
+        - "效果评估"
+      priority: high
+      tags: ["培训", "发展", "学习"]
+
+    - name: employee-relations-agent
+      type: skill
+      title: "员工关系专家"
+      description: "处理员工关系，维护和谐劳动关系"
+      core_concept: "和谐关系，共创价值"
+      features:
+        - "劳动合同"
+        - "员工沟通"
+        - "冲突处理"
+        - "满意度调查"
+        - "离职管理"
+      priority: high
+      tags: ["员工关系", "沟通", "和谐"]
+
+    - name: hr-analytics-agent
+      type: skill
+      title: "人力分析专家"
+      description: "分析人力资源数据，支持决策"
+      core_concept: "数据驱动，科学决策"
+      features:
+        - "人力报表"
+        - "数据分析"
+        - "预测模型"
+        - "效能评估"
+        - "决策支持"
+      priority: medium
+      tags: ["分析", "数据", "报表"]
+
+    - name: succession-planning-agent
+      type: skill
+      title: "继任规划专家"
+      description: "识别高潜人才，规划继任梯队"
+      core_concept: "未雨绸缪，人才不断层"
+      features:
+        - "人才盘点"
+        - "潜力评估"
+        - "继任梯队"
+        - "培养计划"
+        - "轮岗安排"
+      priority: medium
+      tags: ["继任", "梯队", "人才"]
+
+    - name: employer-branding-agent
+      type: skill
+      title: "雇主品牌专家"
+      description: "建设雇主品牌，提升企业吸引力"
+      core_concept: "好品牌吸引好人才"
+      features:
+        - "品牌定位"
+        - "EVP提炼"
+        - "传播策略"
+        - "校园招聘"
+        - "口碑管理"
+      priority: medium
+      tags: ["雇主品牌", "EVP", "吸引"]
+
+    - name: hr-compliance-agent
+      type: skill
+      title: "人事合规专家"
+      description: "确保人事管理合规，规避法律风险"
+      core_concept: "合规经营，防范风险"
+      features:
+        - "法规跟踪"
+        - "合规检查"
+        - "合同管理"
+        - "劳动争议"
+        - "档案管理"
+      priority: high
+      tags: ["合规", "法规", "风险"]
+
+    - name: remote-work-agent
+      type: skill
+      title: "远程办公专家"
+      description: "管理远程团队，设计灵活办公方案"
+      core_concept: "灵活办公，高效协作"
+      features:
+        - "远程政策"
+        - "协作工具"
+        - "绩效管理"
+        - "员工关怀"
+        - "文化维护"
+      priority: medium
+      tags: ["远程", "灵活", "协作"]
+
+    - name: diversity-inclusion-agent
+      type: skill
+      title: "多元包容专家"
+      description: "推动多元化和包容性，建设公平职场"
+      core_concept: "多元包容，激发创新"
+      features:
+        - "D&I策略"
+        - "偏见消除"
+        - "公平招聘"
+        - "无障碍环境"
+        - "文化融合"
+      priority: medium
+      tags: ["多元", "包容", "公平"]
+
+    - name: employee-wellness-agent
+      type: skill
+      title: "员工关怀专家"
+      description: "关注员工身心健康，提升幸福感"
+      core_concept: "关怀员工，成就企业"
+      features:
+        - "EAP服务"
+        - "健康计划"
+        - "工作生活平衡"
+        - "压力管理"
+        - "团建活动"
+      priority: medium
+      tags: ["关怀", "EAP", "健康"]
+
+    - name: hr-technology-agent
+      type: skill
+      title: "HR科技专家"
+      description: "选择和实施HR系统，推动数字化转型"
+      core_concept: "科技赋能，高效HR"
+      features:
+        - "系统选型"
+        - "实施部署"
+        - "流程优化"
+        - "数据整合"
+        - "AI应用"
+      priority: medium
+      tags: ["HR科技", "系统", "数字化"]
+
+    - name: executive-search-agent
+      type: skill
+      title: "高管猎聘专家"
+      description: "寻访高管人才，进行深度背景调查"
+      core_concept: "寻找领军人才"
+      features:
+        - "人才寻访"
+        - "背景调查"
+        - "薪酬谈判"
+        - "入职辅导"
+        - "保证期管理"
+      priority: medium
+      tags: ["猎聘", "高管", "寻访"]
+
+    - name: organizational-development-agent
+      type: skill
+      title: "组织发展专家"
+      description: "优化组织架构，推动组织变革"
+      core_concept: "组织优化，激发活力"
+      features:
+        - "组织诊断"
+        - "架构设计"
+        - "变革管理"
+        - "文化建设"
+        - "效能提升"
+      priority: medium
+      tags: ["组织", "变革", "发展"]
+
+    - name: labor-cost-agent
+      type: skill
+      title: "人力成本专家"
+      description: "分析和控制人力成本，提升人效"
+      core_concept: "合理成本，高效产出"
+      features:
+        - "成本分析"
+        - "预算编制"
+        - "人效指标"
+        - "优化方案"
+        - "投资回报"
+      priority: medium
+      tags: ["成本", "人效", "预算"]
+
+    - name: exit-management-agent
+      type: skill
+      title: "离职管理专家"
+      description: "规范离职流程，进行离职面谈，维护关系"
+      core_concept: "好聚好散， alumni价值"
+      features:
+        - "离职流程"
+        - "面谈技巧"
+        - "知识交接"
+        - "关系维护"
+        - "返聘管理"
+      priority: medium
+      tags: ["离职", "面谈", "交接"]
+
+# ==========================================
+# 元数据配置
+# ==========================================
+metadata:
+  total_agents: 100
+  categories:
+    - name: "法律服务"
+      count: 20
+      color: "#8e44ad"
+    - name: "医疗健康"
+      count: 20
+      color: "#e74c3c"
+    - name: "教育培训"
+      count: 20
+      color: "#3498db"
+    - name: "金融投资"
+      count: 20
+      color: "#27ae60"
+    - name: "人力资源"
+      count: 20
+      color: "#f39c12"
+  
+  generation_settings:
+    parallel: true
+    max_concurrent: 10
+    retry_on_failure: true
+    generate_index: true
+    generate_readme: true
+  
+  quality_checks:
+    - "文档完整性"
+    - "命名规范性"
+    - "内容质量"
+    - "标签准确性"
+    - "优先级合理性"
+    - "免责声明完整性"
+
+# ==========================================
+# 生成后操作
+# ==========================================
+post_generation:
+  actions:
+    - type: "generate_index"
+      filename: "AGENTS_INDEX.md"
+      description: "生成Agent目录索引"
+    
+    - type: "generate_category_readme"
+      description: "为每个类别生成README"
+    
+    - type: "validation_report"
+      description: "生成验证报告"
+
+# ==========================================
+# 使用说明
+# ==========================================
+usage:
+  command: "使用 batch-agent-creator skill 加载此配置文件"
+  example: "根据 specialized-agents-batch-1.yaml 批量创建所有Agent"
+  notes:
+    - "本批次包含法律、医疗、教育、金融、人力资源5个领域共100个Agent"
+    - "医疗和金融类Agent已添加必要的免责声明"
+    - "建议分领域逐步生成和测试"

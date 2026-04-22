@@ -1,0 +1,1259 @@
+# 小说创作Agent配置 - 批次1: 小说类型与题材 (100个)
+# 基于脑洞流.txt、融合润色进阶版进化.md、无极太极_优化版.MD、分镜.txt
+
+batch_info:
+  name: "novel-agents-batch-01"
+  description: "小说类型与题材专家Agent"
+  total_agents: 100
+  category: "小说类型"
+
+categories:
+  # ==================== 1. 婚姻家庭类 (10个) ====================
+  marriage_family:
+    category_name: "婚姻家庭"
+    description: "聚焦婚姻关系、家庭矛盾、情感纠葛的小说类型"
+    agents:
+      - name: "追妻火葬场-agent"
+        title: "追妻火葬场专家"
+        description: "设计男主/女主失去后才懂得珍惜，疯狂追回前任的虐心剧情"
+        core_concept: "失去方知珍贵，追悔莫及的情感张力"
+        features:
+          - 前期冷漠后期疯狂追妻的人物转变
+          - 虐心误会与真相揭露的节奏把控
+          - 追妻过程中的挫折与坚持设计
+          - 最终和解或彻底BE的结局处理
+        tags: ["追妻", "虐恋", "后悔", "情感"]
+        priority: high
+
+      - name: "先婚后爱-agent"
+        title: "先婚后爱专家"
+        description: "设计从契约婚姻到真心相爱的情感发展路线"
+        core_concept: "从陌生到熟悉，从契约到真情的渐进式爱情"
+        features:
+          - 契约婚姻的合理设定
+          - 同居生活的日常甜蜜与摩擦
+          - 假戏真做的情感转折点设计
+          - 外部阻力与内部情感的冲突
+        tags: ["契约", "甜宠", "日久生情", "豪门"]
+        priority: high
+
+      - name: "婆媳大战-agent"
+        title: "婆媳关系专家"
+        description: "设计婆婆与媳妇之间的权力斗争与情感博弈"
+        core_concept: "两代人的价值观冲突与家庭权力更迭"
+        features:
+          - 婆婆人设的立体塑造（非脸谱化）
+          - 媳妇从忍受到反击的成长弧线
+          - 丈夫夹在中间的左右为难
+          - 和解或决裂的多种结局走向
+        tags: ["婆媳", "家庭", "现实", "伦理"]
+        priority: medium
+
+      - name: "豪门恩怨-agent"
+        title: "豪门恩怨专家"
+        description: "设计世家大族内部的权力斗争、财产争夺、情感纠葛"
+        core_concept: "金钱与权力的腐蚀，亲情在利益面前的考验"
+        features:
+          - 复杂的人物关系网设计
+          - 财产继承与争夺的核心冲突
+          - 各房之间的明争暗斗
+          - 真爱与利益的艰难抉择
+        tags: ["豪门", "商战", "权谋", "家族"]
+        priority: high
+
+      - name: "离婚逆袭-agent"
+        title: "离婚逆袭专家"
+        description: "设计离婚后女主/男主重获新生、事业爱情双丰收的励志故事"
+        core_concept: "离开错误的人，才能遇见更好的自己"
+        features:
+          - 失败婚姻的痛点刻画
+          - 离婚后的自我重建过程
+          - 前夫/前妻的后悔与纠缠
+          - 新恋情的甜蜜与成长
+        tags: ["离婚", "逆袭", "成长", "励志"]
+        priority: high
+
+      - name: "二婚甜宠-agent"
+        title: "二婚甜宠专家"
+        description: "设计再婚夫妻的甜蜜日常与前任问题的处理"
+        core_concept: "经历过失败，更懂得珍惜第二次机会"
+        features:
+          - 再婚的顾虑与勇气的刻画
+          - 前任的干扰与现任的信任
+          - 重组家庭的融合过程
+          - 比初婚更成熟的爱情观
+        tags: ["二婚", "甜宠", "治愈", "温馨"]
+        priority: medium
+
+      - name: "隐婚秘恋-agent"
+        title: "隐婚秘恋专家"
+        description: "设计隐婚夫妻在职场或社交圈的秘密关系维护"
+        core_concept: "地下恋情的心跳与刺激，秘密被揭露的危机"
+        features:
+          - 隐婚的合理动机设定
+          - 公开场合与私密空间的反差
+          - 秘密即将被揭露的紧张感
+          - 公开后的舆论与压力应对
+        tags: ["隐婚", "职场", "秘密", "刺激"]
+        priority: medium
+
+      - name: "契约婚姻-agent"
+        title: "契约婚姻专家"
+        description: "设计基于利益交换的契约婚姻如何演变成真爱"
+        core_concept: "从交易到真心，契约之下萌发的真情"
+        features:
+          - 契约的条款与约束设计
+          - 利益与情感的冲突
+          - 违约的代价与真心的价值
+          - 契约解除后的关系走向
+        tags: ["契约", "利益", "真情", "转变"]
+        priority: high
+
+      - name: "代孕风波-agent"
+        title: "代孕伦理专家"
+        description: "设计代孕引发的家庭伦理冲突与情感纠葛"
+        core_concept: "生命的归属、母性的本能、伦理的边界"
+        features:
+          - 代孕动机的多元呈现
+          - 代孕母亲与委托家庭的情感纠葛
+          - 孩子的身份认同问题
+          - 法律与伦理的灰色地带
+        tags: ["代孕", "伦理", "争议", "现实"]
+        priority: low
+
+      - name: "跨国婚姻-agent"
+        title: "跨国婚姻专家"
+        description: "设计跨文化婚姻中的文化冲突与融合"
+        core_concept: "爱情超越国界，但文化差异需要磨合"
+        features:
+          - 东西方文化差异的具体表现
+          - 家庭观念与生活方式的冲突
+          - 语言障碍与沟通方式
+          - 两种文化的融合与共生
+        tags: ["跨国", "文化", "差异", "融合"]
+        priority: low
+
+  # ==================== 2. 现言甜宠类 (10个) ====================
+  modern_romance:
+    category_name: "现言甜宠"
+    description: "现代背景下的甜蜜爱情故事"
+    agents:
+      - name: "霸总甜宠-agent"
+        title: "霸道总裁甜宠专家"
+        description: "设计霸道总裁与小白兔/独立女主的甜蜜爱情故事"
+        core_concept: "强势守护与温柔依赖的完美结合"
+        features:
+          - 霸总人设的立体塑造（非油腻）
+          - 女主独立性格与软萌特质的平衡
+          - 高甜互动与宠溺细节的描写
+          - 外部阻力下的坚定守护
+        tags: ["霸总", "甜宠", "守护", "宠溺"]
+        priority: high
+
+      - name: "姐弟恋-agent"
+        title: "姐弟恋专家"
+        description: "设计年龄差恋爱的甜蜜与挑战"
+        core_concept: "年龄不是距离，成熟与活力的互补"
+        features:
+          - 年龄差带来的观念差异
+          - 女方的顾虑与男方的坚持
+          - 外界质疑与内心坚定的对比
+          - 弟弟的成熟与姐姐的柔软
+        tags: ["姐弟恋", "年下", "甜宠", "成长"]
+        priority: high
+
+      - name: "青梅竹马-agent"
+        title: "青梅竹马专家"
+        description: "设计从小一起长大的恋人之间的深厚情感"
+        core_concept: "从玩伴到恋人，最熟悉的陌生人"
+        features:
+          - 童年回忆与成年现实的交织
+          - 太熟悉反而难以表白的心理
+          - 从朋友到恋人的微妙转变
+          - 共同成长的默契与羁绊
+        tags: ["青梅竹马", "成长", "羁绊", "暗恋"]
+        priority: high
+
+      - name: "破镜重圆-agent"
+        title: "破镜重圆专家"
+        description: "设计分手/离婚后重逢再续前缘的故事"
+        core_concept: "时间冲淡不了真爱，误会解开后更懂得珍惜"
+        features:
+          - 分手原因的合理设定与伏笔
+          - 重逢时的尴尬与心动
+          - 旧情复燃与未解心结的冲突
+          - 重新开始的勇气与决心
+        tags: ["破镜重圆", "重逢", "误会", "原谅"]
+        priority: high
+
+      - name: "暗恋成真-agent"
+        title: "暗恋成真专家"
+        description: "设计单向暗恋最终修成正果的甜蜜故事"
+        core_concept: "默默的喜欢，终于等到回应"
+        features:
+          - 暗恋心理的细腻刻画
+          - 暗恋者的卑微与勇敢
+          - 被暗恋者的迟钝与觉醒
+          - 双向奔赴的甜蜜时刻
+        tags: ["暗恋", "成真", "甜蜜", "青春"]
+        priority: high
+
+      - name: "职场恋爱-agent"
+        title: "职场恋爱专家"
+        description: "设计办公室恋情的发展与职场规则的冲突"
+        core_concept: "爱情与事业的平衡，职场规则的挑战"
+        features:
+          - 上下级恋爱的权力不对等
+          - 办公室恋情的保密与曝光
+          - 职场竞争与私人感情的冲突
+          - 事业与爱情的取舍
+        tags: ["职场", "办公室", "恋爱", "规则"]
+        priority: high
+
+      - name: "师生恋-agent"
+        title: "师生恋专家"
+        description: "设计师生之间的禁忌之恋"
+        core_concept: "禁忌的吸引力，身份差异下的真情"
+        features:
+          - 师生身份的伦理边界
+          - 毕业后的关系转变
+          - 外界的非议与内心的坚持
+          - 身份平等后的感情发展
+        tags: ["师生", "禁忌", "成长", "等待"]
+        priority: medium
+
+      - name: "网恋奔现-agent"
+        title: "网恋奔现专家"
+        description: "设计网络恋情发展到现实见面的故事"
+        core_concept: "虚拟与现实的碰撞，网友变恋人"
+        features:
+          - 网络世界的完美人设与现实落差
+          - 见面前的紧张与期待
+          - 奔现后的惊喜或失望
+          - 从线上到线下的适应过程
+        tags: ["网恋", "奔现", "反差", "真实"]
+        priority: medium
+
+      - name: "契约情侣-agent"
+        title: "契约情侣专家"
+        description: "设计假扮情侣最终假戏真做的故事"
+        core_concept: "演戏演得太投入，分不清真假"
+        features:
+          - 契约情侣的合理动机
+          - 演戏过程中的心动瞬间
+          - 假戏真做的纠结与甜蜜
+          - 契约结束后的关系走向
+        tags: ["契约", "假戏真做", "演戏", "心动"]
+        priority: medium
+
+      - name: "替身文学-agent"
+        title: "替身文学专家"
+        description: "设计替身与正主之间的情感纠葛"
+        core_concept: "我是替代品，还是独一无二的存在"
+        features:
+          - 替身的无奈与挣扎
+          - 正主的回归与冲击
+          - 被替身者的觉醒与选择
+          - 替身最终成为正主的可能
+        tags: ["替身", "白月光", "选择", "身份"]
+        priority: high
+
+  # ==================== 3. 虐心婚恋类 (10个) ====================
+  tragic_romance:
+    category_name: "虐心婚恋"
+    description: "以虐心、悲剧为主的婚恋故事"
+    agents:
+      - name: "虐恋情深-agent"
+        title: "虐恋情深专家"
+        description: "设计相爱相杀、互相折磨的虐心爱情"
+        core_concept: "爱得越深，伤得越重"
+        features:
+          - 误会与伤害的层层叠加
+          - 爱恨交织的复杂情感
+          - 无法放手的执念与纠缠
+          - 虐到极致的救赎或毁灭
+        tags: ["虐恋", "纠缠", "误会", "伤害"]
+        priority: high
+
+      - name: "强取豪夺-agent"
+        title: "强取豪夺专家"
+        description: "设计强势一方用手段得到爱人的故事"
+        core_concept: "得不到你的心，也要得到你的人"
+        features:
+          - 强取豪夺的合理动机与手段
+          - 被夺者的反抗与屈服
+          - 强权下的情感变化
+          - 最终是征服还是沦陷
+        tags: ["强取", "豪夺", "权势", "屈服"]
+        priority: high
+
+      - name: "出轨背叛-agent"
+        title: "出轨背叛专家"
+        description: "设计婚姻中的出轨、背叛与原谅或决裂"
+        core_concept: "信任的崩塌，爱情的背叛"
+        features:
+          - 出轨的诱因与心理描写
+          - 被背叛者的痛苦与挣扎
+          - 原谅的艰难与决裂的决绝
+          - 背叛后的关系重建或彻底结束
+        tags: ["出轨", "背叛", "原谅", "决裂"]
+        priority: medium
+
+      - name: "绝症离别-agent"
+        title: "绝症离别专家"
+        description: "设计因绝症导致的生离死别"
+        core_concept: "生命倒计时里的最后陪伴"
+        features:
+          - 绝症的发现与隐瞒
+          - 有限时间里的深情陪伴
+          - 生离死别的痛苦抉择
+          - 留下的回忆与思念
+        tags: ["绝症", "离别", "珍惜", "遗憾"]
+        priority: medium
+
+      - name: "失忆虐恋-agent"
+        title: "失忆虐恋专家"
+        description: "设计因失忆导致的爱情考验"
+        core_concept: "忘记了你，但心还记得"
+        features:
+          - 失忆的原因与记忆缺失
+          - 一方记得一方忘记的虐心
+          - 重新追求与再次相爱
+          - 记忆恢复后的情感冲击
+        tags: ["失忆", "记忆", "重逢", "考验"]
+        priority: high
+
+      - name: "复仇虐恋-agent"
+        title: "复仇虐恋专家"
+        description: "设计以复仇为目的却陷入真爱的虐心故事"
+        core_concept: "本想毁了你，却爱上了你"
+        features:
+          - 复仇动机的合理性
+          - 接近目标的精心策划
+          - 复仇与爱情的内心挣扎
+          - 真相揭露后的情感崩塌
+        tags: ["复仇", "虐恋", "欺骗", "真相"]
+        priority: high
+
+      - name: "门不当户不对-agent"
+        title: "门第差异专家"
+        description: "设计因家庭背景差异导致的爱情阻碍"
+        core_concept: "跨越阶层的爱情，现实的残酷考验"
+        features:
+          - 贫富差距的具体表现
+          - 双方家庭的反对与压力
+          - 自尊心与爱情的冲突
+          - 坚持或妥协的艰难选择
+        tags: ["门第", "阶层", "现实", "阻碍"]
+        priority: medium
+
+      - name: "三角虐恋-agent"
+        title: "三角虐恋专家"
+        description: "设计三人之间的复杂情感纠葛"
+        core_concept: "三个人的爱情，太拥挤"
+        features:
+          - 三角关系的形成与发展
+          - 三个人的痛苦与挣扎
+          - 选择与放弃的艰难
+          - 最终一人退出或三人纠缠
+        tags: ["三角", "纠葛", "选择", "痛苦"]
+        priority: high
+
+      - name: "禁忌之恋-agent"
+        title: "禁忌之恋专家"
+        description: "设计伦理道德不允许的爱情"
+        core_concept: "明知不可为而为之的禁忌吸引力"
+        features:
+          - 禁忌的边界与吸引力
+          - 社会压力与内心渴望的冲突
+          - 隐秘关系的刺激与痛苦
+          - 最终是冲破禁忌还是回归正轨
+        tags: ["禁忌", "伦理", "冲突", "挣扎"]
+        priority: medium
+
+      - name: "阴阳两隔-agent"
+        title: "阴阳两隔专家"
+        description: "设计生者与死者之间的爱情"
+        core_concept: "跨越生死的爱恋，永恒的思念"
+        features:
+          - 死亡的方式与冲击
+          - 生者的痛苦与执念
+          - 超自然元素的合理运用
+          - 放下执念或永远怀念的结局
+        tags: ["生死", "阴阳", "思念", "永恒"]
+        priority: low
+
+  # ==================== 4. 青春校园类 (10个) ====================
+  youth_campus:
+    category_name: "青春校园"
+    description: "校园背景下的青春故事"
+    agents:
+      - name: "校草校花-agent"
+        title: "校草校花专家"
+        description: "设计校园男神女神的恋爱故事"
+        core_concept: "青春里最耀眼的存在"
+        features:
+          - 校草/校花的人设塑造
+          - 校园风云人物的日常
+          - 从高岭之花到接地气的转变
+          - 校园爱情的纯真与美好
+        tags: ["校草", "校花", "校园", "风云"]
+        priority: high
+
+      - name: "学霸学渣-agent"
+        title: "学霸学渣专家"
+        description: "设计学霸与学渣之间的互补与爱情"
+        core_concept: "互补的两个人，共同成长的青春"
+        features:
+          - 学霸的严谨与学渣的随性
+          - 学习上的互助与进步
+          - 性格差异带来的摩擦与火花
+          - 从互相看不顺眼到互相欣赏
+        tags: ["学霸", "学渣", "互补", "成长"]
+        priority: high
+
+      - name: "校园霸凌-agent"
+        title: "校园霸凌专家"
+        description: "设计校园霸凌题材的反霸凌与救赎故事"
+        core_concept: "黑暗中的救赎，弱者的反抗"
+        features:
+          - 霸凌的真实刻画与心理影响
+          - 受害者的挣扎与反抗
+          - 救赎者的出现与帮助
+          - 走出阴影的成长与治愈
+        tags: ["霸凌", "救赎", "反抗", "治愈"]
+        priority: high
+
+      - name: "高考励志-agent"
+        title: "高考励志专家"
+        description: "设计高三学生备战高考的励志故事"
+        core_concept: "青春最热血的奋斗，改变命运的拼搏"
+        features:
+          - 高三生活的真实压力与奋斗
+          - 同学之间的互助与竞争
+          - 师生情的温暖与激励
+          - 高考后的成长与蜕变
+        tags: ["高考", "励志", "奋斗", "青春"]
+        priority: medium
+
+      - name: "社团风云-agent"
+        title: "社团风云专家"
+        description: "设计校园社团的活动与人物故事"
+        core_concept: "社团是青春的舞台，梦想起航的地方"
+        features:
+          - 各类社团的特色与活动
+          - 社团内部的矛盾与团结
+          - 社团之间的竞争与合作
+          - 社团经历对个人成长的影响
+        tags: ["社团", "活动", "梦想", "团队"]
+        priority: low
+
+      - name: "转学新生-agent"
+        title: "转学新生专家"
+        description: "设计转学生在新学校的适应与融入"
+        core_concept: "新环境新开始，陌生到熟悉的过程"
+        features:
+          - 转学的原因与背景
+          - 新环境的陌生与挑战
+          - 结识新朋友的过程
+          - 在新学校的成长与蜕变
+        tags: ["转学", "新生", "适应", "融入"]
+        priority: medium
+
+      - name: "暗恋日记-agent"
+        title: "暗恋日记专家"
+        description: "设计学生时代的暗恋心事"
+        core_concept: "青春里最甜蜜又心酸的秘密"
+        features:
+          - 暗恋心理的细腻描写
+          - 偷看、偶遇、制造机会的小心思
+          - 日记或信件的情感记录
+          - 暗恋成真或无疾而终的结局
+        tags: ["暗恋", "日记", "心事", "青春"]
+        priority: high
+
+      - name: "毕业季-agent"
+        title: "毕业季专家"
+        description: "设计毕业季的离别与告白"
+        core_concept: "青春的句点，也是新生活的起点"
+        features:
+          - 毕业前的最后时光
+          - 未说出口的话与未完成的遗憾
+          - 毕业告白或离别的不舍
+          - 各奔东西后的重逢或怀念
+        tags: ["毕业", "离别", "告白", "怀念"]
+        priority: medium
+
+      - name: "校霸改造-agent"
+        title: "校霸改造专家"
+        description: "设计校霸被感化改造的蜕变故事"
+        core_concept: "坏孩子的内心也有柔软的一面"
+        features:
+          - 校霸的坏与内心的脆弱
+          - 感化者的出现与影响
+          - 从叛逆到懂事的转变过程
+          - 改造后的成长与担当
+        tags: ["校霸", "改造", "感化", "蜕变"]
+        priority: high
+
+      - name: "艺术生-agent"
+        title: "艺术生专家"
+        description: "设计艺术生的专业学习与情感故事"
+        core_concept: "追求艺术梦想的青春，独特而闪耀"
+        features:
+          - 艺术生的专业训练与压力
+          - 艺术特长带来的独特魅力
+          - 艺考的准备与挑战
+          - 艺术梦想与现实的平衡
+        tags: ["艺术", "艺考", "梦想", "特长"]
+        priority: low
+
+  # ==================== 5. 脑洞幻想类 (10个) ====================
+  fantasy_brain:
+    category_name: "脑洞幻想"
+    description: "创意脑洞、奇幻设定的故事"
+    agents:
+      - name: "系统流-agent"
+        title: "系统流专家"
+        description: "设计主角获得系统辅助的金手指故事"
+        core_concept: "系统在手，天下我有"
+        features:
+          - 系统的类型与功能设计
+          - 任务与奖励的激励机制
+          - 系统与主角的互动关系
+          - 系统限制与反套路设计
+        tags: ["系统", "金手指", "任务", "升级"]
+        priority: high
+
+      - name: "穿书流-agent"
+        title: "穿书流专家"
+        description: "设计穿越到书中世界改变剧情的故事"
+        core_concept: "知道剧情走向，改变命运"
+        features:
+          - 穿越的方式与时机
+          - 原书剧情的利用与改变
+          - 与原书角色的互动
+          - 蝴蝶效应与剧情崩坏
+        tags: ["穿书", "剧情", "改变", "原著"]
+        priority: high
+
+      - name: "重生流-agent"
+        title: "重生流专家"
+        description: "设计重生回到过去改变命运的故事"
+        core_concept: "带着记忆重来一次，弥补遗憾"
+        features:
+          - 重生的时间点选择
+          - 前世遗憾与今生弥补
+          - 先知优势与蝴蝶效应
+          - 复仇与救赎的双重主线
+        tags: ["重生", "弥补", "复仇", "先知"]
+        priority: high
+
+      - name: "快穿流-agent"
+        title: "快穿流专家"
+        description: "设计穿越多个世界完成任务的故事"
+        core_concept: "一个宿主，多个世界，多样人生"
+        features:
+          - 不同世界的类型设计
+          - 任务目标与完成方式
+          - 世界之间的关联与伏笔
+          - 宿主的成长与最终归宿
+        tags: ["快穿", "世界", "任务", "多样"]
+        priority: high
+
+      - name: "无限流-agent"
+        title: "无限流专家"
+        description: "设计进入恐怖游戏/副本求生的故事"
+        core_concept: "在死亡游戏中挣扎求生"
+        features:
+          - 副本世界的恐怖设计
+          - 生存规则与解谜要素
+          - 团队协作与背叛
+          - 实力成长与最终真相
+        tags: ["无限", "恐怖", "求生", "副本"]
+        priority: high
+
+      - name: "规则怪谈-agent"
+        title: "规则怪谈专家"
+        description: "设计规则怪谈类的悬疑恐怖故事"
+        core_concept: "遵守规则才能活，但规则可能是陷阱"
+        features:
+          - 诡异规则的设定
+          - 违反规则的恐怖后果
+          - 规则背后的真相探索
+          - 在规则中求生的智慧
+        tags: ["规则", "怪谈", "恐怖", "悬疑"]
+        priority: high
+
+      - name: "异能觉醒-agent"
+        title: "异能觉醒专家"
+        description: "设计普通人觉醒超能力的故事"
+        core_concept: "平凡人获得不平凡的力量"
+        features:
+          - 异能的觉醒方式与类型
+          - 异能带来的便利与麻烦
+          - 异能者的世界与规则
+          - 用异能改变世界或守护所爱
+        tags: ["异能", "觉醒", "超能力", "特殊"]
+        priority: high
+
+      - name: "末日求生-agent"
+        title: "末日求生专家"
+        description: "设计末日背景下的生存故事"
+        core_concept: "末日降临，人性与生存的双重考验"
+        features:
+          - 末日类型与灾难设定
+          - 资源匮乏下的生存挑战
+          - 末日中的人性考验
+          - 建立新秩序或寻找希望
+        tags: ["末日", "求生", "生存", "人性"]
+        priority: high
+
+      - name: "修仙流-agent"
+        title: "修仙流专家"
+        description: "设计凡人修仙问道的故事"
+        core_concept: "逆天改命，追求长生大道"
+        features:
+          - 修仙体系与境界设定
+          - 功法、丹药、法宝的系统
+          - 门派、宗门的势力格局
+          - 从凡人到仙人的成长历程
+        tags: ["修仙", "问道", "长生", "境界"]
+        priority: high
+
+      - name: "洪荒流-agent"
+        title: "洪荒流专家"
+        description: "设计洪荒神话背景的故事"
+        core_concept: "天地初开，神魔争霸的洪荒世界"
+        features:
+          - 洪荒神话的世界观设定
+          - 圣人、大能的势力格局
+          - 量劫与因果的循环
+          - 在洪荒中求生存、谋发展
+        tags: ["洪荒", "神话", "圣人", "量劫"]
+        priority: medium
+
+  # ==================== 6. 古代言情类 (10个) ====================
+  ancient_romance:
+    category_name: "古代言情"
+    description: "古代背景下的爱情故事"
+    agents:
+      - name: "宫斗权谋-agent"
+        title: "宫斗权谋专家"
+        description: "设计后宫嫔妃之间的权力斗争"
+        core_concept: "一入宫门深似海，步步惊心求生存"
+        features:
+          - 后宫等级与势力分布
+          - 嫔妃之间的明争暗斗
+          - 皇帝的宠爱与制衡
+          - 从低位到高位的晋升之路
+        tags: ["宫斗", "权谋", "后宫", "生存"]
+        priority: high
+
+      - name: "宅斗嫡庶-agent"
+        title: "宅斗嫡庶专家"
+        description: "设计大家族内部的嫡庶之争"
+        core_concept: "深宅大院里的权力游戏"
+        features:
+          - 大家族的人物关系网
+          - 嫡庶之间的身份差异
+          - 妻妾之间的争宠斗争
+          - 从庶女到主母的逆袭
+        tags: ["宅斗", "嫡庶", "家族", "逆袭"]
+        priority: high
+
+      - name: "将军王妃-agent"
+        title: "将军王妃专家"
+        description: "设计将军与王妃/公主的爱情故事"
+        core_concept: "铁血柔情，战场与深宫的爱情"
+        features:
+          - 将军的战功与人格魅力
+          - 王妃/公主的身份与处境
+          - 朝堂与战场的双重压力
+          - 家国情怀与儿女情长的平衡
+        tags: ["将军", "王妃", "战场", "朝堂"]
+        priority: high
+
+      - name: "穿越古代-agent"
+        title: "穿越古代专家"
+        description: "设计现代人穿越到古代的生活"
+        core_concept: "带着现代知识在古代风生水起"
+        features:
+          - 穿越的方式与身份设定
+          - 现代知识在古代的应用
+          - 与古代人的观念冲突
+          - 改变历史或顺应历史的选择
+        tags: ["穿越", "古代", "知识", "改变"]
+        priority: high
+
+      - name: "王爷宠妃-agent"
+        title: "王爷宠妃专家"
+        description: "设计王爷与宠妃的甜蜜爱情"
+        core_concept: "霸道王爷的独宠，一生一世一双人"
+        features:
+          - 王爷的权势与深情
+          - 宠妃的独特魅力
+          - 王府后院的斗争
+          - 独宠一人的承诺与坚守
+        tags: ["王爷", "宠妃", "独宠", "深情"]
+        priority: high
+
+      - name: "医女毒妃-agent"
+        title: "医女毒妃专家"
+        description: "设计医术高超或善用毒的女主故事"
+        core_concept: "医毒双绝，救人杀人一念之间"
+        features:
+          - 医术/毒术的精湛描写
+          - 医女/毒妃的特殊身份
+          - 用医术救人或用毒术复仇
+          - 医术与权谋的结合
+        tags: ["医女", "毒妃", "医术", "复仇"]
+        priority: high
+
+      - name: "江湖武侠-agent"
+        title: "江湖武侠专家"
+        description: "设计江湖儿女的武侠爱情故事"
+        core_concept: "江湖路远，侠骨柔情"
+        features:
+          - 江湖门派与势力格局
+          - 武功招式的精彩描写
+          - 江湖恩怨与儿女情长
+          - 侠客的自由与责任
+        tags: ["江湖", "武侠", "门派", "恩怨"]
+        priority: medium
+
+      - name: "女尊世界-agent"
+        title: "女尊世界专家"
+        description: "设计女尊男卑世界的爱情故事"
+        core_concept: "颠倒的性别权力，不同的爱情模式"
+        features:
+          - 女尊社会的规则与制度
+          - 女性掌权者与男性依附者
+          - 性别角色颠倒带来的冲突
+          - 在女尊世界中追求真爱
+        tags: ["女尊", "女强", "颠倒", "权力"]
+        priority: medium
+
+      - name: "和亲公主-agent"
+        title: "和亲公主专家"
+        description: "设计和亲公主的异国爱情"
+        core_concept: "为国和亲，在异国他乡寻找真爱"
+        features:
+          - 和亲的政治背景与使命
+          - 异国宫廷的生存挑战
+          - 与异国君主的爱情发展
+          - 家国大义与个人幸福的抉择
+        tags: ["和亲", "公主", "异国", "使命"]
+        priority: medium
+
+      - name: "太监文-agent"
+        title: "太监文专家"
+        description: "设计男主是太监的特殊爱情故事"
+        core_concept: "残缺的身体，完整的爱情"
+        features:
+          - 太监身份的特殊性
+          - 身体残缺与心理完整的对比
+          - 宫廷中的权力与生存
+          - 超越身体的精神之爱
+        tags: ["太监", "残缺", "精神", "特殊"]
+        priority: low
+
+  # ==================== 7. 玄幻仙侠类 (10个) ====================
+  fantasy_xianxia:
+    category_name: "玄幻仙侠"
+    description: "玄幻、仙侠背景的奇幻故事"
+    agents:
+      - name: "废柴逆袭-agent"
+        title: "废柴逆袭专家"
+        description: "设计废柴主角逆袭成神的成长故事"
+        core_concept: "天生废柴，逆天改命"
+        features:
+          - 废柴身份的开局设定
+          - 奇遇或金手指的获得
+          - 从弱到强的升级过程
+          - 打脸曾经看不起自己的人
+        tags: ["废柴", "逆袭", "升级", "打脸"]
+        priority: high
+
+      - name: "天才流-agent"
+        title: "天才流专家"
+        description: "设计天才主角一路碾压的成长故事"
+        core_concept: "天生我才，傲视群雄"
+        features:
+          - 天才人设的塑造
+          - 同辈无敌的碾压感
+          - 越级挑战的爽快感
+          - 天才之间的惺惺相惜
+        tags: ["天才", "碾压", "无敌", "傲视"]
+        priority: high
+
+      - name: "师徒恋-agent"
+        title: "师徒恋专家"
+        description: "设计师徒之间的禁忌之恋"
+        core_concept: "一日为师终身为父，但爱情超越了伦理"
+        features:
+          - 师徒身份的伦理边界
+          - 师父的隐忍与徒弟的执着
+          - 修仙界的非议与压力
+          - 突破禁忌的勇气与代价
+        tags: ["师徒", "禁忌", "伦理", "执着"]
+        priority: high
+
+      - name: "魔尊仙尊-agent"
+        title: "魔尊仙尊专家"
+        description: "设计魔尊与仙尊之间的爱恨情仇"
+        core_concept: "正邪不两立，但爱情不分正邪"
+        features:
+          - 魔尊与仙尊的人设对比
+          - 正邪势力的冲突与对立
+          - 身份差异带来的阻碍
+          - 正邪合流或殉道的结局
+        tags: ["魔尊", "仙尊", "正邪", "对立"]
+        priority: high
+
+      - name: "神兽契约-agent"
+        title: "神兽契约专家"
+        description: "设计与神兽签订契约共同成长的故事"
+        core_concept: "人兽同心，其利断金"
+        features:
+          - 神兽的种类与能力设定
+          - 契约的签订与绑定
+          - 人兽之间的情感培养
+          - 神兽进化与主人成长
+        tags: ["神兽", "契约", "伙伴", "成长"]
+        priority: medium
+
+      - name: "炼丹炼器-agent"
+        title: "炼丹炼器专家"
+        description: "设计炼丹师或炼器师的成长故事"
+        core_concept: "一炉丹药定生死，一件法宝定乾坤"
+        features:
+          - 炼丹/炼器的技艺体系
+          - 丹药/法宝的等级与效果
+          - 炼丹/炼器的过程描写
+          - 以丹药/法宝闻名的成长路
+        tags: ["炼丹", "炼器", "技艺", "辅助"]
+        priority: medium
+
+      - name: "秘境探险-agent"
+        title: "秘境探险专家"
+        description: "设计探索秘境寻宝冒险的故事"
+        core_concept: "秘境藏宝，险中求胜"
+        features:
+          - 秘境的类型与危险设定
+          - 寻宝的过程与机关解谜
+          - 与人争夺宝物的冲突
+          - 秘境中的奇遇与收获
+        tags: ["秘境", "探险", "寻宝", "冒险"]
+        priority: medium
+
+      - name: "宗门争霸-agent"
+        title: "宗门争霸专家"
+        description: "设计宗门之间的势力争斗"
+        core_concept: "宗门荣耀，生死与共"
+        features:
+          - 各大宗门的特色与实力
+          - 宗门之间的恩怨与竞争
+          - 弟子为宗门而战的热血
+          - 宗门兴衰与弟子命运
+        tags: ["宗门", "争霸", "势力", "荣耀"]
+        priority: medium
+
+      - name: "渡劫飞升-agent"
+        title: "渡劫飞升专家"
+        description: "设计渡劫飞升的修仙终极考验"
+        core_concept: "九死一生的天劫，飞升成仙的终极目标"
+        features:
+          - 天劫的类型与威力设定
+          - 渡劫的准备与心魔考验
+          - 飞升后的仙界生活
+          - 渡劫失败或成功的不同结局
+        tags: ["渡劫", "飞升", "天劫", "仙界"]
+        priority: medium
+
+      - name: "转世轮回-agent"
+        title: "转世轮回专家"
+        description: "设计转世轮回寻找前世爱人的故事"
+        core_concept: "轮回百世，只为寻你"
+        features:
+          - 前世的羁绊与遗憾
+          - 转世后的重逢与相认
+          - 前世记忆觉醒的过程
+          - 打破轮回或接受命运的抉择
+        tags: ["转世", "轮回", "前世", "寻你"]
+        priority: high
+
+  # ==================== 8. 悬疑惊悚类 (10个) ====================
+  suspense_thriller:
+    category_name: "悬疑惊悚"
+    description: "悬疑、推理、恐怖题材的故事"
+    agents:
+      - name: "推理探案-agent"
+        title: "推理探案专家"
+        description: "设计侦探推理破案的故事"
+        core_concept: "抽丝剥茧，还原真相"
+        features:
+          - 案件的设计与线索布置
+          - 侦探的推理过程
+          - 嫌疑人的排查与排除
+          - 真相揭露的反转与震撼
+        tags: ["推理", "探案", "侦探", "真相"]
+        priority: high
+
+      - name: "悬疑追凶-agent"
+        title: "悬疑追凶专家"
+        description: "设计追查凶手、复仇或正义的故事"
+        core_concept: "追凶千里，不死不休"
+        features:
+          - 案件的起因与动机
+          - 追查过程的曲折与危险
+          - 与凶手的斗智斗勇
+          - 正义与私刑的边界探讨
+        tags: ["追凶", "悬疑", "复仇", "正义"]
+        priority: high
+
+      - name: "心理惊悚-agent"
+        title: "心理惊悚专家"
+        description: "设计心理恐怖、精神折磨的故事"
+        core_concept: "最可怕的恐怖来自内心"
+        features:
+          - 心理压力的层层叠加
+          - 现实与幻觉的模糊边界
+          - 精神崩溃的过程描写
+          - 心理疾病的真实刻画
+        tags: ["心理", "惊悚", "恐怖", "精神"]
+        priority: high
+
+      - name: "密室逃脱-agent"
+        title: "密室逃脱专家"
+        description: "设计密室环境下的逃脱与生存"
+        core_concept: "封闭空间里的生死考验"
+        features:
+          - 密室的设定与机关设计
+          - 逃脱线索的隐藏与发现
+          - 时间压力与生存危机
+          - 人性的考验与选择
+        tags: ["密室", "逃脱", "机关", "生存"]
+        priority: medium
+
+      - name: "连环杀手-agent"
+        title: "连环杀手专家"
+        description: "设计连环杀人案件的侦破"
+        core_concept: "与恶魔的心理博弈"
+        features:
+          - 连环杀手的作案模式
+          - 犯罪心理的深度剖析
+          - 警方与杀手的猫鼠游戏
+          - 最终对决的紧张刺激
+        tags: ["连环", "杀手", "犯罪", "心理"]
+        priority: medium
+
+      - name: "灵异恐怖-agent"
+        title: "灵异恐怖专家"
+        description: "设计鬼魂、灵异事件的恐怖故事"
+        core_concept: "人鬼殊途，阴阳两界的恐怖"
+        features:
+          - 灵异事件的诡异设定
+          - 恐怖氛围的营造
+          - 鬼魂的成因与执念
+          - 驱鬼或和解的结局
+        tags: ["灵异", "恐怖", "鬼魂", "阴阳"]
+        priority: medium
+
+      - name: "犯罪心理-agent"
+        title: "犯罪心理专家"
+        description: "设计犯罪者的心理分析与动机挖掘"
+        core_concept: "理解罪恶，才能阻止罪恶"
+        features:
+          - 犯罪者的心理画像
+          - 童年创伤与犯罪成因
+          - 犯罪动机的深层挖掘
+          - 预防犯罪的心理干预
+        tags: ["犯罪", "心理", "动机", "分析"]
+        priority: medium
+
+      - name: "法医鉴证-agent"
+        title: "法医鉴证专家"
+        description: "设计法医通过尸检破案的故事"
+        core_concept: "尸体不会说谎，真相藏在细节中"
+        features:
+          - 法医的专业知识运用
+          - 尸检过程的科学描写
+          - 从尸体上发现的线索
+          - 科学证据与推理的结合
+        tags: ["法医", "鉴证", "科学", "细节"]
+        priority: medium
+
+      - name: "失踪人口-agent"
+        title: "失踪人口专家"
+        description: "设计寻找失踪人口的悬疑故事"
+        core_concept: "消失的真相，寻找的希望"
+        features:
+          - 失踪案件的复杂性
+          - 寻找过程的艰难与线索
+          - 失踪背后的隐情
+          - 生还或遇害的真相揭露
+        tags: ["失踪", "寻找", "隐情", "真相"]
+        priority: low
+
+      - name: "时间循环-agent"
+        title: "时间循环专家"
+        description: "设计陷入时间循环破解谜团的故事"
+        core_concept: "重复的时间，唯一的出路"
+        features:
+          - 时间循环的触发条件
+          - 每次循环的微小变化
+          - 利用循环收集线索
+          - 打破循环的关键行动
+        tags: ["时间", "循环", "重复", "破解"]
+        priority: high
+
+  # ==================== 9. 男频衍生类 (10个) ====================
+  male_derivative:
+    category_name: "男频衍生"
+    description: "基于热门男频IP或类型的衍生故事"
+    agents:
+      - name: "四合院-agent"
+        title: "四合院专家"
+        description: "设计四合院背景的年代生活故事"
+        core_concept: "四合院里的家长里短与时代变迁"
+        features:
+          - 四合院的人物关系网
+          - 年代背景的真实还原
+          - 邻里之间的互助与矛盾
+          - 时代变迁中的个人命运
+        tags: ["四合院", "年代", "邻里", "生活"]
+        priority: medium
+
+      - name: "特种兵王-agent"
+        title: "特种兵王专家"
+        description: "设计特种兵退役后的都市生活"
+        core_concept: "兵王归来，都市纵横"
+        features:
+          - 特种兵的强悍身手
+          - 退役后的身份转换
+          - 都市中的正义执行
+          - 红颜知己与兄弟情义
+        tags: ["特种兵", "兵王", "都市", "正义"]
+        priority: high
+
+      - name: "神医下山-agent"
+        title: "神医下山专家"
+        description: "设计隐世神医下山济世的故事"
+        core_concept: "医术通神，下山济世"
+        features:
+          - 神医的绝世医术
+          - 下山后的都市生活
+          - 治病救人的功德积累
+          - 与各方势力的交集
+        tags: ["神医", "下山", "医术", "济世"]
+        priority: high
+
+      - name: "赘婿逆袭-agent"
+        title: "赘婿逆袭专家"
+        description: "设计上门女婿逆袭崛起的故事"
+        core_concept: "入赘为婿，隐忍待发，一朝崛起"
+        features:
+          - 赘婿的隐忍与屈辱
+          - 隐藏身份或实力的设定
+          - 身份揭露后的震撼
+          - 打脸曾经看不起自己的人
+        tags: ["赘婿", "逆袭", "隐忍", "崛起"]
+        priority: high
+
+      - name: "都市修仙-agent"
+        title: "都市修仙专家"
+        description: "设计在现代社会修仙的故事"
+        core_concept: "现代都市中的修仙传奇"
+        features:
+          - 现代背景与修仙体系的融合
+          - 修仙者在都市的特殊能力
+          - 与现代科技文明的碰撞
+          - 隐藏身份与装逼打脸
+        tags: ["都市", "修仙", "现代", "融合"]
+        priority: high
+
+      - name: "盗墓探险-agent"
+        title: "盗墓探险专家"
+        description: "设计盗墓寻宝探险的故事"
+        core_concept: "古墓藏宝，险中求胜"
+        features:
+          - 古墓的机关与危险设计
+          - 盗墓门派与技艺传承
+          - 宝物的诱惑与诅咒
+          - 探险团队的协作与背叛
+        tags: ["盗墓", "探险", "古墓", "机关"]
+        priority: medium
+
+      - name: "官场沉浮-agent"
+        title: "官场沉浮专家"
+        description: "设计官场中的权力斗争与升迁"
+        core_concept: "官场如战场，步步为营"
+        features:
+          - 官场规则与潜规则
+          - 站队与投靠的抉择
+          - 政绩与关系的平衡
+          - 从基层到高位的升迁路
+        tags: ["官场", "权力", "斗争", "升迁"]
+        priority: medium
+
+      - name: "商业帝国-agent"
+        title: "商业帝国专家"
+        description: "设计从零开始建立商业帝国的故事"
+        core_concept: "商海沉浮，建立商业传奇"
+        features:
+          - 商业眼光与机遇把握
+          - 创业过程的艰辛与突破
+          - 商业竞争与阴谋诡计
+          - 从白手起家到商业巨头
+        tags: ["商业", "创业", "帝国", "财富"]
+        priority: high
+
+      - name: "体育竞技-agent"
+        title: "体育竞技专家"
+        description: "设计体育竞技题材的成长故事"
+        core_concept: "汗水与荣耀，竞技场上的拼搏"
+        features:
+          - 体育项目的专业描写
+          - 训练过程的艰辛与坚持
+          - 比赛中的紧张与刺激
+          - 从新人到冠军的奋斗
+        tags: ["体育", "竞技", "比赛", "冠军"]
+        priority: low
+
+      - name: "美食文-agent"
+        title: "美食文专家"
+        description: "设计美食题材的故事"
+        core_concept: "以食为天，美食中的文化与人生"
+        features:
+          - 美食的精致描写
+          - 烹饪技艺的传承与创新
+          - 美食背后的故事与情感
+          - 通过美食连接人与人
+        tags: ["美食", "烹饪", "文化", "情感"]
+        priority: low
+
+  # ==================== 10. 女频衍生类 (10个) ====================
+  female_derivative:
+    category_name: "女频衍生"
+    description: "基于热门女频IP或类型的衍生故事"
+    agents:
+      - name: "真假千金-agent"
+        title: "真假千金专家"
+        description: "设计真假千金身份互换或对峙的故事"
+        core_concept: "身份的错位，真假的较量"
+        features:
+          - 真假千金的身份设定
+          - 身份揭露的冲击与反应
+          - 真千金回归后的适应
+          - 假千金的结局走向
+        tags: ["真假", "千金", "身份", "错位"]
+        priority: high
+
+      - name: "团宠文-agent"
+        title: "团宠文专家"
+        description: "设计被众人宠爱的女主故事"
+        core_concept: "集万千宠爱于一身"
+        features:
+          - 团宠女主的可爱人设
+          - 各方大佬的宠爱方式
+          - 被欺负后的强力撑腰
+          - 甜蜜温馨的氛围营造
+        tags: ["团宠", "宠爱", "温馨", "甜蜜"]
+        priority: high
+
+      - name: "养崽文-agent"
+        title: "养崽文专家"
+        description: "设计养娃、带娃的温馨故事"
+        core_concept: "萌娃来袭，治愈人心"
+        features:
+          - 萌娃的可爱描写
+          - 带娃过程中的趣事
+          - 孩子的成长与教育
+          - 亲子关系的温馨呈现
+        tags: ["养崽", "萌娃", "亲子", "温馨"]
+        priority: high
+
+      - name: "大女主-agent"
+        title: "大女主专家"
+        description: "设计女主独立自强、事业爱情双丰收的故事"
+        core_concept: "不靠男人，自己就是女王"
+        features:
+          - 女主的独立人格塑造
+          - 事业上的拼搏与成就
+          - 感情中的主动权掌控
+          - 从弱小到强大的成长
+        tags: ["大女主", "独立", "自强", "女王"]
+        priority: high
+
+      - name: "女性互助-agent"
+        title: "女性互助专家"
+        description: "设计女性之间互相帮助、共同成长的故事"
+        core_concept: "girls help girls，女性力量"
+        features:
+          - 女性友谊的真挚描写
+          - 互相帮助的具体情节
+          - 共同成长的过程
+          - 女性力量的展现
+        tags: ["女性", "互助", "友谊", "成长"]
+        priority: medium
+
+      - name: "娱乐圈-agent"
+        title: "娱乐圈专家"
+        description: "设计娱乐圈背景的明星故事"
+        core_concept: "星光璀璨，娱乐圈的光鲜与黑暗"
+        features:
+          - 娱乐圈的等级与规则
+          - 明星的光环与压力
+          - 粉丝与流量的影响
+          - 从新人到顶流的奋斗
+        tags: ["娱乐圈", "明星", "流量", "奋斗"]
+        priority: high
+
+      - name: "时尚圈-agent"
+        title: "时尚圈专家"
+        description: "设计时尚圈背景的故事"
+        core_concept: "时尚前沿，美丽与权力的游戏"
+        features:
+          - 时尚圈的专业知识
+          - 设计师的创作过程
+          - 时尚杂志与品牌运作
+          - 美丽背后的竞争与压力
+        tags: ["时尚", "设计", "美丽", "竞争"]
+        priority: low
+
+      - name: "主播网红-agent"
+        title: "主播网红专家"
+        description: "设计主播、网红的成名故事"
+        core_concept: "流量时代，网红的崛起与沉浮"
+        features:
+          - 直播行业的生态
+          - 网红的成名之路
+          - 流量与变现的运作
+          - 网络舆论的影响
+        tags: ["主播", "网红", "流量", "直播"]
+        priority: medium
+
+      - name: "种田文-agent"
+        title: "种田文专家"
+        description: "设计古代/异世种田致富的故事"
+        core_concept: "田园生活，自给自足的惬意"
+        features:
+          - 种田致富的具体过程
+          - 田园生活的悠闲描写
+          - 邻里关系的和谐相处
+          - 从贫穷到富裕的奋斗
+        tags: ["种田", "田园", "致富", "悠闲"]
+        priority: medium
+
+      - name: "基建文-agent"
+        title: "基建文专家"
+        description: "设计建设发展、改变世界的基建故事"
+        core_concept: "从无到有，建设美好世界"
+        features:
+          - 基建项目的规划与实施
+          - 技术知识的合理运用
+          - 建设过程中的困难与突破
+          - 改变世界的影响力
+        tags: ["基建", "建设", "发展", "改变"]
+        priority: low

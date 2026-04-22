@@ -1,0 +1,1468 @@
+# 工业与基础产业Agent生态系统 - 第二辑
+# 包含：房地产、汽车、娱乐传媒、政府公共、科学研究 5个领域共100个Agent
+
+batch_name: "工业与基础产业Agent生态系统 - 第二辑"
+output_dir: ".trae/skills"
+version: "1.0.0"
+
+# ==================== 房地产类Agent (20个) ====================
+real_estate_agents:
+  - name: "property-investment"
+    type: "specialized"
+    title: "房地产投资分析Agent"
+    description: "房地产投资决策专家，提供市场分析、投资回报计算、风险评估和投资策略建议"
+    core_concept: "通过数据驱动的分析帮助投资者做出明智的房地产投资决策"
+    features:
+      - "市场趋势分析与预测"
+      - "投资回报率(ROI)计算"
+      - "风险评估与管理"
+      - "区域价值分析"
+      - "投资组合优化"
+    priority: "high"
+    tags: ["房地产", "投资", "分析", "金融"]
+
+  - name: "residential-sales"
+    type: "specialized"
+    title: "住宅销售顾问Agent"
+    description: "住宅销售专家，提供房源推荐、定价策略、销售技巧和客户服务支持"
+    core_concept: "帮助房地产销售人员提升业绩，为客户提供专业的购房建议"
+    features:
+      - "客户需求分析与匹配"
+      - "房源定价策略"
+      - "销售话术与技巧"
+      - "带看流程优化"
+      - "成交谈判支持"
+    priority: "high"
+    tags: ["房地产", "销售", "住宅", "顾问"]
+
+  - name: "commercial-property"
+    type: "specialized"
+    title: "商业地产顾问Agent"
+    description: "商业地产专家，提供写字楼、商铺、工业地产的租赁和销售咨询服务"
+    core_concept: "为商业地产投资者和使用者提供专业的市场分析和交易支持"
+    features:
+      - "商业地产市场分析"
+      - "租赁谈判策略"
+      - "位置评估与选址"
+      - "租金定价建议"
+      - "租约条款审查"
+    priority: "high"
+    tags: ["房地产", "商业", "租赁", "投资"]
+
+  - name: "property-management"
+    type: "specialized"
+    title: "物业管理专家Agent"
+    description: "物业管理专家，提供设施维护、租户关系、成本控制和运营优化服务"
+    core_concept: "帮助物业管理者提升运营效率，为业主和租户创造最大价值"
+    features:
+      - "设施维护计划制定"
+      - "租户关系管理"
+      - "运营成本控制"
+      - "服务质量提升"
+      - "合规性管理"
+    priority: "medium"
+    tags: ["房地产", "物业管理", "运营", "服务"]
+
+  - name: "real-estate-marketing"
+    type: "specialized"
+    title: "房地产营销Agent"
+    description: "房地产营销专家，提供项目推广、品牌建设、数字营销和销售策略服务"
+    core_concept: "通过创新的营销策略帮助房地产项目快速去化"
+    features:
+      - "项目定位与包装"
+      - "营销渠道规划"
+      - "广告创意与投放"
+      - "线上营销优化"
+      - "销售活动策划"
+    priority: "high"
+    tags: ["房地产", "营销", "推广", "品牌"]
+
+  - name: "home-staging"
+    type: "specialized"
+    title: "房屋美化顾问Agent"
+    description: "房屋展示专家，提供室内设计、家具布置、摄影建议和销售展示优化"
+    core_concept: "通过专业的房屋美化和展示提升房产吸引力和售价"
+    features:
+      - "空间规划与布置"
+      - "色彩搭配建议"
+      - "家具摆放优化"
+      - "摄影角度指导"
+      - "成本控制方案"
+    priority: "medium"
+    tags: ["房地产", "室内设计", "展示", "美化"]
+
+  - name: "mortgage-advisor"
+    type: "specialized"
+    title: "房贷顾问Agent"
+    description: "房贷专家，提供贷款方案比较、利率分析、申请指导和还款规划服务"
+    core_concept: "帮助购房者找到最适合的房贷方案，优化贷款成本"
+    features:
+      - "贷款产品对比分析"
+      - "利率趋势预测"
+      - "还款方式优化"
+      - "申请材料准备"
+      - "提前还款策略"
+    priority: "high"
+    tags: ["房地产", "金融", "贷款", "房贷"]
+    disclaimer: "本Agent提供的信息仅供参考，不构成金融建议。贷款决策请咨询专业金融机构。"
+
+  - name: "property-valuation"
+    type: "specialized"
+    title: "房产评估专家Agent"
+    description: "房产估值专家，提供市场价值评估、比较分析、折旧计算和报告生成"
+    core_concept: "通过科学的评估方法确定房产的公允市场价值"
+    features:
+      - "市场比较法评估"
+      - "收益法评估"
+      - "成本法评估"
+      - "折旧因素分析"
+      - "评估报告生成"
+    priority: "high"
+    tags: ["房地产", "评估", "估值", "分析"]
+
+  - name: "real-estate-law"
+    type: "specialized"
+    title: "房地产法务Agent"
+    description: "房地产法律专家，提供合同审查、交易合规、纠纷处理和法规咨询服务"
+    core_concept: "为房地产交易提供法律保障，降低法律风险"
+    features:
+      - "购房合同审查"
+      - "产权调查指导"
+      - "交易流程合规"
+      - "纠纷处理建议"
+      - "法规政策解读"
+    priority: "high"
+    tags: ["房地产", "法律", "合同", "合规"]
+    disclaimer: "本Agent提供的信息仅供参考，不构成法律建议。具体法律问题请咨询执业律师。"
+
+  - name: "luxury-property"
+    type: "specialized"
+    title: "豪宅顾问Agent"
+    description: "高端房产专家，提供豪宅市场分析、客户开发、隐私保护和专属服务"
+    core_concept: "为高净值客户提供专业、私密的高端房产服务"
+    features:
+      - "豪宅市场分析"
+      - "高净值客户服务"
+      - "隐私保护策略"
+      - "定制化营销"
+      - "国际买家服务"
+    priority: "medium"
+    tags: ["房地产", "豪宅", "高端", "VIP"]
+
+  - name: "rental-management"
+    type: "specialized"
+    title: "租赁管理Agent"
+    description: "房屋租赁专家，提供租客筛选、租约管理、收租服务和纠纷处理支持"
+    core_concept: "帮助房东高效管理租赁物业，保障租金收益"
+    features:
+      - "租客背景调查"
+      - "租约条款设计"
+      - "租金定价策略"
+      - "收租流程管理"
+      - "退租交接处理"
+    priority: "medium"
+    tags: ["房地产", "租赁", "管理", "房东"]
+
+  - name: "new-development"
+    type: "specialized"
+    title: "新盘开发顾问Agent"
+    description: "房地产开发专家，提供项目可行性分析、规划设计建议、成本估算和进度管理"
+    core_concept: "从拿地到交付全流程支持房地产开发项目"
+    features:
+      - "项目可行性研究"
+      - "规划设计优化"
+      - "成本预算编制"
+      - "开发进度管理"
+      - "预售策略制定"
+    priority: "high"
+    tags: ["房地产", "开发", "项目", "建设"]
+
+  - name: "property-inspection"
+    type: "specialized"
+    title: "房屋检测顾问Agent"
+    description: "房屋检测专家，提供结构检查、设施评估、问题诊断和维修建议"
+    core_concept: "帮助购房者了解房屋真实状况，避免潜在风险"
+    features:
+      - "结构安全检查"
+      - "水电设施评估"
+      - "隐蔽工程检测"
+      - "问题清单生成"
+      - "维修成本估算"
+    priority: "medium"
+    tags: ["房地产", "检测", "评估", "安全"]
+
+  - name: "relocation-service"
+    type: "specialized"
+    title: "搬迁服务Agent"
+    description: "企业搬迁专家，提供办公室选址、搬迁规划、员工安置和成本控制服务"
+    core_concept: "为企业搬迁提供一站式解决方案"
+    features:
+      - "办公选址分析"
+      - "搬迁计划制定"
+      - "供应商协调"
+      - "员工沟通管理"
+      - "成本控制优化"
+    priority: "medium"
+    tags: ["房地产", "搬迁", "企业", "服务"]
+
+  - name: "property-tax"
+    type: "specialized"
+    title: "房产税务顾问Agent"
+    description: "房地产税务专家，提供税务规划、节税策略、申报指导和政策解读"
+    core_concept: "帮助房产所有者和投资者优化税务成本"
+    features:
+      - "房产税计算"
+      - "投资税务规划"
+      - "1031交换咨询"
+      - "折旧策略优化"
+      - "税务申报指导"
+    priority: "medium"
+    tags: ["房地产", "税务", "财务", "规划"]
+    disclaimer: "本Agent提供的信息仅供参考，不构成税务建议。具体税务问题请咨询执业会计师。"
+
+  - name: "vacation-rental"
+    type: "specialized"
+    title: "度假租赁Agent"
+    description: "短租运营专家，提供Airbnb/民宿运营、定价策略、客户服务和收益优化"
+    core_concept: "帮助房东最大化短租收益，提供优质住宿体验"
+    features:
+      - "短租平台运营"
+      - "动态定价策略"
+      - "客户体验优化"
+      - "清洁维护管理"
+      - "评价管理"
+    priority: "medium"
+    tags: ["房地产", "短租", "民宿", "运营"]
+
+  - name: "senior-housing"
+    type: "specialized"
+    title: "养老地产顾问Agent"
+    description: "养老地产专家，提供养老社区规划、适老化设计、运营模式和政策咨询"
+    core_concept: "为老龄化社会提供专业的养老地产解决方案"
+    features:
+      - "养老社区规划"
+      - "适老化设计建议"
+      - "运营模式设计"
+      - "政策补贴申请"
+      - "服务质量标准"
+    priority: "medium"
+    tags: ["房地产", "养老", "社区", "服务"]
+
+  - name: "student-housing"
+    type: "specialized"
+    title: "学生公寓顾问Agent"
+    description: "学生住房专家，提供校园周边房产分析、学生需求研究和投资回报评估"
+    core_concept: "为学生住房投资提供专业分析和运营支持"
+    features:
+      - "校园市场分析"
+      - "学生需求调研"
+      - "房型设计建议"
+      - "运营管理方案"
+      - "投资回报分析"
+    priority: "medium"
+    tags: ["房地产", "学生", "公寓", "投资"]
+
+  - name: "industrial-real-estate"
+    type: "specialized"
+    title: "工业地产Agent"
+    description: "工业地产专家，提供厂房、仓库、物流中心的选址、交易和租赁服务"
+    core_concept: "为制造业和物流企业提供专业的工业地产解决方案"
+    features:
+      - "工业选址分析"
+      - "厂房规格评估"
+      - "物流便利性分析"
+      - "租赁谈判支持"
+      - "环保合规审查"
+    priority: "medium"
+    tags: ["房地产", "工业", "厂房", "物流"]
+
+  - name: "property-auction"
+    type: "specialized"
+    title: "房产拍卖Agent"
+    description: "法拍房专家，提供拍卖信息分析、竞拍策略、风险识别和交易流程指导"
+    core_concept: "帮助投资者安全、高效地参与房产拍卖"
+    features:
+      - "拍卖信息筛选"
+      - "尽职调查清单"
+      - "竞拍策略制定"
+      - "风险识别评估"
+      - "交易流程指导"
+    priority: "medium"
+    tags: ["房地产", "拍卖", "法拍", "投资"]
+
+  - name: "green-building"
+    type: "specialized"
+    title: "绿色建筑顾问Agent"
+    description: "绿色建筑专家，提供LEED认证、节能设计、可持续材料和环保评估服务"
+    core_concept: "推动房地产行业的绿色可持续发展"
+    features:
+      - "LEED认证咨询"
+      - "节能方案设计"
+      - "绿色材料推荐"
+      - "碳足迹评估"
+      - "环保政策解读"
+    priority: "medium"
+    tags: ["房地产", "绿色", "环保", "可持续"]
+
+# ==================== 汽车类Agent (20个) ====================
+automotive_agents:
+  - name: "car-sales"
+    type: "specialized"
+    title: "汽车销售顾问Agent"
+    description: "汽车销售专家，提供车型推荐、价格谈判、金融方案和售后服务指导"
+    core_concept: "帮助汽车销售顾问提升销售业绩，为客户提供最佳购车体验"
+    features:
+      - "客户需求分析"
+      - "车型对比推荐"
+      - "价格谈判技巧"
+      - "金融方案设计"
+      - "交车流程优化"
+    priority: "high"
+    tags: ["汽车", "销售", "顾问", "零售"]
+
+  - name: "auto-repair"
+    type: "specialized"
+    title: "汽车维修技师Agent"
+    description: "汽车维修专家，提供故障诊断、维修方案、成本估算和质量控制服务"
+    core_concept: "帮助维修技师快速准确诊断和修复车辆问题"
+    features:
+      - "故障诊断分析"
+      - "维修方案制定"
+      - "配件选择建议"
+      - "维修成本控制"
+      - "质量检验标准"
+    priority: "high"
+    tags: ["汽车", "维修", "技师", "服务"]
+
+  - name: "car-buying-guide"
+    type: "specialized"
+    title: "购车指南Agent"
+    description: "购车决策专家，提供选车建议、价格分析、砍价技巧和购车时机指导"
+    core_concept: "帮助消费者做出明智的购车决策，避免购车陷阱"
+    features:
+      - "预算规划建议"
+      - "车型对比分析"
+      - "市场行情解读"
+      - "砍价策略指导"
+      - "购车时机判断"
+    priority: "high"
+    tags: ["汽车", "购车", "指南", "消费"]
+
+  - name: "fleet-management"
+    type: "specialized"
+    title: "车队管理Agent"
+    description: "企业车队专家，提供车辆采购、维护调度、成本控制和合规管理服务"
+    core_concept: "帮助企业优化车队运营，降低总拥有成本"
+    features:
+      - "车队规模规划"
+      - "车辆采购策略"
+      - "维护保养计划"
+      - "驾驶员管理"
+      - "运营成本分析"
+    priority: "medium"
+    tags: ["汽车", "车队", "管理", "企业"]
+
+  - name: "auto-insurance"
+    type: "specialized"
+    title: "汽车保险顾问Agent"
+    description: "车险专家，提供保险方案比较、理赔指导、风险评估和续保优化服务"
+    core_concept: "帮助车主选择最适合的车险方案，优化保险成本"
+    features:
+      - "保险产品对比"
+      - "保额配置建议"
+      - "理赔流程指导"
+      - "出险风险评估"
+      - "续保优化方案"
+    priority: "high"
+    tags: ["汽车", "保险", "金融", "服务"]
+
+  - name: "car-detailing"
+    type: "specialized"
+    title: "汽车美容专家Agent"
+    description: "汽车美容专家，提供洗护方案、漆面护理、内饰清洁和改装建议"
+    core_concept: "帮助车主保持车辆最佳状态，提升车辆价值"
+    features:
+      - "洗护方案设计"
+      - "漆面养护建议"
+      - "内饰深度清洁"
+      - "改装方案推荐"
+      - "美容产品选择"
+    priority: "medium"
+    tags: ["汽车", "美容", "护理", "服务"]
+
+  - name: "ev-consultant"
+    type: "specialized"
+    title: "电动汽车顾问Agent"
+    description: "电动车专家，提供车型选择、充电方案、续航规划和政策补贴咨询"
+    core_concept: "帮助消费者顺利过渡到电动汽车时代"
+    features:
+      - "电动车型推荐"
+      - "充电设施规划"
+      - "续航需求分析"
+      - "补贴政策解读"
+      - "电池保养指导"
+    priority: "high"
+    tags: ["汽车", "电动", "新能源", "顾问"]
+
+  - name: "auto-parts"
+    type: "specialized"
+    title: "汽车配件专家Agent"
+    description: "汽配专家，提供配件选购、真伪鉴别、价格比较和安装指导服务"
+    core_concept: "帮助车主和维修店选购合适的汽车配件"
+    features:
+      - "配件型号查询"
+      - "原厂副厂对比"
+      - "真伪鉴别方法"
+      - "价格行情分析"
+      - "安装注意事项"
+    priority: "medium"
+    tags: ["汽车", "配件", "零部件", "选购"]
+
+  - name: "used-car"
+    type: "specialized"
+    title: "二手车评估Agent"
+    description: "二手车专家，提供车辆检测、价格评估、交易指导和过户流程服务"
+    core_concept: "帮助买卖双方安全、公平地进行二手车交易"
+    features:
+      - "车况检测评估"
+      - "市场价格分析"
+      - "交易风险识别"
+      - "过户流程指导"
+      - "合同条款审查"
+    priority: "high"
+    tags: ["汽车", "二手车", "评估", "交易"]
+
+  - name: "driving-instructor"
+    type: "specialized"
+    title: "驾驶教练Agent"
+    description: "驾驶培训专家，提供学车指导、考试技巧、安全驾驶和陪练服务"
+    core_concept: "帮助学员高效通过驾考，培养安全驾驶习惯"
+    features:
+      - "科目考试技巧"
+      - "驾驶技能训练"
+      - "安全驾驶指导"
+      - "考试心理调节"
+      - "陪练路线规划"
+    priority: "medium"
+    tags: ["汽车", "驾驶", "培训", "教练"]
+
+  - name: "car-financing"
+    type: "specialized"
+    title: "汽车金融顾问Agent"
+    description: "汽车金融专家，提供贷款方案、利率比较、还款规划和融资租赁咨询"
+    core_concept: "帮助消费者找到最优的汽车金融方案"
+    features:
+      - "贷款产品对比"
+      - "首付比例建议"
+      - "月供能力评估"
+      - "融资租赁分析"
+      - "提前还款策略"
+    priority: "high"
+    tags: ["汽车", "金融", "贷款", "理财"]
+    disclaimer: "本Agent提供的信息仅供参考，不构成金融建议。贷款决策请咨询专业金融机构。"
+
+  - name: "auto-marketing"
+    type: "specialized"
+    title: "汽车营销Agent"
+    description: "汽车营销专家，提供市场分析、品牌策略、数字营销和销售活动策划"
+    core_concept: "帮助汽车品牌和经销商提升市场竞争力和销售业绩"
+    features:
+      - "市场趋势分析"
+      - "品牌定位策略"
+      - "数字营销方案"
+      - "促销活动策划"
+      - "客户忠诚度管理"
+    priority: "high"
+    tags: ["汽车", "营销", "品牌", "推广"]
+
+  - name: "car-safety"
+    type: "specialized"
+    title: "汽车安全专家Agent"
+    description: "汽车安全专家，提供安全评级解读、安全配置分析、事故预防和应急处理指导"
+    core_concept: "提升汽车安全意识，降低交通事故风险"
+    features:
+      - "安全评级解读"
+      - "安全配置分析"
+      - "主动安全系统"
+      - "事故预防措施"
+      - "应急处理指南"
+    priority: "high"
+    tags: ["汽车", "安全", "事故", "预防"]
+
+  - name: "classic-car"
+    type: "specialized"
+    title: "经典车顾问Agent"
+    description: "经典车专家，提供收藏评估、修复指导、市场分析和投资咨询服务"
+    core_concept: "为经典车爱好者和投资者提供专业服务"
+    features:
+      - "收藏价值评估"
+      - "修复方案制定"
+      - "市场行情分析"
+      - "真伪鉴别方法"
+      - "保养维护指导"
+    priority: "low"
+    tags: ["汽车", "经典车", "收藏", "投资"]
+
+  - name: "tire-expert"
+    type: "specialized"
+    title: "轮胎专家Agent"
+    description: "轮胎专家，提供轮胎选择、更换时机、保养维护和故障诊断服务"
+    core_concept: "帮助车主正确选择和维护轮胎，确保行车安全"
+    features:
+      - "轮胎规格选择"
+      - "品牌性能对比"
+      - "更换时机判断"
+      - "胎压监测管理"
+      - "轮胎保养技巧"
+    priority: "medium"
+    tags: ["汽车", "轮胎", "安全", "维护"]
+
+  - name: "auto-racing"
+    type: "specialized"
+    title: "赛车运动Agent"
+    description: "赛车专家，提供赛车技术、赛道策略、车辆改装和赛事分析服务"
+    core_concept: "为赛车爱好者和专业车手提供技术支持"
+    features:
+      - "赛车技术分析"
+      - "赛道策略制定"
+      - "车辆改装建议"
+      - "驾驶技巧提升"
+      - "赛事数据分析"
+    priority: "low"
+    tags: ["汽车", "赛车", "运动", "竞技"]
+
+  - name: "car-rental"
+    type: "specialized"
+    title: "汽车租赁Agent"
+    description: "汽车租赁专家，提供租车方案、价格比较、合同审查和纠纷处理服务"
+    core_concept: "帮助消费者选择最适合的租车方案"
+    features:
+      - "租车平台对比"
+      - "车型选择建议"
+      - "价格谈判技巧"
+      - "合同条款审查"
+      - "事故处理指导"
+    priority: "medium"
+    tags: ["汽车", "租赁", "服务", "出行"]
+
+  - name: "connected-car"
+    type: "specialized"
+    title: "智能网联车Agent"
+    description: "车联网专家，提供智能驾驶、车载系统、OTA升级和数据分析服务"
+    core_concept: "帮助用户充分利用智能网联汽车的各项功能"
+    features:
+      - "智能驾驶辅助"
+      - "车载系统使用"
+      - "APP互联配置"
+      - "OTA升级管理"
+      - "数据隐私保护"
+    priority: "high"
+    tags: ["汽车", "智能", "网联", "科技"]
+
+  - name: "auto-recall"
+    type: "specialized"
+    title: "汽车召回查询Agent"
+    description: "召回信息专家，提供召回查询、影响评估、处理流程和权益维护服务"
+    core_concept: "帮助车主及时了解和处理汽车召回信息"
+    features:
+      - "召回信息查询"
+      - "影响范围评估"
+      - "处理流程指导"
+      - "权益维护建议"
+      - "安全隐患识别"
+    priority: "medium"
+    tags: ["汽车", "召回", "安全", "维权"]
+
+  - name: "car-modification"
+    type: "specialized"
+    title: "汽车改装顾问Agent"
+    description: "汽车改装专家，提供改装方案、法规合规、性能提升和外观改造服务"
+    core_concept: "帮助车主合法、安全地进行汽车改装"
+    features:
+      - "改装方案设计"
+      - "法规合规审查"
+      - "性能升级建议"
+      - "外观改造指导"
+      - "改装厂选择"
+    priority: "medium"
+    tags: ["汽车", "改装", "性能", "个性化"]
+
+# ==================== 娱乐传媒类Agent (20个) ====================
+entertainment_agents:
+  - name: "content-creator"
+    type: "specialized"
+    title: "内容创作Agent"
+    description: "内容创作专家，提供选题策划、脚本撰写、拍摄指导和后期制作建议"
+    core_concept: "帮助创作者生产高质量、高传播力的内容"
+    features:
+      - "热点选题策划"
+      - "脚本结构优化"
+      - "拍摄技巧指导"
+      - "剪辑节奏把控"
+      - "平台算法适配"
+    priority: "high"
+    tags: ["娱乐", "内容", "创作", "媒体"]
+
+  - name: "social-media-manager"
+    type: "specialized"
+    title: "社交媒体运营Agent"
+    description: "社媒运营专家，提供账号定位、内容规划、粉丝增长和数据分析服务"
+    core_concept: "帮助品牌和创作者建立强大的社交媒体影响力"
+    features:
+      - "账号定位策略"
+      - "内容日历规划"
+      - "互动增长技巧"
+      - "危机公关处理"
+      - "数据效果分析"
+    priority: "high"
+    tags: ["娱乐", "社交", "媒体", "运营"]
+
+  - name: "influencer-marketing"
+    type: "specialized"
+    title: "网红营销Agent"
+    description: "KOL营销专家，提供达人筛选、合作谈判、效果评估和ROI优化服务"
+    core_concept: "帮助品牌通过网红营销实现商业目标"
+    features:
+      - "KOL筛选评估"
+      - "合作模式设计"
+      - "内容创意把控"
+      - "投放效果监测"
+      - "长期关系维护"
+    priority: "high"
+    tags: ["娱乐", "网红", "营销", "KOL"]
+
+  - name: "video-production"
+    type: "specialized"
+    title: "视频制作Agent"
+    description: "视频制作专家，提供前期策划、拍摄执行、后期剪辑和特效合成服务"
+    core_concept: "为各类视频项目提供专业制作支持"
+    features:
+      - "项目策划方案"
+      - "拍摄执行管理"
+      - "剪辑节奏设计"
+      - "特效合成指导"
+      - "输出格式优化"
+    priority: "high"
+    tags: ["娱乐", "视频", "制作", "影视"]
+
+  - name: "music-production"
+    type: "specialized"
+    title: "音乐制作Agent"
+    description: "音乐制作专家，提供作曲编曲、录音混音、母带处理和发行推广服务"
+    core_concept: "帮助音乐人实现从创作到发行的全流程"
+    features:
+      - "作曲编曲指导"
+      - "录音技术优化"
+      - "混音效果提升"
+      - "母带处理建议"
+      - "数字发行策略"
+    priority: "medium"
+    tags: ["娱乐", "音乐", "制作", "艺术"]
+
+  - name: "event-planning"
+    type: "specialized"
+    title: "活动策划Agent"
+    description: "活动策划专家，提供创意策划、执行管理、供应商协调和现场控制服务"
+    core_concept: "为各类活动提供从策划到执行的全方位支持"
+    features:
+      - "活动创意策划"
+      - "预算编制控制"
+      - "供应商管理"
+      - "流程执行监控"
+      - "应急预案制定"
+    priority: "high"
+    tags: ["娱乐", "活动", "策划", "执行"]
+
+  - name: "talent-agent"
+    type: "specialized"
+    title: "艺人经纪Agent"
+    description: "艺人经纪专家，提供职业规划、商务谈判、形象管理和法务咨询服务"
+    core_concept: "帮助艺人实现职业发展和商业价值的最大化"
+    features:
+      - "职业发展规划"
+      - "商务资源对接"
+      - "合同谈判支持"
+      - "形象塑造管理"
+      - "危机公关处理"
+    priority: "medium"
+    tags: ["娱乐", "艺人", "经纪", "管理"]
+
+  - name: "streaming-consultant"
+    type: "specialized"
+    title: "直播运营Agent"
+    description: "直播运营专家，提供主播培养、内容策划、流量运营和变现优化服务"
+    core_concept: "帮助主播和机构提升直播效果和收益"
+    features:
+      - "主播技能培训"
+      - "直播内容策划"
+      - "流量获取策略"
+      - "粉丝互动技巧"
+      - "变现模式设计"
+    priority: "high"
+    tags: ["娱乐", "直播", "运营", "电商"]
+
+  - name: "film-distribution"
+    type: "specialized"
+    title: "影视发行Agent"
+    description: "影视发行专家，提供发行策略、渠道对接、宣传营销和票房分析服务"
+    core_concept: "帮助影视作品实现最大化的市场价值"
+    features:
+      - "发行策略制定"
+      - "渠道资源对接"
+      - "宣传物料策划"
+      - "档期选择分析"
+      - "票房数据监测"
+    priority: "medium"
+    tags: ["娱乐", "影视", "发行", "营销"]
+
+  - name: "podcast-producer"
+    type: "specialized"
+    title: "播客制作Agent"
+    description: "播客制作专家，提供节目策划、录制剪辑、平台分发和听众增长服务"
+    core_concept: "帮助播客创作者打造高质量音频节目"
+    features:
+      - "节目定位策划"
+      - "嘉宾邀约技巧"
+      - "音频质量优化"
+      - "多平台分发"
+      - "听众社群运营"
+    priority: "medium"
+    tags: ["娱乐", "播客", "音频", "制作"]
+
+  - name: "game-streaming"
+    type: "specialized"
+    title: "游戏直播Agent"
+    description: "游戏直播专家，提供游戏选择、直播技巧、观众互动和赛事解说服务"
+    core_concept: "帮助游戏主播建立个人品牌和粉丝群体"
+    features:
+      - "游戏内容选择"
+      - "直播技巧提升"
+      - "观众互动策略"
+      - "赛事解说训练"
+      - "商业变现路径"
+    priority: "medium"
+    tags: ["娱乐", "游戏", "直播", "电竞"]
+
+  - name: "pr-consultant"
+    type: "specialized"
+    title: "公关传播Agent"
+    description: "公关专家，提供媒体关系、危机公关、品牌传播和舆情监测服务"
+    core_concept: "帮助企业和个人维护良好的公众形象"
+    features:
+      - "媒体关系维护"
+      - "新闻稿撰写"
+      - "危机公关处理"
+      - "舆情监测分析"
+      - "品牌故事传播"
+    priority: "high"
+    tags: ["娱乐", "公关", "传播", "品牌"]
+
+  - name: "fan-engagement"
+    type: "specialized"
+    title: "粉丝运营Agent"
+    description: "粉丝运营专家，提供社群建设、互动活动、周边开发和数据分析服务"
+    core_concept: "帮助艺人和品牌建立忠诚的粉丝社群"
+    features:
+      - "粉丝社群建设"
+      - "互动活动策划"
+      - "周边产品设计"
+      - "会员体系设计"
+      - "粉丝数据分析"
+    priority: "medium"
+    tags: ["娱乐", "粉丝", "运营", "社群"]
+
+  - name: "copyright-expert"
+    type: "specialized"
+    title: "版权管理Agent"
+    description: "版权专家，提供版权登记、授权谈判、侵权监测和维权支持服务"
+    core_concept: "保护创作者的知识产权，实现版权价值最大化"
+    features:
+      - "版权登记指导"
+      - "授权模式设计"
+      - "侵权监测预警"
+      - "维权策略制定"
+      - "版权价值评估"
+    priority: "high"
+    tags: ["娱乐", "版权", "法律", "保护"]
+    disclaimer: "本Agent提供的信息仅供参考，不构成法律建议。具体版权法律问题请咨询执业律师。"
+
+  - name: "audience-analytics"
+    type: "specialized"
+    title: "受众分析Agent"
+    description: "受众分析专家，提供用户画像、行为分析、偏好洞察和趋势预测服务"
+    core_concept: "通过数据洞察帮助内容创作者精准触达目标受众"
+    features:
+      - "用户画像构建"
+      - "观看行为分析"
+      - "内容偏好洞察"
+      - "受众增长预测"
+      - "竞品受众对比"
+    priority: "high"
+    tags: ["娱乐", "受众", "分析", "数据"]
+
+  - name: "brand-sponsorship"
+    type: "specialized"
+    title: "品牌赞助Agent"
+    description: "赞助专家，提供赞助机会识别、合作谈判、权益落实和效果评估服务"
+    core_concept: "帮助内容创作者和IP实现商业变现"
+    features:
+      - "赞助机会挖掘"
+      - "合作方案设计"
+      - "权益条款谈判"
+      - "执行过程监督"
+      - "ROI效果评估"
+    priority: "medium"
+    tags: ["娱乐", "赞助", "商业", "变现"]
+
+  - name: "animation-producer"
+    type: "specialized"
+    title: "动画制作Agent"
+    description: "动画制作专家，提供前期策划、中期制作、后期合成和发行推广服务"
+    core_concept: "为动画项目提供全流程制作支持"
+    features:
+      - "剧本开发指导"
+      - "美术风格设计"
+      - "制作流程管理"
+      - "外包团队协调"
+      - "发行渠道对接"
+    priority: "medium"
+    tags: ["娱乐", "动画", "制作", "影视"]
+
+  - name: "esports-manager"
+    type: "specialized"
+    title: "电竞运营Agent"
+    description: "电竞运营专家，提供战队管理、赛事运营、商业开发和粉丝运营服务"
+    core_concept: "为电竞俱乐部和赛事提供专业运营支持"
+    features:
+      - "战队管理策略"
+      - "选手培养计划"
+      - "赛事运营执行"
+      - "商业赞助开发"
+      - "粉丝生态建设"
+    priority: "medium"
+    tags: ["娱乐", "电竞", "运营", "管理"]
+
+  - name: "virtual-influencer"
+    type: "specialized"
+    title: "虚拟偶像Agent"
+    description: "虚拟偶像专家，提供人设设计、内容创作、技术实现和商业变现服务"
+    core_concept: "帮助打造具有商业价值的虚拟偶像IP"
+    features:
+      - "人设定位设计"
+      - "形象视觉开发"
+      - "内容创作规划"
+      - "技术实现方案"
+      - "商业变现模式"
+    priority: "medium"
+    tags: ["娱乐", "虚拟偶像", "IP", "创新"]
+
+  - name: "short-video"
+    type: "specialized"
+    title: "短视频运营Agent"
+    description: "短视频专家，提供平台策略、内容创作、算法优化和变现指导服务"
+    core_concept: "帮助创作者在短视频平台快速成长和商业变现"
+    features:
+      - "平台算法解析"
+      - "爆款内容公式"
+      - "发布时机优化"
+      - "互动率提升"
+      - "变现路径设计"
+    priority: "high"
+    tags: ["娱乐", "短视频", "运营", "抖音"]
+
+# ==================== 政府公共类Agent (20个) ====================
+government_agents:
+  - name: "policy-analyst"
+    type: "specialized"
+    title: "政策分析Agent"
+    description: "政策研究专家，提供政策解读、影响评估、趋势预测和应对建议服务"
+    core_concept: "帮助企业和个人理解政策变化，把握发展机遇"
+    features:
+      - "政策文件解读"
+      - "影响范围评估"
+      - "趋势预测分析"
+      - "应对策略建议"
+      - "申报指南编制"
+    priority: "high"
+    tags: ["政府", "政策", "分析", "研究"]
+
+  - name: "public-affairs"
+    type: "specialized"
+    title: "公共事务Agent"
+    description: "公共事务专家，提供政府关系、政策沟通、危机处理和形象管理服务"
+    core_concept: "帮助企业与政府建立良好关系，维护公共形象"
+    features:
+      - "政府关系建设"
+      - "政策沟通策略"
+      - "危机公关处理"
+      - "公共形象管理"
+      - "社会责任规划"
+    priority: "high"
+    tags: ["政府", "公共", "事务", "关系"]
+
+  - name: "grant-writer"
+    type: "specialized"
+    title: "政府项目申报Agent"
+    description: "项目申报专家，提供政策匹配、材料撰写、流程指导和验收支持服务"
+    core_concept: "帮助企业成功申请政府资金和项目支持"
+    features:
+      - "政策匹配分析"
+      - "申报材料撰写"
+      - "申报流程指导"
+      - "答辩PPT制作"
+      - "项目验收支持"
+    priority: "high"
+    tags: ["政府", "项目", "申报", "资金"]
+
+  - name: "regulatory-compliance"
+    type: "specialized"
+    title: "政府合规Agent"
+    description: "合规专家，提供法规跟踪、合规审查、整改指导和审计支持服务"
+    core_concept: "帮助企业满足政府监管要求，降低合规风险"
+    features:
+      - "法规动态跟踪"
+      - "合规差距分析"
+      - "整改方案制定"
+      - "审计应对支持"
+      - "合规培训设计"
+    priority: "high"
+    tags: ["政府", "合规", "监管", "法律"]
+
+  - name: "procurement-specialist"
+    type: "specialized"
+    title: "政府采购Agent"
+    description: "政府采购专家，提供招标信息、投标准备、策略分析和合同管理服务"
+    core_concept: "帮助企业成功参与政府采购项目"
+    features:
+      - "招标信息筛选"
+      - "投标文件制作"
+      - "竞争对手分析"
+      - "报价策略制定"
+      - "合同履约管理"
+    priority: "high"
+    tags: ["政府", "采购", "招标", "投标"]
+
+  - name: "urban-planning"
+    type: "specialized"
+    title: "城市规划Agent"
+    description: "城市规划专家，提供规划咨询、项目评估、政策建议和实施指导服务"
+    core_concept: "为城市发展提供科学规划建议"
+    features:
+      - "规划方案评估"
+      - "土地利用分析"
+      - "交通规划建议"
+      - "环境影响评价"
+      - "公众参与组织"
+    priority: "medium"
+    tags: ["政府", "规划", "城市", "建设"]
+
+  - name: "public-health"
+    type: "specialized"
+    title: "公共卫生Agent"
+    description: "公共卫生专家，提供疫情监测、健康宣教、应急处理和资源配置服务"
+    core_concept: "支持公共卫生体系建设和应急响应"
+    features:
+      - "疫情监测预警"
+      - "健康宣教材料"
+      - "应急预案制定"
+      - "资源调配建议"
+      - "数据分析报告"
+    priority: "high"
+    tags: ["政府", "公共卫生", "健康", "应急"]
+
+  - name: "emergency-management"
+    type: "specialized"
+    title: "应急管理Agent"
+    description: "应急管理专家，提供预案编制、演练组织、资源协调和灾后恢复服务"
+    core_concept: "提升政府和社会应急管理能力"
+    features:
+      - "应急预案编制"
+      - "演练方案设计"
+      - "指挥协调支持"
+      - "物资调配优化"
+      - "灾后恢复规划"
+    priority: "high"
+    tags: ["政府", "应急", "管理", "安全"]
+
+  - name: "social-services"
+    type: "specialized"
+    title: "社会服务Agent"
+    description: "社会服务专家，提供福利政策、救助方案、社区建设和志愿者管理服务"
+    core_concept: "支持政府提升社会服务水平"
+    features:
+      - "福利政策解读"
+      - "救助方案设计"
+      - "社区服务规划"
+      - "志愿者管理"
+      - "效果评估分析"
+    priority: "medium"
+    tags: ["政府", "社会", "服务", "福利"]
+
+  - name: "environmental-gov"
+    type: "specialized"
+    title: "环保监管Agent"
+    description: "环保监管专家，提供环境监测、执法支持、污染治理和政策执行服务"
+    core_concept: "支持政府环境保护工作"
+    features:
+      - "监测数据分析"
+      - "执法文书制作"
+      - "污染溯源分析"
+      - "治理方案评估"
+      - "政策执行监督"
+    priority: "high"
+    tags: ["政府", "环保", "监管", "执法"]
+
+  - name: "education-policy"
+    type: "specialized"
+    title: "教育政策Agent"
+    description: "教育政策专家，提供政策解读、资源配置、质量评估和改革建议服务"
+    core_concept: "支持政府教育决策和管理"
+    features:
+      - "教育政策分析"
+      - "资源配置优化"
+      - "质量监测评估"
+      - "改革方案设计"
+      - "国际比较研究"
+    priority: "medium"
+    tags: ["政府", "教育", "政策", "管理"]
+
+  - name: "transportation-gov"
+    type: "specialized"
+    title: "交通管理Agent"
+    description: "交通管理专家，提供交通规划、安全分析、智能交通和拥堵治理服务"
+    core_concept: "支持政府提升交通管理水平"
+    features:
+      - "交通流量分析"
+      - "事故原因分析"
+      - "智能交通方案"
+      - "拥堵治理建议"
+      - "公共交通优化"
+    priority: "medium"
+    tags: ["政府", "交通", "管理", "安全"]
+
+  - name: "taxation-gov"
+    type: "specialized"
+    title: "税务管理Agent"
+    description: "税务管理专家，提供税收政策、征管优化、风险防控和服务提升服务"
+    core_concept: "支持政府税收征管工作"
+    features:
+      - "税收政策研究"
+      - "征管流程优化"
+      - "风险识别模型"
+      - "纳税服务改进"
+      - "数据分析报告"
+    priority: "high"
+    tags: ["政府", "税务", "管理", "财政"]
+
+  - name: "labor-gov"
+    type: "specialized"
+    title: "劳动就业Agent"
+    description: "劳动就业专家，提供就业政策、职业培训、劳动关系和社保管理服务"
+    core_concept: "支持政府劳动就业工作"
+    features:
+      - "就业形势分析"
+      - "培训项目设计"
+      - "劳动纠纷调解"
+      - "社保政策解读"
+      - "就业服务优化"
+    priority: "medium"
+    tags: ["政府", "劳动", "就业", "社保"]
+
+  - name: "housing-gov"
+    type: "specialized"
+    title: "住房保障Agent"
+    description: "住房保障专家，提供政策设计、资格审核、分配管理和监督评估服务"
+    core_concept: "支持政府住房保障体系建设"
+    features:
+      - "保障政策设计"
+      - "资格审核流程"
+      - "房源分配优化"
+      - "使用监督管理"
+      - "效果评估分析"
+    priority: "medium"
+    tags: ["政府", "住房", "保障", "民生"]
+
+  - name: "culture-heritage"
+    type: "specialized"
+    title: "文化遗产Agent"
+    description: "文化遗产专家，提供保护规划、修缮指导、活化利用和传承推广服务"
+    core_concept: "支持政府文化遗产保护工作"
+    features:
+      - "遗产价值评估"
+      - "保护规划编制"
+      - "修缮技术指导"
+      - "活化利用方案"
+      - "宣传教育策划"
+    priority: "medium"
+    tags: ["政府", "文化", "遗产", "保护"]
+
+  - name: "smart-city"
+    type: "specialized"
+    title: "智慧城市Agent"
+    description: "智慧城市专家，提供顶层设计、技术选型、数据治理和场景应用服务"
+    core_concept: "支持政府智慧城市建设"
+    features:
+      - "顶层设计规划"
+      - "技术架构设计"
+      - "数据治理方案"
+      - "应用场景设计"
+      - "效果评估体系"
+    priority: "high"
+    tags: ["政府", "智慧", "城市", "数字化"]
+
+  - name: "rural-development"
+    type: "specialized"
+    title: "乡村振兴Agent"
+    description: "乡村振兴专家，提供产业规划、人才培育、文化建设和治理优化服务"
+    core_concept: "支持政府乡村振兴战略实施"
+    features:
+      - "产业发展规划"
+      - "人才培训方案"
+      - "文化传承保护"
+      - "治理模式创新"
+      - "资源整合对接"
+    priority: "high"
+    tags: ["政府", "乡村", "振兴", "发展"]
+
+  - name: "public-safety"
+    type: "specialized"
+    title: "公共安全Agent"
+    description: "公共安全专家，提供治安分析、犯罪预防、反恐维稳和网络安全服务"
+    core_concept: "支持政府维护社会安全稳定"
+    features:
+      - "治安形势分析"
+      - "犯罪预测模型"
+      - "防范措施建议"
+      - "应急预案编制"
+      - "网络安全评估"
+    priority: "high"
+    tags: ["政府", "公共", "安全", "治安"]
+
+  - name: "international-relations"
+    type: "specialized"
+    title: "外事外交Agent"
+    description: "外事外交专家，提供国际形势、外交礼仪、谈判策略和跨文化沟通服务"
+    core_concept: "支持政府外事外交工作"
+    features:
+      - "国际形势分析"
+      - "外交礼仪指导"
+      - "谈判策略制定"
+      - "跨文化沟通"
+      - "国际协议解读"
+    priority: "medium"
+    tags: ["政府", "外事", "外交", "国际"]
+
+# ==================== 科学研究类Agent (20个) ====================
+research_agents:
+  - name: "research-methodology"
+    type: "specialized"
+    title: "研究方法Agent"
+    description: "研究方法专家，提供实验设计、数据分析、论文写作和学术规范服务"
+    core_concept: "帮助科研人员提升研究质量和效率"
+    features:
+      - "研究设计优化"
+      - "统计方法选择"
+      - "数据分析指导"
+      - "论文结构优化"
+      - "学术规范检查"
+    priority: "high"
+    tags: ["科研", "方法", "学术", "论文"]
+
+  - name: "literature-review"
+    type: "specialized"
+    title: "文献综述Agent"
+    description: "文献综述专家，提供检索策略、综述撰写、知识图谱和研究前沿服务"
+    core_concept: "帮助科研人员高效掌握研究领域现状"
+    features:
+      - "检索策略设计"
+      - "文献筛选评估"
+      - "综述框架构建"
+      - "知识图谱绘制"
+      - "研究前沿识别"
+    priority: "high"
+    tags: ["科研", "文献", "综述", "学术"]
+
+  - name: "grant-proposal"
+    type: "specialized"
+    title: "科研基金Agent"
+    description: "基金申请专家，提供选题策划、标书撰写、预算编制和答辩准备服务"
+    core_concept: "帮助科研人员成功申请科研基金"
+    features:
+      - "基金政策解读"
+      - "选题创新性评估"
+      - "标书撰写指导"
+      - "预算编制优化"
+      - "答辩PPT制作"
+    priority: "high"
+    tags: ["科研", "基金", "申请", "学术"]
+
+  - name: "data-science"
+    type: "specialized"
+    title: "数据科学Agent"
+    description: "数据科学专家，提供数据清洗、统计分析、机器学习和可视化服务"
+    core_concept: "为科研提供专业的数据科学支持"
+    features:
+      - "数据清洗处理"
+      - "探索性分析"
+      - "统计建模"
+      - "机器学习应用"
+      - "可视化呈现"
+    priority: "high"
+    tags: ["科研", "数据", "科学", "分析"]
+
+  - name: "experimental-design"
+    type: "specialized"
+    title: "实验设计Agent"
+    description: "实验设计专家，提供方案优化、变量控制、样本计算和结果分析服务"
+    core_concept: "帮助科研人员设计严谨高效的实验"
+    features:
+      - "实验方案设计"
+      - "变量控制策略"
+      - "样本量计算"
+      - "对照组设置"
+      - "结果分析方法"
+    priority: "high"
+    tags: ["科研", "实验", "设计", "方法"]
+
+  - name: "academic-writing"
+    type: "specialized"
+    title: "学术写作Agent"
+    description: "学术写作专家，提供论文结构、语言表达、图表制作和投稿策略服务"
+    core_concept: "帮助科研人员提升学术写作水平"
+    features:
+      - "论文结构优化"
+      - "学术语言润色"
+      - "图表规范制作"
+      - "期刊选择建议"
+      - "投稿信撰写"
+    priority: "high"
+    tags: ["科研", "写作", "论文", "学术"]
+
+  - name: "peer-review"
+    type: "specialized"
+    title: "同行评议Agent"
+    description: "同行评议专家，提供审稿意见、修改建议、学术伦理和评议规范服务"
+    core_concept: "帮助科研人员提升审稿质量和效率"
+    features:
+      - "审稿意见撰写"
+      - "修改建议提供"
+      - "学术伦理审查"
+      - "评议标准把握"
+      - "作者回复指导"
+    priority: "medium"
+    tags: ["科研", "评议", "审稿", "学术"]
+
+  - name: "research-ethics"
+    type: "specialized"
+    title: "科研伦理Agent"
+    description: "科研伦理专家，提供伦理审查、知情同意、数据保护和学术诚信服务"
+    core_concept: "确保科研活动符合伦理规范"
+    features:
+      - "伦理审查准备"
+      - "知情同意设计"
+      - "数据隐私保护"
+      - "学术诚信教育"
+      - "伦理困境分析"
+    priority: "high"
+    tags: ["科研", "伦理", "规范", "诚信"]
+
+  - name: "biostatistics"
+    type: "specialized"
+    title: "生物统计Agent"
+    description: "生物统计专家，提供临床试验、流行病学、基因分析和生存分析服务"
+    core_concept: "为生物医学研究提供专业统计支持"
+    features:
+      - "临床试验设计"
+      - "统计分析方法"
+      - "样本量计算"
+      - "结果解释说明"
+      - "统计报告撰写"
+    priority: "high"
+    tags: ["科研", "生物", "统计", "医学"]
+
+  - name: "systematic-review"
+    type: "specialized"
+    title: "系统评价Agent"
+    description: "系统评价专家，提供Meta分析、证据分级、质量评估和指南制定服务"
+    core_concept: "帮助科研人员开展高质量的系统评价研究"
+    features:
+      - "PRISMA流程"
+      - "检索策略设计"
+      - "质量评估工具"
+      - "Meta分析执行"
+      - "证据等级评定"
+    priority: "high"
+    tags: ["科研", "系统评价", "Meta", "证据"]
+
+  - name: "research-collaboration"
+    type: "specialized"
+    title: "科研合作Agent"
+    description: "科研合作专家，提供合作寻找、协议起草、知识产权和项目管理服务"
+    core_concept: "促进科研人员之间的有效合作"
+    features:
+      - "合作伙伴匹配"
+      - "合作协议起草"
+      - "知识产权分配"
+      - "沟通协调机制"
+      - "项目进度管理"
+    priority: "medium"
+    tags: ["科研", "合作", "团队", "管理"]
+
+  - name: "conference-presentation"
+    type: "specialized"
+    title: "学术会议Agent"
+    description: "学术会议专家，提供摘要撰写、PPT制作、演讲技巧和海报设计服务"
+    core_concept: "帮助科研人员在学术会议上有效展示研究成果"
+    features:
+      - "会议摘要撰写"
+      - "演讲PPT设计"
+      - "演讲技巧训练"
+      - "学术海报制作"
+      - "问答环节准备"
+    priority: "medium"
+    tags: ["科研", "会议", "演讲", "展示"]
+
+  - name: "patent-research"
+    type: "specialized"
+    title: "科研专利Agent"
+    description: "科研专利专家，提供专利检索、申请策略、技术交底和侵权分析服务"
+    core_concept: "帮助科研人员保护和转化科研成果"
+    features:
+      - "专利新颖性检索"
+      - "申请策略制定"
+      - "技术交底撰写"
+      - "权利要求设计"
+      - "侵权风险分析"
+    priority: "medium"
+    tags: ["科研", "专利", "知识产权", "转化"]
+
+  - name: "field-research"
+    type: "specialized"
+    title: "田野调查Agent"
+    description: "田野调查专家，提供调查设计、数据采集、伦理审查和报告撰写服务"
+    core_concept: "为社会科学研究提供专业的田野调查支持"
+    features:
+      - "调查方案设计"
+      - "问卷访谈设计"
+      - "数据采集管理"
+      - "伦理审查准备"
+      - "调查报告撰写"
+    priority: "medium"
+    tags: ["科研", "田野", "调查", "社科"]
+
+  - name: "lab-management"
+    type: "specialized"
+    title: "实验室管理Agent"
+    description: "实验室管理专家，提供安全管理、设备维护、试剂管理和人员培训服务"
+    core_concept: "帮助实验室提升管理效率和安全性"
+    features:
+      - "安全管理制度"
+      - "设备维护计划"
+      - "试剂库存管理"
+      - "人员培训体系"
+      - "质量控制流程"
+    priority: "medium"
+    tags: ["科研", "实验室", "管理", "安全"]
+
+  - name: "computational-biology"
+    type: "specialized"
+    title: "计算生物学Agent"
+    description: "计算生物学专家，提供序列分析、结构预测、通路分析和工具开发服务"
+    core_concept: "为生命科学研究提供计算分析支持"
+    features:
+      - "序列比对分析"
+      - "结构建模预测"
+      - "通路富集分析"
+      - "数据库使用"
+      - "编程工具开发"
+    priority: "medium"
+    tags: ["科研", "计算", "生物", "信息"]
+
+  - name: "climate-research"
+    type: "specialized"
+    title: "气候研究Agent"
+    description: "气候研究专家，提供数据分析、模型模拟、情景预测和政策建议服务"
+    core_concept: "支持气候变化相关科学研究"
+    features:
+      - "气候数据分析"
+      - "模型模拟运行"
+      - "情景预测分析"
+      - "不确定性评估"
+      - "政策影响评估"
+    priority: "medium"
+    tags: ["科研", "气候", "环境", "模型"]
+
+  - name: "materials-science"
+    type: "specialized"
+    title: "材料科学Agent"
+    description: "材料科学专家，提供材料设计、性能测试、表征分析和应用开发服务"
+    core_concept: "支持材料科学研究和新材料开发"
+    features:
+      - "材料结构设计"
+      - "性能测试方案"
+      - "表征数据分析"
+      - "合成工艺优化"
+      - "应用前景评估"
+    priority: "medium"
+    tags: ["科研", "材料", "科学", "工程"]
+
+  - name: "neuroscience"
+    type: "specialized"
+    title: "神经科学Agent"
+    description: "神经科学专家，提供实验设计、数据分析、成像处理和理论建模服务"
+    core_concept: "为神经科学研究提供专业支持"
+    features:
+      - "实验范式设计"
+      - "神经数据分析"
+      - "脑成像处理"
+      - "计算模型构建"
+      - "跨学科整合"
+    priority: "medium"
+    tags: ["科研", "神经", "科学", "大脑"]
+
+  - name: "quantum-computing"
+    type: "specialized"
+    title: "量子计算Agent"
+    description: "量子计算专家，提供算法设计、编程实现、错误纠正和应用探索服务"
+    core_concept: "支持量子计算研究和应用开发"
+    features:
+      - "量子算法设计"
+      - "量子编程实现"
+      - "错误纠正方案"
+      - "硬件架构分析"
+      - "应用场景探索"
+    priority: "medium"
+    tags: ["科研", "量子", "计算", "前沿"]
+
+# ==================== 批次元数据 ====================
+metadata:
+  total_agents: 100
+  categories:
+    - name: "房地产"
+      count: 20
+      agents: ["property-investment", "residential-sales", "commercial-property", "property-management", "real-estate-marketing", "home-staging", "mortgage-advisor", "property-valuation", "real-estate-law", "luxury-property", "rental-management", "new-development", "property-inspection", "relocation-service", "property-tax", "vacation-rental", "senior-housing", "student-housing", "industrial-real-estate", "property-auction", "green-building"]
+    - name: "汽车"
+      count: 20
+      agents: ["car-sales", "auto-repair", "car-buying-guide", "fleet-management", "auto-insurance", "car-detailing", "ev-consultant", "auto-parts", "used-car", "driving-instructor", "car-financing", "auto-marketing", "car-safety", "classic-car", "tire-expert", "auto-racing", "car-rental", "connected-car", "auto-recall", "car-modification"]
+    - name: "娱乐传媒"
+      count: 20
+      agents: ["content-creator", "social-media-manager", "influencer-marketing", "video-production", "music-production", "event-planning", "talent-agent", "streaming-consultant", "film-distribution", "podcast-producer", "game-streaming", "pr-consultant", "fan-engagement", "copyright-expert", "audience-analytics", "brand-sponsorship", "animation-producer", "esports-manager", "virtual-influencer", "short-video"]
+    - name: "政府公共"
+      count: 20
+      agents: ["policy-analyst", "public-affairs", "grant-writer", "regulatory-compliance", "procurement-specialist", "urban-planning", "public-health", "emergency-management", "social-services", "environmental-gov", "education-policy", "transportation-gov", "taxation-gov", "labor-gov", "housing-gov", "culture-heritage", "smart-city", "rural-development", "public-safety", "international-relations"]
+    - name: "科学研究"
+      count: 20
+      agents: ["research-methodology", "literature-review", "grant-proposal", "data-science", "experimental-design", "academic-writing", "peer-review", "research-ethics", "biostatistics", "systematic-review", "research-collaboration", "conference-presentation", "patent-research", "field-research", "lab-management", "computational-biology", "climate-research", "materials-science", "neuroscience", "quantum-computing"]
+  created_at: "2025-01-18"
+  version: "1.0.0"
+
+# ==================== 使用说明 ====================
+usage:
+  description: "本配置文件包含100个专业领域Agent定义，涵盖房地产、汽车、娱乐传媒、政府公共、科学研究5大领域"
+  tool: "使用 batch-agent-creator Skill 批量生成Agent"
+  command: "在Trae中调用 batch-agent-creator 并指定本配置文件路径"
+  notes:
+    - "每个Agent都遵循5文档范式: SKILL.md, requirement.md, design.md, tasks.md, checklist.md"
+    - "部分Agent包含免责声明，涉及金融、法律等敏感领域"
+    - "建议根据实际需求优先级逐步实施"
+    - "所有Agent名称采用kebab-case命名规范"

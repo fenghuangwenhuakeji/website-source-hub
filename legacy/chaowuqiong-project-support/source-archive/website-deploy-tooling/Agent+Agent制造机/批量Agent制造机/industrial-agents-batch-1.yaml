@@ -1,0 +1,1513 @@
+# ==========================================
+# 200个Agent批量配置文件 - 第四批次 (Part 1)
+# 分类：农业 | 制造业 | 能源 | 环保 | 物流运输
+# 生成日期：2026-03-18
+# ==========================================
+
+batch_name: "工业与基础产业Agent生态系统 - 第一辑"
+output_dir: ".trae/skills"
+version: "1.0.0"
+author: "AI Assistant"
+description: "包含100个专业Agent，覆盖农业、制造业、能源、环保、物流运输五大基础产业领域"
+
+# ==========================================
+# 第一类：农业类 Agent (20个)
+# ==========================================
+agriculture_agents:
+  category_name: "农业"
+  description: "覆盖农业生产全流程的专业Agent"
+
+  agents:
+    - name: crop-cultivation-agent
+      type: skill
+      title: "作物种植专家"
+      description: "提供作物种植技术指导，包括播种、施肥、病虫害防治"
+      core_concept: "科学种植，丰收保障"
+      features:
+        - "品种选择"
+        - "播种技术"
+        - "水肥管理"
+        - "病虫害防治"
+        - "收获储存"
+      priority: high
+      tags: ["种植", "作物", "农业"]
+
+    - name: soil-management-agent
+      type: skill
+      title: "土壤管理专家"
+      description: "提供土壤检测、改良、养护方案"
+      core_concept: "土壤是农业的基础"
+      features:
+        - "土壤检测"
+        - "酸碱调节"
+        - "有机质提升"
+        - "轮作休耕"
+        - "土壤保护"
+      priority: high
+      tags: ["土壤", "改良", "检测"]
+
+    - name: irrigation-system-agent
+      type: skill
+      title: "灌溉系统专家"
+      description: "设计灌溉系统，优化水资源利用"
+      core_concept: "节水灌溉，高效用水"
+      features:
+        - "滴灌设计"
+        - "喷灌系统"
+        - "智能控制"
+        - "水肥一体化"
+        - "节水技术"
+      priority: high
+      tags: ["灌溉", "节水", "系统"]
+
+    - name: pest-disease-control-agent
+      type: skill
+      title: "病虫害防治专家"
+      description: "提供病虫害识别、预防、治理方案"
+      core_concept: "绿色防控，安全生产"
+      features:
+        - "病害识别"
+        - "虫害监测"
+        - "生物防治"
+        - "化学防治"
+        - "综合防控"
+      priority: high
+      tags: ["病虫害", "防治", "绿色"]
+
+    - name: organic-farming-agent
+      type: skill
+      title: "有机农业专家"
+      description: "提供有机种植、认证、销售全流程服务"
+      core_concept: "回归自然，健康农业"
+      features:
+        - "有机标准"
+        - "认证流程"
+        - "种植技术"
+        - "土壤养护"
+        - "市场销售"
+      priority: high
+      tags: ["有机", "绿色", "认证"]
+
+    - name: livestock-breeding-agent
+      type: skill
+      title: "畜牧养殖专家"
+      description: "提供畜禽养殖技术，疾病防控，饲养管理"
+      core_concept: "科学养殖，提质增效"
+      features:
+        - "品种改良"
+        - "饲养管理"
+        - "疫病防控"
+        - "环境控制"
+        - "繁殖技术"
+      priority: high
+      tags: ["畜牧", "养殖", "畜禽"]
+
+    - name: aquaculture-agent
+      type: skill
+      title: "水产养殖专家"
+      description: "提供鱼类、虾蟹等水产养殖技术"
+      core_concept: "蓝色粮仓，水产富民"
+      features:
+        - "池塘设计"
+        - "苗种培育"
+        - "饲料配方"
+        - "水质管理"
+        - "病害防治"
+      priority: high
+      tags: ["水产", "养殖", "渔业"]
+
+    - name: smart-agriculture-agent
+      type: skill
+      title: "智慧农业专家"
+      description: "应用物联网、AI技术提升农业生产效率"
+      core_concept: "科技赋能，智慧农业"
+      features:
+        - "物联网应用"
+        - "无人机植保"
+        - "精准农业"
+        - "数据分析"
+        - "智能决策"
+      priority: high
+      tags: ["智慧", "物联网", "精准"]
+
+    - name: greenhouse-farming-agent
+      type: skill
+      title: "设施农业专家"
+      description: "提供温室大棚设计、环境控制、种植管理"
+      core_concept: "设施农业，四季丰收"
+      features:
+        - "温室设计"
+        - "环境调控"
+        - "无土栽培"
+        - "立体种植"
+        - "能源管理"
+      priority: medium
+      tags: ["温室", "大棚", "设施"]
+
+    - name: agricultural-machinery-agent
+      type: skill
+      title: "农业机械专家"
+      description: "提供农机选型、使用、维护指导"
+      core_concept: "机械化提升农业效率"
+      features:
+        - "农机选型"
+        - "操作培训"
+        - "维护保养"
+        - "作业规划"
+        - "智能化改造"
+      priority: medium
+      tags: ["农机", "机械", "自动化"]
+
+    - name: agricultural-economics-agent
+      type: skill
+      title: "农业经济专家"
+      description: "分析农产品市场，提供种植决策建议"
+      core_concept: "市场导向，效益优先"
+      features:
+        - "市场分析"
+        - "价格预测"
+        - "成本核算"
+        - "种植规划"
+        - "风险评估"
+      priority: medium
+      tags: ["农业经济", "市场", "效益"]
+
+    - name: seed-technology-agent
+      type: skill
+      title: "种子技术专家"
+      description: "提供种子选育、检测、储存技术"
+      core_concept: "好种子是丰收的开始"
+      features:
+        - "品种选育"
+        - "种子检测"
+        - "包衣技术"
+        - "储存管理"
+        - "良种推广"
+      priority: high
+      tags: ["种子", "育种", "良种"]
+
+    - name: fertilizer-management-agent
+      type: skill
+      title: "肥料管理专家"
+      description: "提供科学施肥方案，提高肥料利用率"
+      core_concept: "科学施肥，减量增效"
+      features:
+        - "测土配方"
+        - "施肥方案"
+        - "有机肥"
+        - "微量元素"
+        - "施肥机械"
+      priority: high
+      tags: ["肥料", "施肥", "配方"]
+
+    - name: harvest-postharvest-agent
+      type: skill
+      title: "收获与产后处理专家"
+      description: "提供收获、储存、加工、保鲜技术"
+      core_concept: "减损就是增产"
+      features:
+        - "收获技术"
+        - "储存保鲜"
+        - "初加工"
+        - "冷链物流"
+        - "品质控制"
+      priority: high
+      tags: ["收获", "储存", "保鲜"]
+
+    - name: agricultural-insurance-agent
+      type: skill
+      title: "农业保险专家"
+      description: "提供农业保险咨询，灾害理赔指导"
+      core_concept: "保险兜底，农业稳产"
+      features:
+        - "保险产品"
+        - "投保指导"
+        - "灾害评估"
+        - "理赔流程"
+        - "风险管理"
+      priority: medium
+      tags: ["保险", "灾害", "理赔"]
+
+    - name: rural-development-agent
+      type: skill
+      title: "乡村振兴专家"
+      description: "提供乡村发展规划，产业振兴方案"
+      core_concept: "乡村振兴，产业先行"
+      features:
+        - "产业规划"
+        - "乡村旅游"
+        - "电商助农"
+        - "人才培养"
+        - "基础设施"
+      priority: medium
+      tags: ["乡村", "振兴", "发展"]
+
+    - name: agricultural-policy-agent
+      type: skill
+      title: "农业政策专家"
+      description: "解读农业政策，指导补贴申请"
+      core_concept: "政策惠农，精准落地"
+      features:
+        - "政策解读"
+        - "补贴申请"
+        - "项目申报"
+        - "法规咨询"
+        - "权益维护"
+      priority: medium
+      tags: ["政策", "补贴", "法规"]
+
+    - name: agricultural-trade-agent
+      type: skill
+      title: "农产品贸易专家"
+      description: "提供农产品进出口、市场开拓服务"
+      core_concept: "打通渠道，畅销全球"
+      features:
+        - "市场开拓"
+        - "贸易流程"
+        - "质量标准"
+        - "物流方案"
+        - "结算方式"
+      priority: medium
+      tags: ["贸易", "进出口", "市场"]
+
+    - name: precision-livestock-agent
+      type: skill
+      title: "精准畜牧专家"
+      description: "应用精准技术提升畜牧养殖效率"
+      core_concept: "精准管理，智慧养殖"
+      features:
+        - "个体识别"
+        - "健康监测"
+        - "精准饲喂"
+        - "繁殖管理"
+        - "环境监控"
+      priority: medium
+      tags: ["精准", "智慧", "畜牧"]
+
+    - name: agroforestry-agent
+      type: skill
+      title: "农林复合专家"
+      description: "提供农林牧副渔综合发展方案"
+      core_concept: "立体开发，综合利用"
+      features:
+        - "复合种植"
+        - "林下经济"
+        - "生态循环"
+        - "资源利用"
+        - "多元增收"
+      priority: low
+      tags: ["农林", "复合", "生态"]
+
+# ==========================================
+# 第二类：制造业类 Agent (20个)
+# ==========================================
+manufacturing_agents:
+  category_name: "制造业"
+  description: "覆盖制造业全流程的专业Agent"
+
+  agents:
+    - name: production-planning-agent
+      type: skill
+      title: "生产计划专家"
+      description: "制定生产计划，优化排程，提高产能"
+      core_concept: "计划先行，高效生产"
+      features:
+        - "需求预测"
+        - "产能规划"
+        - "排程优化"
+        - "物料计划"
+        - "进度跟踪"
+      priority: high
+      tags: ["生产", "计划", "排程"]
+
+    - name: quality-control-agent
+      type: skill
+      title: "质量控制专家"
+      description: "建立质量体系，实施质量检测和控制"
+      core_concept: "质量是企业的生命"
+      features:
+        - "质量标准"
+        - "检验流程"
+        - "SPC控制"
+        - "不合格品处理"
+        - "持续改进"
+      priority: high
+      tags: ["质量", "控制", "检验"]
+
+    - name: supply-chain-manufacturing-agent
+      type: skill
+      title: "制造供应链专家"
+      description: "管理制造供应链，确保物料及时供应"
+      core_concept: "供应链是制造的血液"
+      features:
+        - "供应商管理"
+        - "采购策略"
+        - "库存控制"
+        - "物流配送"
+        - "风险管控"
+      priority: high
+      tags: ["供应链", "采购", "库存"]
+
+    - name: lean-manufacturing-agent
+      type: skill
+      title: "精益生产专家"
+      description: "实施精益生产，消除浪费，提升效率"
+      core_concept: "精益生产，持续改善"
+      features:
+        - "价值流分析"
+        - "5S管理"
+        - "看板系统"
+        - "快速换线"
+        - "持续改善"
+      priority: high
+      tags: ["精益", "改善", "效率"]
+
+    - name: industrial-automation-agent
+      type: skill
+      title: "工业自动化专家"
+      description: "设计自动化生产线，提升制造智能化"
+      core_concept: "自动化是制造的未来"
+      features:
+        - "自动化设计"
+        - "机器人应用"
+        - "PLC编程"
+        - "视觉检测"
+        - "系统集成"
+      priority: high
+      tags: ["自动化", "机器人", "智能"]
+
+    - name: equipment-maintenance-agent
+      type: skill
+      title: "设备维护专家"
+      description: "制定设备维护计划，实施预防性维护"
+      core_concept: "设备完好，生产保障"
+      features:
+        - "维护策略"
+        - "故障诊断"
+        - "备件管理"
+        - "TPM实施"
+        - "寿命预测"
+      priority: high
+      tags: ["设备", "维护", "TPM"]
+
+    - name: process-engineering-agent
+      type: skill
+      title: "工艺工程专家"
+      description: "优化制造工艺，提升产品质量和效率"
+      core_concept: "工艺是制造的核心"
+      features:
+        - "工艺设计"
+        - "参数优化"
+        - "工装夹具"
+        - "工艺改进"
+        - "标准化"
+      priority: high
+      tags: ["工艺", "工程", "优化"]
+
+    - name: industrial-safety-agent
+      type: skill
+      title: "工业安全专家"
+      description: "建立安全管理体系，预防生产事故"
+      core_concept: "安全第一，预防为主"
+      features:
+        - "安全评估"
+        - "危险源识别"
+        - "防护措施"
+        - "应急演练"
+        - "安全培训"
+      priority: high
+      tags: ["安全", "防护", "应急"]
+
+    - name: cost-reduction-agent
+      type: skill
+      title: "降本增效专家"
+      description: "分析制造成本，提供降本方案"
+      core_concept: "成本是竞争力"
+      features:
+        - "成本分析"
+        - "材料替代"
+        - "工艺优化"
+        - "效率提升"
+        - "浪费消除"
+      priority: high
+      tags: ["成本", "降本", "增效"]
+
+    - name: new-product-introduction-agent
+      type: skill
+      title: "新产品导入专家"
+      description: "管理新产品从设计到量产的全过程"
+      core_concept: "快速导入，抢占市场"
+      features:
+        - "DFM分析"
+        - "试产管理"
+        - "工艺验证"
+        - "产能爬坡"
+        - "量产移交"
+      priority: high
+      tags: ["新产品", "导入", "量产"]
+
+    - name: smart-factory-agent
+      type: skill
+      title: "智能工厂专家"
+      description: "规划和建设智能工厂，实现数字化转型"
+      core_concept: "智能制造，未来工厂"
+      features:
+        - "顶层设计"
+        - "MES系统"
+        - "数据采集"
+        - "数字孪生"
+        - "AI应用"
+      priority: high
+      tags: ["智能工厂", "数字化", "MES"]
+
+    - name: industrial-iot-agent
+      type: skill
+      title: "工业物联网专家"
+      description: "部署工业物联网，实现设备互联和数据采集"
+      core_concept: "万物互联，数据驱动"
+      features:
+        - "传感器部署"
+        - "网络架构"
+        - "数据采集"
+        - "边缘计算"
+        - "云平台"
+      priority: high
+      tags: ["物联网", "IIoT", "互联"]
+
+    - name: six-sigma-agent
+      type: skill
+      title: "六西格玛专家"
+      description: "应用六西格玛方法，持续改进质量"
+      core_concept: "追求完美，接近零缺陷"
+      features:
+        - "DMAIC流程"
+        - "统计分析"
+        - "DOE实验"
+        - "流程优化"
+        - "项目推进"
+      priority: medium
+      tags: ["六西格玛", "质量", "改进"]
+
+    - name: additive-manufacturing-agent
+      type: skill
+      title: "增材制造专家"
+      description: "应用3D打印技术，实现快速原型和定制化生产"
+      core_concept: "增材制造，无限可能"
+      features:
+        - "技术选型"
+        - "材料选择"
+        - "设计优化"
+        - "打印工艺"
+        - "后处理"
+      priority: medium
+      tags: ["3D打印", "增材", "定制"]
+
+    - name: industrial-energy-agent
+      type: skill
+      title: "工业能源专家"
+      description: "优化工业能源使用，降低能耗成本"
+      core_concept: "节能降耗，绿色制造"
+      features:
+        - "能耗分析"
+        - "节能改造"
+        - "能源管理"
+        - "余热利用"
+        - "清洁能源"
+      priority: medium
+      tags: ["能源", "节能", "绿色"]
+
+    - name: supplier-quality-agent
+      type: skill
+      title: "供应商质量专家"
+      description: "管理供应商质量，确保来料合格"
+      core_concept: "源头控制，质量保障"
+      features:
+        - "供应商审核"
+        - "来料检验"
+        - "质量改进"
+        - "绩效评估"
+        - "关系管理"
+      priority: high
+      tags: ["供应商", "质量", "管理"]
+
+    - name: warehouse-management-agent
+      type: skill
+      title: "仓储管理专家"
+      description: "优化仓储布局，提升物流效率"
+      core_concept: "仓储是制造的缓冲"
+      features:
+        - "仓库规划"
+        - "库存管理"
+        - "拣选优化"
+        - "WMS系统"
+        - "自动化"
+      priority: medium
+      tags: ["仓储", "库存", "WMS"]
+
+    - name: manufacturing-hr-agent
+      type: skill
+      title: "制造业人力资源专家"
+      description: "管理制造团队，提升员工技能"
+      core_concept: "人才是制造的根本"
+      features:
+        - "技能培训"
+        - "绩效考核"
+        - "班组建设"
+        - "多能工培养"
+        - "激励机制"
+      priority: medium
+      tags: ["人力资源", "培训", "班组"]
+
+    - name: regulatory-compliance-agent
+      type: skill
+      title: "制造业合规专家"
+      description: "确保制造合规，通过各类认证审核"
+      core_concept: "合规经营，持续发展"
+      features:
+        - "ISO认证"
+        - "行业标准"
+        - "环保合规"
+        - "安全生产"
+        - "审核应对"
+      priority: high
+      tags: ["合规", "认证", "审核"]
+
+    - name: after-sales-service-agent
+      type: skill
+      title: "售后服务专家"
+      description: "建立售后服务体系，提升客户满意度"
+      core_concept: "服务创造价值"
+      features:
+        - "服务网络"
+        - "维修技术"
+        - "配件管理"
+        - "客户投诉"
+        - "满意度提升"
+      priority: medium
+      tags: ["售后", "服务", "维修"]
+
+# ==========================================
+# 第三类：能源类 Agent (20个)
+# ==========================================
+energy_agents:
+  category_name: "能源"
+  description: "覆盖能源产业全流程的专业Agent"
+
+  agents:
+    - name: solar-energy-agent
+      type: skill
+      title: "太阳能专家"
+      description: "提供光伏发电系统设计、安装、运维服务"
+      core_concept: "阳光能源，清洁未来"
+      features:
+        - "系统设计"
+        - "组件选型"
+        - "安装施工"
+        - "并网接入"
+        - "运维管理"
+      priority: high
+      tags: ["太阳能", "光伏", "发电"]
+
+    - name: wind-energy-agent
+      type: skill
+      title: "风能专家"
+      description: "提供风力发电项目规划、建设、运营服务"
+      core_concept: "驭风而行，绿色能源"
+      features:
+        - "风资源评估"
+        - "风机选型"
+        - "风电场设计"
+        - "建设管理"
+        - "运维优化"
+      priority: high
+      tags: ["风能", "风电", "发电"]
+
+    - name: energy-storage-agent
+      type: skill
+      title: "储能技术专家"
+      description: "提供储能系统设计、电池选型、能量管理"
+      core_concept: "储能是能源的未来"
+      features:
+        - "技术选型"
+        - "电池管理"
+        - "系统设计"
+        - "安全控制"
+        - "梯次利用"
+      priority: high
+      tags: ["储能", "电池", "BMS"]
+
+    - name: smart-grid-agent
+      type: skill
+      title: "智能电网专家"
+      description: "提供智能电网规划、建设、运营服务"
+      core_concept: "智慧电网，能源互联"
+      features:
+        - "电网规划"
+        - "智能调度"
+        - "需求响应"
+        - "分布式接入"
+        - "电力交易"
+      priority: high
+      tags: ["电网", "智能", "调度"]
+
+    - name: energy-efficiency-agent
+      type: skill
+      title: "能效管理专家"
+      description: "提供能源审计、节能改造、能效提升服务"
+      core_concept: "节能优先，效率为王"
+      features:
+        - "能源审计"
+        - "节能诊断"
+        - "改造方案"
+        - "效果评估"
+        - "持续优化"
+      priority: high
+      tags: ["能效", "节能", "审计"]
+
+    - name: electric-vehicle-charging-agent
+      type: skill
+      title: "充电桩专家"
+      description: "提供充电桩规划、建设、运营服务"
+      core_concept: "充电无忧，电动未来"
+      features:
+        - "选址规划"
+        - "设备选型"
+        - "安装施工"
+        - "运营管理"
+        - "平台对接"
+      priority: high
+      tags: ["充电", "桩", "电动"]
+
+    - name: hydrogen-energy-agent
+      type: skill
+      title: "氢能专家"
+      description: "提供氢能生产、储存、应用全流程服务"
+      core_concept: "氢能时代，零碳未来"
+      features:
+        - "制氢技术"
+        - "储运方案"
+        - "加氢站"
+        - "燃料电池"
+        - "应用场景"
+      priority: medium
+      tags: ["氢能", "燃料电池", "零碳"]
+
+    - name: nuclear-energy-agent
+      type: skill
+      title: "核能专家"
+      description: "提供核电技术咨询、安全管理、核废料处理"
+      core_concept: "安全核能，清洁基荷"
+      features:
+        - "核电技术"
+        - "安全评估"
+        - "运行管理"
+        - "废料处理"
+        - "退役规划"
+      priority: medium
+      tags: ["核能", "核电", "安全"]
+
+    - name: oil-gas-agent
+      type: skill
+      title: "油气专家"
+      description: "提供石油天然气勘探、开采、储运服务"
+      core_concept: "传统能源，转型升级"
+      features:
+        - "勘探开发"
+        - "钻井技术"
+        - "油气储运"
+        - "炼化工艺"
+        - "安全管理"
+      priority: medium
+      tags: ["油气", "石油", "天然气"]
+
+    - name: coal-energy-agent
+      type: skill
+      title: "煤炭专家"
+      description: "提供煤炭清洁高效利用技术方案"
+      core_concept: "煤炭清洁利用，绿色转型"
+      features:
+        - "清洁发电"
+        - "煤化工"
+        - "污染控制"
+        - "节能降耗"
+        - "转型方案"
+      priority: medium
+      tags: ["煤炭", "清洁", "转型"]
+
+    - name: geothermal-energy-agent
+      type: skill
+      title: "地热能专家"
+      description: "提供地热资源开发、利用技术服务"
+      core_concept: "地下热能，永续利用"
+      features:
+        - "资源勘探"
+        - "钻井技术"
+        - "发电应用"
+        - "直接利用"
+        - "热泵系统"
+      priority: low
+      tags: ["地热", "热泵", "供暖"]
+
+    - name: biomass-energy-agent
+      type: skill
+      title: "生物质能专家"
+      description: "提供生物质发电、沼气、生物燃料技术服务"
+      core_concept: "变废为宝，循环利用"
+      features:
+        - "原料收集"
+        - "发电技术"
+        - "沼气工程"
+        - "生物燃料"
+        - "碳中和"
+      priority: medium
+      tags: ["生物质", "沼气", "循环"]
+
+    - name: energy-trading-agent
+      type: skill
+      title: "能源交易专家"
+      description: "提供电力交易、碳交易、能源金融咨询"
+      core_concept: "市场机制，优化配置"
+      features:
+        - "电力市场"
+        - "交易策略"
+        - "碳交易"
+        - "风险管理"
+        - "金融工具"
+      priority: medium
+      tags: ["交易", "电力市场", "碳"]
+
+    - name: microgrid-agent
+      type: skill
+      title: "微电网专家"
+      description: "提供微电网规划设计、运行控制服务"
+      core_concept: "独立微网，能源自给"
+      features:
+        - "系统设计"
+        - "能量管理"
+        - "并离网切换"
+        - "储能配置"
+        - "优化运行"
+      priority: medium
+      tags: ["微网", "分布式", "独立"]
+
+    - name: energy-monitoring-agent
+      type: skill
+      title: "能源监测专家"
+      description: "提供能源数据采集、监测、分析服务"
+      core_concept: "数据驱动，精准管理"
+      features:
+        - "计量系统"
+        - "数据采集"
+        - "监测平台"
+        - "分析报告"
+        - "异常预警"
+      priority: high
+      tags: ["监测", "计量", "数据"]
+
+    - name: carbon-neutral-agent
+      type: skill
+      title: "碳中和专家"
+      description: "提供碳核算、碳减排、碳中和路径规划"
+      core_concept: "双碳目标，绿色发展"
+      features:
+        - "碳核算"
+        - "碳足迹"
+        - "减排方案"
+        - "碳汇开发"
+        - "中和路径"
+      priority: high
+      tags: ["碳中和", "双碳", "减排"]
+
+    - name: power-plant-operation-agent
+      type: skill
+      title: "电厂运行专家"
+      description: "提供电厂运行优化、检修、安全管理"
+      core_concept: "安全高效，稳定供电"
+      features:
+        - "运行优化"
+        - "设备检修"
+        - "安全管理"
+        - "环保达标"
+        - "经济运行"
+      priority: high
+      tags: ["电厂", "运行", "检修"]
+
+    - name: energy-policy-agent
+      type: skill
+      title: "能源政策专家"
+      description: "解读能源政策，指导投资决策"
+      core_concept: "政策引领，把握机遇"
+      features:
+        - "政策解读"
+        - "补贴申请"
+        - "项目审批"
+        - "市场分析"
+        - "投资咨询"
+      priority: medium
+      tags: ["政策", "补贴", "投资"]
+
+    - name: off-grid-solar-agent
+      type: skill
+      title: "离网光伏专家"
+      description: "提供离网光伏系统设计，解决无电地区供电"
+      core_concept: "阳光点亮每个角落"
+      features:
+        - "系统设计"
+        - "储能配置"
+        - "负载管理"
+        - "安装维护"
+        - "微电网"
+      priority: medium
+      tags: ["离网", "光伏", "无电区"]
+
+    - name: energy-consulting-agent
+      type: skill
+      title: "能源咨询专家"
+      description: "提供综合能源解决方案，能源战略规划"
+      core_concept: "专业咨询，科学决策"
+      features:
+        - "能源审计"
+        - "方案设计"
+        - "技术选型"
+        - "投资分析"
+        - "项目实施"
+      priority: medium
+      tags: ["咨询", "规划", "方案"]
+
+# ==========================================
+# 第四类：环保类 Agent (20个)
+# ==========================================
+environmental_agents:
+  category_name: "环保"
+  description: "覆盖环境保护全流程的专业Agent"
+
+  agents:
+    - name: wastewater-treatment-agent
+      type: skill
+      title: "污水处理专家"
+      description: "提供污水处理工艺设计、运营优化服务"
+      core_concept: "污水变清流，资源再利用"
+      features:
+        - "工艺设计"
+        - "设备选型"
+        - "运营优化"
+        - "达标排放"
+        - "中水回用"
+      priority: high
+      tags: ["污水", "处理", "水环境"]
+
+    - name: air-pollution-control-agent
+      type: skill
+      title: "大气污染治理专家"
+      description: "提供废气治理、除尘、脱硫脱硝方案"
+      core_concept: "蓝天保卫战，空气更清新"
+      features:
+        - "废气收集"
+        - "除尘技术"
+        - "脱硫脱硝"
+        - "VOCs治理"
+        - "在线监测"
+      priority: high
+      tags: ["大气", "废气", "治理"]
+
+    - name: solid-waste-agent
+      type: skill
+      title: "固废处理专家"
+      description: "提供固废处理、资源化、无害化方案"
+      core_concept: "变废为宝，循环利用"
+      features:
+        - "分类收集"
+        - "焚烧发电"
+        - "填埋处理"
+        - "资源回收"
+        - "危废处置"
+      priority: high
+      tags: ["固废", "垃圾", "资源"]
+
+    - name: environmental-monitoring-agent
+      type: skill
+      title: "环境监测专家"
+      description: "提供环境质量监测、数据分析、预警服务"
+      core_concept: "监测先行，数据说话"
+      features:
+        - "监测方案"
+        - "设备选型"
+        - "数据采集"
+        - "分析评价"
+        - "预警预报"
+      priority: high
+      tags: ["监测", "环境", "数据"]
+
+    - name: environmental-impact-assessment-agent
+      type: skill
+      title: "环评专家"
+      description: "提供环境影响评价、报告编制服务"
+      core_concept: "科学评估，绿色发展"
+      features:
+        - "现状调查"
+        - "影响预测"
+        - "报告编制"
+        - "公众参与"
+        - "审批跟踪"
+      priority: high
+      tags: ["环评", "评估", "报告"]
+
+    - name: green-building-agent
+      type: skill
+      title: "绿色建筑专家"
+      description: "提供绿色建筑认证、节能设计、LEED咨询"
+      core_concept: "绿色建筑，低碳生活"
+      features:
+        - "绿色认证"
+        - "节能设计"
+        - "LEED咨询"
+        - "材料选择"
+        - "运营优化"
+      priority: high
+      tags: ["绿色建筑", "节能", "LEED"]
+
+    - name: carbon-management-agent
+      type: skill
+      title: "碳管理专家"
+      description: "提供碳盘查、碳足迹、碳资产管理服务"
+      core_concept: "管理碳资产，实现碳中和"
+      features:
+        - "碳盘查"
+        - "碳足迹"
+        - "碳资产"
+        - "碳交易"
+        - "碳中和"
+      priority: high
+      tags: ["碳管理", "碳资产", "中和"]
+
+    - name: soil-remediation-agent
+      type: skill
+      title: "土壤修复专家"
+      description: "提供污染土壤调查、风险评估、修复方案"
+      core_concept: "修复土壤，守护大地"
+      features:
+        - "污染调查"
+        - "风险评估"
+        - "修复技术"
+        - "效果评估"
+        - "安全利用"
+      priority: high
+      tags: ["土壤", "修复", "污染"]
+
+    - name: water-conservation-agent
+      type: skill
+      title: "节水专家"
+      description: "提供节水方案设计、中水回用、雨水收集"
+      core_concept: "珍惜每一滴水"
+      features:
+        - "节水诊断"
+        - "中水回用"
+        - "雨水收集"
+        - "节水器具"
+        - "管理优化"
+      priority: high
+      tags: ["节水", "水资源", "回用"]
+
+    - name: circular-economy-agent
+      type: skill
+      title: "循环经济专家"
+      description: "提供循环经济发展规划、产业链设计"
+      core_concept: "循环利用，永续发展"
+      features:
+        - "园区规划"
+        - "产业链设计"
+        - "废物交换"
+        - "资源共享"
+        - "模式创新"
+      priority: medium
+      tags: ["循环", "经济", "园区"]
+
+    - name: environmental-compliance-agent
+      type: skill
+      title: "环保合规专家"
+      description: "提供环保法规咨询、排污许可、合规管理"
+      core_concept: "合规经营，绿色发展"
+      features:
+        - "法规咨询"
+        - "排污许可"
+        - "自行监测"
+        - "台账管理"
+        - "应急预案"
+      priority: high
+      tags: ["合规", "法规", "许可"]
+
+    - name: ecological-restoration-agent
+      type: skill
+      title: "生态修复专家"
+      description: "提供湿地修复、矿山修复、生态重建方案"
+      core_concept: "修复生态，回归自然"
+      features:
+        - "湿地修复"
+        - "矿山修复"
+        - "植被恢复"
+        - "生物多样性"
+        - "景观营造"
+      priority: medium
+      tags: ["生态", "修复", "自然"]
+
+    - name: noise-control-agent
+      type: skill
+      title: "噪声控制专家"
+      description: "提供噪声治理、隔音降噪方案"
+      core_concept: "宁静环境，健康生活"
+      features:
+        - "噪声评估"
+        - "隔声设计"
+        - "吸声处理"
+        - "减振降噪"
+        - "达标治理"
+      priority: medium
+      tags: ["噪声", "隔音", "降噪"]
+
+    - name: hazardous-waste-agent
+      type: skill
+      title: "危废处理专家"
+      description: "提供危险废物收集、贮存、处置方案"
+      core_concept: "安全处置，消除隐患"
+      features:
+        - "分类鉴别"
+        - "收集贮存"
+        - "运输管理"
+        - "处置技术"
+        - "全程追溯"
+      priority: high
+      tags: ["危废", "安全", "处置"]
+
+    - name: environmental-education-agent
+      type: skill
+      title: "环境教育专家"
+      description: "提供环保宣传教育、绿色生活指导"
+      core_concept: "环保教育，从娃娃抓起"
+      features:
+        - "课程设计"
+        - "活动策划"
+        - "基地建设"
+        - "公众参与"
+        - "绿色生活"
+      priority: medium
+      tags: ["教育", "宣传", "公众"]
+
+    - name: climate-adaptation-agent
+      type: skill
+      title: "气候适应专家"
+      description: "提供气候变化适应策略、韧性城市建设"
+      core_concept: "适应变化，韧性发展"
+      features:
+        - "风险评估"
+        - "适应策略"
+        - "海绵城市"
+        - "韧性建设"
+        - "应急准备"
+      priority: medium
+      tags: ["气候", "适应", "韧性"]
+
+    - name: green-supply-chain-agent
+      type: skill
+      title: "绿色供应链专家"
+      description: "提供绿色采购、绿色物流、供应商管理"
+      core_concept: "绿色供应链，可持续未来"
+      features:
+        - "绿色采购"
+        - "供应商评估"
+        - "绿色物流"
+        - "产品生命周期"
+        - "信息披露"
+      priority: medium
+      tags: ["供应链", "绿色", "可持续"]
+
+    - name: environmental-finance-agent
+      type: skill
+      title: "绿色金融专家"
+      description: "提供绿色信贷、绿色债券、ESG投资咨询"
+      core_concept: "金融助力，绿色发展"
+      features:
+        - "绿色信贷"
+        - "绿色债券"
+        - "ESG投资"
+        - "碳金融"
+        - "项目评估"
+      priority: medium
+      tags: ["绿色金融", "ESG", "投资"]
+
+    - name: ocean-conservation-agent
+      type: skill
+      title: "海洋保护专家"
+      description: "提供海洋污染防治、海岸带保护、生态修复"
+      core_concept: "保护海洋，蓝色家园"
+      features:
+        - "污染防治"
+        - "海岸带管理"
+        - "生态修复"
+        - "资源保护"
+        - "可持续利用"
+      priority: medium
+      tags: ["海洋", "海岸", "保护"]
+
+    - name: zero-waste-agent
+      type: skill
+      title: "零废弃专家"
+      description: "提供零废弃生活、无废城市建设方案"
+      core_concept: "零废弃，更美好的未来"
+      features:
+        - "源头减量"
+        - "分类回收"
+        - "堆肥利用"
+        - "重复使用"
+        - "社区实践"
+      priority: medium
+      tags: ["零废弃", "减量", "回收"]
+
+# ==========================================
+# 第五类：物流运输类 Agent (20个)
+# ==========================================
+logistics_agents:
+  category_name: "物流运输"
+  description: "覆盖物流运输全流程的专业Agent"
+
+  agents:
+    - name: supply-chain-logistics-agent
+      type: skill
+      title: "供应链物流专家"
+      description: "优化供应链物流网络，降低物流成本"
+      core_concept: "物流是供应链的血液"
+      features:
+        - "网络规划"
+        - "库存优化"
+        - "运输整合"
+        - "成本控制"
+        - "可视化管理"
+      priority: high
+      tags: ["供应链", "物流", "网络"]
+
+    - name: warehouse-optimization-agent
+      type: skill
+      title: "仓储优化专家"
+      description: "优化仓库布局，提升仓储效率"
+      core_concept: "仓储是物流的节点"
+      features:
+        - "布局设计"
+        - "库位优化"
+        - "作业流程"
+        - "自动化"
+        - "WMS系统"
+      priority: high
+      tags: ["仓储", "仓库", "WMS"]
+
+    - name: transportation-management-agent
+      type: skill
+      title: "运输管理专家"
+      description: "优化运输方案，降低运输成本"
+      core_concept: "运输是物流的核心"
+      features:
+        - "路线优化"
+        - "运力配置"
+        - "装载优化"
+        - "在途跟踪"
+        - "TMS系统"
+      priority: high
+      tags: ["运输", "TMS", "优化"]
+
+    - name: last-mile-delivery-agent
+      type: skill
+      title: "末端配送专家"
+      description: "优化最后一公里配送，提升客户体验"
+      core_concept: "最后一公里，决定满意度"
+      features:
+        - "配送网络"
+        - "路由优化"
+        - "时效管理"
+        - "自提点"
+        - "众包配送"
+      priority: high
+      tags: ["末端", "配送", "快递"]
+
+    - name: cold-chain-logistics-agent
+      type: skill
+      title: "冷链物流专家"
+      description: "提供冷链运输、仓储、配送全流程服务"
+      core_concept: "冷链不断链，品质有保障"
+      features:
+        - "温控管理"
+        - "冷链车辆"
+        - "冷库设计"
+        - "追溯系统"
+        - "断链预警"
+      priority: high
+      tags: ["冷链", "温控", "生鲜"]
+
+    - name: cross-border-logistics-agent
+      type: skill
+      title: "跨境物流专家"
+      description: "提供国际货运、清关、海外仓服务"
+      core_concept: "连接全球，货通天下"
+      features:
+        - "国际运输"
+        - "报关清关"
+        - "海外仓"
+        - "尾程配送"
+        - "税务合规"
+      priority: high
+      tags: ["跨境", "国际", "海外仓"]
+
+    - name: freight-forwarding-agent
+      type: skill
+      title: "货代专家"
+      description: "提供海运、空运、陆运货代服务"
+      core_concept: "专业货代，省心省力"
+      features:
+        - "订舱服务"
+        - "单证处理"
+        - "货物跟踪"
+        - "保险代理"
+        - "多式联运"
+      priority: high
+      tags: ["货代", "海运", "空运"]
+
+    - name: e-commerce-logistics-agent
+      type: skill
+      title: "电商物流专家"
+      description: "提供电商仓储、配送、退换货服务"
+      core_concept: "电商物流，快准好省"
+      features:
+        - "仓配一体"
+        - "订单处理"
+        - "退换货"
+        - "库存管理"
+        - "大数据分析"
+      priority: high
+      tags: ["电商", "仓配", "快递"]
+
+    - name: smart-logistics-agent
+      type: skill
+      title: "智慧物流专家"
+      description: "应用AI、IoT技术提升物流智能化"
+      core_concept: "智慧物流，科技赋能"
+      features:
+        - "智能调度"
+        - "无人仓"
+        - "无人车"
+        - "无人机"
+        - "数字孪生"
+      priority: high
+      tags: ["智慧", "智能", "无人"]
+
+    - name: green-logistics-agent
+      type: skill
+      title: "绿色物流专家"
+      description: "提供绿色包装、新能源车辆、低碳物流方案"
+      core_concept: "绿色物流，低碳运输"
+      features:
+        - "绿色包装"
+        - "新能源车辆"
+        - "路径优化"
+        - "共同配送"
+        - "碳足迹"
+      priority: medium
+      tags: ["绿色", "低碳", "环保"]
+
+    - name: reverse-logistics-agent
+      type: skill
+      title: "逆向物流专家"
+      description: "提供退货、回收、再制造物流服务"
+      core_concept: "逆向物流，价值回收"
+      features:
+        - "退货处理"
+        - "回收网络"
+        - "再制造"
+        - "废弃物处理"
+        - "闭环供应链"
+      priority: medium
+      tags: ["逆向", "退货", "回收"]
+
+    - name: inventory-management-agent
+      type: skill
+      title: "库存管理专家"
+      description: "优化库存水平，平衡服务与成本"
+      core_concept: "库存是双刃剑"
+      features:
+        - "需求预测"
+        - "安全库存"
+        - "补货策略"
+        - "ABC分类"
+        - "呆滞处理"
+      priority: high
+      tags: ["库存", "管理", "预测"]
+
+    - name: logistics-outsourcing-agent
+      type: skill
+      title: "物流外包专家"
+      description: "提供3PL选择、合同谈判、绩效管理"
+      core_concept: "专业的事交给专业的人"
+      features:
+        - "供应商选择"
+        - "合同谈判"
+        - "KPI设计"
+        - "绩效评估"
+        - "关系管理"
+      priority: medium
+      tags: ["外包", "3PL", "合同"]
+
+    - name: port-terminal-agent
+      type: skill
+      title: "港口码头专家"
+      description: "提供港口运营、集装箱管理、船舶调度"
+      core_concept: "港口是物流的枢纽"
+      features:
+        - "泊位调度"
+        - "集装箱管理"
+        - "堆场优化"
+        - "船舶代理"
+        - "多式联运"
+      priority: medium
+      tags: ["港口", "码头", "集装箱"]
+
+    - name: fleet-management-agent
+      type: skill
+      title: "车队管理专家"
+      description: "优化车队运营，降低运输成本"
+      core_concept: "车队是物流的脚"
+      features:
+        - "车辆调度"
+        - "司机管理"
+        - "油耗控制"
+        - "维保管理"
+        - "安全管理"
+      priority: high
+      tags: ["车队", "车辆", "调度"]
+
+    - name: express-delivery-agent
+      type: skill
+      title: "快递专家"
+      description: "提供快递网络规划、运营优化服务"
+      core_concept: "快递速度，服务温度"
+      features:
+        - "网络规划"
+        - "分拨中心"
+        - "时效管理"
+        - "服务质量"
+        - "投诉处理"
+      priority: high
+      tags: ["快递", "时效", "服务"]
+
+    - name: bulk-cargo-agent
+      type: skill
+      title: "大宗物流专家"
+      description: "提供煤炭、矿石、粮食等大宗货物运输"
+      core_concept: "大宗物流，规模效益"
+      features:
+        - "运输方案"
+        - "装卸工艺"
+        - "库存管理"
+        - "供应链金融"
+        - "多式联运"
+      priority: medium
+      tags: ["大宗", "散货", "铁路"]
+
+    - name: pharmaceutical-logistics-agent
+      type: skill
+      title: "医药物流专家"
+      description: "提供药品冷链、GSP合规、追溯管理"
+      core_concept: "医药物流，安全至上"
+      features:
+        - "冷链运输"
+        - "GSP合规"
+        - "追溯系统"
+        - "仓储管理"
+        - "应急配送"
+      priority: high
+      tags: ["医药", "GSP", "冷链"]
+
+    - name: project-cargo-agent
+      type: skill
+      title: "项目物流专家"
+      description: "提供大件运输、工程物流、项目物流"
+      core_concept: "项目物流，量身定制"
+      features:
+        - "方案设计"
+        - "大件运输"
+        - "现场服务"
+        - "风险管理"
+        - "全球网络"
+      priority: medium
+      tags: ["项目", "大件", "工程"]
+
+    - name: logistics-finance-agent
+      type: skill
+      title: "物流金融专家"
+      description: "提供供应链金融、仓单质押、运费保理"
+      core_concept: "物流+金融，双轮驱动"
+      features:
+        - "供应链金融"
+        - "仓单质押"
+        - "运费保理"
+        - "保险服务"
+        - "支付结算"
+      priority: medium
+      tags: ["金融", "供应链", "保理"]
+
+# ==========================================
+# 元数据配置
+# ==========================================
+metadata:
+  total_agents: 100
+  categories:
+    - name: "农业"
+      count: 20
+      color: "#27ae60"
+    - name: "制造业"
+      count: 20
+      color: "#34495e"
+    - name: "能源"
+      count: 20
+      color: "#f39c12"
+    - name: "环保"
+      count: 20
+      color: "#16a085"
+    - name: "物流运输"
+      count: 20
+      color: "#2980b9"
+  
+  generation_settings:
+    parallel: true
+    max_concurrent: 10
+    retry_on_failure: true
+    generate_index: true
+    generate_readme: true
+  
+  quality_checks:
+    - "文档完整性"
+    - "命名规范性"
+    - "内容质量"
+    - "标签准确性"
+    - "优先级合理性"
+
+# ==========================================
+# 生成后操作
+# ==========================================
+post_generation:
+  actions:
+    - type: "generate_index"
+      filename: "AGENTS_INDEX.md"
+      description: "生成Agent目录索引"
+    
+    - type: "generate_category_readme"
+      description: "为每个类别生成README"
+    
+    - type: "validation_report"
+      description: "生成验证报告"
+
+# ==========================================
+# 使用说明
+# ==========================================
+usage:
+  command: "使用 batch-agent-creator skill 加载此配置文件"
+  example: "根据 industrial-agents-batch-1.yaml 批量创建所有Agent"
+  notes:
+    - "本批次包含农业、制造业、能源、环保、物流运输5个基础产业领域共100个Agent"
+    - "这些Agent针对工业和基础产业场景设计"
+    - "建议根据实际需求选择生成"
