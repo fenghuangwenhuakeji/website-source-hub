@@ -26,6 +26,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { buildAcceptanceAwarePath, isLocalAcceptanceMode } from '../lib/acceptanceMode';
 import { isLoggedIn, logout } from '../lib/permissionManager';
 import {
   applyThemeMode,
@@ -250,6 +251,7 @@ export default function RechargeCenter() {
   const [pollingPayment, setPollingPayment] = useState(false);
   const [countdownSeconds, setCountdownSeconds] = useState(0);
 
+  const localAcceptanceMode = isLocalAcceptanceMode();
   const displayName = profile?.nickname || profile?.username || '未命名用户';
   const currentPoints = toNumber(profile?.points);
   const totalRecharge = toNumber(profile?.totalRecharge ?? access?.totalRecharge);
@@ -263,24 +265,27 @@ export default function RechargeCenter() {
     profile?.payoutProfile?.payoutMethod === 'alipay' ? '支付宝' : '微信';
   const backendRemainingSeconds = toNumber(profile?.duration?.remainingSeconds);
   const accessEnabled =
+    localAcceptanceMode ||
     Boolean(profile?.duration?.isPermanent) ||
     countdownSeconds > 0 ||
     Boolean(
       backendRemainingSeconds <= 0 &&
         (profile?.duration?.canEnter || access?.hasActiveMembership),
     );
-  const durationStatusText = profile?.duration?.isPermanent
-    ? '已开通永久时长'
-    : countdownSeconds > 0
-      ? `剩余 ${formatRemainingDuration(countdownSeconds)}`
-      : profile?.duration?.expiresAt || access?.membershipExpiry
-        ? `已于 ${formatDateTime(profile?.duration?.expiresAt || access?.membershipExpiry)} 到期`
-        : '尚未兑换有效时长';
+  const durationStatusText = localAcceptanceMode
+    ? '本地验收模式已启用，可直接进入主程序。'
+    : profile?.duration?.isPermanent
+      ? '已开通永久时长'
+      : countdownSeconds > 0
+        ? `剩余 ${formatRemainingDuration(countdownSeconds)}`
+        : profile?.duration?.expiresAt || access?.membershipExpiry
+          ? `已于 ${formatDateTime(profile?.duration?.expiresAt || access?.membershipExpiry)} 到期`
+          : '尚未兑换有效时长';
   const hasDurationRecord = Boolean(
     profile?.duration?.isPermanent || profile?.duration?.expiresAt || access?.membershipExpiry,
   );
   const isDurationExpired = !accessEnabled && hasDurationRecord;
-  const accessStateLabel = accessEnabled ? '已开通' : isDurationExpired ? '已过期' : '待兑换';
+  const accessStateLabel = localAcceptanceMode ? '本地验收' : accessEnabled ? '已开通' : isDurationExpired ? '已过期' : '待兑换';
   const entryButtonLabel = accessEnabled
     ? '进入主程序'
     : isDurationExpired
@@ -338,7 +343,7 @@ export default function RechargeCenter() {
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      navigate('/login?forceLogin=1', { replace: true });
+      navigate(buildAcceptanceAwarePath('/login?forceLogin=1'), { replace: true });
       return;
     }
     void refreshPage();
@@ -402,7 +407,7 @@ export default function RechargeCenter() {
 
       if (accessRes?.data?.needsLogin || accessRes?.message === 'Unauthorized') {
         logout();
-        navigate('/login?forceLogin=1', { replace: true });
+        navigate(buildAcceptanceAwarePath('/login?forceLogin=1'), { replace: true });
         return;
       }
 
@@ -551,7 +556,7 @@ export default function RechargeCenter() {
 
   function handleLogout() {
     logout();
-    navigate('/login?forceLogin=1', { replace: true });
+    navigate(buildAcceptanceAwarePath('/login?forceLogin=1'), { replace: true });
   }
 
   return (
@@ -623,7 +628,7 @@ export default function RechargeCenter() {
                     size="large"
                     disabled={!accessEnabled}
                     className={styles.primaryButton}
-                    onClick={() => navigate('/main')}
+                    onClick={() => navigate(buildAcceptanceAwarePath('/main'))}
                   >
                     {entryButtonLabel}
                   </Button>

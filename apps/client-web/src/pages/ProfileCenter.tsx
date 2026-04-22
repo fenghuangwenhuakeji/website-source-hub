@@ -25,6 +25,7 @@ import {
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { buildAcceptanceAwarePath, isLocalAcceptanceMode } from '../lib/acceptanceMode';
 import { writeSharedAuth } from '../lib/authStorage';
 import { copyTextToClipboard } from '../lib/clipboard';
 import { isLoggedIn, logout } from '../lib/permissionManager';
@@ -246,7 +247,7 @@ export default function ProfileCenter() {
   const diamondToPointsRate = Math.max(1, toNumber(rules.diamondToPointsRate, 1));
   const commissionRules = Array.isArray(rules.commissionRules) ? rules.commissionRules : [];
   const payoutReady = Boolean(payoutProfile?.realName && payoutProfile?.payoutAccount);
-  const canEnterMain = Boolean(profile.duration?.canEnter);
+  const canEnterMain = isLocalAcceptanceMode() || Boolean(profile.duration?.canEnter);
   const isLocalWechatMock = Boolean(wechatBinding?.authUrl?.includes('/api/wechat/mock-login/'));
 
   useEffect(() => {
@@ -289,7 +290,7 @@ export default function ProfileCenter() {
 
   useEffect(() => {
     if (!isLoggedIn()) {
-      navigate('/login?forceLogin=1', { replace: true });
+      navigate(buildAcceptanceAwarePath('/login?forceLogin=1'), { replace: true });
       return;
     }
     void refreshPage();
@@ -322,7 +323,7 @@ export default function ProfileCenter() {
         /unauthorized|log in|session expired/i.test(String(maybeProfile.message || ''))
       ) {
         logout();
-        navigate('/login?forceLogin=1', { replace: true });
+        navigate(buildAcceptanceAwarePath('/login?forceLogin=1'), { replace: true });
         return;
       }
 
@@ -646,10 +647,10 @@ export default function ProfileCenter() {
                   </Tag>
                 </Space>
                 <div className={styles.buttonRow}>
-                  <Button type="primary" className={styles.primaryButton} icon={<WalletOutlined />} onClick={() => navigate('/recharge')}>
+                  <Button type="primary" className={styles.primaryButton} icon={<WalletOutlined />} onClick={() => navigate(buildAcceptanceAwarePath('/recharge'))}>
                     返回充值中心
                   </Button>
-                  <Button className={styles.secondaryButton} onClick={() => navigate('/main')} disabled={!canEnterMain}>
+                  <Button className={styles.secondaryButton} onClick={() => navigate(buildAcceptanceAwarePath('/main'))} disabled={!canEnterMain}>
                     进入主程序
                   </Button>
                   <Button className={styles.secondaryButton} icon={<ReloadOutlined />} onClick={() => void refreshPage(true)} loading={refreshing}>
@@ -660,7 +661,7 @@ export default function ProfileCenter() {
                     icon={<LogoutOutlined />}
                     onClick={() => {
                       logout();
-                      navigate('/login', { replace: true });
+                      navigate(buildAcceptanceAwarePath('/login'), { replace: true });
                     }}
                   >
                     退出登录

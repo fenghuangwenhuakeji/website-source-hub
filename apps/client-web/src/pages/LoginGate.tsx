@@ -23,6 +23,7 @@ import {
 } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../api';
+import { buildAcceptanceAwarePath, isLocalAcceptanceMode } from '../lib/acceptanceMode';
 import { writeSharedAuth } from '../lib/authStorage';
 import { checkRechargeRequired, isLoggedIn, logout } from '../lib/permissionManager';
 import { applyThemeMode, resolveThemeMode, setPreferredThemeMode, subscribeThemeMode, type ThemeMode } from '../lib/themePreference';
@@ -51,6 +52,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const forceLogin = useMemo(() => new URLSearchParams(location.search).get('forceLogin') === '1', [location.search]);
+  const localAcceptanceMode = useMemo(() => isLocalAcceptanceMode(), [location.search]);
   const inviteSeed = useMemo(() => {
     const params = new URLSearchParams(location.search);
     return (
@@ -127,7 +129,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
         return;
       }
 
-      navigate(access.needsRecharge ? '/recharge' : '/main', { replace: true });
+      navigate(buildAcceptanceAwarePath(access.needsRecharge ? '/recharge' : '/main'), { replace: true });
     };
 
     void syncExistingSession();
@@ -193,7 +195,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     });
 
     onLoginSuccess?.();
-    navigate('/recharge', { replace: true });
+    navigate(buildAcceptanceAwarePath(localAcceptanceMode ? '/main' : '/recharge'), { replace: true });
   };
 
   const showCodeMessage = (response: any, successText: string) => {

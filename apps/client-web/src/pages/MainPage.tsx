@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Spin } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import { buildAcceptanceAwarePath } from '../lib/acceptanceMode';
 import { checkRechargeRequired, isLoggedIn, logout } from '../lib/permissionManager';
 
 type MainPageProps = {
@@ -52,19 +53,19 @@ export default function MainPage(_props: MainPageProps) {
   useEffect(() => {
     void (async () => {
       if (!isLoggedIn()) {
-        navigate('/login', { replace: true });
+        navigate(buildAcceptanceAwarePath('/login'), { replace: true });
         return;
       }
 
       const access = await checkRechargeRequired();
       if (access.needsLogin) {
         logout();
-        navigate('/login', { replace: true });
+        navigate(buildAcceptanceAwarePath('/login'), { replace: true });
         return;
       }
 
       if (access.needsRecharge) {
-        navigate('/recharge', { replace: true });
+        navigate(buildAcceptanceAwarePath('/recharge'), { replace: true });
         return;
       }
 
@@ -102,7 +103,7 @@ export default function MainPage(_props: MainPageProps) {
       }}
     >
       <Suspense fallback={<DesktopShellFallback />}>
-        <MacOSDesktop onOpenRecharge={() => navigate('/recharge')} />
+        <MacOSDesktop onOpenRecharge={() => navigate(buildAcceptanceAwarePath('/recharge'))} />
       </Suspense>
     </div>
   );

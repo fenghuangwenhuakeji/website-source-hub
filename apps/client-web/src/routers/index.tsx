@@ -1,5 +1,6 @@
 import React, { lazy } from 'react';
 import { Navigate, type RouteObject } from 'react-router-dom';
+import { buildAcceptanceAwarePath } from '@/lib/acceptanceMode';
 
 const LoginGate = lazy(() => import('@/pages/LoginGate'));
 const OfficialHomeRedirect = lazy(() => import('@/pages/OfficialHomeRedirect'));
@@ -47,7 +48,7 @@ const rootRouter: RouteObject[] = [
   },
   {
     path: '/rechange',
-    element: <Navigate to="/recharge" replace />,
+    element: <Navigate to={buildAcceptanceAwarePath('/recharge')} replace />,
   },
   {
     path: '/main',
@@ -67,7 +68,7 @@ const rootRouter: RouteObject[] = [
   },
   {
     path: '/mian',
-    element: <Navigate to="/main" replace />,
+    element: <Navigate to={buildAcceptanceAwarePath('/main')} replace />,
   },
   {
     path: '/',
@@ -87,7 +88,7 @@ const rootRouter: RouteObject[] = [
   },
   {
     path: '*',
-    element: <Navigate to="/" replace />,
+    element: <Navigate to={buildAcceptanceAwarePath('/')} replace />,
   },
 ];
 

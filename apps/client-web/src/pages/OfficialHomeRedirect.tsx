@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Wifi,
 } from 'lucide-react';
+import { buildAcceptanceAwarePath } from '../lib/acceptanceMode';
 import styles from './OfficialHomeRedirect.module.scss';
 
 const entryCards = [
@@ -46,6 +47,11 @@ const entryCards = [
 ];
 
 export default function OfficialHomeRedirect() {
+  const acceptanceAwareEntryCards = entryCards.map((card) => ({
+    ...card,
+    to: buildAcceptanceAwarePath(card.to),
+  }));
+
   return (
     <div className={styles.shell}>
       <div className={styles.stars} />
@@ -72,18 +78,18 @@ export default function OfficialHomeRedirect() {
           </div>
 
           <div className={styles.heroActions}>
-            <Link className={styles.primaryAction} to="/main">
+            <Link className={styles.primaryAction} to={buildAcceptanceAwarePath('/main')}>
               进入官方展柜
               <ArrowRight size={18} />
             </Link>
-            <Link className={styles.secondaryAction} to="/login?forceLogin=1">
+            <Link className={styles.secondaryAction} to={buildAcceptanceAwarePath('/login?forceLogin=1')}>
               打开桌面登录
             </Link>
           </div>
         </section>
 
         <section className={styles.cards}>
-          {entryCards.map((card) => (
+          {acceptanceAwareEntryCards.map((card) => (
             <article key={card.id} className={styles.card} style={{ ['--card-accent' as never]: card.accent }}>
               <div className={styles.cardTop}>
                 <div className={styles.cardIcon}>{card.icon}</div>
@@ -138,11 +144,11 @@ export default function OfficialHomeRedirect() {
             </div>
           </div>
           <div className={styles.footerLink}>
-            <Link to="/profile">
+            <Link to={buildAcceptanceAwarePath('/profile')}>
               进入用户中心
               <ArrowRight size={16} />
             </Link>
-            <Link to="/recharge">
+            <Link to={buildAcceptanceAwarePath('/recharge')}>
               前往充值页面
               <ArrowRight size={16} />
             </Link>

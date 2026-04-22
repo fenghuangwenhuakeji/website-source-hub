@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import LoginPage from '../../pages/LoginGate';
 import MacOSDesktop from '../MacOSDesktop';
 import RechargeCenter from '../../pages/RechargeCenter';
+import { buildAcceptanceAwarePath } from '../../lib/acceptanceMode';
 
 function CopyrightFooter() {
   return (
@@ -37,15 +38,15 @@ const router = createBrowserRouter(
     },
     {
       path: '/mian',
-      element: <Navigate to="/main" replace />,
+      element: <Navigate to={buildAcceptanceAwarePath('/main')} replace />,
     },
     {
       path: '/',
-      element: <Navigate to="/login" replace />,
+      element: <Navigate to={buildAcceptanceAwarePath('/login')} replace />,
     },
     {
       path: '*',
-      element: <Navigate to="/login" replace />,
+      element: <Navigate to={buildAcceptanceAwarePath('/login')} replace />,
     },
   ],
   {
