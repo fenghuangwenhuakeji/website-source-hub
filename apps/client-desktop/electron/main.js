@@ -208,6 +208,19 @@ function executeSystemCommand(payload = {}) {
     });
 }
 
+function getLocalProxyPort() {
+    if (!localAppOrigin) {
+        return null;
+    }
+
+    try {
+        const { port } = new URL(localAppOrigin);
+        return port ? Number(port) : null;
+    } catch {
+        return null;
+    }
+}
+
 function isLocalAcceptanceMode() {
     return process.env.LOCAL_ACCEPTANCE_MODE === '1' || fs.existsSync(ACCEPTANCE_MODE_MARKER);
 }
@@ -576,6 +589,19 @@ function setupDesktopBridgeHandlers() {
 
         await mainWindow.webContents.session.clearCache();
         return true;
+    });
+
+    ipcMain.handle('get-proxy-port', () => getLocalProxyPort());
+
+    ipcMain.handle('show-open-dialog', async (_event, options = {}) => {
+        if (!mainWindow) {
+            return { canceled: true, filePaths: [] };
+        }
+
+        return dialog.showOpenDialog(mainWindow, {
+            properties: ['openDirectory'],
+            ...options,
+        });
     });
 
     ipcMain.handle('select-folder', async () => {

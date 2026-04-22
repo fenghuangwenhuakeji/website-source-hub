@@ -59,12 +59,32 @@ async function unwrapFileResult(targetPath) {
     };
 }
 
+async function readFileText(targetPath) {
+    const result = await ipcRenderer.invoke('read-file', targetPath);
+    if (!result?.success) {
+        throw new Error(result?.error ?? `读取文件失败: ${targetPath}`);
+    }
+
+    return typeof result.content === 'string' ? result.content : result.data ?? '';
+}
+
+async function writeFileText(targetPath, content) {
+    const result = await ipcRenderer.invoke('write-file', targetPath, content);
+    if (!result?.success) {
+        throw new Error(result?.error ?? `写入文件失败: ${targetPath}`);
+    }
+
+    return result;
+}
+
 contextBridge.exposeInMainWorld('electronAPI', {
     getAppVersion: () => ipcRenderer.invoke('get-app-version'),
     getPlatform: () => ipcRenderer.invoke('get-platform'),
+    getProxyPort: () => ipcRenderer.invoke('get-proxy-port'),
     getPerformanceMetrics: () => ipcRenderer.invoke('get-performance-metrics'),
     clearCache: () => ipcRenderer.invoke('clear-cache'),
     openExternal: (url) => shell.openExternal(url),
+    showOpenDialog: (options) => ipcRenderer.invoke('show-open-dialog', options),
     selectFolder: () => ipcRenderer.invoke('select-folder'),
     readDirectory: (targetPath) => ipcRenderer.invoke('read-directory', targetPath),
     readFile: (targetPath) => ipcRenderer.invoke('read-file', targetPath),
@@ -81,10 +101,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
     },
     getWorkspacePath: () => workspacePath,
     resolvePath: (inputPath) => resolveWorkspacePath(inputPath),
+    fs: {
+        readFile: (targetPath) => readFileText(targetPath),
+        writeFile: (targetPath, content) => writeFileText(targetPath, content),
+    },
     fileSystem: {
         listDirectory: (targetPath) => unwrapDirectoryResult(targetPath),
         readFile: (targetPath) => unwrapFileResult(targetPath),
-        writeFile: (targetPath, content) => ipcRenderer.invoke('write-file', targetPath, content),
+        writeFile: (targetPath, content) => writeFileText(targetPath, content),
     },
     api: {
         request: (url, options) => ipcRenderer.invoke('api-request', { url: url.replace(/^\/api/, ''), options })
