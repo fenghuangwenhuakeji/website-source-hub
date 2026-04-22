@@ -7,20 +7,25 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageRoot = path.resolve(__dirname, '..');
 const releaseDir = path.join(packageRoot, 'release');
+const baseConfigPath = path.join(packageRoot, 'electron-builder.json');
+const acceptanceStamp = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 14);
+const acceptanceConfigPath = path.join(packageRoot, `.electron-builder.acceptance.${acceptanceStamp}.json`);
 
-const buildCommand =
+const runCommand =
   process.platform === 'win32'
-    ? {
+    ? (command) => ({
         file: process.env.ComSpec || 'cmd.exe',
-        args: ['/d', '/s', '/c', 'npm run build:win'],
-      }
-    : {
-        file: 'npm',
-        args: ['run', 'build:win'],
-      };
+        args: ['/d', '/s', '/c', command],
+      })
+    : (command) => ({
+        file: 'sh',
+        args: ['-lc', command],
+      });
 
-const runBuild = () =>
-  spawnSync(buildCommand.file, buildCommand.args, {
+const spawnCommand = (command) => {
+  const commandSpec = runCommand(command);
+
+  return spawnSync(commandSpec.file, commandSpec.args, {
     cwd: packageRoot,
     env: {
       ...process.env,
@@ -28,6 +33,35 @@ const runBuild = () =>
     },
     stdio: 'inherit',
   });
+};
+
+const writeAcceptanceBuilderConfig = () => {
+  const config = JSON.parse(fs.readFileSync(baseConfigPath, 'utf8'));
+
+  config.portable = {
+    ...(config.portable ?? {}),
+    artifactName: `\${productName}-\${version}-Portable-acceptance-${acceptanceStamp}.exe`,
+  };
+
+  fs.writeFileSync(acceptanceConfigPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+
+  return acceptanceConfigPath;
+};
+
+const runBuild = () => {
+  const prepareResult = spawnCommand('npm run prepare:dist');
+  if (prepareResult.status !== 0) {
+    return prepareResult;
+  }
+
+  const acceptanceConfig = writeAcceptanceBuilderConfig();
+
+  try {
+    return spawnCommand(`npx electron-builder --config "${acceptanceConfig}" --win`);
+  } finally {
+    fs.rmSync(acceptanceConfig, { force: true });
+  }
+};
 
 const cleanReleaseDir = () => {
   try {
