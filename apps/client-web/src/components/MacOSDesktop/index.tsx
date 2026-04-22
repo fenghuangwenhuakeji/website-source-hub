@@ -133,7 +133,7 @@ const MOBILE_HOME_UTILITY_APP_IDS = [
   'alarms-app',
   'notes-app',
 ] as const;
-const HIDDEN_DESKTOP_APP_IDS = ['opencode-gui', 'opencode-cli', 'clawx-gui'] as const;
+const HIDDEN_DESKTOP_APP_IDS: readonly string[] = [];
 const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 const APP_SUMMARY_MAP: Record<string, string> = {
   'kui-chat': '进入聊天、角色和历史会话。',
@@ -143,9 +143,13 @@ const APP_SUMMARY_MAP: Record<string, string> = {
   codeEditor: '直接打开编辑器工作台。',
   webChat: '直接打开 Agent Creator 工作区。',
   'short-book-lab': '进入短篇拆书与分析工作区。',
+  'medium-short': '进入中短篇创作、阅读中心与三层记忆工作区。',
   'html-vault': '浏览并打开 HTML Vault 内置应用。',
   fenghuang: '直接进入凤煌创作套件主入口。',
   'fenghuang-early': '打开历史保留的凤煌早期合集。',
+  'clawx-gui': '打开 ClawX 图形工作台。',
+  'opencode-gui': '打开 OpenCode 图形门户。',
+  'opencode-cli': '打开 OpenCode CLI 工作台。',
   finder: '浏览当前桌面里可直接打开的应用。',
   terminal: '查看当前主程序的运行状态。',
   'calendar-app': '按月查看日历和当天日期。',

@@ -12,10 +12,14 @@ const acceptanceModeEnabled = process.env.LOCAL_ACCEPTANCE_MODE === '1';
 
 const REQUIRED_DIST_FILES = [
   ['apps/fenghuang/index.html', '凤煌创作入口'],
+  ['apps/medium-short/index.html', '中短篇创作'],
   ['desktop-bundles/agent-creator/index.html', 'Agent Creator'],
+  ['desktop-bundles/clawx-gui/index.html', 'ClawX 图形工作台'],
   ['desktop-bundles/code-editor/index.html', '代码编辑器桌面工作台'],
   ['desktop-bundles/short-book-lab/index.html', '短篇拆书版'],
   ['desktop-bundles/html-vault/index.html', 'HTML Vault'],
+  ['desktop-bundles/opencode-gui/index.html', 'OpenCode 图形门户'],
+  ['desktop-bundles/opencode-cli/index.html', 'OpenCode CLI 工作台'],
   ['desktop-bundles/html-vault/app.js', 'HTML Vault 项目清单'],
   ['desktop-bundles/html-vault/apps/tavern-game/index.html', 'HTML Vault / tavern-game'],
 ];
