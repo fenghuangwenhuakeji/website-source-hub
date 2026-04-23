@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
 import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
 import { apiClient } from '../utils/api';
 import { useAuthStore } from '../store/auth';
@@ -69,73 +70,79 @@ export default function RegisterPage() {
   return (
     <div className="page-shell auth-shell">
       <div className="container py-10 sm:py-14">
-        <section className="auth-form auth-card auth-card-register glass-card">
-          <div className="section-kicker">注册</div>
-          <h1 className="auth-title">创建官网账号</h1>
-          <p className="auth-form-copy">填写基础资料后即可完成注册。</p>
+        <div className="auth-register-layout">
+          <section className="auth-form auth-card auth-card-register glass-card">
+            <div className="section-kicker">注册</div>
+            <h1 className="auth-title">创建凤煌账号</h1>
+            <p className="auth-form-copy">填写基础信息后即可完成注册，随后可进入官网工作台体验完整功能。</p>
 
-          <form className="auth-form-body" onSubmit={handleSubmit(onSubmit)}>
-            {error ? <div className="auth-alert">{error}</div> : null}
+            <form className="auth-form-body" onSubmit={handleSubmit(onSubmit)}>
+              {error ? <div className="auth-alert">{error}</div> : null}
 
-            <div className="auth-grid-two">
-              <label className="auth-field">
-                <span>用户名</span>
-                <input {...register('username')} placeholder="3-20 位" />
-                {errors.username ? <small>{errors.username.message}</small> : null}
-              </label>
+              <div className="auth-grid-two">
+                <label className="auth-field">
+                  <span>用户名</span>
+                  <input {...register('username')} placeholder="3-20 位" />
+                  {errors.username ? <small>{errors.username.message}</small> : null}
+                </label>
 
-              <label className="auth-field">
-                <span>昵称</span>
-                <input {...register('nickname')} placeholder="显示名称" />
-                {errors.nickname ? <small>{errors.nickname.message}</small> : null}
-              </label>
+                <label className="auth-field">
+                  <span>昵称</span>
+                  <input {...register('nickname')} placeholder="显示名称" />
+                  {errors.nickname ? <small>{errors.nickname.message}</small> : null}
+                </label>
+              </div>
+
+              <div className="auth-grid-two">
+                <label className="auth-field">
+                  <span>邮箱</span>
+                  <input {...register('email')} placeholder="可选" />
+                  {errors.email ? <small>{errors.email.message}</small> : null}
+                </label>
+
+                <label className="auth-field">
+                  <span>手机号</span>
+                  <input {...register('phone')} placeholder="可选" />
+                  {errors.phone ? <small>{errors.phone.message}</small> : null}
+                </label>
+              </div>
+
+              <div className="auth-grid-two">
+                <label className="auth-field">
+                  <span>密码</span>
+                  <input {...register('password')} type="password" placeholder="至少 6 位" />
+                  {errors.password ? <small>{errors.password.message}</small> : null}
+                </label>
+
+                <label className="auth-field">
+                  <span>确认密码</span>
+                  <input {...register('confirmPassword')} type="password" placeholder="再输入一次" />
+                  {errors.confirmPassword ? <small>{errors.confirmPassword.message}</small> : null}
+                </label>
+              </div>
+
+              <button type="submit" className="btn btn-primary auth-submit" disabled={isLoading}>
+                {isLoading ? '注册中...' : '注册'}
+              </button>
+            </form>
+
+            <div className="auth-shortcuts">
+              <a href={wechatLoginHref} className="btn btn-secondary btn-sm">
+                微信登录
+              </a>
+              <a href={smsLoginHref} className="btn btn-secondary btn-sm">
+                短信登录
+              </a>
+              <Link to="/login" className="btn btn-secondary btn-sm">
+                返回登录
+              </Link>
             </div>
+          </section>
 
-            <div className="auth-grid-two">
-              <label className="auth-field">
-                <span>邮箱</span>
-                <input {...register('email')} placeholder="可选" />
-                {errors.email ? <small>{errors.email.message}</small> : null}
-              </label>
-
-              <label className="auth-field">
-                <span>手机号</span>
-                <input {...register('phone')} placeholder="可选" />
-                {errors.phone ? <small>{errors.phone.message}</small> : null}
-              </label>
-            </div>
-
-            <div className="auth-grid-two">
-              <label className="auth-field">
-                <span>密码</span>
-                <input {...register('password')} type="password" placeholder="至少 6 位" />
-                {errors.password ? <small>{errors.password.message}</small> : null}
-              </label>
-
-              <label className="auth-field">
-                <span>确认密码</span>
-                <input {...register('confirmPassword')} type="password" placeholder="再输入一次" />
-                {errors.confirmPassword ? <small>{errors.confirmPassword.message}</small> : null}
-              </label>
-            </div>
-
-            <button type="submit" className="btn btn-primary auth-submit" disabled={isLoading}>
-              {isLoading ? '注册中...' : '注册'}
-            </button>
-          </form>
-
-          <div className="auth-shortcuts">
-            <a href={wechatLoginHref} className="btn btn-secondary btn-sm">
-              微信登录
-            </a>
-            <a href={smsLoginHref} className="btn btn-secondary btn-sm">
-              短信登录
-            </a>
-            <Link to="/login" className="btn btn-secondary btn-sm">
-              返回登录
-            </Link>
-          </div>
-        </section>
+          <aside className="auth-register-aside">
+            <WeChatGroupPromo variant="register" autoOpen sessionKey="" />
+          </aside>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
 import { showcaseApps } from '../data/showcaseApps';
 import { useAuthStore } from '../store/auth';
 import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
@@ -355,6 +356,14 @@ export default function HomePage() {
                 </motion.article>
               ))}
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="community-spotlight-shell">
+        <div className="container">
+          <div className="reveal-diagonal">
+            <WeChatGroupPromo variant="home" />
           </div>
         </div>
       </section>
