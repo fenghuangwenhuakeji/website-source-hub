@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { featuredGenres, featuredNovels } from '../data/library';
 import {
   countProjectChapters,
@@ -31,20 +32,20 @@ const NOVEL_TIER_META: Record<
   short: {
     label: '短篇小说',
     badge: '短篇',
-    description: '单刀直入，强钩子，适合把一个瞬间写成一记命中。',
-    hint: '适合快节奏起稿、短周期完成和高浓度表达。',
+    description: '单刀直入，强钩子，将一个瞬间写成一记命中',
+    hint: '快节奏起稿、短周期完成、高浓度表达',
   },
   medium: {
     label: '中篇小说',
     badge: '中篇',
-    description: '人物关系更完整，转折更从容，适合做一段真正能沉浸进去的旅程。',
-    hint: '适合阶段连载，也适合把人物线和故事线一起推开。',
+    description: '人物关系更完整，转折更从容，做一段真正能沉浸的旅程',
+    hint: '阶段连载，人物线与故事线一并推开',
   },
   long: {
     label: '长篇小说',
     badge: '长篇',
-    description: '世界观、群像和长期连载都在这里展开，适合真正做一部作品。',
-    hint: '建议先搭卷章树，再把角色、设定和主线一起铺开。',
+    description: '世界观、群像与长期连载在此展开，真正做一部作品',
+    hint: '先搭卷章树，再将角色、设定与主线一并铺开',
   },
 };
 
@@ -77,6 +78,108 @@ function getNovelTier(chapters: number, words: number): NovelLengthTier {
   return 'short';
 }
 
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+/* ── Hero variants ── */
+const heroContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.1 } },
+};
+
+const heroKicker = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.1 } },
+};
+
+const heroTitleMask = {
+  initial: { y: '110%' },
+  animate: { y: 0, transition: { duration: 0.9, ease, delay: 0.2 } },
+};
+
+const heroLead = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease, delay: 0.4 } },
+};
+
+const heroButtonContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } },
+};
+
+const heroButtonItem = {
+  initial: { opacity: 0, y: 12, scale: 0.96 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease } },
+};
+
+const heroHint = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.6 } },
+};
+
+const heroTierCardContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.65 } },
+};
+
+const heroTierCardItem = {
+  initial: { opacity: 0, y: 20, filter: 'blur(4px)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.6, ease } },
+};
+
+const heroKpiContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.8 } },
+};
+
+const heroKpiItem = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
+};
+
+const heroRightPanel = {
+  initial: { opacity: 0, x: 30 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease, delay: 0.4 } },
+};
+
+const heroRightStatContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.6 } },
+};
+
+const heroRightStatItem = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease } },
+};
+
+/* ── Gallery variants ── */
+const galleryHeader = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+  viewport: { once: true, margin: '-80px' },
+};
+
+const galleryChipContainer = {
+  initial: 'initial',
+  whileInView: 'animate',
+  viewport: { once: true, margin: '-80px' },
+};
+
+const galleryChipItem = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease } },
+};
+
+const novelCardContainer = {
+  initial: 'initial',
+  whileInView: 'animate',
+  viewport: { once: true, margin: '-80px' },
+};
+
+const novelCardItem = {
+  initial: { opacity: 0, y: 30, filter: 'blur(6px) saturate(0%)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px) saturate(100%)', transition: { duration: 0.8, ease } },
+};
+
 export default function NovelsPage() {
   const [activeGenre, setActiveGenre] = useState('全部');
 
@@ -90,7 +193,7 @@ export default function NovelsPage() {
         author: '我的草稿',
         genre: project.genre || '小说',
         description:
-          project.description || project.summary || project.premise || '这部作品还在继续打磨。',
+          project.description || project.summary || project.premise || '这部作品还在继续打磨',
         tags: project.tags.length > 0 ? project.tags : ['草稿'],
         status:
           project.status === 'serializing'
@@ -173,122 +276,150 @@ export default function NovelsPage() {
 
   return (
     <div className="page-shell library-shell">
-      <div className="container py-10 sm:py-14 space-y-8">
-        <section className="glass-card rounded-[32px] p-6 sm:p-8">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)] lg:items-stretch">
+      {/* Atmospheric background */}
+      <div className="library-bg-aura" />
+      <div className="library-bg-grid" />
+
+      <div className="container py-10 sm:py-14 space-y-8 relative z-10">
+        {/* ── Hero ── */}
+        <motion.section
+          className="glass-card p-6 sm:p-8 relative overflow-hidden"
+          variants={heroContainer}
+          initial="initial"
+          animate="animate"
+        >
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.4fr)_minmax(280px,0.6fr)] lg:items-stretch">
+            {/* Left column */}
             <div className="space-y-6">
-              <div className="section-kicker">小说工坊</div>
+              <motion.div variants={heroKicker} className="section-kicker">
+                小说工坊
+              </motion.div>
+
               <div>
-                <h1 className="page-title mt-4">让故事先长出钩子，再长成一整个世界。</h1>
-                <p className="page-lead mt-4">
-                  这里不是枯燥的管理页，而是小说创作真正起势的入口。你可以从短篇一击命中，
-                  也可以把中长篇慢慢铺开。标题、题材、卷章、正文、人物和设定，会在同一套工作台里一起发光。
-                </p>
+                <h1 className="page-title mt-4">
+                  <span className="title-line-mask">
+                    <motion.span className="title-line" variants={heroTitleMask}>
+                      先写钩子，再长成一个世界
+                    </motion.span>
+                  </span>
+                </h1>
+                <motion.p variants={heroLead} className="page-lead mt-4">
+                  短篇一击命中，中长篇慢慢铺开，卷章、正文、人物、设定在同一套工作台里一起生长
+                </motion.p>
               </div>
 
-              <div className="flex flex-wrap gap-3">
-                <Link to={NOVEL_EDITOR_URL} className="btn btn-primary">
-                  进入小说工坊
-                </Link>
-                <Link
-                  to={latestDraft ? `${NOVEL_EDITOR_URL}&project=${latestDraft.id}` : NOVEL_EDITOR_URL}
-                  className="btn btn-secondary"
-                >
-                  {latestDraft ? '继续最近项目' : '打开工作台'}
-                </Link>
-              </div>
-
-              <div className="rounded-[24px] border border-sky-400/20 bg-sky-500/10 px-4 py-3 text-xs leading-6 text-slate-200">
-                你可以从这里直接进入小说工作台，也可以先挑选短篇、中篇、长篇的创作节奏，再一键开写。
-              </div>
-
-              <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                {tierCards.map((card) => (
-                  <Link
-                    key={card.tier}
-                    to={card.href}
-                    className={`rounded-[24px] border p-4 transition ${
-                      card.active
-                        ? 'border-sky-400/30 bg-sky-500/10'
-                        : 'border-slate-700/60 bg-slate-900/70 hover:bg-slate-900/90'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between text-xs text-slate-400">
-                      <span>{NOVEL_TIER_META[card.tier].badge}</span>
-                      <span>{card.count} 项</span>
-                    </div>
-                    <div className="mt-2 text-base font-bold text-slate-50">{card.title}</div>
-                    <p className="mt-2 text-xs leading-6 text-slate-400">
-                      {NOVEL_TIER_META[card.tier].hint}
-                    </p>
+              <motion.div variants={heroButtonContainer} className="flex flex-wrap gap-3">
+                <motion.div variants={heroButtonItem}>
+                  <Link to={NOVEL_EDITOR_URL} className="btn btn-primary">
+                    进入小说工坊
                   </Link>
-                ))}
-              </div>
+                </motion.div>
+                <motion.div variants={heroButtonItem}>
+                  <Link
+                    to={latestDraft ? `${NOVEL_EDITOR_URL}&project=${latestDraft.id}` : NOVEL_EDITOR_URL}
+                    className="btn btn-secondary"
+                  >
+                    {latestDraft ? '继续最近项目' : '打开工作台'}
+                  </Link>
+                </motion.div>
+              </motion.div>
 
-              <div className="assistant-kpi-grid mt-6 grid gap-3 sm:grid-cols-4">
-                <div className="assistant-kpi rounded-2xl bg-white/70 p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+              <motion.div
+                variants={heroHint}
+                className="rounded-[24px] border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-3 text-xs leading-6 text-[var(--fh-text-secondary)]"
+              >
+                直接进工作台，或先选短篇 / 中篇 / 长篇节奏，再一键开写
+              </motion.div>
+
+              <motion.div variants={heroTierCardContainer} className="mt-6 grid gap-3 sm:grid-cols-3">
+                {tierCards.map((card) => (
+                  <motion.div key={card.tier} variants={heroTierCardItem}>
+                    <Link
+                      to={card.href}
+                      className={`block rounded-[24px] border p-4 transition ${
+                        card.active
+                          ? 'border-[var(--fh-accent)]/30 bg-[var(--fh-accent)]/10'
+                          : 'border-[var(--fh-border)] bg-[var(--fh-surface)] hover:bg-[var(--fh-surface-raised)]'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between text-xs text-[var(--fh-text-muted)]">
+                        <span>{NOVEL_TIER_META[card.tier].badge}</span>
+                        <span>{card.count} 项</span>
+                      </div>
+                      <div className="mt-2 text-base font-bold text-[var(--fh-text)]">{card.title}</div>
+                      <p className="mt-2 text-xs leading-6 text-[var(--fh-text-muted)]">
+                        {NOVEL_TIER_META[card.tier].hint}
+                      </p>
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+
+              <motion.div variants={heroKpiContainer} className="assistant-kpi-grid mt-6">
+                <motion.div variants={heroKpiItem} className="assistant-kpi">
+                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--fh-text-muted)]">
                     作品总数
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-slate-900">{totalCount}</div>
-                </div>
-                <div className="assistant-kpi rounded-2xl bg-white/70 p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div className="mt-2 text-2xl font-bold text-[var(--fh-text)]">{totalCount}</div>
+                </motion.div>
+                <motion.div variants={heroKpiItem} className="assistant-kpi">
+                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--fh-text-muted)]">
                     本地草稿
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-slate-900">{draftCount}</div>
-                </div>
-                <div className="assistant-kpi rounded-2xl bg-white/70 p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div className="mt-2 text-2xl font-bold text-[var(--fh-text)]">{draftCount}</div>
+                </motion.div>
+                <motion.div variants={heroKpiItem} className="assistant-kpi">
+                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--fh-text-muted)]">
                     连载中
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-slate-900">{serializingCount}</div>
-                </div>
-                <div className="assistant-kpi rounded-2xl bg-white/70 p-4 shadow-sm">
-                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
+                  <div className="mt-2 text-2xl font-bold text-[var(--fh-text)]">{serializingCount}</div>
+                </motion.div>
+                <motion.div variants={heroKpiItem} className="assistant-kpi">
+                  <div className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--fh-text-muted)]">
                     已完结
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-slate-900">{completedCount}</div>
-                </div>
-              </div>
+                  <div className="mt-2 text-2xl font-bold text-[var(--fh-text)]">{completedCount}</div>
+                </motion.div>
+              </motion.div>
             </div>
 
-            <div className="rounded-[28px] border border-white/70 bg-white/90 p-5 shadow-sm">
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">
-                最近点亮
+            {/* Right column — 最近续写 */}
+            <motion.div variants={heroRightPanel} className="glass-card p-5 relative overflow-hidden">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--fh-text-muted)]">
+                最近续写
               </div>
-              <div className="mt-3 text-2xl font-black text-slate-900">
-                {latestDraft ? latestDraft.title : '你的下一部故事，正在等你命名。'}
+              <div className="mt-3 text-2xl font-bold text-[var(--fh-text)]">
+                {latestDraft ? latestDraft.title : '下一部故事，等你命名'}
               </div>
-              <p className="mt-3 text-sm leading-7 text-slate-600">
+              <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
                 {latestDraft
                   ? latestDraft.description
-                  : '创建第一部小说之后，草稿会自动留在这里。下次回来，不需要重新寻找入口，直接续写。'}
+                  : '草稿自动留在这里，下次回来直接续写，无需重新找入口'}
               </p>
 
-              <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-xs text-slate-500">章节</div>
-                  <div className="mt-2 text-lg font-semibold text-slate-900">
+              <motion.div variants={heroRightStatContainer} className="mt-5 grid gap-3 sm:grid-cols-3">
+                <motion.div variants={heroRightStatItem} className="rounded-2xl bg-[var(--fh-bg-elevated)] p-4">
+                  <div className="text-xs text-[var(--fh-text-muted)]">章节</div>
+                  <div className="mt-2 text-lg font-semibold text-[var(--fh-text)]">
                     {latestDraft?.chapterCount ?? 0}
                   </div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-xs text-slate-500">字数</div>
-                  <div className="mt-2 text-lg font-semibold text-slate-900">
+                </motion.div>
+                <motion.div variants={heroRightStatItem} className="rounded-2xl bg-[var(--fh-bg-elevated)] p-4">
+                  <div className="text-xs text-[var(--fh-text-muted)]">字数</div>
+                  <div className="mt-2 text-lg font-semibold text-[var(--fh-text)]">
                     {formatWordCount(latestDraft?.wordCount ?? 0)}
                   </div>
-                </div>
-                <div className="rounded-2xl bg-slate-50 p-4">
-                  <div className="text-xs text-slate-500">最近更新</div>
-                  <div className="mt-2 text-sm font-semibold text-slate-900">
+                </motion.div>
+                <motion.div variants={heroRightStatItem} className="rounded-2xl bg-[var(--fh-bg-elevated)] p-4">
+                  <div className="text-xs text-[var(--fh-text-muted)]">最近更新</div>
+                  <div className="mt-2 text-sm font-semibold text-[var(--fh-text)]">
                     {formatDate(latestDraft?.updatedAt)}
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
 
-              <div className="mt-4 rounded-2xl border border-sky-400/20 bg-sky-500/10 px-4 py-4 text-sm leading-7 text-slate-100">
-                当前节奏：{NOVEL_TIER_META[latestDraftTier].label}。{NOVEL_TIER_META[latestDraftTier].description}
+              <div className="mt-4 rounded-2xl border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                当前节奏：{NOVEL_TIER_META[latestDraftTier].label} — {NOVEL_TIER_META[latestDraftTier].description}
               </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
@@ -309,37 +440,52 @@ export default function NovelsPage() {
                 ) : null}
               </div>
 
-              <div className="mt-5 rounded-2xl bg-slate-950 px-4 py-4 text-sm leading-7 text-white/80">
-                自动保存已经开启。卷章结构、正文片段、人物卡和设定信息，都会随着你的推进持续沉淀。
+              <div className="mt-5 rounded-2xl bg-[var(--fh-bg-elevated)] px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                自动保存已开启，卷章、正文、人物和设定随写随存
               </div>
-            </div>
-          </div>
-        </section>
 
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <span className="library-hero-deco">{latestDraft ? '续' : '写'}</span>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* ── Gallery header ── */}
+        <motion.div
+          {...galleryHeader}
+          className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+        >
           <div>
             <div className="section-kicker">作品橱窗</div>
-            <h2 className="mt-2 text-3xl font-bold text-slate-900">正在发光的小说项目</h2>
-            <p className="mt-2 text-sm text-slate-600">
-              当前筛选：{activeGenre}。从草稿到成品，所有故事都在这里等待被继续推进。
+            <h2 className="mt-2 text-3xl font-bold text-[var(--fh-text)]">所有故事，都在这里继续</h2>
+            <p className="mt-2 text-sm text-[var(--fh-text-muted)]">
+              当前筛选：{activeGenre}，从草稿到成品，随时回来推进
             </p>
           </div>
 
-          <div className="chip-row overflow-x-auto pb-2">
+          <motion.div
+            {...galleryChipContainer}
+            className="chip-row overflow-x-auto pb-2"
+          >
             {filters.map((genre) => (
-              <button
+              <motion.button
                 key={genre}
                 type="button"
+                variants={galleryChipItem}
                 onClick={() => setActiveGenre(genre)}
                 className={`chip-action ${activeGenre === genre ? 'is-active' : ''}`}
               >
                 {genre}
-              </button>
+              </motion.button>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div id="novel-gallery" className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        {/* ── Novel cards ── */}
+        <motion.div
+          id="novel-gallery"
+          {...novelCardContainer}
+          className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+        >
           {visibleCards.map((card) => {
             const tier = getNovelTier(card.chapterCount, card.wordCount);
             const editorUrl = card.isDraft
@@ -347,7 +493,11 @@ export default function NovelsPage() {
               : `${NOVEL_EDITOR_URL}&tier=${tier}`;
 
             return (
-              <article key={card.id} className="novel-card glass-card">
+              <motion.article
+                key={card.id}
+                variants={novelCardItem}
+                className="novel-card novel-card--cinematic glass-card"
+              >
                 <div className="novel-card-top">
                   <span className="chip">{card.isDraft ? '本地草稿' : card.genre}</span>
                   <span className="chip">{NOVEL_TIER_META[tier].badge}</span>
@@ -359,21 +509,21 @@ export default function NovelsPage() {
                 <p className="novel-description">{card.description}</p>
 
                 <div className="mt-4 grid grid-cols-3 gap-3 text-center">
-                  <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                    <div className="text-[11px] text-slate-500">章节</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                  <div className="rounded-2xl bg-[var(--fh-bg-elevated)] px-3 py-3">
+                    <div className="text-[11px] text-[var(--fh-text-muted)]">章节</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--fh-text)]">
                       {card.chapterCount}
                     </div>
                   </div>
-                  <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                    <div className="text-[11px] text-slate-500">字数</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                  <div className="rounded-2xl bg-[var(--fh-bg-elevated)] px-3 py-3">
+                    <div className="text-[11px] text-[var(--fh-text-muted)]">字数</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--fh-text)]">
                       {formatWordCount(card.wordCount)}
                     </div>
                   </div>
-                  <div className="rounded-2xl bg-slate-50 px-3 py-3">
-                    <div className="text-[11px] text-slate-500">更新</div>
-                    <div className="mt-1 text-sm font-semibold text-slate-900">
+                  <div className="rounded-2xl bg-[var(--fh-bg-elevated)] px-3 py-3">
+                    <div className="text-[11px] text-[var(--fh-text-muted)]">更新</div>
+                    <div className="mt-1 text-sm font-semibold text-[var(--fh-text)]">
                       {formatDate(card.updatedAt)}
                     </div>
                   </div>
@@ -395,10 +545,10 @@ export default function NovelsPage() {
                     {card.isDraft ? '继续写作' : '进入小说工坊'}
                   </Link>
                 </div>
-              </article>
+              </motion.article>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

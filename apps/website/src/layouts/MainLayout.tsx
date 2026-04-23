@@ -1,5 +1,6 @@
-import { useEffect, useState, type WheelEvent as ReactWheelEvent } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Header } from '../components/Header';
 import { Footer } from '../components/Footer';
 import {
@@ -12,44 +13,16 @@ import {
 
 const HEADER_OFFSET = 96;
 
-function findScrollableAncestor(node: HTMLElement | null) {
-  let current = node;
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+};
 
-  while (current && current !== document.body) {
-    const style = window.getComputedStyle(current);
-    const overflowY = style.overflowY;
-    const canScroll =
-      (overflowY === 'auto' || overflowY === 'scroll' || overflowY === 'overlay') &&
-      current.scrollHeight > current.clientHeight + 1;
-
-    if (canScroll) {
-      return current;
-    }
-
-    current = current.parentElement;
-  }
-
-  return null;
-}
-
-function scrollTargetBy(target: HTMLElement | null, deltaY: number) {
-  if (target) {
-    target.scrollTop += deltaY;
-    return;
-  }
-
-  const rootScroller = document.scrollingElement as HTMLElement | null;
-  if (rootScroller) {
-    rootScroller.scrollTop += deltaY;
-    return;
-  }
-
-  window.scrollBy({
-    top: deltaY,
-    left: 0,
-    behavior: 'auto',
-  });
-}
+const pageTransition = {
+  duration: 0.4,
+  ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+};
 
 export function MainLayout() {
   const location = useLocation();
@@ -76,50 +49,26 @@ export function MainLayout() {
 
   useEffect(() => subscribeThemeMode(setThemeMode), []);
 
-  const handleDesktopWheel = (event: WheelEvent | ReactWheelEvent<HTMLElement>) => {
-    if (window.innerWidth < 1024 || event.ctrlKey) {
-      return;
-    }
-
-    const target = event.target instanceof HTMLElement ? event.target : null;
-    if (!target) {
-      return;
-    }
-
-    if (
-      target.closest('textarea, select, [contenteditable="true"], .writing-scroll, .library-scroll, .nav-menu')
-    ) {
-      return;
-    }
-
-    const scrollableAncestor = findScrollableAncestor(target);
-    if ('cancelable' in event && !event.cancelable) {
-      return;
-    }
-
-    event.preventDefault();
-    scrollTargetBy(
-      scrollableAncestor && !scrollableAncestor.classList.contains('site-main') ? scrollableAncestor : null,
-      event.deltaY,
-    );
-  };
-
-  useEffect(() => {
-    const handleWheel = (event: WheelEvent) => handleDesktopWheel(event);
-
-    window.addEventListener('wheel', handleWheel, { passive: false, capture: true });
-    return () => window.removeEventListener('wheel', handleWheel, { capture: true } as EventListenerOptions);
-  }, []);
-
   const toggleThemeMode = () => {
     setPreferredThemeMode(themeMode === 'dark' ? 'light' : 'dark');
   };
 
   return (
-    <div className={`site-shell site-shell-${themeMode} flex min-h-screen flex-col`}>
+    <div className="site-shell flex min-h-screen flex-col">
       <Header themeMode={themeMode} onToggleThemeMode={toggleThemeMode} />
-      <main className="site-main flex-1 overflow-visible" onWheelCapture={handleDesktopWheel}>
-        <Outlet />
+      <main className="site-main flex-1">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={location.pathname}
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={pageTransition}
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
       <Footer />
     </div>

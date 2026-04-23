@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import type { ReactNode } from 'react';
 import type { ShowcaseApp } from '../data/showcaseApps';
 import { showcaseApps } from '../data/showcaseApps';
@@ -46,15 +47,88 @@ function OpenLink({
   );
 }
 
-const capabilityRows = [
-  '桌面开发',
-  '小说写作',
-  '漫剧剧本',
-  '分镜视频制作',
-  '网页软件编程',
-  '游戏开发',
-  '共创合作',
-];
+const ease: [number, number, number, number] = [0.16, 1, 0.3, 1];
+
+/* ── Hero variants ── */
+const heroContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
+};
+
+const heroKicker = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.5, ease, delay: 0.1 } },
+};
+
+const heroTitleMask = {
+  initial: { y: '110%' },
+  animate: { y: 0, transition: { duration: 0.9, ease, delay: 0.2 } },
+};
+
+const heroLead = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease, delay: 0.4 } },
+};
+
+const heroButtonContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.1, delayChildren: 0.5 } },
+};
+
+const heroButtonItem = {
+  initial: { opacity: 0, y: 12, scale: 0.96 },
+  animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease } },
+};
+
+const heroPanelCard = {
+  initial: { opacity: 0, x: 30 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.7, ease, delay: 0.5 } },
+};
+
+const heroAccentLine = {
+  initial: { scaleX: 0 },
+  animate: { scaleX: 1, transition: { duration: 0.8, ease, delay: 0.3 } },
+};
+
+/* ── Featured variants ── */
+const featuredHeader = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.6, ease, delay: 0.2 } },
+};
+
+const featuredCardContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.14, delayChildren: 0.3 } },
+};
+
+const featuredCardItem = {
+  initial: { opacity: 0, y: 32, filter: 'blur(8px) saturate(0%)' },
+  animate: { opacity: 1, y: 0, filter: 'blur(0px) saturate(100%)', transition: { duration: 0.85, ease } },
+};
+
+/* ── Catalog variants ── */
+const catalogHeader = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+  viewport: { once: true, margin: '-80px' },
+};
+
+const catalogGroupHeader = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0, transition: { duration: 0.6, ease } },
+  viewport: { once: true, margin: '-80px' },
+};
+
+const catalogStripContainer = {
+  initial: 'initial',
+  whileInView: 'animate',
+  viewport: { once: true, margin: '-80px' },
+};
+
+const catalogStripItem = {
+  initial: { opacity: 0, x: -20, skewY: 1.5 },
+  animate: { opacity: 1, x: 0, skewY: 0, transition: { duration: 0.6, ease } },
+};
 
 export default function AppsShowcasePage() {
   const featuredApps = showcaseApps.filter((app) => app.featured);
@@ -74,80 +148,135 @@ export default function AppsShowcasePage() {
 
   return (
     <div className="page-shell showcase-shell">
-      <div className="container py-10 sm:py-14 space-y-8">
-        <section className="glass-card rounded-[32px] p-6 sm:p-8 premium-hero-card">
-          <div className="page-hero-grid showcase-hero-grid">
+      {/* Atmospheric background */}
+      <div className="showcase-bg-aura" />
+      <div className="showcase-bg-grid" />
+
+      <div className="container py-10 sm:py-14 space-y-8 relative z-10">
+        {/* ── Hero ── */}
+        <motion.section
+          className="glass-card p-6 sm:p-8 relative overflow-hidden"
+          variants={heroContainer}
+          initial="initial"
+          animate="animate"
+        >
+          <div className="showcase-hero-grid">
             <div>
-              <div className="section-kicker">精选代表作</div>
-              <h1 className="page-title mt-4">把我们真正拿得出手的应用，堂堂正正摆上台面。</h1>
-              <p className="page-lead mt-4">
-                这里不是功能目录，而是凤凰体系里最值得先被看见的一批作品。
-                第一眼先看 Edit Code · 凤凰早期合集，再看凤煌创世合集、中短篇创作、短篇拆书版，
-                以及官网正在持续生长的小说助手与剧本工坊。
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3 showcase-top-actions">
-                <Link to="/" className="btn btn-primary showcase-return-link">
-                  返回主页
-                </Link>
-                <a href="/#contact" className="btn btn-secondary">
-                  联系合作
-                </a>
-              </div>
-              <div className="mt-5 flex flex-wrap gap-2 text-xs text-slate-500">
-                {capabilityRows.map((item) => (
-                  <span key={item} className="rounded-full bg-white/80 px-3 py-1">
-                    {item}
-                  </span>
-                ))}
-              </div>
+              <motion.div variants={heroKicker} className="section-kicker">
+                代表作
+              </motion.div>
+
+              <h1 className="page-title mt-4">
+                <span className="title-line-mask">
+                  <motion.span className="title-line" variants={heroTitleMask}>
+                    值得记住的面孔
+                  </motion.span>
+                </span>
+              </h1>
+
+              <motion.p variants={heroLead} className="page-lead mt-4">
+                非功能目录，乃凤煌体系里真正拿得出手的面孔
+                <br />
+                从早期技术底座到内容创作中台，从小说工坊到剧本生产线，每一件皆在持续生长
+              </motion.p>
+
+              <motion.div variants={heroButtonContainer} className="mt-6 flex flex-wrap gap-3">
+                <motion.div variants={heroButtonItem}>
+                  <Link to="/" className="btn btn-primary">
+                    返回主页
+                  </Link>
+                </motion.div>
+                <motion.div variants={heroButtonItem}>
+                  <a href="/#contact" className="btn btn-secondary">
+                    联系合作
+                  </a>
+                </motion.div>
+              </motion.div>
             </div>
 
-            <div className="showcase-highlight premium-float">
-              <div className="showcase-stage-label">作品主舞台</div>
-              <h2>{showcaseApps.length} 个核心展示位</h2>
-              <p>
-                从桌面旗舰到在线工坊，我们把最能代表审美、能力和完成度的产品，压缩成这一页的主陈列。
-              </p>
-            </div>
+            <motion.div
+              variants={heroPanelCard}
+              className="showcase-hero-panel relative overflow-hidden"
+            >
+              <div className="showcase-hero-panel-inner">
+                <div className="showcase-stage-label">产品展示</div>
+                <h2 className="showcase-hero-panel-title">全部面孔</h2>
+                <p className="showcase-hero-panel-desc">
+                  从桌面旗舰到在线工坊，代表审美、能力与完成度
+                </p>
+              </div>
+            </motion.div>
           </div>
-        </section>
 
-        <section id="showcase-featured" className="glass-card rounded-[32px] p-6 sm:p-8 premium-featured-card">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <motion.div
+            className="showcase-hero-accent-line"
+            variants={heroAccentLine}
+          />
+        </motion.section>
+
+        {/* ── Featured ── */}
+        <motion.section
+          id="showcase-featured"
+          className="glass-card p-6 sm:p-8"
+          initial="initial"
+          animate="animate"
+        >
+          <motion.div
+            variants={featuredHeader}
+            className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+          >
             <div>
-              <div className="section-kicker">头牌顺序</div>
-              <h2 className="mt-2 text-2xl font-bold text-slate-900">先看最值得被记住的那几件作品</h2>
-              <p className="mt-2 text-sm text-slate-600">
-                这一排不是凑数卡片，而是我们整个体系里最适合拿去推广、演示和被人一眼记住的产品。
+              <div className="section-kicker">最值得记住的</div>
+              <h2
+                className="mt-2 text-2xl font-bold text-[var(--fh-text)]"
+                style={{ fontFamily: 'var(--fh-font-serif)' }}
+              >
+                这三件，先看
+              </h2>
+              <p className="mt-2 text-sm text-[var(--fh-text-secondary)]">
+                整个体系中最适合推广、演示与被人一眼记住的产品
               </p>
             </div>
-            <div className="text-sm text-slate-500">精选 {featuredApps.length} 项</div>
-          </div>
+            <div className="text-sm text-[var(--fh-text-muted)]">
+              精选 {featuredApps.length} 项
+            </div>
+          </motion.div>
 
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {featuredApps.map((app) => (
-              <article key={app.id} className="rounded-[26px] border border-white/70 bg-white/90 p-5 shadow-sm">
+          <motion.div
+            variants={featuredCardContainer}
+            className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3"
+          >
+            {featuredApps.map((app, index) => (
+              <motion.article
+                key={app.id}
+                variants={featuredCardItem}
+                className="showcase-card showcase-card--cinematic"
+              >
+                <span className="showcase-card-deco-index">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
                 <div className="flex items-center justify-between gap-3">
                   <span className="chip">{app.category}</span>
-                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{app.status}</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--fh-text-muted)]">
+                    {app.status}
+                  </span>
                 </div>
-                <h3 className="mt-4 text-xl font-bold text-slate-900">{app.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-slate-600">{app.description}</p>
-                <p className="mt-3 rounded-2xl bg-slate-50 px-4 py-3 text-sm leading-6 text-slate-600">
+                <h3 className="mt-4 text-xl font-bold text-[var(--fh-text)]">{app.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                  {app.description}
+                </p>
+                <p className="mt-3 rounded-2xl bg-[var(--fh-bg-elevated)] px-4 py-3 text-sm leading-6 text-[var(--fh-text-secondary)]">
                   {app.featuredReason}
                 </p>
-                <div className="chip-row mt-4">
-                  {app.features.map((feature) => (
-                    <span key={`${app.id}-${feature}`} className="chip">
-                      {feature}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-500">
+                <div className="mt-4 rounded-2xl border border-dashed border-[var(--fh-border)] bg-[var(--fh-bg-elevated)] px-3 py-2 font-mono text-xs text-[var(--fh-text-muted)]">
                   {app.pageUrl}
                 </div>
                 <div className="mt-5 flex gap-3">
-                  <OpenLink url={app.pageUrl} className="btn btn-primary flex-1" ariaLabel={`打开 ${app.title}`}>
+                  <OpenLink
+                    url={app.pageUrl}
+                    className="btn btn-primary flex-1"
+                    ariaLabel={`打开 ${app.title}`}
+                  >
                     直接打开
                   </OpenLink>
                   <OpenLink
@@ -159,73 +288,101 @@ export default function AppsShowcasePage() {
                     新标签
                   </OpenLink>
                 </div>
-              </article>
+              </motion.article>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
-        <section id="showcase-catalog" className="showcase-display-wall showcase-display-wall--studio">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        {/* ── Catalog ── */}
+        <section id="showcase-catalog" className="showcase-display-wall">
+          <motion.div
+            {...catalogHeader}
+            className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
+          >
             <div>
               <div className="section-kicker">完整陈列</div>
-              <h2 className="text-2xl font-bold text-slate-900">从桌面旗舰到在线工坊，完整看一遍我们的产品面孔</h2>
-              <p className="mt-2 text-sm text-slate-600">
-                这一页负责展示我们已经做出来、并且值得被推广的应用。你看到的不只是页面，而是一整套正在成形的产品谱系。
+              <h2
+                className="text-2xl font-semibold text-[var(--fh-text)]"
+                style={{ fontFamily: 'var(--fh-font-serif)' }}
+              >
+                全部产品面孔，一次看完
+              </h2>
+              <p className="mt-2 text-sm text-[var(--fh-text-secondary)]">
+                从桌面旗舰到在线工坊，每一件皆在持续迭代，所见非页面，乃一整套正在成形的产品谱系
               </p>
             </div>
-            <div className="flex flex-wrap gap-2 text-sm text-slate-500 showcase-catalog-actions">
-              <a href="/#contact" className="showcase-inline-link">
+            <div className="flex flex-wrap gap-2 text-sm text-[var(--fh-text-muted)]">
+              <a href="/#contact" className="hero-panel-link">
                 发起合作
               </a>
-              <Link to="/" className="showcase-inline-link showcase-return-link">
+              <Link to="/" className="hero-panel-link">
                 返回主页
               </Link>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="space-y-8">
+          <div className="space-y-12">
             {catalogGroups.map((group, groupIndex) => (
-              <section key={group.category} id={`catalog-group-${groupIndex}`} className="space-y-4">
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+              <section key={group.category} id={`catalog-group-${groupIndex}`}>
+                <motion.div
+                  {...catalogGroupHeader}
+                  className="showcase-group-header"
+                >
+                  <motion.div
+                    className="showcase-group-deco"
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 0.06, x: 0, transition: { duration: 0.5, ease } }}
+                    viewport={{ once: true }}
+                  >
+                    {String(groupIndex + 1).padStart(2, '0')}
+                  </motion.div>
                   <div>
                     <div className="section-kicker">{group.category}</div>
-                    <h3 className="text-xl font-bold text-slate-900">
-                      {group.category} · {group.apps.length} 项
+                    <h3
+                      className="text-xl font-semibold text-[var(--fh-text)]"
+                      style={{ fontFamily: 'var(--fh-font-serif)' }}
+                    >
+                      {group.category}
                     </h3>
                   </div>
-                  <a href="/#contact" className="text-sm text-slate-500 hover:text-slate-700">
-                    发起合作
-                  </a>
-                </div>
+                  <motion.div
+                    className="showcase-group-line"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1, transition: { duration: 0.8, ease, delay: 0.2 } }}
+                    viewport={{ once: true }}
+                    style={{ transformOrigin: 'left' }}
+                  />
+                  <span className="phoenix-entry-index">{group.apps.length} 项</span>
+                </motion.div>
 
-                <div className="showcase-grid showcase-grid--editorial">
+                <motion.div
+                  {...catalogStripContainer}
+                  className="showcase-strip-list"
+                >
                   {group.apps.map((app, index) => (
-                    <article key={app.id} className="showcase-card">
-                      <div className="showcase-card-glow" />
-                      <div className="showcase-card-top">
-                        <span className="showcase-index">{String(index + 1).padStart(2, '0')}</span>
-                        <div className="flex items-center gap-2">
+                    <motion.article
+                      key={app.id}
+                      variants={catalogStripItem}
+                      className="showcase-strip showcase-strip--cinematic"
+                    >
+                      <span className="showcase-strip-index">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <div className="showcase-strip-main">
+                        <div className="showcase-strip-meta">
+                          <span className="chip">{app.category}</span>
                           {app.featured ? <span className="novel-status">精选</span> : null}
                           <span className="novel-status">{app.status}</span>
                         </div>
-                      </div>
-                      <div className="showcase-card-body">
-                        <span className="chip">{app.category}</span>
-                        <h2>{app.title}</h2>
+                        <h4 style={{ fontFamily: 'var(--fh-font-serif)' }}>{app.title}</h4>
                         <p>{app.description}</p>
-                        <div className="chip-row">
-                          {app.features.map((feature) => (
-                            <span key={feature} className="chip">
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="mt-4 rounded-2xl border border-dashed border-white/50 bg-white/60 px-3 py-2 font-mono text-xs text-slate-500">
-                          {app.pageUrl}
-                        </div>
                       </div>
-                      <div className="showcase-app-actions">
-                        <OpenLink url={app.pageUrl} className="btn btn-primary" ariaLabel={`打开 ${app.title}`}>
+                      <div className="showcase-strip-actions">
+                        <OpenLink
+                          url={app.pageUrl}
+                          className="btn btn-primary"
+                          ariaLabel={`打开 ${app.title}`}
+                        >
                           直接打开
                         </OpenLink>
                         <OpenLink
@@ -237,9 +394,9 @@ export default function AppsShowcasePage() {
                           新标签
                         </OpenLink>
                       </div>
-                    </article>
+                    </motion.article>
                   ))}
-                </div>
+                </motion.div>
               </section>
             ))}
           </div>

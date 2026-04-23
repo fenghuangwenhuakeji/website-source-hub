@@ -11,7 +11,6 @@ interface Stats {
   comments: number;
 }
 
-const focusTags = ['剧本', '分镜', '镜头', '排演'];
 
 const workshopCards = [
   {
@@ -43,46 +42,33 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="page-shell dashboard-shell bg-[#0b0f17]">
-      <div className="mx-auto max-w-7xl px-4 py-10 pb-16 sm:px-6 sm:py-14 lg:px-8">
-        <section className="mb-10 overflow-hidden rounded-[32px] border border-slate-700/40 bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.16),transparent_42%),linear-gradient(140deg,#0f172a_0%,#111827_45%,#020617_100%)] p-8 text-white shadow-[0_30px_80px_rgba(15,23,42,0.35)]">
+    <div className="page-shell dashboard-shell">
+      <div className="container py-10 sm:py-14 space-y-8">
+        <section className="glass-card p-6 sm:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
             <div>
-              <div className="inline-flex rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-white/80">
-                剧本工坊
-              </div>
-              <h1 className="mt-5 text-3xl font-black leading-tight sm:text-4xl">
+              <div className="section-kicker">剧本工坊</div>
+              <h1 className="page-title mt-4">
                 把剧本、分镜、镜头和排演放进一条独立产品线里
               </h1>
-              <p className="mt-4 max-w-3xl text-sm leading-7 text-white/75 sm:text-base">
+              <p className="page-lead mt-4">
                 欢迎回来，{user?.nickname ?? '创作者'}。这里只服务脚本流程，不承接小说卷章创作。官网入口、CTA 和工作台都直接指向剧本工坊，不再把它当作小说助手的附属跳转页。
               </p>
-              <div className="mt-5 flex flex-wrap gap-2">
-                {focusTags.map((item) => (
-                  <span key={item} className="rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/85">
-                    {item}
-                  </span>
-                ))}
-              </div>
               <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  to="/writing?type=script"
-                  className="inline-flex items-center rounded-full bg-sky-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-sky-400"
-                >
+                <Link to="/writing?type=script" className="btn btn-primary">
                   进入剧本写作
                 </Link>
-                <Link
-                  to="/writing?type=storyboard"
-                  className="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/15"
-                >
+                <Link to="/writing?type=storyboard" className="btn btn-secondary">
                   进入分镜线
                 </Link>
               </div>
             </div>
 
-            <div className="rounded-[28px] border border-white/12 bg-white/8 p-5 backdrop-blur">
-              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">独立边界</div>
-              <div className="mt-4 space-y-3 text-sm leading-7 text-white/75">
+            <div className="glass-card p-5">
+              <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--fh-text-muted)]">
+                独立边界
+              </div>
+              <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
                 <p>小说助手处理长文本创作，剧本工坊只处理剧本、分镜、镜头和排演流程。</p>
                 <p>官网里的剧本入口、展示卡片和 CTA 直接指向剧本工坊，不再借小说产品说明绕过去。</p>
                 <p>剧本写作和分镜规划并列保留，同属剧本工坊，但不和小说路径混在一起。</p>
@@ -91,69 +77,66 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        <div className="mb-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-3xl border border-slate-800 bg-[#121826] p-6">
+        <div className="assistant-kpi-grid">
+          <div className="assistant-kpi">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">账户项目</p>
-                <p className="mt-2 text-3xl font-black text-white">{stats?.novels.total || 0}</p>
+                <p className="text-sm text-[var(--fh-text-muted)]">账户项目</p>
+                <p className="mt-2 text-3xl font-black text-[var(--fh-text)]">{stats?.novels.total || 0}</p>
               </div>
-              <span className="text-4xl opacity-60">🗂️</span>
+              <span className="text-2xl text-[var(--fh-text-muted)]">Proj</span>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-[#121826] p-6">
+          <div className="assistant-kpi">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">累计访问</p>
-                <p className="mt-2 text-3xl font-black text-white">{stats?.novels.views || 0}</p>
+                <p className="text-sm text-[var(--fh-text-muted)]">累计访问</p>
+                <p className="mt-2 text-3xl font-black text-[var(--fh-text)]">{stats?.novels.views || 0}</p>
               </div>
-              <span className="text-4xl opacity-60">👁️</span>
+              <span className="text-2xl text-[var(--fh-text-muted)]">View</span>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-[#121826] p-6">
+          <div className="assistant-kpi">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">收藏</p>
-                <p className="mt-2 text-3xl font-black text-white">{stats?.bookmarks || 0}</p>
+                <p className="text-sm text-[var(--fh-text-muted)]">收藏</p>
+                <p className="mt-2 text-3xl font-black text-[var(--fh-text)]">{stats?.bookmarks || 0}</p>
               </div>
-              <span className="text-4xl opacity-60">⭐</span>
+              <span className="text-2xl text-[var(--fh-text-muted)]">Save</span>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-slate-800 bg-[#121826] p-6">
+          <div className="assistant-kpi">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-400">点赞</p>
-                <p className="mt-2 text-3xl font-black text-white">{stats?.likes || 0}</p>
+                <p className="text-sm text-[var(--fh-text-muted)]">点赞</p>
+                <p className="mt-2 text-3xl font-black text-[var(--fh-text)]">{stats?.likes || 0}</p>
               </div>
-              <span className="text-4xl opacity-60">👍</span>
+              <span className="text-2xl text-[var(--fh-text-muted)]">Like</span>
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <section className="rounded-[30px] border border-slate-800 bg-[#121826] p-6">
+          <section className="glass-card p-6">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">剧本工坊入口</div>
-                <h2 className="mt-2 text-2xl font-black text-white">当前可继续推进的工作线</h2>
+                <div className="section-kicker">剧本工坊入口</div>
+                <h2 className="mt-2 text-2xl font-bold text-[var(--fh-text)]">当前可继续推进的工作线</h2>
               </div>
-                <Link to="/writing?type=script" className="text-sm font-semibold text-sky-300 hover:text-sky-200">
-                  直接进入剧本工坊
-                </Link>
+              <Link to="/writing?type=script" className="hero-panel-link">
+                直接进入剧本工坊
+              </Link>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3">
               {workshopCards.map((card) => (
-                <article key={card.title} className="rounded-[24px] border border-slate-700 bg-[#1a2233] p-5">
-                  <div className="text-sm font-semibold text-white">{card.title}</div>
-                  <p className="mt-3 text-sm leading-7 text-slate-400">{card.description}</p>
-                  <Link
-                    to={card.to}
-                    className="mt-5 inline-flex items-center rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-white"
-                  >
+                <article key={card.title} className="glass-card p-5">
+                  <div className="text-sm font-semibold text-[var(--fh-text)]">{card.title}</div>
+                  <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">{card.description}</p>
+                  <Link to={card.to} className="btn btn-primary mt-5 inline-block">
                     {card.cta}
                   </Link>
                 </article>
@@ -161,36 +144,36 @@ export default function DashboardPage() {
             </div>
           </section>
 
-          <aside className="rounded-[30px] border border-slate-800 bg-[#121826] p-6">
-            <div className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">继续推进</div>
-            <h2 className="mt-2 text-2xl font-black text-white">本轮 CTA</h2>
+          <aside className="glass-card p-6">
+            <div className="section-kicker">继续推进</div>
+            <h2 className="mt-2 text-2xl font-bold text-[var(--fh-text)]">本轮 CTA</h2>
             <div className="mt-6 space-y-3">
               <Link
                 to="/writing?type=script"
-                className="flex items-center rounded-2xl bg-[#1a2233] p-4 text-white transition hover:bg-[#222d43]"
+                className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
-                <span className="mr-3 text-2xl">✍️</span>
+                <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">01</span>
                 <span>新建剧本项目</span>
               </Link>
               <Link
                 to="/writing?type=storyboard"
-                className="flex items-center rounded-2xl bg-[#1a2233] p-4 text-white transition hover:bg-[#222d43]"
+                className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
-                <span className="mr-3 text-2xl">🎬</span>
+                <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">02</span>
                 <span>新建分镜项目</span>
               </Link>
               <Link
                 to="/showcase"
-                className="flex items-center rounded-2xl bg-[#1a2233] p-4 text-white transition hover:bg-[#222d43]"
+                className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
-                <span className="mr-3 text-2xl">🖼️</span>
+                <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">03</span>
                 <span>查看作品展示</span>
               </Link>
               <Link
-                  to="/#contact"
-                className="flex items-center rounded-2xl bg-[#1a2233] p-4 text-white transition hover:bg-[#222d43]"
+                to="/#contact"
+                className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
-                <span className="mr-3 text-2xl">🤝</span>
+                <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">04</span>
                 <span>联系合作</span>
               </Link>
             </div>

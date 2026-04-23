@@ -10,16 +10,10 @@ type IdleDeadlineLike = {
 type IdleScheduler = (callback: (deadline: IdleDeadlineLike) => void, options?: { timeout: number }) => IdleHandle;
 type IdleCanceler = (handle: IdleHandle) => void;
 
-declare global {
-  interface Window {
-    requestIdleCallback?: IdleScheduler;
-    cancelIdleCallback?: IdleCanceler;
-  }
-}
-
 const requestIdle: IdleScheduler = (callback, options) => {
-  if (typeof window !== 'undefined' && typeof window.requestIdleCallback === 'function') {
-    return window.requestIdleCallback(callback, options);
+  const g = globalThis as unknown as { requestIdleCallback?: IdleScheduler; cancelIdleCallback?: IdleCanceler };
+  if (typeof window !== 'undefined' && typeof g.requestIdleCallback === 'function') {
+    return g.requestIdleCallback(callback, options);
   }
 
   return window.setTimeout(() => {
@@ -31,8 +25,9 @@ const requestIdle: IdleScheduler = (callback, options) => {
 };
 
 const cancelIdle: IdleCanceler = (handle) => {
-  if (typeof window !== 'undefined' && typeof window.cancelIdleCallback === 'function') {
-    window.cancelIdleCallback(handle);
+  const g = globalThis as unknown as { requestIdleCallback?: IdleScheduler; cancelIdleCallback?: IdleCanceler };
+  if (typeof window !== 'undefined' && typeof g.cancelIdleCallback === 'function') {
+    g.cancelIdleCallback(handle);
     return;
   }
 

@@ -75,7 +75,6 @@ export default function LoginPage() {
           </section>
 
           <section className="auth-form glass-card order-1 lg:order-2">
-            <div className="section-kicker">登录</div>
             <h2 className="auth-form-title">进入凤煌科技官网</h2>
             <p className="auth-form-copy">使用你的用户名、邮箱或手机号登录。</p>
 
