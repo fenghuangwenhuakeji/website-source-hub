@@ -36,6 +36,7 @@ import {
   subscribeThemeMode,
   type ThemeMode,
 } from '../lib/themePreference';
+import { getWechatInitialMessage, normalizeWechatUiMessage } from '../lib/wechatUiMessage';
 import styles from './authExperience.module.scss';
 
 const { Title, Text, Paragraph } = Typography;
@@ -390,7 +391,12 @@ export default function ProfileCenter() {
           return;
         }
 
-        setWechatBindingMessage(payload.message || '正在等待微信确认。');
+        setWechatBindingMessage(
+          normalizeWechatUiMessage(payload.message, {
+            mode: 'bind',
+            status: payload.status === 'expired' ? 'expired' : payload.status === 'success' ? 'success' : 'pending',
+          }),
+        );
 
         if (payload.status === 'success') {
           stopWechatPolling();
@@ -424,9 +430,10 @@ export default function ProfileCenter() {
 
     setWechatBinding(response.data);
     setWechatBindingMessage(
-      response.data.authUrl?.includes('/api/wechat/mock-login/')
-        ? '本地调试模式：请在新窗口里确认微信绑定。'
-        : '新窗口已打开，请使用微信扫码并确认绑定当前账号。',
+      getWechatInitialMessage({
+        isMock: response.data.authUrl?.includes('/api/wechat/mock-login/'),
+        mode: 'bind',
+      }),
     );
     startWechatPolling(response.data.state);
     return response.data as WechatBindState;

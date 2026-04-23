@@ -1,3 +1,5 @@
+import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+
 export interface ShowcaseApp {
   id: string;
   title: string;
@@ -9,6 +11,8 @@ export interface ShowcaseApp {
   featuredReason: string;
   pageUrl: string;
 }
+
+const desktopLoginUrl = resolveDesktopLoginUrl();
 
 export const showcaseApps: ShowcaseApp[] = [
   {
@@ -22,7 +26,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: true,
     featuredReason:
       '凤煌最早立住技术根基的工具集，亦是所有产品的起点',
-    pageUrl: 'https://fenghuangkeji.cn',
+    pageUrl: desktopLoginUrl,
   },
   {
     id: 'chuangshi',
@@ -35,7 +39,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: true,
     featuredReason:
       "品牌主推的创作中枢，最能代表凤煌'工具即内容'的核心能力",
-    pageUrl: 'https://fenghuangkeji.cn',
+    pageUrl: desktopLoginUrl,
   },
   {
     id: 'medium-short',
@@ -48,7 +52,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: true,
     featuredReason:
       '凤煌内容矩阵中传播力最强的品类，新读者最先接触我们的入口',
-    pageUrl: 'https://fenghuangkeji.cn',
+    pageUrl: '/novels',
   },
   {
     id: 'short-deconstruct',
@@ -61,7 +65,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: false,
     featuredReason:
       '创作者的训练场，叙事技巧从阅读迁移至写作',
-    pageUrl: 'https://fenghuangkeji.cn',
+    pageUrl: '/novels',
   },
   {
     id: 'novel-assistant',

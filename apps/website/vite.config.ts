@@ -6,6 +6,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   const rawBase = env.VITE_APP_BASE || '/';
   const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
+  const apiProxyTarget = env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:3000';
 
   return {
     base,
@@ -19,7 +20,7 @@ export default defineConfig(({ mode }) => {
       port: 5182,
       proxy: {
         '/api': {
-          target: 'http://127.0.0.1:3000',
+          target: apiProxyTarget,
           changeOrigin: true,
         },
       },

@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { MainLayout } from './layouts/MainLayout';
+import { ProtectedRoute, PublicRoute } from './components';
 
 const AppsShowcasePage = lazy(() => import('./pages/AppsShowcasePage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -47,13 +48,17 @@ function App() {
             <Route path="/home" element={<HomePage />} />
             <Route path="/home/" element={<HomePage />} />
             <Route path="/showcase" element={<AppsShowcasePage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/novels" element={<NovelsPage />} />
             <Route path="/novels/:id" element={<NovelDetailPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/writing" element={<WritingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+            </Route>
+            <Route element={<PublicRoute />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

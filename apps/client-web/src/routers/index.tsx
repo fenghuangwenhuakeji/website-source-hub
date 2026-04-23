@@ -3,7 +3,6 @@ import { Navigate, type RouteObject } from 'react-router-dom';
 import { buildAcceptanceAwarePath } from '@/lib/acceptanceMode';
 
 const LoginGate = lazy(() => import('@/pages/LoginGate'));
-const OfficialHomeRedirect = lazy(() => import('@/pages/OfficialHomeRedirect'));
 const RechargeCenter = lazy(() => import('@/pages/RechargeCenter'));
 const MainPage = lazy(() => import('@/pages/MainPage'));
 const ProfileCenter = lazy(() => import('@/pages/ProfileCenter'));
@@ -72,23 +71,15 @@ const rootRouter: RouteObject[] = [
   },
   {
     path: '/',
-    element: (
-      <React.Suspense fallback={<RouteFallback />}>
-        <OfficialHomeRedirect />
-      </React.Suspense>
-    ),
+    element: <Navigate to={buildAcceptanceAwarePath('/login')} replace />,
   },
   {
     path: '/home',
-    element: (
-      <React.Suspense fallback={<RouteFallback />}>
-        <OfficialHomeRedirect />
-      </React.Suspense>
-    ),
+    element: <Navigate to={buildAcceptanceAwarePath('/login')} replace />,
   },
   {
     path: '*',
-    element: <Navigate to={buildAcceptanceAwarePath('/')} replace />,
+    element: <Navigate to={buildAcceptanceAwarePath('/login')} replace />,
   },
 ];
 

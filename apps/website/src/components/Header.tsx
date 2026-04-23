@@ -106,6 +106,11 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
     closeMenu();
   }, [location.pathname, location.hash]);
 
+  const handleLogout = () => {
+    logout();
+    closeMenu();
+  };
+
   return (
     <>
       {menuOpen ? (
@@ -154,6 +159,33 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                     打开桌面端
                   </a>
                 </li>
+                <li className="mobile-only nav-mobile-panel">
+                  <div className="nav-mobile-label">官网账号</div>
+                  <div className="flex flex-wrap gap-3">
+                    {isAuthenticated ? (
+                      <>
+                        <Link to="/dashboard" className="btn btn-primary nav-cta" onClick={closeMenu}>
+                          进入工作台
+                        </Link>
+                        <Link to="/profile" className="btn btn-secondary nav-cta" onClick={closeMenu}>
+                          个人设置
+                        </Link>
+                        <button type="button" className="btn btn-secondary nav-cta" onClick={handleLogout}>
+                          退出登录
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link to="/login" className="btn btn-primary nav-cta" onClick={closeMenu}>
+                          登录
+                        </Link>
+                        <Link to="/register" className="btn btn-secondary nav-cta" onClick={closeMenu}>
+                          注册
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </li>
               </ul>
             </nav>
 
@@ -171,19 +203,46 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
               </a>
               {isAuthenticated ? (
                 <>
-                  <div className="nav-user-chip">{user?.nickname ?? '官网用户'}</div>
+                  <Link
+                    to="/dashboard"
+                    className={`btn ${location.pathname === '/dashboard' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                    title="进入官网工作台"
+                  >
+                    工作台
+                  </Link>
+                  <Link
+                    to="/profile"
+                    className={`nav-user-chip nav-user-link${location.pathname === '/profile' ? ' active' : ''}`}
+                    title="进入个人设置"
+                  >
+                    {user?.nickname ?? '官网用户'}
+                  </Link>
                   <button
                     type="button"
                     className="btn btn-secondary nav-ghost"
-                    onClick={() => {
-                      logout();
-                      closeMenu();
-                    }}
+                    onClick={handleLogout}
                   >
                     退出
                   </button>
                 </>
-              ) : null}
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className={`btn ${location.pathname === '/login' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                    title="进入官网登录"
+                  >
+                    登录
+                  </Link>
+                  <Link
+                    to="/register"
+                    className={`btn ${location.pathname === '/register' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                    title="创建官网账号"
+                  >
+                    注册
+                  </Link>
+                </>
+              )}
             </div>
 
             <button
