@@ -59,6 +59,31 @@
     linear-gradient(180deg, #050814 0%, #0b1220 56%, #111827 100%);
 }
 
+.focusedShell {
+  background:
+    radial-gradient(circle at top left, rgba(140, 107, 74, 0.14), transparent 32%),
+    radial-gradient(circle at right 18%, rgba(20, 20, 20, 0.06), transparent 24%),
+    linear-gradient(180deg, #faf8f5 0%, #f3eee7 100%);
+}
+
+.focusedShell::before {
+  top: 42px;
+  left: 24px;
+  width: min(42vw, 520px);
+  height: min(42vw, 520px);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(140, 107, 74, 0.16) 0%, rgba(140, 107, 74, 0) 72%);
+}
+
+.focusedShell::after {
+  right: 18px;
+  bottom: 18px;
+  width: min(36vw, 420px);
+  height: min(36vw, 420px);
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(20, 20, 20, 0.08) 0%, rgba(20, 20, 20, 0) 70%);
+}
+
 .rechargeShell {
   background:
     radial-gradient(circle at top left, rgba(244, 114, 182, 0.12), transparent 30%),
@@ -71,6 +96,14 @@
   z-index: 1;
   max-width: 1480px;
   margin: 0 auto;
+}
+
+.focusedInner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100dvh - 84px);
+  padding-top: 24px;
 }
 
 .authLayout,
@@ -120,6 +153,243 @@
   font-weight: 700;
   box-shadow: 0 16px 36px rgba(2, 6, 23, 0.26);
   backdrop-filter: blur(16px);
+}
+
+.focusedCard {
+  width: min(100%, 560px);
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid rgba(20, 20, 20, 0.08) !important;
+  box-shadow:
+    0 22px 60px rgba(20, 20, 20, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(18px);
+
+  :global(.ant-card-body) {
+    display: grid;
+    gap: 22px;
+    padding: clamp(22px, 4vw, 32px) !important;
+  }
+
+  :global(.ant-typography),
+  :global(.ant-form-item-label > label),
+  :global(.ant-form-item-label > label.ant-form-item-required),
+  :global(.ant-form-item-label > label > span),
+  :global(.ant-form-item-explain),
+  :global(.ant-input),
+  :global(.ant-input::placeholder),
+  :global(.ant-input-affix-wrapper),
+  :global(.ant-input-prefix),
+  :global(.ant-input-suffix),
+  :global(.ant-btn > span),
+  :global(.ant-btn .anticon) {
+    color: #141414 !important;
+  }
+}
+
+.focusedCard .smallText,
+.focusedCard .muted {
+  color: #6b6b6b !important;
+}
+
+.focusedCard .linkRow {
+  align-items: center;
+}
+
+.focusedCard .softInput {
+  background: #ffffff !important;
+  border-color: rgba(20, 20, 20, 0.08) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.focusedCard .softInput,
+.focusedCard .softInput :global(.ant-input),
+.focusedCard .softInput :global(textarea.ant-input),
+.focusedCard .softInput :global(.ant-input-affix-wrapper),
+.focusedCard .softInput :global(.ant-input-affix-wrapper > input.ant-input) {
+  color: #141414 !important;
+}
+
+.focusedCard .softInput :global(.ant-input::placeholder),
+.focusedCard .softInput :global(textarea.ant-input::placeholder),
+.focusedCard .softInput :global(.ant-input-affix-wrapper > input.ant-input::placeholder),
+.focusedCard .softInput :global(.ant-input-prefix),
+.focusedCard .softInput :global(.ant-input-suffix),
+.focusedCard .softInput :global(.ant-input-clear-icon),
+.focusedCard .softInput :global(.ant-input-show-count-suffix) {
+  color: rgba(20, 20, 20, 0.38) !important;
+}
+
+.focusedCard .softInput:hover,
+.focusedCard .softInput:focus,
+.focusedCard .softInput:focus-within {
+  border-color: rgba(140, 107, 74, 0.34) !important;
+  box-shadow: 0 0 0 4px rgba(140, 107, 74, 0.08) !important;
+}
+
+.focusedCard .primaryButton {
+  background: #141414 !important;
+  color: #ffffff !important;
+  box-shadow: none;
+}
+
+.focusedCard .primaryButton :global(span),
+.focusedCard .primaryButton :global(.anticon) {
+  color: #ffffff !important;
+}
+
+.focusedCard .primaryButton:hover {
+  filter: none;
+  background: #8c6b4a !important;
+}
+
+.focusedCard .secondaryButton,
+.focusedCard :global(.ant-btn-default) {
+  background: #f3eee7 !important;
+  border-color: rgba(20, 20, 20, 0.08) !important;
+  color: #141414 !important;
+  box-shadow: none;
+}
+
+.focusedBrandRow,
+.focusedShortcutRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.focusedBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(20, 20, 20, 0.04);
+  border: 1px solid rgba(20, 20, 20, 0.06);
+  color: #6b6b6b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.focusedHeader {
+  display: grid;
+  gap: 10px;
+}
+
+.focusedTitle {
+  margin: 0 !important;
+  color: #141414 !important;
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+  font-size: clamp(2rem, 6vw, 2.8rem) !important;
+  line-height: 1.08 !important;
+}
+
+.focusedLead {
+  color: #6b6b6b !important;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.focusedFormWrap,
+.focusedWechatStack,
+.focusedActionStack {
+  display: grid;
+  gap: 16px;
+}
+
+.focusedActionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 56px;
+  border-radius: 18px;
+  border: 1px solid transparent;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.focusedActionButton:hover {
+  transform: translateY(-1px);
+}
+
+.focusedActionButton span,
+.focusedActionButton .anticon {
+  color: inherit;
+}
+
+.focusedPrimaryAction {
+  background: #141414;
+  color: #ffffff;
+  box-shadow: 0 12px 28px rgba(20, 20, 20, 0.12);
+}
+
+.focusedPrimaryAction:hover {
+  background: #8c6b4a;
+}
+
+.focusedSecondaryAction {
+  background: #f3eee7;
+  border-color: rgba(20, 20, 20, 0.08);
+  color: #141414;
+}
+
+.focusedWechatPanel {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 28px 20px;
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(245, 242, 237, 0.94) 100%),
+    linear-gradient(135deg, rgba(140, 107, 74, 0.08), rgba(20, 20, 20, 0.04));
+  border: 1px solid rgba(20, 20, 20, 0.08);
+}
+
+.focusedWechatIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 24px;
+  background: #141414;
+  color: #ffffff;
+  font-size: 42px;
+  box-shadow: 0 14px 32px rgba(20, 20, 20, 0.12);
+}
+
+.focusedWechatText {
+  max-width: 26ch;
+  color: #6b6b6b !important;
+  font-size: 13px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.focusedLinkButton {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #6b6b6b;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.focusedLinkButton:hover {
+  color: #141414;
 }
 
 .themeDark {
@@ -1159,6 +1429,11 @@
     margin-bottom: 12px;
   }
 
+  .focusedInner {
+    min-height: calc(100dvh - 24px);
+    padding-top: 0;
+  }
+
   .heroPanel,
   .surfaceCard :global(.ant-card-body) {
     padding: 14px !important;
@@ -1216,6 +1491,12 @@
 
   .compactHeader {
     gap: 10px;
+  }
+
+  .focusedBrandRow,
+  .focusedShortcutRow {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .pageTitle {

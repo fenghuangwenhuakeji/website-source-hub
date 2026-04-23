@@ -24,9 +24,12 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../api';
 import { buildAcceptanceAwarePath, isLocalAcceptanceMode } from '../lib/acceptanceMode';
+import { resolveOfficialSiteUrlFromSearch } from '../lib/officialSiteUrl';
 import { writeSharedAuth } from '../lib/authStorage';
 import { checkRechargeRequired, isLoggedIn, logout } from '../lib/permissionManager';
+import { getRouterBase } from '../lib/routerBase';
 import { applyThemeMode, resolveThemeMode, setPreferredThemeMode, subscribeThemeMode, type ThemeMode } from '../lib/themePreference';
+import { getWechatInitialMessage, normalizeWechatUiMessage } from '../lib/wechatUiMessage';
 import styles from './authExperience.module.scss';
 
 const { Title, Text } = Typography;
@@ -40,6 +43,8 @@ type WechatLoginState = {
   state: string;
 };
 
+type DirectAuthMode = 'password' | 'sms' | 'register' | 'wechat';
+
 type CountdownKey = 'smsLogin' | 'register' | 'reset';
 
 const phonePattern = /^1[3-9]\d{9}$/;
@@ -48,10 +53,19 @@ function normalizePhone(value?: string) {
   return (value || '').replace(/\D/g, '');
 }
 
+function parseDirectAuthMode(search: string): DirectAuthMode | null {
+  const mode = new URLSearchParams(search).get('mode');
+  if (mode === 'password' || mode === 'sms' || mode === 'register' || mode === 'wechat') {
+    return mode;
+  }
+  return null;
+}
+
 export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const forceLogin = useMemo(() => new URLSearchParams(location.search).get('forceLogin') === '1', [location.search]);
+  const directAuthMode = useMemo(() => parseDirectAuthMode(location.search), [location.search]);
   const localAcceptanceMode = useMemo(() => isLocalAcceptanceMode(), [location.search]);
   const inviteSeed = useMemo(() => {
     const params = new URLSearchParams(location.search);
@@ -69,7 +83,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => resolveThemeMode());
   const [sessionChecking, setSessionChecking] = useState(() => !forceLogin);
-  const [activeTab, setActiveTab] = useState('password');
+  const [activeTab, setActiveTab] = useState<DirectAuthMode>(directAuthMode && directAuthMode !== 'wechat' ? directAuthMode : 'password');
   const [wechatLogin, setWechatLogin] = useState<WechatLoginState | null>(null);
   const [wechatMessage, setWechatMessage] = useState('点击按钮，在新窗口完成微信登录。');
   const [passwordLoading, setPasswordLoading] = useState(false);
@@ -85,6 +99,11 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   });
   const pollTimerRef = useRef<number | null>(null);
   const isLocalWechatMock = Boolean(wechatLogin?.authUrl?.includes('/api/wechat/mock-login/'));
+  const showWechatOnly = directAuthMode === 'wechat';
+  const showSmsOnly = directAuthMode === 'sms';
+  const showRegisterOnly = directAuthMode === 'register';
+  const showPasswordOnly = directAuthMode === 'password';
+  const directFocusedMode = showWechatOnly || showSmsOnly;
 
   useEffect(() => {
     const root = document.getElementById('root');
@@ -180,7 +199,56 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     [],
   );
 
+  useEffect(() => {
+    if (directAuthMode && directAuthMode !== 'wechat') {
+      setActiveTab(directAuthMode);
+    }
+  }, [directAuthMode]);
+
   const toggleThemeMode = () => setPreferredThemeMode(themeMode === 'dark' ? 'light' : 'dark');
+
+  const switchDirectMode = (mode: DirectAuthMode) => {
+    const params = new URLSearchParams(location.search);
+    params.set('forceLogin', '1');
+    params.set('mode', mode);
+    navigate(
+      {
+        pathname: location.pathname,
+        search: `?${params.toString()}`,
+      },
+      { replace: true },
+    );
+  };
+
+  const handleFocusedBack = () => {
+    const officialFallbackUrl = resolveOfficialSiteUrlFromSearch(location.search, '/login');
+
+    if (typeof window !== 'undefined') {
+      const routerBase = getRouterBase();
+      const referrer = document.referrer?.trim();
+      if (referrer) {
+        try {
+          const referrerUrl = new URL(referrer);
+          const isSameAccessShell =
+            referrerUrl.origin === window.location.origin &&
+            (referrerUrl.pathname === routerBase || referrerUrl.pathname.startsWith(`${routerBase}/`));
+
+          if (
+            (referrerUrl.protocol === 'http:' || referrerUrl.protocol === 'https:') &&
+            referrerUrl.href !== window.location.href &&
+            !isSameAccessShell
+          ) {
+            window.location.replace(referrerUrl.href);
+            return;
+          }
+        } catch {
+          // Fall through to stable official entry.
+        }
+      }
+
+      window.location.replace(officialFallbackUrl);
+    }
+  };
 
   const finishLogin = (token: string, user?: unknown, refreshToken?: string) => {
     if (pollTimerRef.current) {
@@ -230,7 +298,12 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
           return;
         }
 
-        setWechatMessage(data.message || '等待微信确认。');
+        setWechatMessage(
+          normalizeWechatUiMessage(data.message, {
+            mode: 'login',
+            status: data.status === 'expired' ? 'expired' : data.status === 'success' ? 'success' : 'pending',
+          }),
+        );
 
         if (data.status === 'success' && data.token) {
           stopWechatPolling();
@@ -240,7 +313,12 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
         if (data.status === 'expired') {
           stopWechatPolling();
-          setWechatMessage(data.message || '二维码已过期，请重新生成。');
+          setWechatMessage(
+            normalizeWechatUiMessage(data.message, {
+              mode: 'login',
+              status: 'expired',
+            }),
+          );
         }
       } catch {
         // Ignore transient polling failures.
@@ -256,9 +334,10 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
     setWechatLogin(response.data);
     setWechatMessage(
-      response.data.authUrl?.includes('/api/wechat/mock-login/')
-        ? '本地调试模式，请在新窗口确认登录。'
-        : '云端环境会打开微信登录页。',
+      getWechatInitialMessage({
+        isMock: response.data.authUrl?.includes('/api/wechat/mock-login/'),
+        mode: 'login',
+      }),
     );
     startWechatPolling(response.data.state);
     return response.data as WechatLoginState;
@@ -286,6 +365,14 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
       message.error(error?.message || '打开微信登录窗口失败');
     }
   };
+
+  useEffect(() => {
+    if (!showWechatOnly || sessionChecking || wechatLogin) {
+      return;
+    }
+
+    void loadWechatQr().catch(() => {});
+  }, [showWechatOnly, sessionChecking, wechatLogin]);
 
   const handlePasswordLogin = async (values: { account: string; password: string }) => {
     try {
@@ -489,6 +576,290 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     );
   }
 
+  const authTabItems = [
+    {
+      key: 'password',
+      label: '密码登录',
+      children: (
+        <Form form={passwordForm} layout="vertical" onFinish={handlePasswordLogin} className={styles.formStack}>
+          <Form.Item
+            label="账号 / 手机号 / 邮箱"
+            name="account"
+            rules={[{ required: true, message: '请输入账号、手机号或邮箱' }]}
+          >
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="输入账号、手机号或邮箱"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <Form.Item label="密码" name="password" rules={[{ required: true, message: '请输入密码' }]}>
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="输入登录密码"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <div className={styles.linkRow}>
+            <Button type="link" onClick={() => setResetVisible(true)}>
+              忘记密码
+            </Button>
+          </div>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            loading={passwordLoading}
+            className={`${styles.primaryButton} ${styles.fullWidth}`}
+          >
+            登录
+          </Button>
+        </Form>
+      ),
+    },
+    {
+      key: 'sms',
+      label: '短信登录',
+      children: (
+        <Form form={smsForm} layout="vertical" onFinish={handleSmsLogin} className={styles.formStack}>
+          <Form.Item
+            label="手机号"
+            name="phoneNumber"
+            rules={[
+              { required: true, message: '请输入手机号' },
+              {
+                validator: (_, value) =>
+                  phonePattern.test(normalizePhone(value))
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('请输入正确的手机号')),
+              },
+            ]}
+          >
+            <Input
+              prefix={<MobileOutlined />}
+              placeholder="输入 11 位手机号"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <div className={styles.linkRow}>
+            <Text className={styles.smallText}>验证码会发送到当前手机号。</Text>
+            <Button
+              onClick={handleSendSmsLoginCode}
+              loading={sendingCode === 'smsLogin'}
+              disabled={countdowns.smsLogin > 0}
+              className={styles.secondaryButton}
+            >
+              {countdowns.smsLogin > 0 ? `${countdowns.smsLogin}s 后重发` : '发送验证码'}
+            </Button>
+          </div>
+          <Form.Item label="短信验证码" name="code" rules={[{ required: true, message: '请输入验证码' }]}>
+            <Input
+              prefix={<SafetyCertificateOutlined />}
+              placeholder="输入短信验证码"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <Form.Item label="邀请码（选填）" name="inviteCode">
+            <Input placeholder="有邀请码可在此填写" size="large" className={styles.softInput} />
+          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            loading={smsLoading}
+            className={`${styles.primaryButton} ${styles.fullWidth}`}
+          >
+            短信登录
+          </Button>
+        </Form>
+      ),
+    },
+    {
+      key: 'register',
+      label: '注册',
+      children: (
+        <Form form={registerForm} layout="vertical" onFinish={handleRegister} className={styles.formStack}>
+          <Form.Item
+            label="账号名"
+            name="username"
+            rules={[
+              { required: true, message: '请输入账号名' },
+              { min: 3, message: '账号名至少 3 位' },
+            ]}
+          >
+            <Input prefix={<UserAddOutlined />} placeholder="创建账号名" size="large" className={styles.softInput} />
+          </Form.Item>
+          <Form.Item
+            label="绑定手机号"
+            name="phoneNumber"
+            rules={[
+              { required: true, message: '注册必须绑定手机号' },
+              {
+                validator: (_, value) =>
+                  phonePattern.test(normalizePhone(value))
+                    ? Promise.resolve()
+                    : Promise.reject(new Error('请输入正确的手机号')),
+              },
+            ]}
+          >
+            <Input
+              prefix={<MobileOutlined />}
+              placeholder="注册时绑定手机号"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <div className={styles.linkRow}>
+            <Text className={styles.smallText}>注册时需绑定手机号。</Text>
+            <Button
+              onClick={handleSendRegisterCode}
+              loading={sendingCode === 'register'}
+              disabled={countdowns.register > 0}
+              className={styles.secondaryButton}
+            >
+              {countdowns.register > 0 ? `${countdowns.register}s 后重发` : '发送验证码'}
+            </Button>
+          </div>
+          <Form.Item label="手机验证码" name="code" rules={[{ required: true, message: '请输入手机验证码' }]}>
+            <Input
+              prefix={<SafetyCertificateOutlined />}
+              placeholder="输入注册验证码"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <Form.Item
+            label="登录密码"
+            name="password"
+            rules={[
+              { required: true, message: '请输入登录密码' },
+              { min: 6, message: '密码至少 6 位' },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="设置登录密码"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <Form.Item label="确认密码" name="confirmPassword" rules={[{ required: true, message: '请再次输入密码' }]}>
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="再次输入密码"
+              size="large"
+              className={styles.softInput}
+            />
+          </Form.Item>
+          <Form.Item label="邀请码（选填）" name="referralCode">
+            <Input placeholder="有邀请码可在此填写" size="large" className={styles.softInput} />
+          </Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            loading={registerLoading}
+            className={`${styles.primaryButton} ${styles.fullWidth}`}
+          >
+            注册并登录
+          </Button>
+        </Form>
+      ),
+    },
+  ];
+
+  const visibleAuthTabItems = showSmsOnly
+    ? authTabItems.filter((item) => item.key === 'sms')
+    : showRegisterOnly
+      ? authTabItems.filter((item) => item.key === 'register')
+      : showPasswordOnly
+        ? authTabItems.filter((item) => item.key === 'password')
+        : authTabItems;
+
+  const pageTitle = showWechatOnly
+    ? '微信登录'
+    : showSmsOnly
+      ? '短信登录'
+      : showRegisterOnly
+        ? '注册'
+        : '登录';
+
+  if (directFocusedMode) {
+    return (
+      <div className={`${styles.shell} ${styles.focusedShell}`}>
+        <div className={`${styles.inner} ${styles.focusedInner}`}>
+          <Card className={styles.focusedCard}>
+            <div className={styles.focusedBrandRow}>
+              <span className={styles.focusedBadge}>凤煌账号</span>
+              <button type="button" className={styles.focusedLinkButton} onClick={handleFocusedBack}>
+                返回上一页
+              </button>
+            </div>
+
+            <div className={styles.focusedHeader}>
+              <Title level={1} className={styles.focusedTitle}>
+                {showWechatOnly ? '微信登录' : '短信登录'}
+              </Title>
+              <Text className={styles.focusedLead}>
+                {showWechatOnly ? '使用微信完成授权登录。' : '使用手机号验证码直接登录。'}
+              </Text>
+            </div>
+
+            {showWechatOnly ? (
+              <div className={styles.focusedWechatStack}>
+                <div className={styles.focusedWechatPanel}>
+                  <div className={styles.focusedWechatIcon}>
+                    <WechatOutlined />
+                  </div>
+                  <Text className={styles.focusedWechatText}>{wechatMessage}</Text>
+                </div>
+
+                <div className={styles.focusedActionStack}>
+                  <button
+                    type="button"
+                    onClick={() => void handleOpenWechatLoginWindow()}
+                    className={`${styles.focusedActionButton} ${styles.focusedPrimaryAction}`}
+                  >
+                    <WechatOutlined />
+                    <span>{isLocalWechatMock ? '打开微信确认页' : '打开微信登录'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void handleOpenWechatLoginWindow(true)}
+                    className={`${styles.focusedActionButton} ${styles.focusedSecondaryAction}`}
+                  >
+                    <SyncOutlined />
+                    <span>重新生成</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className={styles.focusedFormWrap}>
+                {authTabItems.find((item) => item.key === 'sms')?.children}
+              </div>
+            )}
+
+            <div className={styles.focusedShortcutRow}>
+              {showWechatOnly ? (
+                <button type="button" className={styles.focusedLinkButton} onClick={() => switchDirectMode('sms')}>
+                  切换到短信登录
+                </button>
+              ) : (
+                <button type="button" className={styles.focusedLinkButton} onClick={() => switchDirectMode('wechat')}>
+                  切换到微信登录
+                </button>
+              )}
+            </div>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`${styles.shell} ${styles.loginShell} ${themeMode === 'dark' ? styles.themeDark : ''}`}>
       <div className={styles.inner}>
@@ -500,209 +871,28 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
           <section className={styles.compactHeader}>
             <div>
               <Title level={1} className={styles.pageTitle}>
-                登录
+                {pageTitle}
               </Title>
             </div>
           </section>
 
           <section className={styles.section}>
             <Row gutter={[16, 16]} className={styles.authForms}>
-              <Col xs={24} lg={15}>
+              {showWechatOnly ? null : (
+              <Col xs={24} lg={showSmsOnly || showRegisterOnly || showPasswordOnly ? 24 : 15}>
                 <Card className={styles.surfaceCard}>
                   <Tabs
                     activeKey={activeTab}
-                    onChange={setActiveTab}
+                    onChange={(key) => setActiveTab(key as DirectAuthMode)}
                     className={styles.authTabs}
-                    items={[
-                      {
-                        key: 'password',
-                        label: '密码登录',
-                        children: (
-                          <Form form={passwordForm} layout="vertical" onFinish={handlePasswordLogin} className={styles.formStack}>
-                            <Form.Item
-                              label="账号 / 手机号 / 邮箱"
-                              name="account"
-                              rules={[{ required: true, message: '请输入账号、手机号或邮箱' }]}
-                            >
-                              <Input
-                                prefix={<UserOutlined />}
-                                placeholder="输入账号、手机号或邮箱"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <Form.Item label="密码" name="password" rules={[{ required: true, message: '请输入密码' }]}>
-                              <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="输入登录密码"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <div className={styles.linkRow}>
-                              <Button type="link" onClick={() => setResetVisible(true)}>
-                                忘记密码
-                              </Button>
-                            </div>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              size="large"
-                              loading={passwordLoading}
-                              className={`${styles.primaryButton} ${styles.fullWidth}`}
-                            >
-                              登录
-                            </Button>
-                          </Form>
-                        ),
-                      },
-                      {
-                        key: 'sms',
-                        label: '短信登录',
-                        children: (
-                          <Form form={smsForm} layout="vertical" onFinish={handleSmsLogin} className={styles.formStack}>
-                            <Form.Item
-                              label="手机号"
-                              name="phoneNumber"
-                              rules={[
-                                { required: true, message: '请输入手机号' },
-                                {
-                                  validator: (_, value) =>
-                                    phonePattern.test(normalizePhone(value))
-                                      ? Promise.resolve()
-                                      : Promise.reject(new Error('请输入正确的手机号')),
-                                },
-                              ]}
-                            >
-                              <Input
-                                prefix={<MobileOutlined />}
-                                placeholder="输入 11 位手机号"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <div className={styles.linkRow}>
-                              <Text className={styles.smallText}>验证码登录。</Text>
-                              <Button onClick={handleSendSmsLoginCode} loading={sendingCode === 'smsLogin'} disabled={countdowns.smsLogin > 0}>
-                                {countdowns.smsLogin > 0 ? `${countdowns.smsLogin}s 后重发` : '发送验证码'}
-                              </Button>
-                            </div>
-                            <Form.Item label="短信验证码" name="code" rules={[{ required: true, message: '请输入验证码' }]}>
-                              <Input
-                                prefix={<SafetyCertificateOutlined />}
-                                placeholder="输入短信验证码"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <Form.Item label="邀请码（选填）" name="inviteCode">
-                              <Input placeholder="有邀请码可在此填写" size="large" className={styles.softInput} />
-                            </Form.Item>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              size="large"
-                              loading={smsLoading}
-                              className={`${styles.primaryButton} ${styles.fullWidth}`}
-                            >
-                              短信登录
-                            </Button>
-                          </Form>
-                        ),
-                      },
-                      {
-                        key: 'register',
-                        label: '注册',
-                        children: (
-                          <Form form={registerForm} layout="vertical" onFinish={handleRegister} className={styles.formStack}>
-                            <Form.Item
-                              label="账号名"
-                              name="username"
-                              rules={[
-                                { required: true, message: '请输入账号名' },
-                                { min: 3, message: '账号名至少 3 位' },
-                              ]}
-                            >
-                              <Input prefix={<UserAddOutlined />} placeholder="创建账号名" size="large" className={styles.softInput} />
-                            </Form.Item>
-                            <Form.Item
-                              label="绑定手机号"
-                              name="phoneNumber"
-                              rules={[
-                                { required: true, message: '注册必须绑定手机号' },
-                                {
-                                  validator: (_, value) =>
-                                    phonePattern.test(normalizePhone(value))
-                                      ? Promise.resolve()
-                                      : Promise.reject(new Error('请输入正确的手机号')),
-                                },
-                              ]}
-                            >
-                              <Input
-                                prefix={<MobileOutlined />}
-                                placeholder="注册时绑定手机号"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <div className={styles.linkRow}>
-                              <Text className={styles.smallText}>注册时需绑定手机号。</Text>
-                              <Button onClick={handleSendRegisterCode} loading={sendingCode === 'register'} disabled={countdowns.register > 0}>
-                                {countdowns.register > 0 ? `${countdowns.register}s 后重发` : '发送验证码'}
-                              </Button>
-                            </div>
-                            <Form.Item label="手机验证码" name="code" rules={[{ required: true, message: '请输入手机验证码' }]}>
-                              <Input
-                                prefix={<SafetyCertificateOutlined />}
-                                placeholder="输入注册验证码"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <Form.Item
-                              label="登录密码"
-                              name="password"
-                              rules={[
-                                { required: true, message: '请输入登录密码' },
-                                { min: 6, message: '密码至少 6 位' },
-                              ]}
-                            >
-                              <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="设置登录密码"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <Form.Item label="确认密码" name="confirmPassword" rules={[{ required: true, message: '请再次输入密码' }]}>
-                              <Input.Password
-                                prefix={<LockOutlined />}
-                                placeholder="再次输入密码"
-                                size="large"
-                                className={styles.softInput}
-                              />
-                            </Form.Item>
-                            <Form.Item label="邀请码（选填）" name="referralCode">
-                              <Input placeholder="有邀请码可在此填写" size="large" className={styles.softInput} />
-                            </Form.Item>
-                            <Button
-                              type="primary"
-                              htmlType="submit"
-                              size="large"
-                              loading={registerLoading}
-                              className={`${styles.primaryButton} ${styles.fullWidth}`}
-                            >
-                              注册并登录
-                            </Button>
-                          </Form>
-                        ),
-                      },
-                    ]}
+                    items={visibleAuthTabItems}
                   />
                 </Card>
               </Col>
+              )}
 
-              <Col xs={24} lg={9}>
+              {showSmsOnly || showRegisterOnly || showPasswordOnly ? null : (
+              <Col xs={24} lg={showWechatOnly ? 24 : 9}>
                 <div className={styles.sideStack}>
                   <Card className={styles.surfaceCard}>
                     <div className={styles.cardTitleRow}>
@@ -732,21 +922,24 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
                     </div>
                   </Card>
 
-                  <Card className={styles.surfaceCard}>
-                    <div className={styles.cardTitleRow}>
-                      <Title level={4} className={styles.cardTitle}>
-                        快捷操作
-                      </Title>
-                    </div>
-                    <div className={styles.formStack}>
-                      <Text className={styles.smallText}>手机号登录会自动建档。</Text>
-                      <Button onClick={() => setResetVisible(true)} className={styles.secondaryButton}>
-                        找回密码
-                      </Button>
-                    </div>
-                  </Card>
+                  {showWechatOnly ? null : (
+                    <Card className={styles.surfaceCard}>
+                      <div className={styles.cardTitleRow}>
+                        <Title level={4} className={styles.cardTitle}>
+                          快捷操作
+                        </Title>
+                      </div>
+                      <div className={styles.formStack}>
+                        <Text className={styles.smallText}>手机号登录会自动建档。</Text>
+                        <Button onClick={() => setResetVisible(true)} className={styles.secondaryButton}>
+                          找回密码
+                        </Button>
+                      </div>
+                    </Card>
+                  )}
                 </div>
               </Col>
+              )}
             </Row>
           </section>
         </div>
@@ -783,7 +976,12 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
           </Form.Item>
           <div className={styles.linkRow}>
             <Text className={styles.smallText}>先获取验证码，再重置密码。</Text>
-            <Button onClick={handleSendResetCode} loading={sendingCode === 'reset'} disabled={countdowns.reset > 0}>
+            <Button
+              onClick={handleSendResetCode}
+              loading={sendingCode === 'reset'}
+              disabled={countdowns.reset > 0}
+              className={styles.secondaryButton}
+            >
               {countdowns.reset > 0 ? `${countdowns.reset}s 后重发` : '发送验证码'}
             </Button>
           </div>

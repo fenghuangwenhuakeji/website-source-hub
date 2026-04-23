@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { showcaseApps } from '../data/showcaseApps';
+import { useAuthStore } from '../store/auth';
 import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
 import { useParallax } from '../hooks/useParallax';
 
@@ -69,45 +70,6 @@ const partnerItems = [
   {
     role: '投资合作方',
     view: '已经开始成形的产品体系、内容资产和持续迭代能力。',
-  },
-];
-
-const entryCards = [
-  {
-    id: '01',
-    title: '桌面端',
-    code: 'DESKTOP',
-    description: '完整入口，直接承接深度工作流。',
-    primaryCta: '打开桌面端',
-    primaryHref: desktopLoginUrl,
-    external: true,
-  },
-  {
-    id: '02',
-    title: '小说工坊 / 剧本工坊',
-    code: 'WORKSHOPS',
-    description: '内容生产线，从故事到镜头持续推进。',
-    primaryCta: '进入小说工坊',
-    primaryHref: '/novels',
-    secondaryCta: '进入剧本工坊',
-    secondaryHref: '/writing?type=script',
-  },
-  {
-    id: '03',
-    title: '作品展示',
-    code: 'SHOWCASE',
-    description: '最能打的应用、项目和代表作，全部集中陈列。',
-    primaryCta: '查看作品展示',
-    primaryHref: '/showcase',
-  },
-  {
-    id: '04',
-    title: '联系合作',
-    code: 'CONTACT',
-    description: '品牌合作、内容共创、项目共建，从这里直接接通。',
-    primaryCta: '联系合作',
-    primaryHref: '#contact',
-    external: true,
   },
 ];
 
@@ -216,6 +178,7 @@ function useScrollReveal() {
 }
 
 export default function HomePage() {
+  const { isAuthenticated, user } = useAuthStore();
   const revealRef = useScrollReveal();
   const parallaxSlow = useParallax(0.15);
   const parallaxMedium = useParallax(0.3);
@@ -235,6 +198,50 @@ export default function HomePage() {
   }, []);
 
   const [featuredHero, ...featuredRest] = featuredShowcase;
+  const heroSubtitle = isAuthenticated
+    ? `欢迎回来，${user?.nickname ?? '创作者'}。先回官网工作台，再分发到小说、剧本、作品展示和桌面端。`
+    : '先用官网账号进入工作台，再分发到小说、剧本、作品展示和桌面端。';
+  const entryCards = [
+    {
+      id: '01',
+      title: isAuthenticated ? '官网工作台' : '官网账号',
+      code: 'ACCOUNT',
+      description: isAuthenticated
+        ? '账号已经连上官网工作台，可以继续前往写作、展示和个人设置。'
+        : '先登录或注册官网账号，再进入工作台统一分发到各条产品线。',
+      primaryCta: isAuthenticated ? '进入官网工作台' : '官网登录',
+      primaryHref: isAuthenticated ? '/dashboard' : '/login',
+      secondaryCta: isAuthenticated ? '个人设置' : '立即注册',
+      secondaryHref: isAuthenticated ? '/profile' : '/register',
+    },
+    {
+      id: '02',
+      title: '桌面端',
+      code: 'DESKTOP',
+      description: '完整入口，直接承接更深的本地与桌面工作流。',
+      primaryCta: '打开桌面端',
+      primaryHref: desktopLoginUrl,
+      external: true,
+    },
+    {
+      id: '03',
+      title: '小说工坊 / 剧本工坊',
+      code: 'WORKSHOPS',
+      description: '内容生产线，从故事到镜头持续推进。',
+      primaryCta: '进入小说工坊',
+      primaryHref: '/novels',
+      secondaryCta: '进入剧本工坊',
+      secondaryHref: '/writing?type=script',
+    },
+    {
+      id: '04',
+      title: '作品展示',
+      code: 'SHOWCASE',
+      description: '最能打的应用、项目和代表作，全部集中陈列。',
+      primaryCta: '查看作品展示',
+      primaryHref: '/showcase',
+    },
+  ];
 
   return (
     <div ref={revealRef} className="home-shell">
@@ -297,13 +304,30 @@ export default function HomePage() {
           <div className="hero-bottom-grid">
             <motion.div className="hero-intro" variants={heroItem} initial="initial" animate="animate">
               <motion.p className="hero-subtitle" variants={heroSubtitleVariant}>
-                桌面软件是底座，小说与剧本工坊是内容引擎，作品展示负责把代表作推到台前
+                {heroSubtitle}
               </motion.p>
               <motion.div className="hero-buttons" variants={heroButtonContainer}>
                 <motion.div variants={heroButtonItem}>
-                  <a href={desktopLoginUrl} className="btn btn-primary">
-                    打开桌面端
-                  </a>
+                  {isAuthenticated ? (
+                    <Link to="/dashboard" className="btn btn-primary">
+                      进入官网工作台
+                    </Link>
+                  ) : (
+                    <Link to="/login" className="btn btn-primary">
+                      官网登录
+                    </Link>
+                  )}
+                </motion.div>
+                <motion.div variants={heroButtonItem}>
+                  {isAuthenticated ? (
+                    <Link to="/profile" className="btn btn-secondary">
+                      个人设置
+                    </Link>
+                  ) : (
+                    <Link to="/register" className="btn btn-secondary">
+                      立即注册
+                    </Link>
+                  )}
                 </motion.div>
                 <motion.div variants={heroButtonItem}>
                   <Link to="/showcase" className="btn btn-secondary">
@@ -311,8 +335,8 @@ export default function HomePage() {
                   </Link>
                 </motion.div>
                 <motion.div variants={heroButtonItem}>
-                  <a href="#contact" className="btn btn-secondary">
-                    联系合作
+                  <a href={desktopLoginUrl} className="btn btn-secondary">
+                    打开桌面端
                   </a>
                 </motion.div>
               </motion.div>

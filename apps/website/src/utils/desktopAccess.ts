@@ -1,12 +1,33 @@
 const DESKTOP_LOGIN_PATH = '/access/login';
 const LOCAL_DESKTOP_PORT = '4173';
 
-function withForceLogin(url: string) {
-  if (url.includes('forceLogin=')) {
-    return url;
+type DesktopLoginMode = 'password' | 'sms' | 'register' | 'wechat';
+
+type DesktopLoginOptions = {
+  mode?: DesktopLoginMode;
+  from?: string;
+};
+
+function withForceLogin(url: string, options: DesktopLoginOptions = {}) {
+  const [base, hash = ''] = url.split('#');
+  const [pathname, query = ''] = base.split('?');
+  const params = new URLSearchParams(query);
+  const fromPath = options.from?.trim();
+
+  if (!params.has('forceLogin')) {
+    params.set('forceLogin', '1');
   }
 
-  return `${url}${url.includes('?') ? '&' : '?'}forceLogin=1`;
+  if (options.mode) {
+    params.set('mode', options.mode);
+  }
+
+  if (fromPath && fromPath.startsWith('/') && !fromPath.startsWith('//')) {
+    params.set('from', fromPath);
+  }
+
+  const nextUrl = `${pathname}?${params.toString()}`;
+  return hash ? `${nextUrl}#${hash}` : nextUrl;
 }
 
 function isLoopbackHost(hostname: string) {
@@ -21,9 +42,9 @@ function isLoopbackUrl(url: string) {
   }
 }
 
-export function resolveDesktopLoginUrl() {
+export function resolveDesktopLoginUrl(options: DesktopLoginOptions = {}) {
   if (typeof window === 'undefined') {
-    return withForceLogin(DESKTOP_LOGIN_PATH);
+    return withForceLogin(DESKTOP_LOGIN_PATH, options);
   }
 
   const envUrl = (import.meta.env.VITE_DESKTOP_LOGIN_URL as string | undefined)?.trim();
@@ -32,12 +53,12 @@ export function resolveDesktopLoginUrl() {
 
   // Never let a local development override leak into the cloud site.
   if (envUrl && (!isLoopbackUrl(envUrl) || isLocalHost)) {
-    return withForceLogin(envUrl);
+    return withForceLogin(envUrl, options);
   }
 
   if (isLocalHost && port !== LOCAL_DESKTOP_PORT) {
-    return withForceLogin(`${protocol}//${hostname}:${LOCAL_DESKTOP_PORT}${DESKTOP_LOGIN_PATH}`);
+    return withForceLogin(`${protocol}//${hostname}:${LOCAL_DESKTOP_PORT}${DESKTOP_LOGIN_PATH}`, options);
   }
 
-  return withForceLogin(`${origin}${DESKTOP_LOGIN_PATH}`);
+  return withForceLogin(`${origin}${DESKTOP_LOGIN_PATH}`, options);
 }
