@@ -14,6 +14,11 @@ interface User {
   nickname: string;
   avatar?: string;
   role: string;
+  bio?: string;
+  gender?: 'male' | 'female' | 'other';
+  birthday?: string;
+  location?: string;
+  website?: string;
 }
 
 interface AuthState {
@@ -27,13 +32,14 @@ interface AuthState {
 }
 
 function normalizeUser(user: User | (User & { userId?: number | string })) {
-  if ('id' in user && user.id !== undefined && user.id !== null) {
+  const raw = user as User & { userId?: number | string };
+  if ('id' in raw && raw.id !== undefined && raw.id !== null) {
     return user as User;
   }
 
   return {
-    ...user,
-    id: user.userId ?? '',
+    ...raw,
+    id: raw.userId ?? '',
   } as User;
 }
 

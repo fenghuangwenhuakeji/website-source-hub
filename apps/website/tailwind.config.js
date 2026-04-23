@@ -30,8 +30,9 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Georgia', 'serif'],
+        sans: ['"PingFang SC"', '"Microsoft YaHei"', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['"Noto Serif SC"', 'Georgia', 'serif'],
+        serif: ['"Noto Serif SC"', '"Songti SC"', '"STSong"', '"SimSun"', 'Georgia', 'serif'],
       },
     },
   },

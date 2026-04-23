@@ -8,14 +8,14 @@ const LazyWritingWorkbench = lazy(() => import('../components/writing/WritingWor
 function WritingWorkbenchFallback() {
   return (
     <div className="page-shell writing-shell min-h-screen">
-      <div className="mx-auto max-w-6xl px-4 py-10 pb-16 sm:px-6 sm:py-14 lg:px-8">
-        <div className="glass-card rounded-[32px] p-8 sm:p-10">
+      <div className="container py-10 sm:py-14">
+        <div className="glass-card p-8 sm:p-10">
           <div className="space-y-4">
-            <div className="h-5 w-48 animate-pulse rounded-full bg-sky-200/20" />
-            <div className="h-4 w-36 animate-pulse rounded-full bg-white/10" />
+            <div className="h-5 w-48 animate-pulse rounded-full bg-[var(--fh-surface-raised)]" />
+            <div className="h-4 w-36 animate-pulse rounded-full bg-[var(--fh-bg-elevated)]" />
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="h-32 animate-pulse rounded-2xl bg-white/10" />
+                <div key={index} className="h-32 animate-pulse rounded-2xl bg-[var(--fh-bg-elevated)]" />
               ))}
             </div>
           </div>
