@@ -1,69 +1,132 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { useAuthStore } from '../store/auth';
 import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { apiClient } from '../utils/api';
 
 const desktopLoginUrl = resolveDesktopLoginUrl();
 
 const workspaceCards = [
   {
     title: '小说助手',
-    description: '继续处理长篇内容、卷章结构、角色资产与正文沉淀。',
+    description: '整理长篇设定、章节结构、角色关系和正文草稿。',
     to: '/novels',
     cta: '进入小说助手',
   },
   {
-    title: '剧本写作线',
-    description: '从幕结构、场景目标、对白和排演推进脚本。',
+    title: '剧本工坊',
+    description: '推进幕结构、场景目标、对白和分场内容。',
     to: '/writing?type=script',
-    cta: '进入剧本写作',
+    cta: '进入剧本工坊',
   },
   {
-    title: '分镜规划线',
-    description: '从镜头顺序、转场节拍和视觉线索推进画面流程。',
+    title: '分镜规划',
+    description: '梳理镜头顺序、画面节奏和视觉线索。',
     to: '/writing?type=storyboard',
-    cta: '进入分镜线',
+    cta: '进入分镜规划',
   },
   {
     title: '作品展示',
-    description: '查看已经整理好的展示入口与对外演示页面。',
+    description: '查看官网展示页与已经整理好的作品入口。',
     to: '/showcase',
     cta: '查看展示页',
   },
   {
+    title: '订阅与积分',
+    description: '开通订阅、补充积分，并查询充值记录。',
+    to: '/recharge',
+    cta: '管理订阅积分',
+  },
+  {
     title: '桌面端',
-    description: '进入 Access 主程序，承接更完整的本地与桌面工作流。',
+    description: '打开桌面端，继续使用完整工作区。',
     href: desktopLoginUrl,
     cta: '打开桌面端',
   },
 ];
 
+function formatSubscriptionHint(duration?: {
+  isActive?: boolean;
+  isPermanent?: boolean;
+  remainingSeconds?: number;
+  expiresAt?: string | null;
+  canEnter?: boolean;
+}) {
+  if (duration?.isPermanent) {
+    return {
+      value: '永久',
+      hint: '已开通永久权益',
+    };
+  }
+
+  if (duration?.isActive || duration?.canEnter) {
+    const remainingDays = duration.remainingSeconds
+      ? Math.max(1, Math.ceil(duration.remainingSeconds / 86400))
+      : null;
+
+    return {
+      value: '已订阅',
+      hint: remainingDays ? `剩余约 ${remainingDays} 天` : '权益有效中',
+    };
+  }
+
+  return {
+    value: '未订阅',
+    hint: '可按需开通权益',
+  };
+}
+
 export default function DashboardPage() {
-  const { user } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
+  const subscription = formatSubscriptionHint(user?.duration);
   const roleLabel =
     user?.role && ['admin', 'rootadmin', 'super_admin'].includes(String(user.role).toLowerCase())
       ? '管理账号'
       : '官网账号';
   const accountLabel = user?.email || user?.phone || user?.username || '官网账号已连接';
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const syncProfile = async () => {
+      try {
+        const response = await apiClient.get('/api/auth/profile');
+        const profile = response.data?.data ?? response.data;
+        if (!cancelled && profile) {
+          updateUser(profile);
+        }
+      } catch {
+        // Keep the locally cached user snapshot if profile sync fails.
+      }
+    };
+
+    void syncProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [updateUser]);
+
   const summaryCards = [
     {
       label: '当前身份',
       value: user?.nickname ?? '官网用户',
-      hint: '登录后默认先回官网工作台',
+      hint: '欢迎回来',
     },
     {
       label: '账号角色',
       value: roleLabel,
-      hint: '官网与 Access 共用同一套认证',
+      hint: '官网与桌面端账号互通',
     },
     {
-      label: '可用入口',
-      value: '4',
-      hint: '小说 / 剧本 / 展示 / 桌面',
+      label: '订阅状态',
+      value: subscription.value,
+      hint: subscription.hint,
     },
     {
       label: '工作台状态',
       value: '已连接',
-      hint: '现在可以继续前往具体产品线',
+      hint: '可以继续创作',
     },
   ];
 
@@ -73,13 +136,12 @@ export default function DashboardPage() {
         <section className="glass-card p-6 sm:p-8">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start">
             <div>
-              <div className="section-kicker">官网工作台</div>
+              <div className="section-kicker">创作入口</div>
               <h1 className="page-title mt-4">
-                先在官网工作台定锚，再分发到凤煌的各条产品线
+                创作工作台
               </h1>
               <p className="page-lead mt-4">
-                欢迎回来，{user?.nickname ?? '创作者'}。这里是官网认证后的第一落点，负责把你分发到小说助手、
-                剧本工坊、作品展示和桌面端，而不是直接把你扔进某一条单独的工作流。
+                选择小说助手、剧本工坊、作品展示或桌面端，继续推进当前项目。
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link to="/novels" className="btn btn-primary">
@@ -87,6 +149,9 @@ export default function DashboardPage() {
                 </Link>
                 <Link to="/writing?type=script" className="btn btn-secondary">
                   进入剧本工坊
+                </Link>
+                <Link to="/recharge" className="btn btn-secondary">
+                  订阅与积分
                 </Link>
                 <a href={desktopLoginUrl} className="btn btn-secondary">
                   打开桌面端
@@ -101,10 +166,13 @@ export default function DashboardPage() {
               <div className="mt-4 space-y-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
                 <p>{accountLabel}</p>
                 <p>当前角色：{roleLabel}</p>
-                <p>如果你要调整昵称、简介和资料信息，可以直接进入个人设置。</p>
+                <p>头像、昵称和基础资料可以在个人设置里维护。</p>
                 <div className="pt-2">
                   <Link to="/profile" className="btn btn-secondary btn-sm">
                     打开个人设置
+                  </Link>
+                  <Link to="/recharge" className="btn btn-secondary btn-sm">
+                    订阅与积分
                   </Link>
                 </div>
               </div>
@@ -128,8 +196,8 @@ export default function DashboardPage() {
           <section className="glass-card p-6">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <div className="section-kicker">工作线分发</div>
-                <h2 className="mt-2 text-2xl font-bold text-[var(--fh-text)]">从工作台继续进入具体产品线</h2>
+                <div className="section-kicker">常用入口</div>
+                <h2 className="mt-2 text-2xl font-bold text-[var(--fh-text)]">选择接下来要做的事</h2>
               </div>
               <Link to="/" className="hero-panel-link">
                 返回官网首页
@@ -156,7 +224,7 @@ export default function DashboardPage() {
           </section>
 
           <aside className="glass-card p-6">
-            <div className="section-kicker">账号与分发</div>
+            <div className="section-kicker">下一步</div>
             <h2 className="mt-2 text-2xl font-bold text-[var(--fh-text)]">下一步</h2>
             <div className="mt-6 space-y-3">
               <Link
@@ -167,11 +235,11 @@ export default function DashboardPage() {
                 <span>进入个人设置</span>
               </Link>
               <Link
-                to="/showcase"
+                to="/recharge"
                 className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
                 <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">02</span>
-                <span>查看作品展示</span>
+                <span>管理订阅与积分</span>
               </Link>
               <a
                 href={desktopLoginUrl}
@@ -181,11 +249,11 @@ export default function DashboardPage() {
                 <span>打开桌面端</span>
               </a>
               <Link
-                to="/"
+                to="/showcase"
                 className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
                 <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">04</span>
-                <span>返回官网首页</span>
+                <span>查看作品展示</span>
               </Link>
             </div>
           </aside>

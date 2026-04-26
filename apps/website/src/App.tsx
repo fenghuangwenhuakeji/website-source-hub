@@ -10,6 +10,7 @@ const LoginPage = lazy(() => import('./pages/LoginPage'));
 const NovelDetailPage = lazy(() => import('./pages/NovelDetailPage'));
 const NovelsPage = lazy(() => import('./pages/NovelsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const RechargePage = lazy(() => import('./pages/RechargePage'));
 const RegisterPage = lazy(() => import('./pages/RegisterPage'));
 const WritingPage = lazy(() => import('./pages/WritingPage'));
 
@@ -54,6 +55,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/recharge" element={<RechargePage />} />
             </Route>
             <Route element={<PublicRoute />}>
               <Route path="/login" element={<LoginPage />} />

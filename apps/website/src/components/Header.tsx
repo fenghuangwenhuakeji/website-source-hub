@@ -26,6 +26,8 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const desktopLoginHref = resolveDesktopLoginUrl();
   const logoSrc = `${import.meta.env.BASE_URL}images/logo.png`;
+  const avatarSrc = typeof user?.avatar === 'string' && user.avatar.trim() ? user.avatar.trim() : '';
+  const avatarFallback = user?.nickname?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || '凤';
 
   const closeMenu = () => setMenuOpen(false);
 
@@ -48,6 +50,16 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
       title: '查看作品展示',
       active: location.pathname === '/showcase',
     },
+    ...(isAuthenticated
+      ? [
+          {
+            label: '订阅与积分',
+            to: '/recharge',
+            title: '管理订阅与积分',
+            active: location.pathname === '/recharge',
+          },
+        ]
+      : []),
     {
       label: '联系我们',
       hash: '#contact',
@@ -170,6 +182,9 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                         <Link to="/profile" className="btn btn-secondary nav-cta" onClick={closeMenu}>
                           个人设置
                         </Link>
+                        <Link to="/recharge" className="btn btn-secondary nav-cta" onClick={closeMenu}>
+                          订阅与积分
+                        </Link>
                         <button type="button" className="btn btn-secondary nav-cta" onClick={handleLogout}>
                           退出登录
                         </button>
@@ -211,10 +226,29 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                     工作台
                   </Link>
                   <Link
+                    to="/recharge"
+                    className={`btn ${location.pathname === '/recharge' ? 'btn-primary' : 'btn-secondary'} btn-sm`}
+                    title="进入订阅与积分"
+                  >
+                    充值
+                  </Link>
+                  <Link
                     to="/profile"
                     className={`nav-user-chip nav-user-link${location.pathname === '/profile' ? ' active' : ''}`}
                     title="进入个人设置"
                   >
+                    <span className="nav-user-avatar" aria-hidden="true">
+                      {avatarSrc ? (
+                        <img
+                          src={avatarSrc}
+                          alt=""
+                          onError={(event) => {
+                            event.currentTarget.style.display = 'none';
+                          }}
+                        />
+                      ) : null}
+                      <span>{avatarFallback}</span>
+                    </span>
                     {user?.nickname ?? '官网用户'}
                   </Link>
                   <button

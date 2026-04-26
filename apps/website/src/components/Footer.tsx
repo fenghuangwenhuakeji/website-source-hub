@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
 import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
 
+const qqGroupNumber = '702651146';
+const qqGroupJoinHref = `mqqapi://card/show_pslcard?src_type=internal&version=1&uin=${qqGroupNumber}&card_type=group&source=qrcode`;
+const qqGroupQrHref = '/images/qq-qr.jpg';
+
 const contactLinks = [
   { label: 'contact@fenghuangkeji.cn', href: 'mailto:contact@fenghuangkeji.cn' },
   { label: '188-8895-8787', href: 'tel:18888958787' },
-  { label: '官方 QQ 群 702651146', href: 'https://qm.qq.com/' },
+  { label: `官方 QQ 群 ${qqGroupNumber}`, href: qqGroupJoinHref },
 ];
 
 const navLinks = [
@@ -24,7 +28,7 @@ export function Footer() {
   const qrCodes = [
     { src: `${import.meta.env.BASE_URL}images/wechat-qr.jpg`, label: '微信公众号' },
     { src: `${import.meta.env.BASE_URL}images/xiaohongshu-qr.jpg`, label: '小红书' },
-    { src: `${import.meta.env.BASE_URL}images/qq-qr.jpg`, label: '官方 QQ 群' },
+    { src: `${import.meta.env.BASE_URL}images/qq-qr.jpg`, label: '官方 QQ 群', href: qqGroupJoinHref },
     { src: `${import.meta.env.BASE_URL}images/bilibili-qr.jpg`, label: 'B站账号' },
     { src: `${import.meta.env.BASE_URL}images/fuwuhao.jpg`, label: '服务号' },
   ];
@@ -42,7 +46,9 @@ export function Footer() {
               </div>
             </div>
             <p className="footer-brand-copy">
-              桌面软件、小说写作、漫剧剧本、分镜视频、网页软件、游戏开发、联合共创。
+              桌面软件、小说写作、漫剧剧本、分镜视频、网页软件、
+              <br />
+              游戏开发、联合共创。
             </p>
             <div className="footer-actions">
               <a href={resolveDesktopLoginUrl()} className="btn btn-primary btn-sm">
@@ -103,10 +109,21 @@ export function Footer() {
         <div className="footer-qrcodes">
           {qrCodes.map((qr) => (
             <div key={qr.label} className="qr-item">
-              <div className="qr-img">
-                <img src={qr.src} alt={qr.label} />
-              </div>
+              {qr.href ? (
+                <a className="qr-img" href={qr.href} rel="noreferrer" title={`打开${qr.label}`}>
+                  <img src={qr.src} alt={qr.label} />
+                </a>
+              ) : (
+                <div className="qr-img">
+                  <img src={qr.src} alt={qr.label} />
+                </div>
+              )}
               <span>{qr.label}</span>
+              {qr.href === qqGroupJoinHref ? (
+                <a className="qr-fallback-link" href={qqGroupQrHref} target="_blank" rel="noreferrer">
+                  扫码加入
+                </a>
+              ) : null}
             </div>
           ))}
         </div>
