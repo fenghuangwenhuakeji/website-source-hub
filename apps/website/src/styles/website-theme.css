@@ -2369,9 +2369,8 @@ button, input, textarea, select {
 }
 
 .recharge-package-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1rem;
 }
 
@@ -2389,8 +2388,7 @@ button, input, textarea, select {
 }
 
 .recharge-package {
-  flex: 1 1 calc((100% - 2rem) / 3);
-  max-width: calc((100% - 2rem) / 3);
+  min-width: 0;
 }
 
 .recharge-package.is-recommended {
@@ -2449,15 +2447,12 @@ button, input, textarea, select {
 }
 
 .exchange-grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .exchange-card {
-  flex: 1 1 calc((100% - 1rem) / 2);
-  max-width: calc((100% - 1rem) / 2);
   min-height: 180px;
 }
 
@@ -2732,12 +2727,7 @@ button, input, textarea, select {
   }
 
   .recharge-package-grid {
-    display: flex;
-  }
-
-  .recharge-package {
-    flex-basis: calc((100% - 1rem) / 2);
-    max-width: calc((100% - 1rem) / 2);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -2805,14 +2795,10 @@ button, input, textarea, select {
   }
 
   .recharge-stats,
-  .payment-detail-grid {
+  .payment-detail-grid,
+  .recharge-package-grid,
+  .exchange-grid {
     grid-template-columns: 1fr;
-  }
-
-  .recharge-package,
-  .exchange-card {
-    flex-basis: 100%;
-    max-width: 100%;
   }
 
   .pay-method-switch {
