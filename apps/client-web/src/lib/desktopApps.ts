@@ -47,7 +47,7 @@ const DESKTOP_STORAGE_SCOPE: idb.StorageScope = 'desktop-global';
 const LEGACY_DESKTOP_STORAGE_SCOPE: idb.StorageScope = 'session-apps';
 
 const buildStaticBundleRoute = (bundleName: string) => `/access/desktop-bundles/${bundleName}/index.html`;
-const buildStaticAppRoute = (appName: string) => `/apps/${appName}/index.html`;
+const buildStaticAppRoute = (appName: string) => `/access/apps/${appName}/index.html`;
 
 const normalizeStaticBundleRoute = (route?: string): string | undefined => {
   if (!route) {
