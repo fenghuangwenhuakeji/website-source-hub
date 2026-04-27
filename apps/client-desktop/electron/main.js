@@ -6,6 +6,7 @@ const path = require('path');
 
 const APP_NAME = '凤煌';
 const APP_ID = 'com.fenghuang.desktop';
+const APP_PROTOCOL = 'fenghuang';
 const DEFAULT_CLOUD_ORIGIN = 'https://fhwhkj.top';
 const DEFAULT_ENTRY_PATH = '/login';
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
@@ -33,6 +34,7 @@ const MIME_TYPES = {
 let mainWindow = null;
 let localServer = null;
 let localAppOrigin = '';
+let pendingProtocolUrl = '';
 const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
 const MAX_DIRECTORY_ENTRIES = 500;
 const SKIPPED_DIRECTORY_NAMES = new Set([
@@ -227,6 +229,35 @@ function isLocalAcceptanceMode() {
 
 function getEntryPath() {
     return isLocalAcceptanceMode() ? '/main?localAcceptance=1' : DEFAULT_ENTRY_PATH;
+}
+
+function focusMainWindow() {
+    if (!mainWindow) {
+        return;
+    }
+
+    if (mainWindow.isMinimized()) {
+        mainWindow.restore();
+    }
+
+    mainWindow.show();
+    mainWindow.focus();
+}
+
+function handleProtocolUrl(url) {
+    if (typeof url !== 'string' || !url.startsWith(`${APP_PROTOCOL}://`)) {
+        return;
+    }
+
+    pendingProtocolUrl = url;
+
+    if (!localAppOrigin || !mainWindow) {
+        return;
+    }
+
+    const entryPath = isLocalAcceptanceMode() ? '/main?localAcceptance=1' : '/main';
+    mainWindow.loadURL(`${localAppOrigin}${entryPath}`);
+    focusMainWindow();
 }
 
 function resolveCloudOrigin(...candidates) {
@@ -494,6 +525,11 @@ function createFallbackWindow(error) {
 
     mainWindow.once('ready-to-show', () => {
         mainWindow.show();
+        if (pendingProtocolUrl) {
+            const protocolUrl = pendingProtocolUrl;
+            pendingProtocolUrl = '';
+            handleProtocolUrl(protocolUrl);
+        }
     });
 }
 
@@ -732,9 +768,29 @@ function setupDesktopBridgeHandlers() {
     ipcMain.handle('execute-command', async (_event, payload) => executeSystemCommand(payload));
 }
 
+const singleInstanceLock = app.requestSingleInstanceLock();
+
+if (!singleInstanceLock) {
+    app.quit();
+} else {
+    app.on('second-instance', (_event, argv) => {
+        const protocolUrl = argv.find((item) => typeof item === 'string' && item.startsWith(`${APP_PROTOCOL}://`));
+        if (protocolUrl) {
+            handleProtocolUrl(protocolUrl);
+        }
+        focusMainWindow();
+    });
+}
+
+app.on('open-url', (event, url) => {
+    event.preventDefault();
+    handleProtocolUrl(url);
+});
+
 app.whenReady().then(async () => {
     app.setName(APP_NAME);
     app.setAppUserModelId(APP_ID);
+    app.setAsDefaultProtocolClient(APP_PROTOCOL);
 
     setupApiHandler();
     setupDesktopBridgeHandlers();

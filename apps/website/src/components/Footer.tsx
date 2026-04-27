@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 const qqGroupNumber = '702651146';
 const qqGroupJoinHref = `mqqapi://card/show_pslcard?src_type=internal&version=1&uin=${qqGroupNumber}&card_type=group&source=qrcode`;
@@ -16,7 +16,7 @@ const navLinks = [
   { label: '小说助手', to: '/novels' },
   { label: '剧本工坊', to: '/writing?type=script' },
   { label: '作品展示', to: '/showcase' },
-  { label: '桌面端入口', href: resolveDesktopLoginUrl() },
+  { label: '桌面端下载', href: resolveDesktopDownloadUrl() },
 ];
 
 export function Footer() {
@@ -51,8 +51,8 @@ export function Footer() {
               游戏开发、联合共创。
             </p>
             <div className="footer-actions">
-              <a href={resolveDesktopLoginUrl()} className="btn btn-primary btn-sm">
-                打开桌面端
+              <a href={resolveDesktopDownloadUrl()} className="btn btn-primary btn-sm">
+                下载桌面端
               </a>
               <Link to="/showcase" className="btn btn-secondary btn-sm">
                 作品展示

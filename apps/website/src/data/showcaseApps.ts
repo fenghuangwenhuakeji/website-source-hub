@@ -1,4 +1,4 @@
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 export interface ShowcaseApp {
   id: string;
@@ -12,7 +12,7 @@ export interface ShowcaseApp {
   pageUrl: string;
 }
 
-const desktopLoginUrl = resolveDesktopLoginUrl();
+const desktopDownloadUrl = resolveDesktopDownloadUrl();
 
 export const showcaseApps: ShowcaseApp[] = [
   {
@@ -26,7 +26,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: true,
     featuredReason:
       '凤煌最早立住技术根基的工具集，亦是所有产品的起点',
-    pageUrl: desktopLoginUrl,
+    pageUrl: desktopDownloadUrl,
   },
   {
     id: 'chuangshi',
@@ -39,7 +39,7 @@ export const showcaseApps: ShowcaseApp[] = [
     featured: true,
     featuredReason:
       "品牌主推的创作中枢，最能代表凤煌'工具即内容'的核心能力",
-    pageUrl: desktopLoginUrl,
+    pageUrl: desktopDownloadUrl,
   },
   {
     id: 'medium-short',

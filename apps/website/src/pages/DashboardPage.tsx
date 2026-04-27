@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuthStore } from '../store/auth';
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 import { apiClient } from '../utils/api';
 
-const desktopLoginUrl = resolveDesktopLoginUrl();
+const desktopDownloadUrl = resolveDesktopDownloadUrl();
 
 const workspaceCards = [
   {
@@ -39,9 +39,9 @@ const workspaceCards = [
   },
   {
     title: '桌面端',
-    description: '打开桌面端，继续使用完整工作区。',
-    href: desktopLoginUrl,
-    cta: '打开桌面端',
+    description: '下载桌面端，继续使用完整工作区。',
+    href: desktopDownloadUrl,
+    cta: '下载桌面端',
   },
 ];
 
@@ -153,8 +153,8 @@ export default function DashboardPage() {
                 <Link to="/recharge" className="btn btn-secondary">
                   订阅与积分
                 </Link>
-                <a href={desktopLoginUrl} className="btn btn-secondary">
-                  打开桌面端
+                <a href={desktopDownloadUrl} className="btn btn-secondary">
+                  下载桌面端
                 </a>
               </div>
             </div>
@@ -242,11 +242,11 @@ export default function DashboardPage() {
                 <span>管理订阅与积分</span>
               </Link>
               <a
-                href={desktopLoginUrl}
+                href={desktopDownloadUrl}
                 className="flex items-center rounded-2xl bg-[var(--fh-bg-elevated)] p-4 text-[var(--fh-text)] transition hover:bg-[var(--fh-surface-raised)]"
               >
                 <span className="mr-3 text-sm font-bold text-[var(--fh-accent)]">03</span>
-                <span>打开桌面端</span>
+                <span>下载桌面端</span>
               </a>
               <Link
                 to="/showcase"

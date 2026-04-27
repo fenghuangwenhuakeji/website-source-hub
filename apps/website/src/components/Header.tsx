@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
 import type { ThemeMode } from '../utils/themePreference';
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 type HeaderProps = {
   themeMode: ThemeMode;
@@ -24,7 +24,7 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
-  const desktopLoginHref = resolveDesktopLoginUrl();
+  const desktopDownloadHref = resolveDesktopDownloadUrl();
   const logoSrc = `${import.meta.env.BASE_URL}images/logo.png`;
   const avatarSrc = typeof user?.avatar === 'string' && user.avatar.trim() ? user.avatar.trim() : '';
   const avatarFallback = user?.nickname?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || '凤';
@@ -167,8 +167,8 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                 </li>
                 <li className="mobile-only nav-mobile-panel">
                   <div className="nav-mobile-label">桌面端</div>
-                  <a href={desktopLoginHref} className="btn btn-primary nav-cta" onClick={closeMenu}>
-                    打开桌面端
+                  <a href={desktopDownloadHref} className="btn btn-primary nav-cta" onClick={closeMenu}>
+                    下载桌面端
                   </a>
                 </li>
                 <li className="mobile-only nav-mobile-panel">
@@ -213,7 +213,7 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
               >
                 {themeMode === 'dark' ? '切换浅色' : '切换深色'}
               </button>
-              <a href={desktopLoginHref} className="btn btn-secondary nav-ghost" title="打开桌面端">
+              <a href={desktopDownloadHref} className="btn btn-secondary nav-ghost" title="下载桌面端">
                 桌面端
               </a>
               {isAuthenticated ? (

@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
 import { showcaseApps } from '../data/showcaseApps';
 import { useAuthStore } from '../store/auth';
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 import { useParallax } from '../hooks/useParallax';
 
-const desktopLoginUrl = resolveDesktopLoginUrl();
+const desktopDownloadUrl = resolveDesktopDownloadUrl();
 
 const featuredShowcase = showcaseApps.slice(0, 3);
 
@@ -220,8 +220,8 @@ export default function HomePage() {
       title: '桌面端',
       code: 'DESKTOP',
       description: '完整入口，直接承接更深的本地与桌面工作流。',
-      primaryCta: '打开桌面端',
-      primaryHref: desktopLoginUrl,
+      primaryCta: '下载桌面端',
+      primaryHref: desktopDownloadUrl,
       external: true,
     },
     {
@@ -336,8 +336,8 @@ export default function HomePage() {
                   </Link>
                 </motion.div>
                 <motion.div variants={heroButtonItem}>
-                  <a href={desktopLoginUrl} className="btn btn-secondary">
-                    打开桌面端
+                  <a href={desktopDownloadUrl} className="btn btn-secondary">
+                    下载桌面端
                   </a>
                 </motion.div>
               </motion.div>

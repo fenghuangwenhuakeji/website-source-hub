@@ -1,5 +1,6 @@
 const DESKTOP_ENTRY_PATH = '/access/main';
 const DESKTOP_LOGIN_PATH = '/access/login';
+const DESKTOP_DOWNLOAD_PATH = '/download';
 const LOCAL_DESKTOP_PORT = '4173';
 
 type DesktopLoginMode = 'password' | 'sms' | 'register' | 'wechat';
@@ -66,4 +67,22 @@ export function resolveDesktopLoginUrl(options: DesktopLoginOptions = {}) {
   }
 
   return withDesktopParams(`${origin}${targetPath}`, options);
+}
+
+export function resolveDesktopDownloadUrl() {
+  return DESKTOP_DOWNLOAD_PATH;
+}
+
+export function resolveDesktopWebUrl() {
+  if (typeof window === 'undefined') {
+    return DESKTOP_ENTRY_PATH;
+  }
+
+  const { hostname, protocol, port, origin } = window.location;
+
+  if (isLoopbackHost(hostname) && port !== LOCAL_DESKTOP_PORT) {
+    return `${protocol}//${hostname}:${LOCAL_DESKTOP_PORT}${DESKTOP_ENTRY_PATH}`;
+  }
+
+  return `${origin}${DESKTOP_ENTRY_PATH}`;
 }
