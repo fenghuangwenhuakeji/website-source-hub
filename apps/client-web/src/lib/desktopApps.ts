@@ -256,8 +256,8 @@ export const DESKTOP_ICON_OPTIONS = [
 const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   {
     id: 'finder',
-    title: 'Finder',
-    description: 'Browse desktop files, project folders, and common resources.',
+    title: '应用库',
+    description: '浏览桌面应用、接入项和系统工具。',
     icon: 'Folder',
     color: '#5b8cff',
     width: 920,
@@ -268,8 +268,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'terminal',
-    title: '终端',
-    description: 'Check command output, runtime status, and system operations.',
+    title: '运行状态',
+    description: '查看运行状态、窗口和快捷操作。',
     icon: 'Terminal',
     color: '#2d3647',
     width: 860,
@@ -305,8 +305,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'ai-agent',
-    title: 'AI Agents',
-    description: 'Manage agents, tasks, skills, and toolchains in one place.',
+    title: '智能体',
+    description: '管理智能体、任务和工具链。',
     icon: 'Bot',
     color: '#15a6a1',
     width: 960,
@@ -318,8 +318,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'frontend-converter',
-    title: 'Frontend Converter',
-    description: 'Turn HTML, CSS, JS, and TS source files into desktop apps.',
+    title: '应用接入',
+    description: '接入网页、本地程序和展示页。',
     icon: 'WandSparkles',
     color: '#ff8e5f',
     width: 1120,
@@ -343,8 +343,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'tasks-app',
-    title: 'Tasks',
-    description: 'Review current desktop tasks, progress, and work lanes.',
+    title: '任务',
+    description: '查看当前事项和进度。',
     icon: 'ListTodo',
     color: '#f2a93b',
     width: 820,
@@ -418,8 +418,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'webChat',
-    title: 'Agent Creator',
-    description: 'The legacy WebChat entry is now unified into the Agent Creator workspace.',
+    title: '智能体编辑器',
+    description: '编辑智能体、提示词和工作流。',
     icon: 'Bot',
     color: '#7b66ff',
     width: 1220,
@@ -433,7 +433,7 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   {
     id: 'codeEditor',
     title: '代码编辑器',
-    description: 'Unified entry for editing, previewing, running, and debugging code.',
+    description: '编辑、预览、运行和调试代码。',
     icon: 'Code2',
     color: '#007acc',
     width: 1280,
@@ -446,8 +446,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'short-book-lab',
-    title: '短篇拆书版',
-    description: 'Short-book analysis and mobile-adapted reading workspace.',
+    title: '短篇拆书',
+    description: '短篇内容拆解和阅读分析。',
     icon: 'BookOpen',
     color: '#f3a43b',
     width: 1180,
@@ -474,8 +474,8 @@ const BUILTIN_DESKTOP_APPS: DesktopAppDefinition[] = [
   },
   {
     id: 'fenghuang',
-    title: '凤煌创作入口',
-    description: '打开凤煌创作套件，进入完整体、短篇、中长篇、卡牌与融合方案。',
+    title: '凤煌创作',
+    description: '打开完整体、短篇、中长篇、卡牌与融合方案。',
     icon: 'Sparkles',
     color: '#ff6a3d',
     width: 1260,

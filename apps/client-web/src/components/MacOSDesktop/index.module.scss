@@ -7421,3 +7421,6544 @@ $duration-slowest: 0.6s;
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 16px 36px rgba(2, 6, 23, 0.18);
 }
+
+/* Launcher visual pass: reduce AI-demo glow and make the desktop feel like a real utility launcher. */
+.desktopShell {
+  color: #e5e7eb;
+  background:
+    linear-gradient(180deg, #151719 0%, #181b1f 48%, #141619 100%);
+}
+
+.dark.desktopShell {
+  background:
+    linear-gradient(180deg, #151719 0%, #181b1f 48%, #141619 100%);
+}
+
+.wallpaper,
+.wallpaperGlowA,
+.wallpaperGlowB,
+.dark .wallpaper,
+.dark .wallpaperGlowA,
+.dark .wallpaperGlowB {
+  display: none;
+}
+
+.menuBar,
+.dark .menuBar {
+  height: 48px;
+  padding: 0 16px;
+  background: rgba(22, 24, 27, 0.96);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.menuLeft,
+.menuRight {
+  gap: 8px;
+}
+
+.appleButton,
+.dark .appleButton {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: #22262b;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  box-shadow: none;
+}
+
+.brandLogo {
+  width: 18px;
+  height: 18px;
+}
+
+.menuButton,
+.menuIconButton,
+.brandPill,
+.statusPill,
+.dark .menuButton,
+.dark .menuIconButton,
+.dark .brandPill,
+.dark .statusPill {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 8px;
+  background: rgba(35, 39, 44, 0.84);
+  color: rgba(229, 231, 235, 0.88);
+  box-shadow: none;
+}
+
+.menuButton {
+  padding: 7px 10px;
+}
+
+.brandPill,
+.statusPill {
+  padding: 7px 10px;
+}
+
+.menuClock {
+  color: rgba(209, 213, 219, 0.78);
+}
+
+.desktopStage {
+  min-height: calc(100vh - 48px - 84px);
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 14px;
+  padding: 14px 14px 104px;
+}
+
+.overviewColumn,
+.libraryColumn {
+  gap: 12px;
+}
+
+.card,
+.heroPanel,
+.iconDeck,
+.appZone,
+.windowShell,
+.dark .card,
+.dark .heroPanel,
+.dark .iconDeck,
+.dark .appZone,
+.dark .windowShell {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 10px;
+  background: rgba(17, 24, 39, 0.88);
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.card,
+.iconDeck,
+.windowBody {
+  padding: 14px;
+}
+
+.heroPanel {
+  padding: 18px;
+  gap: 14px;
+}
+
+.heroTopRow {
+  grid-template-columns: minmax(0, 1fr) 180px;
+  align-items: stretch;
+}
+
+.heroIntro {
+  gap: 8px;
+}
+
+.heroEyebrow,
+.cardLabel {
+  color: rgba(125, 211, 252, 0.9);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.heroTitle {
+  font-size: clamp(24px, 2.6vw, 32px);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.heroCopy {
+  max-width: 760px;
+  color: rgba(209, 213, 219, 0.78);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.heroTimeCard {
+  border-radius: 10px;
+  background: #121417;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: none;
+}
+
+.heroTime {
+  color: #f9fafb;
+  font-size: 38px;
+}
+
+.heroDate,
+.heroMeta {
+  color: rgba(209, 213, 219, 0.76);
+}
+
+.desktopSearchBar,
+.dark .desktopSearchBar {
+  min-height: 44px;
+  border-radius: 8px;
+  background: #121417;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: #e5e7eb;
+}
+
+.desktopSearchBar:focus-within {
+  border-color: rgba(56, 189, 248, 0.46);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.10);
+}
+
+.heroActionRow {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.heroActionButton,
+.dark .heroActionButton {
+  min-width: 180px;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 8px;
+  background: #24282e;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  color: #e5e7eb;
+  box-shadow: none;
+  font-weight: 600;
+}
+
+.heroActionButton:hover {
+  background: #2a3037;
+  border-color: rgba(56, 189, 248, 0.34);
+}
+
+.coreAppGrid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.coreAppCard,
+.dark .coreAppCard {
+  min-height: 138px;
+  padding: 14px;
+  gap: 9px;
+  border-radius: 10px;
+  background: #191c20;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  box-shadow: none;
+}
+
+.coreAppCard:hover {
+  transform: translateY(-1px);
+  background: #20252b;
+  border-color: rgba(125, 211, 252, 0.32);
+}
+
+.coreAppCard strong {
+  color: #f3f4f6;
+  font-size: 14px;
+}
+
+.coreAppCard p {
+  color: rgba(209, 213, 219, 0.74);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.coreAppOpen {
+  color: #bae6fd;
+  background: rgba(14, 165, 233, 0.12);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.desktopIconBadge,
+.dockBadge,
+.shortcutIcon,
+.mobileAppBadge,
+.mobileInstalledIcon,
+.libraryIcon,
+.legacyIcon {
+  border-radius: 9px;
+  box-shadow: none;
+}
+
+.desktopIconBadge {
+  width: 42px;
+  height: 42px;
+}
+
+.iconDeck {
+  gap: 12px;
+}
+
+.sectionTitle {
+  margin-top: 2px;
+  color: #f3f4f6;
+  font-size: 18px;
+}
+
+.sectionHint,
+.appZoneHeader span,
+.overviewRow span,
+.desktopIconMeta {
+  color: rgba(209, 213, 219, 0.68);
+}
+
+.appHealthStrip {
+  gap: 6px;
+}
+
+.appHealthChip,
+.appHealthChipReady,
+.appHealthChipMissing {
+  border-radius: 6px;
+  background: #121417;
+  border-color: rgba(148, 163, 184, 0.16);
+  color: rgba(209, 213, 219, 0.76);
+}
+
+.appHealthChip strong,
+.appHealthChipReady strong,
+.appHealthChipMissing strong {
+  color: #e5e7eb;
+}
+
+.desktopGrid,
+.iconDeck .desktopGrid,
+.libraryColumn .desktopGrid {
+  grid-template-columns: repeat(auto-fill, minmax(116px, 1fr));
+  gap: 8px;
+  padding: 0;
+}
+
+.desktopIcon,
+.dark .desktopIcon {
+  min-height: 104px;
+  gap: 8px;
+  padding: 12px 8px;
+  border-radius: 10px;
+  background: #191c20;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  box-shadow: none;
+}
+
+.desktopIcon:hover {
+  transform: translateY(-1px);
+  background: #20252b;
+  border-color: rgba(125, 211, 252, 0.28);
+}
+
+.desktopIcon span {
+  color: #e5e7eb;
+  font-size: 12px;
+}
+
+.libraryColumn {
+  gap: 12px;
+}
+
+.overviewList {
+  gap: 8px;
+}
+
+.overviewRow,
+.dark .overviewRow {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #121417;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.overviewRow strong {
+  color: #f3f4f6;
+}
+
+.appZone {
+  padding: 14px;
+  gap: 12px;
+}
+
+.appZoneHeader {
+  padding: 0;
+}
+
+.appZoneCount {
+  height: 28px;
+  min-width: 28px;
+  border-radius: 6px;
+  background: rgba(14, 165, 233, 0.12);
+  color: #bae6fd;
+}
+
+.dock,
+.dark .dock {
+  border-radius: 12px;
+  background: rgba(22, 24, 27, 0.96);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
+}
+
+.dockItem {
+  border-radius: 10px;
+}
+
+.dockItem:hover {
+  transform: translateY(-1px);
+  background: rgba(35, 39, 44, 0.88);
+}
+
+.windowHeader,
+.dark .windowHeader {
+  background: #191c20;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.windowBody {
+  background: #151719;
+}
+
+@media (max-width: 1240px) {
+  .desktopStage {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Launcher Pro polish pass
+   Intent: make the launcher feel less like a control table and more like a desktop instrument you want to keep open.
+   Signature: an asymmetric command stage with a live pulse rail, a hero-sized primary tile, and denser action affordances.
+   Constraint: no extra decoration that does not improve launch speed or orientation.
+   DESIGN_VARIANCE=8, MOTION_INTENSITY=5, VISUAL_DENSITY=7.
+*/
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #080807;
+  --deck-panel: #12110f;
+  --deck-panel-strong: #191713;
+  --deck-line: rgba(226, 215, 196, 0.13);
+  --deck-line-strong: rgba(226, 215, 196, 0.25);
+  --deck-text: #eee7d9;
+  --deck-muted: rgba(238, 231, 217, 0.64);
+  --deck-faint: rgba(238, 231, 217, 0.38);
+  --deck-accent: #bf4b3d;
+  --deck-accent-2: #c6a86b;
+  --deck-cool: #8fa3a0;
+  background:
+    radial-gradient(circle at 16% 0%, rgba(198, 168, 107, 0.13), transparent 29%),
+    radial-gradient(circle at 84% 18%, rgba(143, 163, 160, 0.1), transparent 31%),
+    linear-gradient(rgba(238, 231, 217, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 231, 217, 0.018) 1px, transparent 1px),
+    linear-gradient(145deg, #070707 0%, #11100e 48%, #080807 100%);
+  background-size: auto, auto, 34px 34px, 34px 34px, auto;
+}
+
+.launchpadFrame {
+  isolation: isolate;
+  background:
+    linear-gradient(115deg, rgba(191, 75, 61, 0.12), transparent 18%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.045), rgba(238, 231, 217, 0.008));
+}
+
+.launchpadFrame::after {
+  content: '';
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 18%, transparent 82%, rgba(0, 0, 0, 0.22)),
+    radial-gradient(circle at 52% 42%, rgba(238, 231, 217, 0.035), transparent 36%);
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(180px, 250px) minmax(360px, 1.05fr) minmax(260px, auto);
+  border-bottom-color: rgba(198, 168, 107, 0.16);
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.065), rgba(238, 231, 217, 0.014)),
+    rgba(8, 8, 7, 0.88);
+}
+
+.deckBrand img {
+  border-radius: 11px;
+  border-color: rgba(198, 168, 107, 0.28);
+  background: linear-gradient(145deg, rgba(191, 75, 61, 0.28), rgba(238, 231, 217, 0.04));
+}
+
+.deckBrand span {
+  color: rgba(198, 168, 107, 0.72);
+}
+
+.deckBrand strong {
+  font-size: 22px;
+}
+
+.deckSearch {
+  height: 46px;
+  border-color: rgba(198, 168, 107, 0.2);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.072), rgba(238, 231, 217, 0.028)),
+    rgba(15, 15, 13, 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 46px rgba(0, 0, 0, 0.28);
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(198, 168, 107, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 3px rgba(191, 75, 61, 0.18),
+    0 20px 54px rgba(0, 0, 0, 0.32);
+}
+
+.deckSearch svg {
+  color: var(--deck-accent-2);
+}
+
+.deckSearch kbd {
+  border-color: rgba(198, 168, 107, 0.2);
+  background: rgba(198, 168, 107, 0.08);
+  color: rgba(238, 231, 217, 0.56);
+}
+
+.deckAccount button {
+  border-color: rgba(198, 168, 107, 0.16);
+  border-radius: 10px;
+  background: rgba(238, 231, 217, 0.052);
+}
+
+.deckAccount button:hover {
+  border-color: rgba(198, 168, 107, 0.34);
+  background: rgba(198, 168, 107, 0.1);
+}
+
+.deckStatusline {
+  border-bottom-color: rgba(198, 168, 107, 0.12);
+  color: rgba(238, 231, 217, 0.44);
+}
+
+.deckLayout {
+  grid-template-columns: 112px minmax(0, 1fr) minmax(316px, 372px);
+}
+
+.deckNav {
+  gap: 10px;
+  padding: 24px 11px 20px 18px;
+  border-right-color: rgba(198, 168, 107, 0.14);
+}
+
+.deckNav button {
+  min-height: 68px;
+  border-radius: 12px 6px 6px 12px;
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(198, 168, 107, 0.38);
+  background:
+    linear-gradient(90deg, rgba(191, 75, 61, 0.22), rgba(198, 168, 107, 0.09)),
+    rgba(238, 231, 217, 0.035);
+  box-shadow:
+    inset 3px 0 0 var(--deck-accent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.deckMain {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 16px;
+  padding: 22px 24px 22px;
+}
+
+.deckPulse {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.78fr) auto minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 14px 16px;
+  border: 1px solid rgba(198, 168, 107, 0.16);
+  border-radius: 16px;
+  background:
+    linear-gradient(120deg, rgba(198, 168, 107, 0.1), rgba(238, 231, 217, 0.032) 42%, rgba(143, 163, 160, 0.055)),
+    rgba(15, 15, 13, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 22px 54px rgba(0, 0, 0, 0.18);
+}
+
+.deckPulseTitle {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.deckPulseTitle span {
+  color: rgba(198, 168, 107, 0.7);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.deckPulseTitle strong {
+  overflow: hidden;
+  color: var(--deck-text);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckPulseStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(62px, auto));
+  gap: 8px;
+}
+
+.deckPulseStats span {
+  display: grid;
+  gap: 2px;
+  min-width: 62px;
+  padding: 8px 10px;
+  border: 1px solid rgba(238, 231, 217, 0.09);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.14);
+  color: rgba(238, 231, 217, 0.45);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.deckPulseStats strong {
+  color: var(--deck-text);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deckQuickRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.deckQuickItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 10px;
+  border: 1px solid rgba(238, 231, 217, 0.1);
+  border-radius: 11px;
+  background: rgba(8, 8, 7, 0.45);
+  color: rgba(238, 231, 217, 0.66);
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.deckQuickItem span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(238, 231, 217, 0.06);
+}
+
+.deckQuickItem strong {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckQuickItem i {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--deck-accent);
+  box-shadow: 0 0 0 4px rgba(191, 75, 61, 0.14);
+}
+
+.deckQuickItem:hover,
+.deckQuickItemSelected {
+  transform: translateY(-1px);
+  border-color: rgba(198, 168, 107, 0.32);
+  background: rgba(198, 168, 107, 0.09);
+  color: var(--deck-text);
+}
+
+.deckPinnedGrid {
+  grid-template-columns: 1.15fr 1fr 1fr 1fr;
+  grid-auto-rows: minmax(122px, auto);
+  gap: 14px;
+  min-height: 292px;
+}
+
+.deckTile {
+  min-height: 122px;
+  border-color: rgba(238, 231, 217, 0.11);
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.085), rgba(238, 231, 217, 0.022)),
+    rgba(16, 16, 14, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.deckTile:first-child {
+  grid-column: span 2;
+  min-height: 154px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(198, 168, 107, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(191, 75, 61, 0.2), rgba(238, 231, 217, 0.045)),
+    rgba(19, 17, 15, 0.96);
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 48px;
+  height: 48px;
+  color: #fff4ed;
+}
+
+.deckTile:first-child .deckTileCopy strong {
+  font-size: clamp(24px, 2vw, 34px);
+}
+
+.deckTile:hover {
+  border-color: rgba(198, 168, 107, 0.28);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.11), rgba(238, 231, 217, 0.032)),
+    rgba(20, 19, 17, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 54px rgba(0, 0, 0, 0.22);
+}
+
+.deckTileSelected {
+  border-color: rgba(198, 168, 107, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(191, 75, 61, 0.16),
+    0 24px 58px rgba(0, 0, 0, 0.24);
+}
+
+.deckTileIndex {
+  color: rgba(198, 168, 107, 0.62);
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border-color: rgba(198, 168, 107, 0.16);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.105), rgba(238, 231, 217, 0.032)),
+    #12110f;
+}
+
+.deckCommandList {
+  border: 1px solid rgba(198, 168, 107, 0.1);
+  border-radius: 16px;
+  background: rgba(8, 8, 7, 0.3);
+  padding: 0 8px 24px;
+}
+
+.deckSectionHeader {
+  min-height: 40px;
+  margin-bottom: 0;
+  border-bottom-color: rgba(198, 168, 107, 0.13);
+  background: rgba(9, 9, 8, 0.96);
+  color: rgba(198, 168, 107, 0.62);
+}
+
+.deckCommand {
+  min-height: 66px;
+  padding-inline: 12px;
+  border-bottom-color: rgba(238, 231, 217, 0.06);
+}
+
+.deckCommand:hover {
+  background: rgba(198, 168, 107, 0.045);
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(191, 75, 61, 0.18), rgba(198, 168, 107, 0.065)),
+    rgba(238, 231, 217, 0.018);
+}
+
+.deckCommandIcon {
+  color: rgba(238, 231, 217, 0.86);
+}
+
+.deckInspector {
+  padding: 28px 24px 22px;
+  border-left-color: rgba(198, 168, 107, 0.16);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(198, 168, 107, 0.13), transparent 30%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.06), rgba(238, 231, 217, 0.012)),
+    rgba(10, 10, 9, 0.7);
+}
+
+.deckInspectorMark {
+  width: 76px;
+  height: 76px;
+  border-radius: 18px;
+  color: var(--deck-accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.deckInspectorCopy span {
+  color: rgba(198, 168, 107, 0.82);
+}
+
+.deckInspectorMeta {
+  border-color: rgba(198, 168, 107, 0.14);
+}
+
+.deckInspectorMeta span {
+  min-height: 48px;
+  border-bottom-color: rgba(198, 168, 107, 0.09);
+}
+
+.deckInspectorActions {
+  grid-template-columns: minmax(0, 1fr) 82px 82px;
+}
+
+.deckInspectorActions button {
+  height: 40px;
+  border-radius: 11px;
+}
+
+.deckPrimaryAction {
+  background:
+    linear-gradient(180deg, rgba(191, 75, 61, 1), rgba(145, 49, 39, 1)) !important;
+}
+
+.deckHint span {
+  border-color: rgba(198, 168, 107, 0.11);
+  background: rgba(198, 168, 107, 0.05);
+}
+
+.dock,
+.dark .dock {
+  height: 58px;
+  border-color: rgba(198, 168, 107, 0.18);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.065), rgba(238, 231, 217, 0.02)),
+    rgba(8, 8, 7, 0.92);
+}
+
+@keyframes deckEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.deckPulse,
+.deckPinnedGrid,
+.deckCommandList,
+.deckInspector {
+  animation: deckEnter 360ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.deckPinnedGrid {
+  animation-delay: 45ms;
+}
+
+.deckCommandList {
+  animation-delay: 80ms;
+}
+
+.deckInspector {
+  animation-delay: 110ms;
+}
+
+.reducedMotion .deckPulse,
+.reducedMotion .deckPinnedGrid,
+.reducedMotion .deckCommandList,
+.reducedMotion .deckInspector {
+  animation: none;
+}
+
+@media (max-width: 1320px) {
+  .deckPulse {
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1fr);
+  }
+
+  .deckPulseStats {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 420px;
+  }
+
+  .deckTile:first-child {
+    grid-column: span 2;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .deckPulse {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .deckPulseStats {
+    display: grid;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .deckPinnedGrid,
+  .deckTile:first-child {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .deckTile:first-child {
+    grid-column: auto;
+    min-height: 142px;
+  }
+
+  .deckCommandList {
+    border-radius: 14px;
+    padding: 0;
+  }
+}
+
+/* Command Deck final refinement
+   Intent: make the launcher feel like a permanent desktop instrument: dense, calm, and immediately operable.
+   Signature: a fixed command bar, left index rail, stable launch matrix, and independent command stream.
+   Constraint: no nested window feeling, no card wall overlap, no violet/blue AI palette.
+   DESIGN_VARIANCE=7, MOTION_INTENSITY=4, VISUAL_DENSITY=7.
+*/
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #080807;
+  --deck-panel: #11100e;
+  --deck-panel-strong: #171512;
+  --deck-line: rgba(226, 215, 196, 0.13);
+  --deck-line-strong: rgba(226, 215, 196, 0.24);
+  --deck-text: #eee7d9;
+  --deck-muted: rgba(238, 231, 217, 0.64);
+  --deck-faint: rgba(238, 231, 217, 0.4);
+  --deck-accent: #b94a3d;
+  --deck-accent-soft: rgba(185, 74, 61, 0.16);
+  --deck-metal: #c5a86a;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(197, 168, 106, 0.11), transparent 29%),
+    radial-gradient(circle at 88% 22%, rgba(185, 74, 61, 0.09), transparent 31%),
+    linear-gradient(rgba(238, 231, 217, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 231, 217, 0.018) 1px, transparent 1px),
+    linear-gradient(145deg, #070706 0%, #11100e 48%, #080807 100%);
+  background-size: auto, auto, 34px 34px, 34px 34px, auto;
+}
+
+.desktopStage {
+  height: calc(100vh - 42px);
+  padding: 0 0 70px;
+  overflow: hidden;
+}
+
+.launchpadFrame {
+  grid-template-rows: 64px 34px minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, rgba(185, 74, 61, 0.1), transparent 18%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.04), rgba(238, 231, 217, 0.008));
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(176px, 244px) minmax(340px, 1fr) minmax(268px, auto);
+  gap: 16px;
+  padding: 9px 28px;
+  border-bottom-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.066), rgba(238, 231, 217, 0.014)),
+    rgba(8, 8, 7, 0.9);
+}
+
+.deckBrand img {
+  border-color: rgba(197, 168, 106, 0.28);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(185, 74, 61, 0.28), rgba(238, 231, 217, 0.045));
+}
+
+.deckBrand span {
+  color: rgba(197, 168, 106, 0.72);
+}
+
+.deckSearch {
+  height: 44px;
+  border-color: rgba(197, 168, 106, 0.2);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.072), rgba(238, 231, 217, 0.028)),
+    rgba(15, 15, 13, 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 46px rgba(0, 0, 0, 0.26);
+}
+
+.deckSearch svg {
+  color: var(--deck-metal);
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(197, 168, 106, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 3px rgba(185, 74, 61, 0.17),
+    0 20px 54px rgba(0, 0, 0, 0.32);
+}
+
+.deckAccount button {
+  border-color: rgba(197, 168, 106, 0.16);
+  border-radius: 9px;
+  background: rgba(238, 231, 217, 0.052);
+}
+
+.deckAccount button:hover {
+  border-color: rgba(197, 168, 106, 0.34);
+  background: rgba(197, 168, 106, 0.1);
+}
+
+.deckStatusline {
+  border-bottom-color: rgba(197, 168, 106, 0.12);
+}
+
+.deckLayout {
+  grid-template-columns: 112px minmax(0, 1fr) minmax(318px, 372px);
+  height: 100%;
+  min-height: 0;
+}
+
+.deckNav {
+  gap: 10px;
+  padding: 24px 11px 20px 18px;
+  border-right-color: rgba(197, 168, 106, 0.14);
+}
+
+.deckNav button {
+  min-height: 68px;
+  border-radius: 12px 6px 6px 12px;
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(197, 168, 106, 0.38);
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.22), rgba(197, 168, 106, 0.09)),
+    rgba(238, 231, 217, 0.035);
+  box-shadow:
+    inset 3px 0 0 var(--deck-accent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.deckMain {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px 24px 22px;
+  overflow: hidden;
+}
+
+.deckPulse {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.78fr) auto minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 14px 16px;
+  border: 1px solid rgba(197, 168, 106, 0.16);
+  border-radius: 14px;
+  background:
+    linear-gradient(120deg, rgba(197, 168, 106, 0.1), rgba(238, 231, 217, 0.032) 42%, rgba(185, 74, 61, 0.055)),
+    rgba(15, 15, 13, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 22px 54px rgba(0, 0, 0, 0.18);
+}
+
+.deckPulseTitle span {
+  color: rgba(197, 168, 106, 0.7);
+}
+
+.deckPulseTitle strong {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.deckPulseStats span {
+  border-color: rgba(238, 231, 217, 0.09);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.deckQuickRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.deckQuickItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 10px;
+  border: 1px solid rgba(238, 231, 217, 0.1);
+  border-radius: 10px;
+  background: rgba(8, 8, 7, 0.45);
+  color: rgba(238, 231, 217, 0.66);
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.deckQuickItem span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(238, 231, 217, 0.06);
+}
+
+.deckQuickItem strong {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckQuickItem i {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--deck-accent);
+  box-shadow: 0 0 0 4px rgba(185, 74, 61, 0.14);
+}
+
+.deckQuickItem:hover,
+.deckQuickItemSelected {
+  transform: translateY(-1px);
+  border-color: rgba(197, 168, 106, 0.32);
+  background: rgba(197, 168, 106, 0.09);
+  color: var(--deck-text);
+}
+
+.deckPinnedGrid {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr 1fr;
+  grid-auto-flow: dense;
+  grid-auto-rows: minmax(118px, auto);
+  gap: 14px;
+  min-height: 270px;
+  overflow: visible;
+}
+
+.deckTile {
+  min-height: 118px;
+  border-color: rgba(238, 231, 217, 0.11);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.085), rgba(238, 231, 217, 0.022)),
+    rgba(16, 16, 14, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.deckTile:first-child {
+  grid-column: span 2;
+  min-height: 150px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(197, 168, 106, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(185, 74, 61, 0.2), rgba(238, 231, 217, 0.045)),
+    rgba(19, 17, 15, 0.96);
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 48px;
+  height: 48px;
+  color: #fff4ed;
+}
+
+.deckTile:first-child .deckTileCopy strong {
+  font-size: clamp(24px, 2vw, 34px);
+}
+
+.deckTile:hover {
+  border-color: rgba(197, 168, 106, 0.28);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.11), rgba(238, 231, 217, 0.032)),
+    rgba(20, 19, 17, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 54px rgba(0, 0, 0, 0.22);
+}
+
+.deckTileSelected {
+  border-color: rgba(197, 168, 106, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(185, 74, 61, 0.16),
+    0 24px 58px rgba(0, 0, 0, 0.24);
+}
+
+.deckTileIndex {
+  color: rgba(197, 168, 106, 0.62);
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.105), rgba(238, 231, 217, 0.032)),
+    #12110f;
+}
+
+.deckCommandList {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(197, 168, 106, 0.1);
+  border-radius: 14px;
+  background: rgba(8, 8, 7, 0.3);
+  padding: 0 8px 24px;
+  scrollbar-color: rgba(197, 168, 106, 0.22) transparent;
+}
+
+.deckSectionHeader {
+  min-height: 40px;
+  margin-bottom: 0;
+  border-bottom-color: rgba(197, 168, 106, 0.13);
+  background: rgba(9, 9, 8, 0.96);
+  color: rgba(197, 168, 106, 0.62);
+}
+
+.deckCommand {
+  min-height: 66px;
+  padding-inline: 12px;
+  border-bottom-color: rgba(238, 231, 217, 0.06);
+}
+
+.deckCommand:hover {
+  background: rgba(197, 168, 106, 0.045);
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.18), rgba(197, 168, 106, 0.065)),
+    rgba(238, 231, 217, 0.018);
+}
+
+.deckCommandIcon {
+  color: rgba(238, 231, 217, 0.86);
+}
+
+.deckInspector {
+  padding: 28px 24px 22px;
+  border-left-color: rgba(197, 168, 106, 0.16);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(197, 168, 106, 0.13), transparent 30%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.06), rgba(238, 231, 217, 0.012)),
+    rgba(10, 10, 9, 0.7);
+}
+
+.deckInspectorMark {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  color: var(--deck-accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.deckInspectorCopy span {
+  color: rgba(197, 168, 106, 0.82);
+}
+
+.deckInspectorMeta {
+  border-color: rgba(197, 168, 106, 0.14);
+}
+
+.deckInspectorMeta span {
+  min-height: 48px;
+  border-bottom-color: rgba(197, 168, 106, 0.09);
+}
+
+.deckInspectorActions {
+  grid-template-columns: minmax(0, 1fr) 82px 82px;
+}
+
+.deckInspectorActions button {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.deckPrimaryAction {
+  background:
+    linear-gradient(180deg, rgba(185, 74, 61, 1), rgba(145, 49, 39, 1)) !important;
+}
+
+.deckHint span {
+  border-color: rgba(197, 168, 106, 0.11);
+  background: rgba(197, 168, 106, 0.05);
+}
+
+.dock,
+.dark .dock {
+  height: 58px;
+  border-color: rgba(197, 168, 106, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.065), rgba(238, 231, 217, 0.02)),
+    rgba(8, 8, 7, 0.92);
+}
+
+@media (max-width: 1320px) {
+  .deckPulse {
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1fr);
+  }
+
+  .deckPulseStats {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 404px;
+  }
+
+  .deckTile:first-child {
+    grid-column: span 2;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1020px) {
+  .deckLayout {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .deckInspector {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopShell,
+  .dark.desktopShell {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .desktopStage {
+    height: auto;
+    min-height: calc(100vh - 42px);
+    padding-bottom: 82px;
+    overflow: visible;
+  }
+
+  .launchpadFrame {
+    grid-template-rows: auto auto auto;
+    height: auto;
+    min-height: calc(100vh - 42px - 82px);
+    overflow: visible;
+  }
+
+  .deckTopbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .deckPulse {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .deckPulseStats {
+    display: grid;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .deckMain {
+    height: auto;
+    padding: 16px 14px;
+    overflow: visible;
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .deckTile:first-child {
+    grid-column: auto;
+    min-height: 142px;
+  }
+
+  .deckCommandList {
+    overflow: visible;
+    border-radius: 12px;
+    padding: 0;
+  }
+}
+
+@media (max-width: 920px) {
+  .heroTopRow,
+  .coreAppGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroActionRow {
+    flex-direction: column;
+  }
+
+  .heroActionButton {
+    width: 100%;
+  }
+}
+
+/* Desktop launcher redesign
+   Intent: make the app feel like a calm engineering tool shelf, with control and scan speed ahead of spectacle.
+   Signature: dense row-based launcher tables with graphite surfaces and one muted cyan status accent.
+   Constraint: no hero drama, no neon/glass glow, no uniform colored card wall.
+   DESIGN_VARIANCE=3, MOTION_INTENSITY=2, VISUAL_DENSITY=8.
+*/
+.desktopShell,
+.dark.desktopShell {
+  background: #151719;
+}
+
+.desktopShell *,
+.dark.desktopShell * {
+  letter-spacing: 0;
+}
+
+.desktopStage {
+  grid-template-columns: minmax(0, 1fr) 286px;
+  gap: 12px;
+  padding: 12px 12px 96px;
+}
+
+.heroPanel {
+  padding: 14px;
+  gap: 12px;
+  background: #17191c;
+}
+
+.heroTopRow {
+  grid-template-columns: minmax(0, 1fr) 148px;
+  gap: 12px;
+}
+
+.heroTitle {
+  font-size: clamp(20px, 2vw, 26px);
+  line-height: 1.15;
+}
+
+.heroCopy {
+  max-width: 720px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.heroTimeCard {
+  min-height: 0;
+  padding: 12px;
+}
+
+.heroTime {
+  font-size: 30px;
+}
+
+.desktopSearchBar,
+.dark .desktopSearchBar {
+  min-height: 40px;
+}
+
+.heroActionRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.heroActionButton,
+.dark .heroActionButton {
+  min-width: 0;
+  min-height: 34px;
+  justify-content: center;
+}
+
+.launcherTable,
+.importedTable {
+  display: grid;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #121417;
+}
+
+.launcherRow,
+.importedRow {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.11);
+  background: transparent;
+  color: #e5e7eb;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms ease, transform 120ms ease;
+}
+
+.launcherRow:last-child,
+.importedRow:last-child {
+  border-bottom: 0;
+}
+
+.launcherRow {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 82px 52px;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 7px 10px;
+}
+
+.launcherIcon,
+.importedIcon {
+  display: grid;
+  place-items: center;
+  color: rgba(186, 230, 253, 0.88);
+}
+
+.launcherMain {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.launcherMain strong,
+.importedName {
+  overflow: hidden;
+  color: #f3f4f6;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launcherMain span,
+.importedDescription,
+.importedStatus,
+.launcherType {
+  overflow: hidden;
+  color: rgba(209, 213, 219, 0.66);
+  font-size: 11px;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launcherType {
+  color: rgba(209, 213, 219, 0.58);
+}
+
+.launcherOpen {
+  justify-self: end;
+  color: #9bd7e7;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.launcherRow:hover,
+.importedRow:hover {
+  background: #1b2025;
+}
+
+.launcherRow:active,
+.importedRow:active {
+  transform: translateY(1px);
+}
+
+.importedRow {
+  display: grid;
+  grid-template-columns: 26px minmax(120px, 0.85fr) minmax(180px, 1.35fr) minmax(118px, 0.75fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 7px 10px;
+}
+
+.importedStatus {
+  justify-self: end;
+  max-width: 180px;
+  color: rgba(155, 215, 231, 0.76);
+}
+
+.iconDeck {
+  padding: 12px;
+  background: #17191c;
+}
+
+.card,
+.appZone,
+.dark .card,
+.dark .appZone {
+  background: #17191c;
+}
+
+.appHealthStrip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 8px;
+  background: #121417;
+}
+
+.appHealthChip,
+.appHealthChipReady,
+.appHealthChipMissing {
+  justify-content: space-between;
+  border: 0;
+  border-right: 1px solid rgba(148, 163, 184, 0.10);
+  border-radius: 0;
+  background: transparent;
+  padding: 7px 9px;
+}
+
+.appHealthChip:last-child,
+.appHealthChipMissing {
+  border-right: 0;
+}
+
+.desktopIconBadge,
+.dockBadge,
+.shortcutIcon,
+.mobileAppBadge,
+.mobileInstalledIcon,
+.libraryIcon,
+.legacyIcon {
+  background: #24282e !important;
+}
+
+.overviewRow,
+.dark .overviewRow {
+  min-height: 38px;
+  background: #111315;
+}
+
+.libraryColumn .desktopGrid {
+  grid-template-columns: 1fr;
+}
+
+.libraryColumn .desktopIcon,
+.dark .libraryColumn .desktopIcon {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  align-items: center;
+  min-height: 46px;
+  padding: 8px 10px;
+  gap: 10px;
+  background: #111315;
+  border-radius: 8px;
+}
+
+.libraryColumn .desktopIconBadge {
+  width: 32px;
+  height: 32px;
+}
+
+.libraryColumn .desktopIcon span {
+  text-align: left;
+}
+
+.libraryColumn .desktopIconMeta {
+  grid-column: 2;
+  text-align: left;
+}
+
+@media (max-width: 1240px) {
+  .desktopStage {
+    grid-template-columns: 1fr;
+  }
+
+  .appHealthStrip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .heroTopRow,
+  .heroActionRow,
+  .launcherRow,
+  .importedRow {
+    grid-template-columns: 1fr;
+  }
+
+  .launcherType,
+  .launcherOpen,
+  .importedStatus {
+    justify-self: start;
+  }
+
+  .appHealthStrip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Command Shelf visual pass
+   Intent: the launcher should feel like a quiet desktop artifact that earns permanent screen space.
+   Signature: graphite and ink-blue planes cut by fine aged-bronze lines, with cyan-gray used only for live state.
+   Constraint: no decorative ancient skin, no neon glow, no random icon bubbles, no card wall.
+   DESIGN_VARIANCE=4, MOTION_INTENSITY=2, VISUAL_DENSITY=8.
+*/
+.desktopShell,
+.dark.desktopShell {
+  color: #f4efe5;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(143, 185, 183, 0.08), transparent 31%),
+    radial-gradient(circle at 95% 18%, rgba(181, 155, 106, 0.07), transparent 28%),
+    #11100e;
+}
+
+.wallpaper,
+.dark .wallpaper {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 24px),
+    #11100e;
+}
+
+.wallpaperGlowA,
+.wallpaperGlowB {
+  opacity: 0.18;
+  filter: blur(44px);
+}
+
+.wallpaperGlowA {
+  background: rgba(143, 185, 183, 0.28);
+}
+
+.wallpaperGlowB {
+  background: rgba(181, 155, 106, 0.22);
+}
+
+.menuBar,
+.dark .menuBar {
+  background: rgba(17, 16, 14, 0.94);
+  border-bottom: 1px solid rgba(181, 155, 106, 0.16);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+.menuButton,
+.brandPill,
+.statusPill,
+.menuIconButton,
+.dark .menuButton,
+.dark .brandPill,
+.dark .statusPill,
+.dark .menuIconButton {
+  background: rgba(29, 26, 21, 0.72);
+  border-color: rgba(181, 155, 106, 0.15);
+  color: rgba(244, 239, 229, 0.78);
+}
+
+.desktopStage {
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 14px;
+}
+
+.commandShelf,
+.iconDeck,
+.detailPanel,
+.compactStatusPanel,
+.appZone,
+.dark .commandShelf,
+.dark .iconDeck,
+.dark .detailPanel,
+.dark .compactStatusPanel,
+.dark .appZone {
+  position: relative;
+  border: 1px solid rgba(181, 155, 106, 0.17);
+  border-radius: 9px;
+  background:
+    linear-gradient(180deg, rgba(32, 29, 24, 0.98), rgba(22, 21, 18, 0.98)),
+    #171512;
+  box-shadow:
+    inset 0 1px 0 rgba(244, 239, 229, 0.05),
+    0 16px 42px rgba(0, 0, 0, 0.25);
+}
+
+.commandShelf {
+  overflow: hidden;
+}
+
+.artifactLine {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, transparent, rgba(181, 155, 106, 0.68), rgba(143, 185, 183, 0.28), transparent);
+}
+
+.commandShelf > .artifactLine,
+.detailPanel > .artifactLine {
+  margin-bottom: 2px;
+}
+
+.heroEyebrow,
+.cardLabel {
+  color: #b59b6a;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  color: #f4efe5;
+  font-weight: 700;
+}
+
+.heroCopy,
+.heroMeta,
+.sectionHint,
+.appZoneHeader span {
+  color: rgba(222, 211, 190, 0.64);
+}
+
+.heroTimeCard,
+.dark .heroTimeCard {
+  border-radius: 7px;
+  border: 1px solid rgba(181, 155, 106, 0.18);
+  background: #14130f;
+  box-shadow: inset 2px 0 0 rgba(181, 155, 106, 0.44);
+}
+
+.heroTime,
+.heroDate {
+  color: #f4efe5;
+}
+
+.desktopSearchBar,
+.dark .desktopSearchBar {
+  border: 1px solid rgba(181, 155, 106, 0.18);
+  border-radius: 7px;
+  background: #11100e;
+  color: #f4efe5;
+  box-shadow: inset 0 1px 0 rgba(244, 239, 229, 0.035);
+}
+
+.desktopSearchBar:focus-within,
+.dark .desktopSearchBar:focus-within {
+  border-color: rgba(143, 185, 183, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(244, 239, 229, 0.05),
+    0 0 0 3px rgba(143, 185, 183, 0.11);
+}
+
+.desktopSearchBar svg {
+  color: rgba(181, 155, 106, 0.86);
+}
+
+.desktopSearchBar input {
+  color: #f4efe5;
+}
+
+.desktopSearchBar input::placeholder {
+  color: rgba(222, 211, 190, 0.48);
+}
+
+.heroActionButton,
+.dark .heroActionButton,
+.detailActionSecondary {
+  border: 1px solid rgba(181, 155, 106, 0.18);
+  border-radius: 7px;
+  background: #1b1813;
+  color: rgba(244, 239, 229, 0.78);
+  box-shadow: inset 0 1px 0 rgba(244, 239, 229, 0.04);
+}
+
+.heroActionButton:hover,
+.dark .heroActionButton:hover,
+.detailActionSecondary:hover {
+  border-color: rgba(181, 155, 106, 0.34);
+  background: #211d16;
+  color: #f4efe5;
+}
+
+.launcherTable,
+.importedTable,
+.dark .launcherTable,
+.dark .importedTable {
+  border-color: rgba(181, 155, 106, 0.16);
+  border-radius: 8px;
+  background: #11100e;
+}
+
+.launcherRow,
+.importedRow,
+.dark .launcherRow,
+.dark .importedRow {
+  border-bottom-color: rgba(181, 155, 106, 0.11);
+  color: #f4efe5;
+}
+
+.launcherRow {
+  grid-template-columns: 30px minmax(0, 1fr) 112px 132px;
+  position: relative;
+}
+
+.launcherRow::before {
+  position: absolute;
+  inset: 9px auto 9px 0;
+  width: 2px;
+  content: '';
+  opacity: 0;
+  background: #b59b6a;
+}
+
+.launcherRow:hover,
+.importedRow:hover,
+.dark .launcherRow:hover,
+.dark .importedRow:hover {
+  background: #1a1814;
+}
+
+.launcherRow:focus-visible,
+.importedRow:focus-visible,
+.detailActionPrimary:focus-visible,
+.detailActionSecondary:focus-visible {
+  outline: 2px solid rgba(143, 185, 183, 0.72);
+  outline-offset: -2px;
+}
+
+.launcherRowSelected,
+.dark .launcherRowSelected {
+  background:
+    linear-gradient(90deg, rgba(181, 155, 106, 0.12), rgba(143, 185, 183, 0.055)),
+    #1d1a15;
+}
+
+.launcherRowSelected::before {
+  opacity: 1;
+}
+
+.launcherIcon,
+.importedIcon {
+  color: #b59b6a;
+}
+
+.launcherMain strong,
+.importedName,
+.detailHeader strong,
+.compactStatusPanel strong,
+.appZoneHeader strong {
+  color: #f4efe5;
+}
+
+.launcherMain span,
+.importedDescription,
+.launcherType,
+.importedStatus {
+  color: rgba(222, 211, 190, 0.6);
+}
+
+.launcherStatus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+  color: rgba(143, 185, 183, 0.82);
+  font-size: 11px;
+  line-height: 1.45;
+  white-space: nowrap;
+}
+
+.launcherRecent {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border: 1px solid rgba(181, 155, 106, 0.22);
+  border-radius: 999px;
+  color: #b59b6a;
+  background: rgba(181, 155, 106, 0.08);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.detailPanel,
+.compactStatusPanel {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+}
+
+.detailHeader {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+
+.detailHeader strong {
+  display: block;
+  overflow: hidden;
+  font-size: 18px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detailIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgba(181, 155, 106, 0.22);
+  border-radius: 8px;
+  color: #b59b6a;
+  background:
+    linear-gradient(180deg, rgba(181, 155, 106, 0.08), rgba(143, 185, 183, 0.035)),
+    #11100e;
+  box-shadow: inset 0 1px 0 rgba(244, 239, 229, 0.05);
+}
+
+.detailDescription {
+  min-height: 56px;
+  margin: 0;
+  color: rgba(222, 211, 190, 0.72);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.detailMetaGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid rgba(181, 155, 106, 0.14);
+  border-radius: 8px;
+  background: #11100e;
+}
+
+.detailMetaGrid div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  border-right: 1px solid rgba(181, 155, 106, 0.10);
+  border-bottom: 1px solid rgba(181, 155, 106, 0.10);
+}
+
+.detailMetaGrid div:nth-child(2n) {
+  border-right: 0;
+}
+
+.detailMetaGrid div:nth-last-child(-n + 2) {
+  border-bottom: 0;
+}
+
+.detailMetaGrid span {
+  color: rgba(222, 211, 190, 0.48);
+  font-size: 10px;
+}
+
+.detailMetaGrid strong {
+  overflow: hidden;
+  color: #f4efe5;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickActionBar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.85fr) minmax(0, 0.85fr);
+  gap: 8px;
+}
+
+.detailActionPrimary,
+.detailActionSecondary {
+  min-width: 0;
+  min-height: 38px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  transition: transform 120ms ease, border-color 140ms ease, background 140ms ease;
+}
+
+.detailActionPrimary {
+  border: 1px solid rgba(181, 155, 106, 0.42);
+  border-radius: 7px;
+  background: linear-gradient(180deg, #b59b6a, #8f7446);
+  color: #11100e;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+
+.detailActionPrimary:hover {
+  background: linear-gradient(180deg, #c3aa78, #9c814f);
+}
+
+.detailActionPrimary:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.detailActionPrimary:active,
+.detailActionSecondary:active,
+.heroActionButton:active,
+.launcherRow:active,
+.importedRow:active {
+  transform: translateY(1px);
+}
+
+.compactStatusPanel .overviewList {
+  gap: 6px;
+}
+
+.overviewRow,
+.dark .overviewRow {
+  border: 1px solid rgba(181, 155, 106, 0.12);
+  border-radius: 7px;
+  background: #11100e;
+  color: rgba(222, 211, 190, 0.68);
+}
+
+.overviewRow strong {
+  color: #f4efe5;
+}
+
+.appZoneCount,
+.dark .appZoneCount {
+  border: 1px solid rgba(143, 185, 183, 0.22);
+  background: rgba(143, 185, 183, 0.08);
+  color: #8fb9b7;
+}
+
+.libraryColumn .desktopIcon,
+.dark .libraryColumn .desktopIcon {
+  border: 1px solid rgba(181, 155, 106, 0.12);
+  background: #11100e;
+}
+
+.libraryColumn .desktopIcon:hover,
+.dark .libraryColumn .desktopIcon:hover {
+  border-color: rgba(181, 155, 106, 0.28);
+  background: #1a1814;
+}
+
+.desktopIconBadge,
+.dockBadge,
+.shortcutIcon,
+.mobileAppBadge,
+.mobileInstalledIcon,
+.libraryIcon,
+.legacyIcon,
+.dark .desktopIconBadge,
+.dark .dockBadge,
+.dark .shortcutIcon,
+.dark .mobileAppBadge,
+.dark .mobileInstalledIcon,
+.dark .libraryIcon,
+.dark .legacyIcon {
+  border: 1px solid rgba(181, 155, 106, 0.16);
+  background: #181611 !important;
+  color: #b59b6a;
+}
+
+.dock,
+.dark .dock {
+  border-color: rgba(181, 155, 106, 0.18);
+  background: rgba(17, 16, 14, 0.96);
+}
+
+@media (max-width: 1240px) {
+  .desktopStage {
+    grid-template-columns: 1fr;
+  }
+
+  .libraryColumn {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .appZone {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 920px) {
+  .desktopStage,
+  .libraryColumn,
+  .heroTopRow,
+  .heroActionRow,
+  .quickActionBar,
+  .detailMetaGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .launcherRow {
+    grid-template-columns: 30px minmax(0, 1fr);
+  }
+
+  .launcherType,
+  .launcherStatus {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .detailMetaGrid div,
+  .detailMetaGrid div:nth-child(2n),
+  .detailMetaGrid div:nth-last-child(-n + 2) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(181, 155, 106, 0.10);
+  }
+
+  .detailMetaGrid div:last-child {
+    border-bottom: 0;
+  }
+}
+
+/* Launchboard second pass
+   Intent: feel like a desirable desktop-native command center, not an admin dashboard or themed skin.
+   Signature: one centered precision panel with a slim category rail, a tactile command list, and an integrated preview.
+   Constraint: no separate sidebar cards, no ornamental oriental styling, no colored icon badges, no dense spreadsheet layout.
+   DESIGN_VARIANCE=5, MOTION_INTENSITY=2, VISUAL_DENSITY=7.
+*/
+.desktopShell,
+.dark.desktopShell {
+  background:
+    radial-gradient(circle at 50% -20%, rgba(214, 207, 184, 0.10), transparent 34%),
+    radial-gradient(circle at 18% 105%, rgba(107, 132, 129, 0.15), transparent 30%),
+    linear-gradient(180deg, #151513 0%, #0e0f10 100%);
+}
+
+.wallpaper,
+.dark .wallpaper {
+  display: block;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.014) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: 0.32;
+}
+
+.desktopStage {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: start center;
+  min-height: calc(100vh - 48px);
+  padding: clamp(18px, 4vh, 38px) 22px 92px;
+}
+
+.commandCenter {
+  width: min(1120px, 100%);
+}
+
+.launchpadFrame {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  min-height: min(650px, calc(100vh - 168px));
+  padding: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 224, 203, 0.12);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(32, 31, 29, 0.86), rgba(18, 18, 17, 0.92)),
+    rgba(17, 17, 16, 0.94);
+  box-shadow:
+    0 32px 92px rgba(0, 0, 0, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.launchpadFrame::before {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: '';
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.07), transparent 24%),
+    radial-gradient(circle at 72% 8%, rgba(191, 174, 132, 0.12), transparent 30%);
+  opacity: 0.8;
+}
+
+.launchpadFrame > * {
+  position: relative;
+}
+
+.launchpadTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 2px 2px 0;
+}
+
+.launchpadBrand {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.launchpadBrand span {
+  color: rgba(202, 186, 143, 0.88);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.launchpadBrand h1 {
+  margin: 0;
+  color: #f4f0e8;
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 760;
+  line-height: 0.98;
+}
+
+.launchpadBrand p {
+  margin: 0;
+  color: rgba(224, 217, 203, 0.58);
+  font-size: 13px;
+}
+
+.launchpadTopStack {
+  display: grid;
+  justify-items: end;
+  gap: 10px;
+  min-width: 260px;
+}
+
+.launchpadMeters {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: 430px;
+}
+
+.launchpadMeters span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(232, 224, 203, 0.10);
+  border-radius: 999px;
+  background: rgba(7, 8, 8, 0.34);
+  color: rgba(224, 217, 203, 0.62);
+  font-size: 11px;
+}
+
+.launchpadMeters strong {
+  color: #f4f0e8;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.launchpadAccountActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.launchpadBrandActions {
+  justify-content: flex-start;
+  margin-top: 8px;
+}
+
+.launchpadAccountActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 74px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid rgba(117, 216, 201, 0.22);
+  border-radius: 999px;
+  background: rgba(117, 216, 201, 0.08);
+  color: #dff8f2;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, transform 120ms ease;
+}
+
+.launchpadAccountActions button:hover {
+  border-color: rgba(117, 216, 201, 0.46);
+  background: rgba(117, 216, 201, 0.13);
+}
+
+.launchpadAccountActions button:active {
+  transform: translateY(1px);
+}
+
+.launchpadAccountActions button:focus-visible {
+  outline: 2px solid rgba(117, 216, 201, 0.72);
+  outline-offset: 2px;
+}
+
+.launchpadSearch {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 1px solid rgba(232, 224, 203, 0.13);
+  border-radius: 14px;
+  background: rgba(5, 6, 6, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 12px 32px rgba(0, 0, 0, 0.18);
+}
+
+.launchpadSearch:focus-within {
+  border-color: rgba(202, 186, 143, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 4px rgba(202, 186, 143, 0.09);
+}
+
+.launchpadSearch svg {
+  color: rgba(202, 186, 143, 0.9);
+}
+
+.launchpadSearch input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #f4f0e8;
+  font-size: 15px;
+}
+
+.launchpadSearch input::placeholder {
+  color: rgba(224, 217, 203, 0.38);
+}
+
+.launchpadBody {
+  display: grid;
+  grid-template-columns: 104px minmax(360px, 1fr) minmax(260px, 330px);
+  gap: 12px;
+  min-height: 0;
+}
+
+.launchpadRail {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid rgba(232, 224, 203, 0.09);
+  border-radius: 14px;
+  background: rgba(5, 6, 6, 0.28);
+}
+
+.launchpadRail button {
+  display: grid;
+  gap: 5px;
+  min-height: 58px;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(224, 217, 203, 0.58);
+  cursor: pointer;
+  text-align: left;
+}
+
+.launchpadRail button:hover {
+  background: rgba(255, 255, 255, 0.045);
+  color: rgba(244, 240, 232, 0.9);
+}
+
+.launchpadRail button:active,
+.launchpadCommand:active,
+.previewPrimary:active,
+.previewSecondary:active,
+.launchpadFooter button:active {
+  transform: translateY(1px);
+}
+
+.launchpadRail button:focus-visible,
+.launchpadCommand:focus-visible,
+.previewPrimary:focus-visible,
+.previewSecondary:focus-visible,
+.launchpadFooter button:focus-visible {
+  outline: 2px solid rgba(202, 186, 143, 0.66);
+  outline-offset: 2px;
+}
+
+.launchpadRail button span {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.launchpadRail button strong {
+  color: rgba(244, 240, 232, 0.72);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.launchpadRail .launchpadRailActive {
+  background: #ece1c8;
+  color: #161512;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+}
+
+.launchpadRail .launchpadRailActive strong {
+  color: #161512;
+}
+
+.launchpadList {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 0;
+  max-height: min(462px, calc(100vh - 312px));
+  overflow: auto;
+  padding: 4px;
+  scrollbar-color: rgba(202, 186, 143, 0.28) transparent;
+  scrollbar-width: thin;
+}
+
+.launchpadList::-webkit-scrollbar {
+  width: 8px;
+}
+
+.launchpadList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.launchpadList::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: rgba(202, 186, 143, 0.30);
+  background-clip: padding-box;
+}
+
+.launchpadList::-webkit-scrollbar-thumb:hover {
+  background: rgba(202, 186, 143, 0.42);
+  background-clip: padding-box;
+}
+
+.launchpadCommand {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  min-height: 58px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  background: transparent;
+  color: #f4f0e8;
+  cursor: pointer;
+  text-align: left;
+  transition: background 140ms ease, border-color 140ms ease, transform 120ms ease;
+}
+
+.launchpadCommand:hover {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.launchpadCommandSelected {
+  border-color: rgba(232, 224, 203, 0.14);
+  background:
+    linear-gradient(90deg, rgba(236, 225, 200, 0.14), rgba(113, 137, 133, 0.08)),
+    rgba(255, 255, 255, 0.035);
+}
+
+.launchpadCommandIcon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(232, 224, 203, 0.12);
+  border-radius: 10px;
+  color: #d8c795;
+  background: rgba(5, 6, 6, 0.36);
+}
+
+.launchpadCommandCopy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.launchpadCommandCopy strong {
+  overflow: hidden;
+  color: #f4f0e8;
+  font-size: 14px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launchpadCommandCopy small {
+  overflow: hidden;
+  color: rgba(224, 217, 203, 0.54);
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.launchpadCommandMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(224, 217, 203, 0.45);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.launchpadCommandMeta i {
+  display: inline-flex;
+  height: 20px;
+  align-items: center;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(202, 186, 143, 0.12);
+  color: #d8c795;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.launchpadEmpty {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border: 1px dashed rgba(232, 224, 203, 0.14);
+  border-radius: 14px;
+  color: rgba(224, 217, 203, 0.5);
+}
+
+.launchpadPreview {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: 15px;
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(232, 224, 203, 0.11);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 42%),
+    rgba(5, 6, 6, 0.34);
+}
+
+.previewMark {
+  display: grid;
+  place-items: center;
+  width: 58px;
+  height: 58px;
+  border: 1px solid rgba(232, 224, 203, 0.14);
+  border-radius: 16px;
+  color: #d8c795;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.previewCopy {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.previewCopy span {
+  color: rgba(202, 186, 143, 0.86);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.previewCopy strong {
+  overflow-wrap: anywhere;
+  color: #f4f0e8;
+  font-size: clamp(22px, 2.4vw, 32px);
+  line-height: 1.05;
+}
+
+.previewCopy p {
+  margin: 0;
+  color: rgba(224, 217, 203, 0.62);
+  font-size: 13px;
+  line-height: 1.58;
+}
+
+.previewMeta {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.previewMeta span {
+  display: flex;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(232, 224, 203, 0.09);
+  color: rgba(224, 217, 203, 0.62);
+  font-size: 12px;
+}
+
+.previewActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 88px;
+  gap: 9px;
+}
+
+.previewPrimary,
+.previewSecondary,
+.launchpadFooter button {
+  min-height: 40px;
+  border-radius: 11px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 760;
+  transition: transform 120ms ease, background 140ms ease, border-color 140ms ease;
+}
+
+.previewPrimary {
+  border: 0;
+  background: #ece1c8;
+  color: #161512;
+}
+
+.previewPrimary:hover {
+  background: #f6ecd3;
+}
+
+.previewPrimary:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.previewSecondary,
+.launchpadFooter button {
+  border: 1px solid rgba(232, 224, 203, 0.12);
+  background: rgba(5, 6, 6, 0.32);
+  color: rgba(244, 240, 232, 0.74);
+}
+
+.previewSecondary:hover,
+.launchpadFooter button:hover {
+  border-color: rgba(232, 224, 203, 0.22);
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.launchpadFooter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  padding-top: 2px;
+}
+
+.launchpadFooter button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+}
+
+.launchpadFooter > span {
+  margin-left: auto;
+  color: rgba(224, 217, 203, 0.46);
+  font-size: 12px;
+}
+
+@media (max-width: 1100px) {
+  .launchpadBody {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .launchpadPreview {
+    grid-column: 1 / -1;
+    grid-template-columns: auto minmax(0, 1fr) minmax(180px, 0.7fr);
+    grid-template-rows: auto auto;
+    align-items: center;
+  }
+
+  .previewMeta {
+    grid-column: 3;
+    grid-row: 1 / 3;
+  }
+
+  .previewActions {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 720px) {
+  .desktopStage {
+    padding: 14px 10px 102px;
+  }
+
+  .launchpadFrame {
+    min-height: auto;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .launchpadTop,
+  .launchpadFooter {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .launchpadMeters {
+    justify-content: flex-start;
+  }
+
+  .launchpadBody,
+  .launchpadPreview {
+    grid-template-columns: 1fr;
+  }
+
+  .launchpadRail {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .launchpadRail button {
+    min-width: 82px;
+  }
+
+  .launchpadList {
+    max-height: none;
+  }
+
+  .launchpadCommand {
+    grid-template-columns: 34px minmax(0, 1fr);
+  }
+
+  .launchpadCommandMeta {
+    grid-column: 2;
+  }
+
+  .previewMeta,
+  .previewActions {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .launchpadFooter > span {
+    margin-left: 0;
+  }
+}
+
+/* Launchboard color correction
+   Intent: replace the heavy black-gold mood with a calmer, sharper desktop-native palette.
+   Signature: obsidian surfaces, porcelain text, celadon interaction states, and one restrained cinnabar brand note.
+   Constraint: no beige/gold dominance, no blue-purple gradients, no theme-costume effect.
+   DESIGN_VARIANCE=5, MOTION_INTENSITY=2, VISUAL_DENSITY=7.
+*/
+.desktopShell,
+.dark.desktopShell {
+  background:
+    radial-gradient(circle at 50% -18%, rgba(122, 214, 196, 0.10), transparent 34%),
+    radial-gradient(circle at 14% 104%, rgba(215, 101, 82, 0.08), transparent 28%),
+    linear-gradient(180deg, #101414 0%, #070909 100%);
+}
+
+.wallpaper,
+.dark .wallpaper {
+  background:
+    linear-gradient(90deg, rgba(221, 235, 230, 0.014) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(221, 235, 230, 0.012) 1px, transparent 1px);
+  background-size: 44px 44px;
+  opacity: 0.28;
+}
+
+.menuBar,
+.dark .menuBar {
+  background: rgba(8, 11, 11, 0.92);
+  border-bottom-color: rgba(122, 214, 196, 0.10);
+}
+
+.menuButton,
+.brandPill,
+.statusPill,
+.menuIconButton,
+.dark .menuButton,
+.dark .brandPill,
+.dark .statusPill,
+.dark .menuIconButton {
+  border-color: rgba(221, 235, 230, 0.10);
+  background: rgba(16, 22, 22, 0.72);
+  color: rgba(242, 247, 244, 0.76);
+}
+
+.appleButton,
+.dark .appleButton {
+  border-color: rgba(215, 101, 82, 0.24);
+  background: rgba(215, 101, 82, 0.10);
+}
+
+.launchpadFrame {
+  border-color: rgba(221, 235, 230, 0.13);
+  background:
+    linear-gradient(180deg, rgba(20, 27, 27, 0.88), rgba(8, 10, 10, 0.94)),
+    rgba(10, 13, 13, 0.96);
+  box-shadow:
+    0 34px 96px rgba(0, 0, 0, 0.46),
+    inset 0 1px 0 rgba(242, 247, 244, 0.08);
+}
+
+.launchpadFrame::before {
+  background:
+    linear-gradient(120deg, rgba(242, 247, 244, 0.055), transparent 25%),
+    radial-gradient(circle at 76% 10%, rgba(122, 214, 196, 0.10), transparent 32%);
+}
+
+.launchpadBrand span,
+.previewCopy span {
+  color: #d76552;
+}
+
+.launchpadBrand h1,
+.launchpadCommandCopy strong,
+.previewCopy strong {
+  color: #f2f7f4;
+}
+
+.launchpadBrand p,
+.launchpadCommandCopy small,
+.previewCopy p,
+.launchpadFooter > span {
+  color: rgba(221, 235, 230, 0.58);
+}
+
+.launchpadMeters span {
+  border-color: rgba(221, 235, 230, 0.10);
+  background: rgba(4, 7, 7, 0.36);
+  color: rgba(221, 235, 230, 0.62);
+}
+
+.launchpadMeters strong {
+  color: #f2f7f4;
+}
+
+.launchpadSearch {
+  border-color: rgba(221, 235, 230, 0.12);
+  background: rgba(4, 7, 7, 0.64);
+}
+
+.launchpadSearch:focus-within {
+  border-color: rgba(122, 214, 196, 0.48);
+  box-shadow:
+    inset 0 1px 0 rgba(242, 247, 244, 0.08),
+    0 0 0 4px rgba(122, 214, 196, 0.10);
+}
+
+.launchpadSearch svg,
+.launchpadCommandIcon,
+.previewMark {
+  color: #7ad6c4;
+}
+
+.launchpadSearch input {
+  color: #f2f7f4;
+}
+
+.launchpadSearch input::placeholder {
+  color: rgba(221, 235, 230, 0.38);
+}
+
+.launchpadRail,
+.launchpadPreview {
+  border-color: rgba(221, 235, 230, 0.10);
+  background: rgba(4, 7, 7, 0.32);
+}
+
+.launchpadRail button {
+  color: rgba(221, 235, 230, 0.58);
+}
+
+.launchpadRail button:hover,
+.launchpadCommand:hover {
+  background: rgba(122, 214, 196, 0.055);
+}
+
+.launchpadRail button strong {
+  color: rgba(242, 247, 244, 0.76);
+}
+
+.launchpadRail .launchpadRailActive {
+  background: #b9f1e5;
+  color: #06100f;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.26);
+}
+
+.launchpadRail .launchpadRailActive strong {
+  color: #06100f;
+}
+
+.launchpadList {
+  scrollbar-color: rgba(122, 214, 196, 0.28) transparent;
+}
+
+.launchpadList::-webkit-scrollbar-thumb {
+  background: rgba(122, 214, 196, 0.28);
+  background-clip: padding-box;
+}
+
+.launchpadList::-webkit-scrollbar-thumb:hover {
+  background: rgba(122, 214, 196, 0.42);
+  background-clip: padding-box;
+}
+
+.launchpadCommand {
+  color: #f2f7f4;
+}
+
+.launchpadCommandSelected {
+  border-color: rgba(122, 214, 196, 0.22);
+  background:
+    linear-gradient(90deg, rgba(122, 214, 196, 0.13), rgba(215, 101, 82, 0.035)),
+    rgba(242, 247, 244, 0.035);
+}
+
+.launchpadCommandIcon,
+.previewMark {
+  border-color: rgba(122, 214, 196, 0.16);
+  background: rgba(3, 6, 6, 0.42);
+}
+
+.launchpadCommandMeta {
+  color: rgba(221, 235, 230, 0.46);
+}
+
+.launchpadCommandMeta i {
+  background: rgba(215, 101, 82, 0.12);
+  color: #f0a092;
+}
+
+.previewMeta span {
+  border-bottom-color: rgba(221, 235, 230, 0.09);
+  color: rgba(221, 235, 230, 0.62);
+}
+
+.previewPrimary {
+  background: #b9f1e5;
+  color: #06100f;
+}
+
+.previewPrimary:hover {
+  background: #cbfff4;
+}
+
+.previewSecondary,
+.launchpadFooter button,
+.launchpadAccountActions button {
+  border-color: rgba(221, 235, 230, 0.12);
+  background: rgba(4, 7, 7, 0.36);
+  color: rgba(242, 247, 244, 0.76);
+}
+
+.previewSecondary:hover,
+.launchpadFooter button:hover,
+.launchpadAccountActions button:hover {
+  border-color: rgba(122, 214, 196, 0.28);
+  background: rgba(122, 214, 196, 0.07);
+}
+
+.launchpadRail button:focus-visible,
+.launchpadCommand:focus-visible,
+.previewPrimary:focus-visible,
+.previewSecondary:focus-visible,
+.launchpadFooter button:focus-visible,
+.launchpadAccountActions button:focus-visible {
+  outline-color: rgba(122, 214, 196, 0.72);
+}
+
+@media (max-width: 720px) {
+  .launchpadTopStack {
+    justify-items: stretch;
+    min-width: 0;
+  }
+
+  .launchpadAccountActions {
+    justify-content: flex-start;
+  }
+
+  .launchpadAccountActions button {
+    flex: 1 1 0;
+  }
+}
+
+/* Main launcher full-surface pass
+   Intent: the main launcher should read as the desktop itself, not a webpage card floating inside it.
+   Signature: edge-to-edge command layout with quiet dividers, a fixed preview rail, and a compact dock that does not cover work.
+   Constraint: no centered container shell, no nested card stage, no blocked content under the dock.
+   DESIGN_VARIANCE=5, MOTION_INTENSITY=2, VISUAL_DENSITY=8.
+*/
+.desktopShell,
+.dark.desktopShell {
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 62% -16%, rgba(122, 214, 196, 0.09), transparent 30%),
+    linear-gradient(180deg, #0b0f0f 0%, #070909 100%);
+}
+
+.menuBar,
+.dark .menuBar {
+  height: 46px;
+}
+
+.desktopStage {
+  display: block;
+  min-height: 0;
+  height: calc(100vh - 46px);
+  padding: 0 0 82px;
+  overflow: hidden;
+}
+
+.commandCenter {
+  width: 100%;
+  height: 100%;
+}
+
+.launchpadFrame {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 14px;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 28px 34px 22px;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(122, 214, 196, 0.04), transparent 26%),
+    linear-gradient(180deg, rgba(16, 22, 22, 0.68), rgba(6, 8, 8, 0.82));
+  box-shadow: none;
+}
+
+.launchpadFrame::before {
+  display: none;
+}
+
+.launchpadTop {
+  align-items: flex-end;
+  padding: 0;
+}
+
+.launchpadBrand {
+  gap: 7px;
+}
+
+.launchpadBrand span {
+  color: #d76552;
+  font-size: 12px;
+}
+
+.launchpadBrand h1 {
+  font-size: clamp(34px, 4.2vw, 64px);
+  line-height: 0.95;
+}
+
+.launchpadBrand p {
+  color: rgba(221, 235, 230, 0.62);
+}
+
+.launchpadTopStack {
+  min-width: 0;
+}
+
+.launchpadMeters span {
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(4, 7, 7, 0.34);
+}
+
+.launchpadSearch {
+  min-height: 48px;
+  border-radius: 0;
+  border-width: 1px 0;
+  padding: 0 6px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.launchpadSearch:focus-within {
+  box-shadow: inset 0 -1px 0 rgba(122, 214, 196, 0.32);
+}
+
+.launchpadBody {
+  grid-template-columns: 132px minmax(420px, 1fr) minmax(300px, 360px);
+  gap: 22px;
+  min-height: 0;
+}
+
+.launchpadRail {
+  gap: 2px;
+  padding: 0;
+  border: 0;
+  border-right: 1px solid rgba(221, 235, 230, 0.09);
+  border-radius: 0;
+  background: transparent;
+}
+
+.launchpadRail button {
+  min-height: 68px;
+  padding: 12px 14px;
+  border-radius: 10px 0 0 10px;
+}
+
+.launchpadRail .launchpadRailActive {
+  background: rgba(185, 241, 229, 0.16);
+  color: #dbfff8;
+  box-shadow: inset 2px 0 0 #7ad6c4;
+}
+
+.launchpadRail .launchpadRailActive strong {
+  color: #f2f7f4;
+}
+
+.launchpadList {
+  max-height: none;
+  height: 100%;
+  padding: 0 10px 2px 0;
+  overflow-y: auto;
+}
+
+.launchpadCommand {
+  min-height: 66px;
+  border-radius: 0;
+  border-width: 0 0 1px;
+  border-color: rgba(221, 235, 230, 0.07);
+  padding: 11px 12px;
+}
+
+.launchpadCommand:hover {
+  background: rgba(122, 214, 196, 0.045);
+}
+
+.launchpadCommandSelected {
+  border-color: rgba(122, 214, 196, 0.18);
+  background: linear-gradient(90deg, rgba(122, 214, 196, 0.13), rgba(122, 214, 196, 0.02));
+  box-shadow: inset 2px 0 0 #7ad6c4;
+}
+
+.launchpadCommandIcon {
+  border-radius: 8px;
+}
+
+.launchpadPreview {
+  min-height: 0;
+  padding: 26px 0 0 26px;
+  border: 0;
+  border-left: 1px solid rgba(221, 235, 230, 0.09);
+  border-radius: 0;
+  background: transparent;
+}
+
+.previewMark {
+  border-radius: 12px;
+}
+
+.previewMeta span {
+  padding: 12px 0;
+}
+
+.previewActions {
+  grid-template-columns: minmax(0, 1fr) 92px;
+}
+
+.previewPrimary,
+.previewSecondary,
+.launchpadFooter button {
+  border-radius: 8px;
+}
+
+.launchpadFooter {
+  min-height: 38px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(221, 235, 230, 0.08);
+}
+
+.dock,
+.dark .dock {
+  bottom: 12px;
+  height: 64px;
+  max-width: min(1280px, calc(100vw - 48px));
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(12, 12, 12, 0.9);
+}
+
+.dockItem {
+  min-width: 58px;
+  height: 48px;
+  padding: 4px 6px;
+}
+
+.dockBadge {
+  width: 32px;
+  height: 32px;
+}
+
+.dockItem span {
+  font-size: 10px;
+}
+
+@media (max-width: 1180px) {
+  .launchpadFrame {
+    padding: 22px 22px 18px;
+  }
+
+  .launchpadBody {
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .launchpadPreview {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopShell,
+  .dark.desktopShell {
+    height: auto;
+    overflow: auto;
+  }
+
+  .desktopStage {
+    height: auto;
+    min-height: calc(100vh - 46px);
+    overflow: visible;
+    padding-bottom: 92px;
+  }
+
+  .launchpadFrame {
+    height: auto;
+    min-height: calc(100vh - 46px - 92px);
+    padding: 18px 14px;
+  }
+
+  .launchpadBody {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .launchpadRail {
+    display: flex;
+    border-right: 0;
+    border-bottom: 1px solid rgba(221, 235, 230, 0.09);
+    overflow-x: auto;
+  }
+
+  .launchpadRail button {
+    min-width: 88px;
+    min-height: 58px;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .launchpadList {
+    height: auto;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .dock,
+  .dark .dock {
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+  }
+}
+
+/* Final command deck order fix: this block must stay at the end of the file. */
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #080807;
+  --deck-panel: #11100e;
+  --deck-panel-strong: #171512;
+  --deck-line: rgba(226, 215, 196, 0.13);
+  --deck-line-strong: rgba(226, 215, 196, 0.24);
+  --deck-text: #eee7d9;
+  --deck-muted: rgba(238, 231, 217, 0.64);
+  --deck-faint: rgba(238, 231, 217, 0.4);
+  --deck-accent: #b94a3d;
+  --deck-accent-soft: rgba(185, 74, 61, 0.16);
+  --deck-metal: #c5a86a;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(197, 168, 106, 0.11), transparent 29%),
+    radial-gradient(circle at 88% 22%, rgba(185, 74, 61, 0.09), transparent 31%),
+    linear-gradient(rgba(238, 231, 217, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 231, 217, 0.018) 1px, transparent 1px),
+    linear-gradient(145deg, #070706 0%, #11100e 48%, #080807 100%);
+  background-size: auto, auto, 34px 34px, 34px 34px, auto;
+}
+
+.desktopStage {
+  height: calc(100vh - 42px);
+  padding: 0 0 70px;
+  overflow: hidden;
+}
+
+.launchpadFrame {
+  grid-template-rows: 64px 34px minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    linear-gradient(115deg, rgba(185, 74, 61, 0.1), transparent 18%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.04), rgba(238, 231, 217, 0.008));
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(176px, 244px) minmax(340px, 1fr) minmax(268px, auto);
+  gap: 16px;
+  padding: 9px 28px;
+  border-bottom-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.066), rgba(238, 231, 217, 0.014)),
+    rgba(8, 8, 7, 0.9);
+}
+
+.deckBrand img {
+  border-color: rgba(197, 168, 106, 0.28);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(185, 74, 61, 0.28), rgba(238, 231, 217, 0.045));
+}
+
+.deckBrand span {
+  color: rgba(197, 168, 106, 0.72);
+}
+
+.deckSearch {
+  height: 44px;
+  border-color: rgba(197, 168, 106, 0.2);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.072), rgba(238, 231, 217, 0.028)),
+    rgba(15, 15, 13, 0.94);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 46px rgba(0, 0, 0, 0.26);
+}
+
+.deckSearch svg {
+  color: var(--deck-metal);
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(197, 168, 106, 0.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),
+    0 0 0 3px rgba(185, 74, 61, 0.17),
+    0 20px 54px rgba(0, 0, 0, 0.32);
+}
+
+.deckAccount button {
+  border-color: rgba(197, 168, 106, 0.16);
+  border-radius: 9px;
+  background: rgba(238, 231, 217, 0.052);
+}
+
+.deckAccount button:hover {
+  border-color: rgba(197, 168, 106, 0.34);
+  background: rgba(197, 168, 106, 0.1);
+}
+
+.deckStatusline {
+  border-bottom-color: rgba(197, 168, 106, 0.12);
+}
+
+.deckLayout {
+  grid-template-columns: 112px minmax(0, 1fr) minmax(318px, 372px);
+  height: 100%;
+  min-height: 0;
+}
+
+.deckNav {
+  gap: 10px;
+  padding: 24px 11px 20px 18px;
+  border-right-color: rgba(197, 168, 106, 0.14);
+}
+
+.deckNav button {
+  min-height: 68px;
+  border-radius: 12px 6px 6px 12px;
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(197, 168, 106, 0.38);
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.22), rgba(197, 168, 106, 0.09)),
+    rgba(238, 231, 217, 0.035);
+  box-shadow:
+    inset 3px 0 0 var(--deck-accent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.deckMain {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px 24px 22px;
+  overflow: hidden;
+}
+
+.deckPulse {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.78fr) auto minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  min-height: 78px;
+  padding: 14px 16px;
+  border: 1px solid rgba(197, 168, 106, 0.16);
+  border-radius: 14px;
+  background:
+    linear-gradient(120deg, rgba(197, 168, 106, 0.1), rgba(238, 231, 217, 0.032) 42%, rgba(185, 74, 61, 0.055)),
+    rgba(15, 15, 13, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 22px 54px rgba(0, 0, 0, 0.18);
+}
+
+.deckPulseTitle span {
+  color: rgba(197, 168, 106, 0.7);
+}
+
+.deckPulseTitle strong {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.08;
+}
+
+.deckPulseStats span {
+  border-color: rgba(238, 231, 217, 0.09);
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.deckQuickRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+}
+
+.deckQuickItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 46px;
+  padding: 0 10px;
+  border: 1px solid rgba(238, 231, 217, 0.1);
+  border-radius: 10px;
+  background: rgba(8, 8, 7, 0.45);
+  color: rgba(238, 231, 217, 0.66);
+  text-align: left;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.deckQuickItem span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(238, 231, 217, 0.06);
+}
+
+.deckQuickItem strong {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckQuickItem i {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--deck-accent);
+  box-shadow: 0 0 0 4px rgba(185, 74, 61, 0.14);
+}
+
+.deckQuickItem:hover,
+.deckQuickItemSelected {
+  transform: translateY(-1px);
+  border-color: rgba(197, 168, 106, 0.32);
+  background: rgba(197, 168, 106, 0.09);
+  color: var(--deck-text);
+}
+
+.deckPinnedGrid {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr 1fr;
+  grid-auto-flow: dense;
+  grid-auto-rows: minmax(118px, auto);
+  gap: 14px;
+  min-height: 270px;
+  overflow: visible;
+}
+
+.deckTile {
+  min-height: 118px;
+  border-color: rgba(238, 231, 217, 0.11);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.085), rgba(238, 231, 217, 0.022)),
+    rgba(16, 16, 14, 0.84);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.deckTile:first-child {
+  grid-column: span 2;
+  min-height: 150px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(197, 168, 106, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(185, 74, 61, 0.2), rgba(238, 231, 217, 0.045)),
+    rgba(19, 17, 15, 0.96);
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 48px;
+  height: 48px;
+  color: #fff4ed;
+}
+
+.deckTile:first-child .deckTileCopy strong {
+  font-size: clamp(24px, 2vw, 34px);
+}
+
+.deckTile:hover {
+  border-color: rgba(197, 168, 106, 0.28);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.11), rgba(238, 231, 217, 0.032)),
+    rgba(20, 19, 17, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 54px rgba(0, 0, 0, 0.22);
+}
+
+.deckTileSelected {
+  border-color: rgba(197, 168, 106, 0.46);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(185, 74, 61, 0.16),
+    0 24px 58px rgba(0, 0, 0, 0.24);
+}
+
+.deckTileIndex {
+  color: rgba(197, 168, 106, 0.62);
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.105), rgba(238, 231, 217, 0.032)),
+    #12110f;
+}
+
+.deckCommandList {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(197, 168, 106, 0.1);
+  border-radius: 14px;
+  background: rgba(8, 8, 7, 0.3);
+  padding: 0 8px 24px;
+  scrollbar-color: rgba(197, 168, 106, 0.22) transparent;
+}
+
+.deckSectionHeader {
+  min-height: 40px;
+  margin-bottom: 0;
+  border-bottom-color: rgba(197, 168, 106, 0.13);
+  background: rgba(9, 9, 8, 0.96);
+  color: rgba(197, 168, 106, 0.62);
+}
+
+.deckCommand {
+  min-height: 66px;
+  padding-inline: 12px;
+  border-bottom-color: rgba(238, 231, 217, 0.06);
+}
+
+.deckCommand:hover {
+  background: rgba(197, 168, 106, 0.045);
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.18), rgba(197, 168, 106, 0.065)),
+    rgba(238, 231, 217, 0.018);
+}
+
+.deckCommandIcon {
+  color: rgba(238, 231, 217, 0.86);
+}
+
+.deckInspector {
+  padding: 28px 24px 22px;
+  border-left-color: rgba(197, 168, 106, 0.16);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(197, 168, 106, 0.13), transparent 30%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.06), rgba(238, 231, 217, 0.012)),
+    rgba(10, 10, 9, 0.7);
+}
+
+.deckInspectorMark {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  color: var(--deck-accent);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 42px rgba(0, 0, 0, 0.22);
+}
+
+.deckInspectorCopy span {
+  color: rgba(197, 168, 106, 0.82);
+}
+
+.deckInspectorMeta {
+  border-color: rgba(197, 168, 106, 0.14);
+}
+
+.deckInspectorMeta span {
+  min-height: 48px;
+  border-bottom-color: rgba(197, 168, 106, 0.09);
+}
+
+.deckInspectorActions {
+  grid-template-columns: minmax(0, 1fr) 82px 82px;
+}
+
+.deckInspectorActions button {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.deckPrimaryAction {
+  background:
+    linear-gradient(180deg, rgba(185, 74, 61, 1), rgba(145, 49, 39, 1)) !important;
+}
+
+.deckHint span {
+  border-color: rgba(197, 168, 106, 0.11);
+  background: rgba(197, 168, 106, 0.05);
+}
+
+.dock,
+.dark .dock {
+  height: 58px;
+  border-color: rgba(197, 168, 106, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.065), rgba(238, 231, 217, 0.02)),
+    rgba(8, 8, 7, 0.92);
+}
+
+@media (max-width: 1320px) {
+  .deckPulse {
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1fr);
+  }
+
+  .deckPulseStats {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 404px;
+  }
+
+  .deckTile:first-child {
+    grid-column: span 2;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1020px) {
+  .deckLayout {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .deckInspector {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopShell,
+  .dark.desktopShell {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .desktopStage {
+    height: auto;
+    min-height: calc(100vh - 42px);
+    padding-bottom: 82px;
+    overflow: visible;
+  }
+
+  .launchpadFrame {
+    grid-template-rows: auto auto auto;
+    height: auto;
+    min-height: calc(100vh - 42px - 82px);
+    overflow: visible;
+  }
+
+  .deckTopbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .deckPulse {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    margin: 0;
+  }
+
+  .deckPulseStats {
+    display: grid;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .deckMain {
+    height: auto;
+    padding: 16px 14px;
+    overflow: visible;
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .deckTile:first-child {
+    grid-column: auto;
+    min-height: 142px;
+  }
+
+  .deckCommandList {
+    overflow: visible;
+    border-radius: 12px;
+    padding: 0;
+  }
+}
+
+/* Command Deck redesign
+   Intent: a premium launcher surface that feels like a focused desktop control deck.
+   Signature: top command bar, left deck navigation, pinned launch matrix, and a right action inspector.
+   Constraint: no purple/blue gradients, no centered mini-window, no decorative color-block icons.
+   DESIGN_VARIANCE=7, MOTION_INTENSITY=4, VISUAL_DENSITY=7.
+*/
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #090a0b;
+  --deck-panel: #121416;
+  --deck-panel-strong: #181a1d;
+  --deck-line: rgba(232, 226, 214, 0.12);
+  --deck-line-strong: rgba(232, 226, 214, 0.22);
+  --deck-text: #e8e2d6;
+  --deck-muted: rgba(232, 226, 214, 0.62);
+  --deck-faint: rgba(232, 226, 214, 0.36);
+  --deck-accent: #b84a3b;
+  --deck-accent-soft: rgba(184, 74, 59, 0.18);
+  --deck-metal: #a8aaa6;
+  height: 100vh;
+  overflow: hidden;
+  color: var(--deck-text);
+  font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Segoe UI", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background:
+    linear-gradient(rgba(232, 226, 214, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232, 226, 214, 0.024) 1px, transparent 1px),
+    radial-gradient(circle at 18% 10%, rgba(184, 74, 59, 0.12), transparent 28%),
+    linear-gradient(145deg, #070808 0%, #0c0d0f 45%, #080909 100%);
+  background-size: 32px 32px, 32px 32px, auto, auto;
+}
+
+.wallpaper,
+.wallpaperGlowA,
+.wallpaperGlowB {
+  opacity: 0.22;
+  filter: saturate(0.1);
+}
+
+.menuBar,
+.dark .menuBar {
+  height: 42px;
+  border-bottom: 1px solid rgba(232, 226, 214, 0.1);
+  background: rgba(7, 8, 8, 0.92);
+  backdrop-filter: blur(18px);
+  color: rgba(232, 226, 214, 0.78);
+}
+
+.brandPill,
+.statusPill {
+  border-color: rgba(232, 226, 214, 0.1);
+  background: rgba(232, 226, 214, 0.04);
+  color: rgba(232, 226, 214, 0.76);
+}
+
+.desktopStage {
+  height: calc(100vh - 42px);
+  padding: 0 0 70px;
+  overflow: hidden;
+}
+
+.commandCenter {
+  width: 100%;
+  height: 100%;
+}
+
+.launchpadFrame {
+  display: grid;
+  grid-template-rows: 64px 34px minmax(0, 1fr);
+  gap: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(184, 74, 59, 0.1), transparent 22%),
+    linear-gradient(180deg, rgba(232, 226, 214, 0.035), rgba(232, 226, 214, 0.008));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.launchpadFrame::before {
+  display: none;
+}
+
+.deckTopbar {
+  display: grid;
+  grid-template-columns: minmax(180px, 260px) minmax(320px, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  padding: 10px 28px;
+  border-bottom: 1px solid var(--deck-line);
+  background:
+    linear-gradient(90deg, rgba(232, 226, 214, 0.055), rgba(232, 226, 214, 0.012)),
+    rgba(9, 10, 11, 0.78);
+}
+
+.deckBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.deckBrand img {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgba(232, 226, 214, 0.18);
+  background: #101113;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.deckBrand div {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.deckBrand span {
+  overflow: hidden;
+  color: rgba(232, 226, 214, 0.46);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckBrand strong {
+  color: var(--deck-text);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.deckSearch {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid rgba(232, 226, 214, 0.16);
+  border-radius: 10px;
+  background: rgba(18, 20, 22, 0.88);
+  color: rgba(232, 226, 214, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 18px 44px rgba(0, 0, 0, 0.18);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(184, 74, 59, 0.64);
+  background: rgba(21, 23, 25, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 3px rgba(184, 74, 59, 0.16);
+}
+
+.deckSearch input {
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--deck-text);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.deckSearch input::placeholder {
+  color: rgba(232, 226, 214, 0.42);
+}
+
+.deckSearch kbd {
+  display: grid;
+  place-items: center;
+  min-width: 45px;
+  height: 24px;
+  border: 1px solid rgba(232, 226, 214, 0.12);
+  border-radius: 6px;
+  background: rgba(232, 226, 214, 0.055);
+  color: rgba(232, 226, 214, 0.45);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.deckAccount {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.deckAccount button,
+.deckInspectorActions button,
+.deckEmpty button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 36px;
+  border: 1px solid rgba(232, 226, 214, 0.13);
+  border-radius: 8px;
+  background: rgba(232, 226, 214, 0.055);
+  color: rgba(232, 226, 214, 0.78);
+  font-size: 12px;
+  font-weight: 600;
+  transition: transform 140ms ease, border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.deckAccount button {
+  padding: 0 12px;
+}
+
+.deckAccount button:last-child {
+  width: 36px;
+  padding: 0;
+}
+
+.deckAccount button:hover,
+.deckInspectorActions button:hover,
+.deckEmpty button:hover {
+  border-color: rgba(232, 226, 214, 0.26);
+  background: rgba(232, 226, 214, 0.095);
+  color: var(--deck-text);
+}
+
+.deckAccount button:active,
+.deckInspectorActions button:active,
+.deckEmpty button:active,
+.deckTile:active,
+.deckCommand:active,
+.dockItem:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.deckStatusline {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+  padding: 0 28px;
+  border-bottom: 1px solid rgba(232, 226, 214, 0.08);
+  color: rgba(232, 226, 214, 0.46);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.deckStatusline span {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckStatusline span:first-child {
+  color: rgba(232, 226, 214, 0.72);
+  text-transform: none;
+}
+
+.deckLayout {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr) minmax(300px, 360px);
+  min-height: 0;
+  height: 100%;
+}
+
+.deckNav {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 22px 10px 20px 18px;
+  border-right: 1px solid var(--deck-line);
+  background: rgba(7, 8, 8, 0.26);
+}
+
+.deckNav button {
+  display: grid;
+  gap: 7px;
+  min-height: 64px;
+  padding: 11px 10px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(232, 226, 214, 0.5);
+  text-align: left;
+  transition: transform 150ms ease, border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.deckNav button:hover {
+  border-color: rgba(232, 226, 214, 0.12);
+  background: rgba(232, 226, 214, 0.045);
+  color: rgba(232, 226, 214, 0.82);
+}
+
+.deckNav button:focus-visible,
+.deckTile:focus-visible,
+.deckCommand:focus-visible,
+.deckAccount button:focus-visible,
+.deckInspectorActions button:focus-visible,
+.deckEmpty button:focus-visible,
+.dockItem:focus-visible,
+.menuIconButton:focus-visible,
+.menuButton:focus-visible,
+.appleButton:focus-visible {
+  outline: 2px solid rgba(184, 74, 59, 0.86);
+  outline-offset: 2px;
+}
+
+.deckNav button span {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.deckNav button strong {
+  color: rgba(232, 226, 214, 0.38);
+  font-size: 18px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(184, 74, 59, 0.34);
+  background:
+    linear-gradient(90deg, rgba(184, 74, 59, 0.22), rgba(184, 74, 59, 0.055)),
+    rgba(232, 226, 214, 0.04);
+  color: var(--deck-text);
+  box-shadow: inset 3px 0 0 var(--deck-accent);
+}
+
+.deckNav .deckNavActive strong {
+  color: var(--deck-text);
+}
+
+.deckMain {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px 24px 22px;
+  overflow: hidden;
+}
+
+.deckPinnedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.deckTile {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  gap: 9px 12px;
+  min-height: 154px;
+  padding: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(232, 226, 214, 0.12);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(232, 226, 214, 0.072), rgba(232, 226, 214, 0.026)),
+    rgba(18, 20, 22, 0.82);
+  color: var(--deck-text);
+  text-align: left;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.055),
+    0 18px 46px rgba(0, 0, 0, 0.18);
+  transition: transform 170ms ease, border-color 170ms ease, background 170ms ease, box-shadow 170ms ease;
+}
+
+.deckTile::after {
+  content: '';
+  position: absolute;
+  inset: auto 14px 12px 14px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 74, 59, 0.55), transparent);
+  opacity: 0;
+  transition: opacity 170ms ease;
+}
+
+.deckTile:hover {
+  transform: translateY(-1px);
+  border-color: rgba(232, 226, 214, 0.22);
+  background:
+    linear-gradient(145deg, rgba(232, 226, 214, 0.09), rgba(232, 226, 214, 0.034)),
+    rgba(21, 23, 25, 0.94);
+}
+
+.deckTileSelected {
+  border-color: rgba(184, 74, 59, 0.56);
+  background:
+    linear-gradient(145deg, rgba(184, 74, 59, 0.18), rgba(232, 226, 214, 0.045)),
+    rgba(22, 21, 20, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 0 0 1px rgba(184, 74, 59, 0.12),
+    0 22px 54px rgba(0, 0, 0, 0.22);
+}
+
+.deckTileSelected::after {
+  opacity: 1;
+}
+
+.deckTileIndex {
+  align-self: start;
+  color: rgba(232, 226, 214, 0.34);
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(232, 226, 214, 0.14);
+  background:
+    linear-gradient(145deg, rgba(232, 226, 214, 0.1), rgba(232, 226, 214, 0.032)),
+    #121416;
+  color: var(--deck-text);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.055);
+}
+
+.deckTileIcon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+.deckTileCopy {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.deckTileCopy strong {
+  overflow: hidden;
+  color: var(--deck-text);
+  font-size: clamp(17px, 1.2vw, 21px);
+  font-weight: 600;
+  line-height: 1.08;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckTileCopy small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: rgba(232, 226, 214, 0.58);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.deckTileMeta {
+  grid-column: 1 / -1;
+  align-self: end;
+  color: rgba(232, 226, 214, 0.42);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.deckCommandList {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 6px 24px 0;
+  scrollbar-color: rgba(232, 226, 214, 0.18) transparent;
+}
+
+.deckSectionHeader {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid rgba(232, 226, 214, 0.1);
+  background: rgba(10, 11, 12, 0.95);
+  color: rgba(232, 226, 214, 0.5);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.deckSectionHeader strong {
+  color: var(--deck-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.deckCommand {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) minmax(92px, auto);
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 62px;
+  padding: 10px 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(232, 226, 214, 0.07);
+  background: transparent;
+  color: var(--deck-text);
+  text-align: left;
+  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.deckCommand:hover {
+  background: rgba(232, 226, 214, 0.035);
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(184, 74, 59, 0.18), rgba(184, 74, 59, 0.025)),
+    rgba(232, 226, 214, 0.025);
+  box-shadow: inset 3px 0 0 var(--deck-accent);
+}
+
+.deckCommandIcon {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+}
+
+.deckCommandCopy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.deckCommandCopy strong {
+  overflow: hidden;
+  color: var(--deck-text);
+  font-size: 14px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckCommandCopy small {
+  overflow: hidden;
+  color: rgba(232, 226, 214, 0.48);
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckCommandMeta {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  min-width: 0;
+}
+
+.deckCommandMeta i,
+.deckCommandMeta em {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid rgba(232, 226, 214, 0.1);
+  border-radius: 999px;
+  background: rgba(232, 226, 214, 0.045);
+  color: rgba(232, 226, 214, 0.48);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.deckCommandMeta i {
+  border-color: rgba(184, 74, 59, 0.24);
+  background: rgba(184, 74, 59, 0.12);
+  color: rgba(232, 226, 214, 0.72);
+}
+
+.deckEmpty {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  min-height: 260px;
+  border: 1px dashed rgba(232, 226, 214, 0.16);
+  border-radius: 12px;
+  background: rgba(232, 226, 214, 0.026);
+  color: rgba(232, 226, 214, 0.52);
+  text-align: center;
+}
+
+.deckEmpty strong {
+  color: var(--deck-text);
+  font-size: 16px;
+}
+
+.deckEmpty span {
+  max-width: 280px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.deckEmpty button {
+  margin-top: 6px;
+  padding: 0 14px;
+}
+
+.deckInspector {
+  display: grid;
+  grid-template-rows: auto auto auto auto 1fr;
+  align-content: start;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 26px 24px 22px;
+  border-left: 1px solid var(--deck-line);
+  background:
+    linear-gradient(180deg, rgba(232, 226, 214, 0.052), rgba(232, 226, 214, 0.014)),
+    rgba(11, 12, 13, 0.58);
+}
+
+.deckInspectorMark {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  color: var(--deck-accent);
+}
+
+.deckInspectorCopy {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.deckInspectorCopy span {
+  color: rgba(184, 74, 59, 0.92);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.deckInspectorCopy strong {
+  color: var(--deck-text);
+  font-size: clamp(27px, 2.4vw, 38px);
+  font-weight: 600;
+  line-height: 1;
+  text-wrap: balance;
+}
+
+.deckInspectorCopy p {
+  margin: 0;
+  color: rgba(232, 226, 214, 0.58);
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.deckInspectorMeta {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(232, 226, 214, 0.11);
+  border-bottom: 1px solid rgba(232, 226, 214, 0.11);
+}
+
+.deckInspectorMeta span {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  border-bottom: 1px solid rgba(232, 226, 214, 0.07);
+}
+
+.deckInspectorMeta span:last-child {
+  border-bottom: 0;
+}
+
+.deckInspectorMeta small {
+  color: rgba(232, 226, 214, 0.38);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.deckInspectorMeta strong {
+  overflow: hidden;
+  color: rgba(232, 226, 214, 0.76);
+  font-size: 12px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.deckInspectorActions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 78px 78px;
+  gap: 9px;
+}
+
+.deckInspectorActions button {
+  min-width: 0;
+  padding: 0 10px;
+}
+
+.deckInspectorActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.deckPrimaryAction {
+  border-color: rgba(184, 74, 59, 0.56) !important;
+  background:
+    linear-gradient(180deg, rgba(184, 74, 59, 0.96), rgba(143, 51, 41, 0.96)) !important;
+  color: #fff4ed !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 14px 30px rgba(184, 74, 59, 0.2);
+}
+
+.deckHint {
+  align-self: end;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 14px;
+  color: rgba(232, 226, 214, 0.36);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.deckHint span {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid rgba(232, 226, 214, 0.08);
+  border-radius: 6px;
+  background: rgba(232, 226, 214, 0.035);
+}
+
+.dock,
+.dark .dock {
+  bottom: 10px;
+  height: 56px;
+  max-width: min(900px, calc(100vw - 56px));
+  padding: 6px 8px;
+  border: 1px solid rgba(232, 226, 214, 0.14);
+  border-radius: 12px;
+  background: rgba(10, 11, 12, 0.9);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.065),
+    0 18px 50px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(18px);
+}
+
+.dockItem {
+  min-width: 50px;
+  height: 44px;
+  padding: 4px 7px;
+  border-radius: 9px;
+  color: rgba(232, 226, 214, 0.64);
+}
+
+.dockItem:hover {
+  background: rgba(232, 226, 214, 0.07);
+  color: var(--deck-text);
+}
+
+.dockBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  color: rgba(232, 226, 214, 0.86);
+}
+
+.dockItem span {
+  max-width: 68px;
+  color: inherit;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.dockIndicator {
+  background: var(--deck-accent);
+  box-shadow: 0 0 0 3px rgba(184, 74, 59, 0.16);
+}
+
+@media (max-width: 1280px) {
+  .deckTopbar {
+    grid-template-columns: minmax(150px, 220px) minmax(260px, 1fr) auto;
+    padding-inline: 20px;
+  }
+
+  .deckAccount button span {
+    display: none;
+  }
+
+  .deckAccount button {
+    width: 36px;
+    padding: 0;
+  }
+
+  .deckLayout {
+    grid-template-columns: 96px minmax(0, 1fr) minmax(280px, 320px);
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1020px) {
+  .deckLayout {
+    grid-template-columns: 92px minmax(0, 1fr);
+  }
+
+  .deckInspector {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopShell,
+  .dark.desktopShell {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .desktopStage {
+    height: auto;
+    min-height: calc(100vh - 42px);
+    padding-bottom: 82px;
+    overflow: visible;
+  }
+
+  .launchpadFrame {
+    grid-template-rows: auto auto auto;
+    height: auto;
+    min-height: calc(100vh - 42px - 82px);
+    overflow: visible;
+  }
+
+  .deckTopbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .deckBrand {
+    justify-content: space-between;
+  }
+
+  .deckSearch {
+    height: 44px;
+  }
+
+  .deckSearch kbd {
+    display: none;
+  }
+
+  .deckAccount {
+    justify-content: stretch;
+  }
+
+  .deckAccount button {
+    flex: 1 1 0;
+    width: auto;
+  }
+
+  .deckAccount button span {
+    display: inline;
+  }
+
+  .deckStatusline {
+    gap: 10px;
+    padding: 0 14px;
+    overflow-x: auto;
+  }
+
+  .deckLayout {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow: visible;
+  }
+
+  .deckNav {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--deck-line);
+    overflow-x: auto;
+  }
+
+  .deckNav button {
+    min-width: 84px;
+    min-height: 54px;
+  }
+
+  .deckMain {
+    height: auto;
+    padding: 16px 14px;
+    overflow: visible;
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .deckTile {
+    min-height: 126px;
+  }
+
+  .deckCommandList {
+    overflow: visible;
+    padding: 0;
+  }
+
+  .deckCommand {
+    grid-template-columns: 38px minmax(0, 1fr);
+  }
+
+  .deckCommandMeta {
+    grid-column: 2;
+    justify-content: flex-start;
+  }
+
+  .deckInspector {
+    display: grid;
+    border-top: 1px solid var(--deck-line);
+    border-left: 0;
+  }
+
+  .dock,
+  .dark .dock {
+    max-width: calc(100vw - 20px);
+    overflow-x: auto;
+  }
+}
+/* Final command deck order fix: keep this at EOF so it wins over older launcher overrides. */
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #080807;
+  --deck-panel: #11100e;
+  --deck-panel-strong: #171512;
+  --deck-line: rgba(226, 215, 196, 0.13);
+  --deck-line-strong: rgba(226, 215, 196, 0.24);
+  --deck-text: #eee7d9;
+  --deck-muted: rgba(238, 231, 217, 0.64);
+  --deck-faint: rgba(238, 231, 217, 0.4);
+  --deck-accent: #b94a3d;
+  --deck-accent-soft: rgba(185, 74, 61, 0.16);
+  --deck-metal: #c5a86a;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(197, 168, 106, 0.11), transparent 29%),
+    radial-gradient(circle at 88% 22%, rgba(185, 74, 61, 0.09), transparent 31%),
+    linear-gradient(rgba(238, 231, 217, 0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(238, 231, 217, 0.018) 1px, transparent 1px),
+    linear-gradient(145deg, #070706 0%, #11100e 48%, #080807 100%);
+  background-size: auto, auto, 34px 34px, 34px 34px, auto;
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(176px, 244px) minmax(340px, 1fr) minmax(268px, auto);
+  gap: 16px;
+  padding: 9px 28px;
+  border-bottom-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.066), rgba(238, 231, 217, 0.014)),
+    rgba(8, 8, 7, 0.9);
+}
+
+.deckBrand img {
+  border-color: rgba(197, 168, 106, 0.28);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(185, 74, 61, 0.28), rgba(238, 231, 217, 0.045));
+}
+
+.deckBrand span,
+.deckPulseTitle span,
+.deckSectionHeader,
+.deckInspectorCopy span {
+  color: rgba(197, 168, 106, 0.72);
+}
+
+.deckSearch {
+  height: 44px;
+  border-color: rgba(197, 168, 106, 0.2);
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.072), rgba(238, 231, 217, 0.028)),
+    rgba(15, 15, 13, 0.94);
+}
+
+.deckSearch svg {
+  color: var(--deck-metal);
+}
+
+.deckLayout {
+  grid-template-columns: 112px minmax(0, 1fr) minmax(318px, 372px);
+  height: 100%;
+  min-height: 0;
+}
+
+.deckNav {
+  gap: 10px;
+  padding: 24px 11px 20px 18px;
+  border-right-color: rgba(197, 168, 106, 0.14);
+}
+
+.deckNav button {
+  min-height: 68px;
+  border-radius: 12px 6px 6px 12px;
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(197, 168, 106, 0.38);
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.22), rgba(197, 168, 106, 0.09)),
+    rgba(238, 231, 217, 0.035);
+}
+
+.deckMain {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px 24px 22px;
+  overflow: hidden;
+}
+
+.deckPulse {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(190px, 0.78fr) auto minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 16px;
+  min-height: 78px;
+  border-color: rgba(197, 168, 106, 0.16);
+  border-radius: 14px;
+  background:
+    linear-gradient(120deg, rgba(197, 168, 106, 0.1), rgba(238, 231, 217, 0.032) 42%, rgba(185, 74, 61, 0.055)),
+    rgba(15, 15, 13, 0.72);
+}
+
+.deckQuickRail {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.deckPinnedGrid {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr 1fr;
+  grid-auto-flow: dense;
+  grid-auto-rows: minmax(118px, auto);
+  gap: 14px;
+  min-height: 270px;
+  overflow: visible;
+}
+
+.deckTile {
+  min-height: 118px;
+  border-color: rgba(238, 231, 217, 0.11);
+  border-radius: 14px;
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.085), rgba(238, 231, 217, 0.022)),
+    rgba(16, 16, 14, 0.84);
+}
+
+.deckTile:first-child {
+  grid-column: span 2;
+  min-height: 150px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(197, 168, 106, 0.16), transparent 28%),
+    linear-gradient(145deg, rgba(185, 74, 61, 0.2), rgba(238, 231, 217, 0.045)),
+    rgba(19, 17, 15, 0.96);
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 48px;
+  height: 48px;
+  color: #fff4ed;
+}
+
+.deckTile:first-child .deckTileCopy strong {
+  font-size: clamp(24px, 2vw, 34px);
+}
+
+.deckTileSelected {
+  border-color: rgba(197, 168, 106, 0.46);
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border-color: rgba(197, 168, 106, 0.16);
+  background:
+    linear-gradient(145deg, rgba(238, 231, 217, 0.105), rgba(238, 231, 217, 0.032)),
+    #12110f;
+}
+
+.deckCommandList {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(197, 168, 106, 0.1);
+  border-radius: 14px;
+  background: rgba(8, 8, 7, 0.3);
+  padding: 0 8px 24px;
+}
+
+.deckSectionHeader {
+  min-height: 40px;
+  margin-bottom: 0;
+  border-bottom-color: rgba(197, 168, 106, 0.13);
+  background: rgba(9, 9, 8, 0.96);
+}
+
+.deckCommand {
+  min-height: 66px;
+  padding-inline: 12px;
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(185, 74, 61, 0.18), rgba(197, 168, 106, 0.065)),
+    rgba(238, 231, 217, 0.018);
+}
+
+.deckInspector {
+  border-left-color: rgba(197, 168, 106, 0.16);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(197, 168, 106, 0.13), transparent 30%),
+    linear-gradient(180deg, rgba(238, 231, 217, 0.06), rgba(238, 231, 217, 0.012)),
+    rgba(10, 10, 9, 0.7);
+}
+
+.deckInspectorMark {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+}
+
+.deckInspectorActions button {
+  height: 40px;
+  border-radius: 10px;
+}
+
+.deckPrimaryAction {
+  background:
+    linear-gradient(180deg, rgba(185, 74, 61, 1), rgba(145, 49, 39, 1)) !important;
+}
+
+.dock,
+.dark .dock {
+  height: 58px;
+  border-color: rgba(197, 168, 106, 0.18);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(238, 231, 217, 0.065), rgba(238, 231, 217, 0.02)),
+    rgba(8, 8, 7, 0.92);
+}
+
+@media (max-width: 1320px) {
+  .deckPulse {
+    grid-template-columns: minmax(180px, 0.8fr) minmax(0, 1fr);
+  }
+
+  .deckPulseStats {
+    display: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 404px;
+  }
+
+  .deckTile:first-child {
+    grid-column: span 2;
+  }
+
+  .deckQuickRail {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .deckMain {
+    height: auto;
+    padding: 16px 14px;
+    overflow: visible;
+  }
+
+  .deckPulse {
+    grid-template-columns: 1fr;
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .deckTile:first-child {
+    grid-column: auto;
+  }
+}
+/* Final density tune: keep command stream usable on the first viewport. */
+.deckPinnedGrid {
+  grid-auto-rows: minmax(104px, auto);
+  min-height: 238px;
+}
+
+.deckTile {
+  min-height: 104px;
+}
+
+.deckTile:first-child {
+  min-height: 138px;
+}
+
+.deckTileCopy {
+  gap: 5px;
+}
+
+.deckTileCopy strong {
+  font-size: clamp(16px, 1.08vw, 20px);
+}
+
+.deckTile:first-child .deckTileCopy strong {
+  font-size: clamp(23px, 1.8vw, 31px);
+}
+
+.deckCommandList {
+  min-height: 148px;
+}
+
+/* Modern minimal launcher pass
+   Intent: a spacious desktop launcher that feels closer to Raycast/Arc than a Windows control panel.
+   Signature: quiet graphite canvas, soft floating surfaces, pill command search, and large low-noise launch tiles.
+   Constraint: no metal grid, no dark-gold tooling mood, no boxy admin navigation.
+   DESIGN_VARIANCE=6, MOTION_INTENSITY=3, VISUAL_DENSITY=6.
+*/
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #0b0d10;
+  --deck-panel: rgba(255, 255, 255, 0.055);
+  --deck-panel-strong: rgba(255, 255, 255, 0.088);
+  --deck-line: rgba(255, 255, 255, 0.09);
+  --deck-line-strong: rgba(255, 255, 255, 0.16);
+  --deck-text: #f6f2ec;
+  --deck-muted: rgba(246, 242, 236, 0.64);
+  --deck-faint: rgba(246, 242, 236, 0.38);
+  --deck-accent: #f0644b;
+  --deck-accent-soft: rgba(240, 100, 75, 0.16);
+  --deck-metal: rgba(246, 242, 236, 0.72);
+  color: var(--deck-text);
+  font-family: "Microsoft YaHei UI", "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Source Han Sans SC", "Segoe UI", system-ui, sans-serif;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(circle at 14% 8%, rgba(240, 100, 75, 0.16), transparent 30%),
+    radial-gradient(circle at 84% 12%, rgba(255, 255, 255, 0.095), transparent 26%),
+    radial-gradient(circle at 58% 104%, rgba(103, 118, 135, 0.16), transparent 34%),
+    linear-gradient(180deg, #101319 0%, #090b0e 58%, #07080a 100%);
+}
+
+.menuBar,
+.dark .menuBar {
+  border-bottom-color: rgba(255, 255, 255, 0.07);
+  background: rgba(6, 8, 11, 0.72);
+  box-shadow: none;
+  backdrop-filter: blur(24px) saturate(140%);
+}
+
+.brandPill,
+.statusPill,
+.menuButton,
+.menuIconButton,
+.appleButton {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(246, 242, 236, 0.76);
+  box-shadow: none;
+}
+
+.desktopStage {
+  padding: 0 0 72px;
+}
+
+.launchpadFrame {
+  grid-template-rows: 72px 0 minmax(0, 1fr);
+  background: transparent;
+  box-shadow: none;
+}
+
+.launchpadFrame::after,
+.launchpadFrame::before {
+  display: none;
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(160px, 238px) minmax(360px, 1fr) minmax(250px, auto);
+  gap: 18px;
+  padding: 13px 30px 12px;
+  border-bottom: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.072), rgba(255, 255, 255, 0.022)),
+    rgba(8, 10, 13, 0.52);
+  backdrop-filter: blur(22px) saturate(135%);
+}
+
+.deckBrand {
+  gap: 11px;
+}
+
+.deckBrand img {
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+}
+
+.deckBrand span {
+  color: rgba(246, 242, 236, 0.44);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.deckBrand strong {
+  color: #fffaf3;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.deckSearch {
+  height: 48px;
+  padding-inline: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.105);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.074);
+  color: rgba(246, 242, 236, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(240, 100, 75, 0.52);
+  background: rgba(255, 255, 255, 0.095);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 0 4px rgba(240, 100, 75, 0.12),
+    0 22px 70px rgba(0, 0, 0, 0.28);
+}
+
+.deckSearch svg {
+  color: rgba(246, 242, 236, 0.62);
+}
+
+.deckSearch input {
+  color: #fffaf3;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.deckSearch kbd {
+  min-width: 46px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(246, 242, 236, 0.48);
+}
+
+.deckAccount button,
+.deckInspectorActions button,
+.deckEmpty button {
+  height: 38px;
+  border-color: rgba(255, 255, 255, 0.085);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.064);
+  color: rgba(246, 242, 236, 0.78);
+  box-shadow: none;
+}
+
+.deckAccount button:hover,
+.deckInspectorActions button:hover,
+.deckEmpty button:hover {
+  border-color: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.105);
+  color: #fffaf3;
+}
+
+.deckStatusline {
+  height: 0;
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  opacity: 0;
+}
+
+.deckLayout {
+  grid-template-columns: 92px minmax(0, 1fr) minmax(320px, 380px);
+  gap: 0;
+}
+
+.deckNav {
+  gap: 12px;
+  padding: 30px 12px 24px 20px;
+  border-right: 0;
+  background: transparent;
+}
+
+.deckNav button {
+  min-height: 58px;
+  padding: 10px 9px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(246, 242, 236, 0.48);
+  box-shadow: none;
+}
+
+.deckNav button:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.052);
+  color: rgba(246, 242, 236, 0.86);
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(240, 100, 75, 0.22), rgba(255, 255, 255, 0.075)),
+    rgba(255, 255, 255, 0.05);
+  color: #fffaf3;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    0 18px 42px rgba(0, 0, 0, 0.18);
+}
+
+.deckNav .deckNavActive strong {
+  color: #fffaf3;
+}
+
+.deckMain {
+  gap: 18px;
+  padding: 34px 28px 26px;
+}
+
+.deckPulse {
+  min-height: 96px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.deckPulseTitle {
+  gap: 8px;
+}
+
+.deckPulseTitle span {
+  color: rgba(246, 242, 236, 0.46);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.deckPulseTitle strong {
+  color: #fffaf3;
+  font-size: clamp(34px, 3vw, 48px);
+  font-weight: 700;
+  line-height: 0.96;
+}
+
+.deckPulseStats {
+  gap: 9px;
+}
+
+.deckPulseStats span {
+  min-width: 70px;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(246, 242, 236, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.deckQuickRail {
+  gap: 10px;
+}
+
+.deckQuickItem {
+  height: 48px;
+  border-color: rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.deckQuickItem span {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.deckQuickItem:hover,
+.deckQuickItemSelected {
+  border-color: rgba(240, 100, 75, 0.28);
+  background: rgba(240, 100, 75, 0.12);
+}
+
+.deckPinnedGrid {
+  grid-template-columns: 1.2fr 1fr 1fr;
+  grid-auto-rows: minmax(124px, auto);
+  gap: 14px;
+  min-height: 276px;
+}
+
+.deckTile {
+  min-height: 124px;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.085);
+  border-radius: 22px;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.105), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.105),
+    0 24px 60px rgba(0, 0, 0, 0.2);
+}
+
+.deckTile::after {
+  display: none;
+}
+
+.deckTile:first-child {
+  grid-column: span 1;
+  min-height: 124px;
+  padding: 18px;
+  background:
+    linear-gradient(145deg, rgba(240, 100, 75, 0.18), rgba(255, 255, 255, 0.075)),
+    rgba(255, 255, 255, 0.055);
+}
+
+.deckTile:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.135), rgba(255, 255, 255, 0.055)),
+    rgba(255, 255, 255, 0.06);
+}
+
+.deckTileSelected {
+  border-color: rgba(240, 100, 75, 0.38);
+  background:
+    linear-gradient(145deg, rgba(240, 100, 75, 0.2), rgba(255, 255, 255, 0.075)),
+    rgba(255, 255, 255, 0.055);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.13),
+    0 0 0 1px rgba(240, 100, 75, 0.08),
+    0 28px 70px rgba(0, 0, 0, 0.24);
+}
+
+.deckTileIndex {
+  color: rgba(246, 242, 236, 0.34);
+  font-weight: 600;
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.07);
+  color: #fffaf3;
+  box-shadow: none;
+}
+
+.deckTileIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 44px;
+  height: 44px;
+}
+
+.deckTileCopy strong,
+.deckTile:first-child .deckTileCopy strong {
+  color: #fffaf3;
+  font-size: clamp(20px, 1.55vw, 26px);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.deckTileCopy small {
+  color: rgba(246, 242, 236, 0.6);
+}
+
+.deckTileMeta {
+  color: rgba(246, 242, 236, 0.42);
+}
+
+.deckCommandList {
+  min-height: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.075);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.062), rgba(255, 255, 255, 0.026)),
+    rgba(255, 255, 255, 0.03);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 22px 64px rgba(0, 0, 0, 0.18);
+}
+
+.deckSectionHeader {
+  min-height: 42px;
+  border-bottom-color: rgba(255, 255, 255, 0.065);
+  background: rgba(14, 16, 20, 0.78);
+  color: rgba(246, 242, 236, 0.48);
+  backdrop-filter: blur(14px);
+}
+
+.deckCommand {
+  min-height: 64px;
+  border-bottom-color: rgba(255, 255, 255, 0.055);
+}
+
+.deckCommand:hover {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.deckCommandSelected {
+  background:
+    linear-gradient(90deg, rgba(240, 100, 75, 0.16), rgba(255, 255, 255, 0.045));
+  box-shadow: inset 3px 0 0 rgba(240, 100, 75, 0.78);
+}
+
+.deckCommandMeta i,
+.deckCommandMeta em {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(246, 242, 236, 0.5);
+}
+
+.deckInspector {
+  margin: 24px 24px 24px 0;
+  padding: 30px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 74% 8%, rgba(240, 100, 75, 0.13), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.032)),
+    rgba(255, 255, 255, 0.035);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    0 28px 80px rgba(0, 0, 0, 0.22);
+}
+
+.deckInspectorMark {
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
+  color: #fffaf3;
+}
+
+.deckInspectorCopy span {
+  color: rgba(246, 242, 236, 0.48);
+}
+
+.deckInspectorCopy strong {
+  font-size: clamp(34px, 3vw, 46px);
+  font-weight: 700;
+}
+
+.deckInspectorCopy p {
+  color: rgba(246, 242, 236, 0.62);
+}
+
+.deckInspectorMeta {
+  border-top-color: rgba(255, 255, 255, 0.08);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.deckInspectorMeta span {
+  border-bottom-color: rgba(255, 255, 255, 0.055);
+}
+
+.deckPrimaryAction {
+  border-color: rgba(240, 100, 75, 0.6) !important;
+  background: linear-gradient(180deg, #ff745b, #e64f38) !important;
+  color: #fffaf3 !important;
+  box-shadow: 0 18px 42px rgba(240, 100, 75, 0.24);
+}
+
+.deckHint span {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.dock,
+.dark .dock {
+  height: 60px;
+  border-color: rgba(255, 255, 255, 0.09);
+  border-radius: 22px;
+  background: rgba(12, 14, 18, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.11),
+    0 22px 70px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(24px) saturate(145%);
+}
+
+.dockItem:hover {
+  background: rgba(255, 255, 255, 0.075);
+}
+
+@media (max-width: 1280px) {
+  .deckPinnedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .deckTopbar {
+    padding: 14px;
+  }
+
+  .deckPulseTitle strong {
+    font-size: 34px;
+  }
+
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .deckInspector {
+    margin: 0 14px 18px;
+    border-radius: 22px;
+  }
+}
+
+/* Modern layout correction: horizontal categories instead of admin-like left rail. */
+.deckLayout {
+  grid-template-columns: minmax(0, 1fr) minmax(330px, 380px);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.deckNav {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 24px 28px 0;
+  overflow-x: auto;
+}
+
+.deckNav button {
+  display: inline-grid;
+  grid-template-columns: auto auto;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.deckNav button span {
+  font-size: 12px;
+}
+
+.deckNav button strong {
+  font-size: 13px;
+}
+
+.deckMain {
+  grid-column: 1;
+  grid-row: 2;
+  padding-top: 18px;
+}
+
+.deckInspector {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  margin-top: 24px;
+}
+
+@media (max-width: 1020px) {
+  .deckLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+  }
+
+  .deckNav,
+  .deckMain {
+    grid-column: 1;
+  }
+
+  .deckInspector {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .deckLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .deckNav {
+    padding: 14px 14px 0;
+  }
+
+  .deckMain {
+    grid-row: 2;
+  }
+
+  .deckInspector {
+    grid-column: 1;
+    grid-row: 3;
+  }
+}
+
+/* Modern airy launcher pass
+   Intent: make Fenghuang feel like a calm native desktop command launcher, not a themed control panel.
+   Signature: an edge-to-edge mist canvas with one pill command bar, quiet app tiles, and a soft contextual inspector.
+   Constraint: no faux OS chrome, no industrial grid, no heavy dashboard metrics, no colored icon-wall spectacle.
+   DESIGN_VARIANCE=7, MOTION_INTENSITY=3, VISUAL_DENSITY=5.
+*/
+.desktopShell,
+.dark.desktopShell {
+  --deck-bg: #eceff3;
+  --deck-ink: #17191d;
+  --deck-text: #17191d;
+  --deck-muted: rgba(23, 25, 29, 0.62);
+  --deck-faint: rgba(23, 25, 29, 0.38);
+  --deck-line: rgba(23, 25, 29, 0.08);
+  --deck-line-strong: rgba(23, 25, 29, 0.14);
+  --deck-panel: rgba(255, 255, 255, 0.58);
+  --deck-panel-strong: rgba(255, 255, 255, 0.78);
+  --deck-accent: #ed5b45;
+  --deck-accent-soft: rgba(237, 91, 69, 0.13);
+  --deck-blue: rgba(108, 128, 159, 0.18);
+  color: var(--deck-text);
+  background:
+    radial-gradient(circle at 12% 10%, rgba(255, 255, 255, 0.86), transparent 30%),
+    radial-gradient(circle at 88% 8%, rgba(237, 91, 69, 0.18), transparent 28%),
+    radial-gradient(circle at 10% 92%, rgba(108, 128, 159, 0.2), transparent 32%),
+    linear-gradient(135deg, #f4f5f7 0%, #e7ebf0 48%, #f1eee9 100%);
+}
+
+.wallpaper,
+.wallpaperGlowA,
+.wallpaperGlowB {
+  display: none;
+}
+
+.menuBar,
+.dark .menuBar {
+  display: none;
+}
+
+.desktopStage {
+  min-height: 100dvh;
+  padding: 0;
+}
+
+.commandCenter {
+  height: 100dvh;
+  padding: 0;
+}
+
+.launchpadFrame {
+  min-height: 100dvh;
+  grid-template-rows: 82px minmax(0, 1fr);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.deckTopbar {
+  grid-template-columns: minmax(142px, 210px) minmax(280px, 720px) minmax(246px, auto);
+  gap: 18px;
+  align-items: center;
+  padding: 16px 34px 12px;
+  border: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.deckBrand img {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 14px;
+  background: #17191d;
+  box-shadow:
+    0 18px 34px rgba(23, 25, 29, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.deckBrand span {
+  color: rgba(23, 25, 29, 0.42);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.deckBrand strong {
+  color: #17191d;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.deckSearch {
+  height: 52px;
+  padding-inline: 18px;
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: rgba(23, 25, 29, 0.54);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 22px 54px rgba(66, 76, 92, 0.12);
+  backdrop-filter: blur(22px) saturate(130%);
+  -webkit-backdrop-filter: blur(22px) saturate(130%);
+}
+
+.deckSearch:focus-within {
+  border-color: rgba(237, 91, 69, 0.34);
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 0 0 5px rgba(237, 91, 69, 0.11),
+    0 26px 70px rgba(66, 76, 92, 0.16);
+}
+
+.deckSearch svg {
+  color: rgba(23, 25, 29, 0.48);
+}
+
+.deckSearch input {
+  color: #17191d;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.deckSearch input::placeholder {
+  color: rgba(23, 25, 29, 0.36);
+}
+
+.deckSearch kbd {
+  min-width: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(23, 25, 29, 0.065);
+  color: rgba(23, 25, 29, 0.44);
+}
+
+.deckAccount {
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.deckAccount button,
+.deckInspectorActions button,
+.deckEmpty button {
+  height: 40px;
+  border: 1px solid rgba(23, 25, 29, 0.07);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.56);
+  color: rgba(23, 25, 29, 0.72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(18px) saturate(128%);
+  -webkit-backdrop-filter: blur(18px) saturate(128%);
+}
+
+.deckAccount button:hover,
+.deckInspectorActions button:hover,
+.deckEmpty button:hover {
+  border-color: rgba(23, 25, 29, 0.12);
+  background: rgba(255, 255, 255, 0.78);
+  color: #17191d;
+  transform: translateY(-1px);
+}
+
+.deckAccount button:active,
+.deckInspectorActions button:active,
+.deckEmpty button:active,
+.deckTile:active,
+.deckCommand:active,
+.deckQuickItem:active {
+  transform: translateY(1px) scale(0.99);
+}
+
+.deckStatusline {
+  display: none;
+}
+
+.deckLayout {
+  grid-row: 2;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 372px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0;
+  min-height: 0;
+}
+
+.deckNav {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 14px 34px 0;
+  border: 0;
+  background: transparent;
+  overflow-x: auto;
+}
+
+.deckNav button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(23, 25, 29, 0.48);
+  white-space: nowrap;
+  box-shadow: none;
+}
+
+.deckNav button span,
+.deckNav button strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.deckNav button:hover {
+  border-color: rgba(23, 25, 29, 0.07);
+  background: rgba(255, 255, 255, 0.42);
+  color: rgba(23, 25, 29, 0.78);
+}
+
+.deckNav .deckNavActive {
+  border-color: rgba(23, 25, 29, 0.08);
+  background: rgba(255, 255, 255, 0.76);
+  color: #17191d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 16px 36px rgba(66, 76, 92, 0.1);
+}
+
+.deckNav .deckNavActive strong {
+  color: var(--deck-accent);
+}
+
+.deckMain {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 22px 34px 28px;
+  overflow: hidden;
+}
+
+.deckPulse {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.64fr) minmax(280px, 1fr);
+  gap: 18px;
+  align-items: end;
+  min-height: 86px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.deckPulseTitle {
+  gap: 8px;
+}
+
+.deckPulseTitle span {
+  color: rgba(23, 25, 29, 0.44);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.deckPulseTitle strong {
+  color: #17191d;
+  font-size: clamp(40px, 4vw, 68px);
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: 0;
+}
+
+.deckPulseStats {
+  display: none;
+}
+
+.deckQuickRail {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-self: end;
+}
+
+.deckQuickItem {
+  height: 48px;
+  padding: 0 12px 0 9px;
+  border: 1px solid rgba(23, 25, 29, 0.07);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
+  color: rgba(23, 25, 29, 0.68);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(18px) saturate(128%);
+  -webkit-backdrop-filter: blur(18px) saturate(128%);
+}
+
+.deckQuickItem span {
+  background: rgba(23, 25, 29, 0.06);
+  color: #17191d;
+}
+
+.deckQuickItem:hover,
+.deckQuickItemSelected {
+  border-color: rgba(237, 91, 69, 0.22);
+  background: rgba(255, 255, 255, 0.78);
+  color: #17191d;
+  transform: translateY(-1px);
+}
+
+.deckQuickItem i {
+  background: var(--deck-accent);
+  box-shadow: 0 0 0 4px rgba(237, 91, 69, 0.13);
+}
+
+.deckPinnedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-auto-rows: minmax(132px, auto);
+  gap: 14px;
+  min-height: 292px;
+  overflow: visible;
+}
+
+.deckTile {
+  min-height: 132px;
+  padding: 18px;
+  border: 1px solid rgba(23, 25, 29, 0.07);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.58);
+  color: #17191d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 24px 64px rgba(66, 76, 92, 0.12);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+}
+
+.deckTile:first-child {
+  grid-column: span 1;
+  min-height: 132px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(237, 91, 69, 0.18), transparent 32%),
+    rgba(255, 255, 255, 0.68);
+}
+
+.deckTile:hover {
+  border-color: rgba(23, 25, 29, 0.11);
+  background: rgba(255, 255, 255, 0.78);
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 28px 74px rgba(66, 76, 92, 0.16);
+}
+
+.deckTileSelected {
+  border-color: rgba(237, 91, 69, 0.28);
+  background:
+    linear-gradient(145deg, rgba(237, 91, 69, 0.12), rgba(255, 255, 255, 0.72)),
+    rgba(255, 255, 255, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.92),
+    0 0 0 5px rgba(237, 91, 69, 0.08),
+    0 30px 78px rgba(66, 76, 92, 0.16);
+}
+
+.deckTileIndex {
+  color: rgba(23, 25, 29, 0.26);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.deckTileIcon,
+.deckCommandIcon,
+.deckInspectorMark,
+.dockBadge {
+  border: 0;
+  background: rgba(23, 25, 29, 0.07);
+  color: #17191d;
+  box-shadow: none;
+}
+
+.deckTileIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 17px;
+}
+
+.deckTile:first-child .deckTileIcon {
+  width: 46px;
+  height: 46px;
+  color: #17191d;
+}
+
+.deckTileCopy {
+  gap: 6px;
+}
+
+.deckTileCopy strong,
+.deckTile:first-child .deckTileCopy strong {
+  color: #17191d;
+  font-size: clamp(20px, 1.5vw, 26px);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
+.deckTileCopy small {
+  color: rgba(23, 25, 29, 0.56);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.deckTileMeta {
+  color: rgba(23, 25, 29, 0.42);
+}
+
+.deckCommandList {
+  flex: 1 1 0;
+  min-height: 166px;
+  padding: 0 10px 18px;
+  overflow-y: auto;
+  border: 1px solid rgba(23, 25, 29, 0.07);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.76);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.82),
+    0 24px 64px rgba(66, 76, 92, 0.1);
+  backdrop-filter: blur(10px) saturate(108%);
+  -webkit-backdrop-filter: blur(10px) saturate(108%);
+}
+
+.deckSectionHeader {
+  min-height: 46px;
+  border-bottom-color: rgba(23, 25, 29, 0.055);
+  background: rgba(247, 248, 249, 0.72);
+  color: rgba(23, 25, 29, 0.44);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.deckSectionHeader strong {
+  color: rgba(23, 25, 29, 0.54);
+}
+
+.deckCommand {
+  min-height: 78px;
+  padding-block: 10px;
+  border-bottom-color: rgba(23, 25, 29, 0.05);
+  color: #17191d;
+  font-family: inherit;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.deckCommand:hover {
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.deckCommandSelected {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow:
+    inset 3px 0 0 rgba(237, 91, 69, 0.78),
+    inset 0 -1px 0 rgba(23, 25, 29, 0.04);
+}
+
+.deckCommandIcon {
+  background: rgba(23, 25, 29, 0.065);
+}
+
+.deckCommandCopy strong {
+  color: #17191d;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.42;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.deckCommandCopy small {
+  color: rgba(23, 25, 29, 0.62);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.62;
+  letter-spacing: 0;
+  text-shadow: none;
+}
+
+.deckPulse,
+.deckPinnedGrid,
+.deckTile,
+.deckCommandList,
+.deckCommand,
+.deckInspector {
+  opacity: 1;
+  animation: none;
+}
+
+.deckCommandMeta i,
+.deckCommandMeta em {
+  border: 0;
+  background: rgba(23, 25, 29, 0.055);
+  color: rgba(23, 25, 29, 0.48);
+}
+
+.deckCommandMeta i {
+  color: var(--deck-accent);
+}
+
+.deckEmpty {
+  color: rgba(23, 25, 29, 0.56);
+}
+
+.deckEmpty strong {
+  color: #17191d;
+}
+
+.deckInspector {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  margin: 24px 34px 28px 0;
+  padding: 30px 26px;
+  border: 1px solid rgba(23, 25, 29, 0.07);
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at 76% 10%, rgba(237, 91, 69, 0.14), transparent 30%),
+    rgba(255, 255, 255, 0.58);
+  color: #17191d;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 28px 76px rgba(66, 76, 92, 0.14);
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+}
+
+.deckInspectorMark {
+  width: 82px;
+  height: 82px;
+  border-radius: 26px;
+  background: rgba(23, 25, 29, 0.08);
+  color: #17191d;
+}
+
+.deckInspectorCopy span {
+  color: rgba(23, 25, 29, 0.44);
+}
+
+.deckInspectorCopy strong {
+  color: #17191d;
+  font-size: clamp(34px, 3vw, 48px);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.deckInspectorCopy p {
+  color: rgba(23, 25, 29, 0.58);
+}
+
+.deckInspectorMeta {
+  border-top-color: rgba(23, 25, 29, 0.07);
+  border-bottom-color: rgba(23, 25, 29, 0.07);
+}
+
+.deckInspectorMeta span {
+  border-bottom-color: rgba(23, 25, 29, 0.055);
+}
+
+.deckInspectorMeta small {
+  color: rgba(23, 25, 29, 0.42);
+}
+
+.deckInspectorMeta strong {
+  color: rgba(23, 25, 29, 0.74);
+}
+
+.deckPrimaryAction {
+  border-color: transparent !important;
+  background: #17191d !important;
+  color: #fff !important;
+  box-shadow: 0 18px 38px rgba(23, 25, 29, 0.2);
+}
+
+.deckPrimaryAction:hover {
+  background: #24272d !important;
+}
+
+.deckHint span {
+  border: 0;
+  border-radius: 999px;
+  background: rgba(23, 25, 29, 0.06);
+  color: rgba(23, 25, 29, 0.42);
+}
+
+.dock,
+.dark .dock {
+  height: 58px;
+  border: 1px solid rgba(23, 25, 29, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.86),
+    0 24px 62px rgba(66, 76, 92, 0.16);
+  backdrop-filter: blur(24px) saturate(135%);
+  -webkit-backdrop-filter: blur(24px) saturate(135%);
+}
+
+.dockItem {
+  color: rgba(23, 25, 29, 0.68);
+}
+
+.dockItem:hover {
+  background: rgba(23, 25, 29, 0.055);
+  color: #17191d;
+}
+
+.dockIndicator {
+  background: var(--deck-accent);
+}
+
+.desktopLaunchNotice {
+  color: #17191d;
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(23, 25, 29, 0.08);
+  box-shadow: 0 18px 42px rgba(66, 76, 92, 0.16);
+}
+
+@media (max-width: 1240px) {
+  .deckPulse {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .deckQuickRail {
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 1080px) {
+  .deckTopbar {
+    grid-template-columns: minmax(140px, auto) minmax(260px, 1fr);
+  }
+
+  .deckAccount {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+
+  .launchpadFrame {
+    grid-template-rows: 132px minmax(0, 1fr);
+  }
+
+  .deckLayout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    overflow-y: auto;
+  }
+
+  .deckNav,
+  .deckMain {
+    grid-column: 1;
+  }
+
+  .deckInspector {
+    grid-column: 1;
+    grid-row: 3;
+    display: grid;
+    margin: 0 34px 28px;
+  }
+}
+
+@media (max-width: 760px) {
+  .desktopStage,
+  .commandCenter,
+  .launchpadFrame {
+    min-height: 100dvh;
+    height: auto;
+  }
+
+  .launchpadFrame {
+    grid-template-rows: auto auto;
+    overflow-y: auto;
+  }
+
+  .deckTopbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 16px 16px 10px;
+  }
+
+  .deckBrand img {
+    width: 36px;
+    height: 36px;
+  }
+
+  .deckAccount {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .deckNav {
+    padding: 10px 16px 0;
+  }
+
+  .deckMain {
+    padding: 18px 16px 20px;
+    overflow: visible;
+  }
+
+  .deckPulseTitle strong {
+    font-size: 42px;
+  }
+
+  .deckQuickRail,
+  .deckPinnedGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .deckTile,
+  .deckTile:first-child {
+    min-height: 118px;
+  }
+
+  .deckCommandList,
+  .deckInspector {
+    border-radius: 24px;
+  }
+
+  .deckCommandMeta {
+    display: none;
+  }
+
+  .deckInspector {
+    margin: 0 16px 22px;
+  }
+
+  .dock,
+  .dark .dock {
+    max-width: calc(100vw - 24px);
+  }
+}
+
+/* Bugfix: command rows must never share the same grid track.
+   Earlier deck overrides left .deckCommandList as a two-row CSS grid, which
+   caused multiple launcher rows to render at the same Y position after
+   selecting "智能体" and then another item. */
+.deckCommandList {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  align-content: stretch;
+  grid-template-rows: none !important;
+  gap: 0;
+}
+
+.deckSectionHeader,
+.deckCommand,
+.deckEmpty {
+  flex: 0 0 auto;
+}
+
+.deckCommand {
+  position: relative;
+  isolation: isolate;
+}

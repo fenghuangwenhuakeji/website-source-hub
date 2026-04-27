@@ -22,6 +22,7 @@ import {
   Image as ImageIcon,
   LayoutGrid,
   ListTodo,
+  LogIn,
   Maximize2,
   MessageSquare,
   Minus,
@@ -38,6 +39,7 @@ import {
   ShoppingBag,
   Terminal,
   Trash2,
+  UserPlus,
   WandSparkles,
   Shield,
   Wifi,
@@ -57,6 +59,7 @@ import {
   type DesktopAppDefinition,
 } from '@/lib';
 import { buildRouterPath } from '@/lib/routerBase';
+import { buildAcceptanceAwarePath } from '@/lib/acceptanceMode';
 import { applyThemeMode, resolveThemeMode, setPreferredThemeMode, subscribeThemeMode } from '@/lib/themePreference';
 import { readScopedStorageValue, writeScopedStorageValue } from '@/lib/userScopedStorage';
 
@@ -84,6 +87,18 @@ type MobileTabId = 'home' | 'chat' | 'agents' | 'settings';
 type EmbeddedToolMetric = { label: string; value: string | number };
 type DesktopNotice = { kind: 'success' | 'error'; text: string };
 type FinderSectionId = 'all' | 'workspace' | 'system' | 'external' | 'active';
+type LauncherItem = {
+  app: DesktopAppDefinition;
+  id: string;
+  title: string;
+  description: string;
+  typeLabel: string;
+  statusLabel: string;
+  groupLabel: string;
+  groupId: LauncherGroupFilter;
+  isReady: boolean;
+};
+type LauncherGroupFilter = 'all' | 'core' | 'imported' | 'utility' | 'recent';
 type DesktopPreferences = {
   notificationsEnabled: boolean;
   touchPriority: boolean;
@@ -136,27 +151,27 @@ const MOBILE_HOME_UTILITY_APP_IDS = [
 const HIDDEN_DESKTOP_APP_IDS: readonly string[] = [];
 const WEEKDAY_LABELS = ['一', '二', '三', '四', '五', '六', '日'];
 const APP_SUMMARY_MAP: Record<string, string> = {
-  'kui-chat': '进入聊天、角色和历史会话。',
-  'ai-agent': '查看智能体对话、阶段和记忆。',
-  settings: '调整主题、窗口和移动端偏好。',
-  'frontend-converter': '接入源码、本地程序和外部页面。',
-  codeEditor: '直接打开编辑器工作台。',
-  webChat: '直接打开 Agent Creator 工作区。',
-  'short-book-lab': '进入短篇拆书与分析工作区。',
-  'medium-short': '进入中短篇创作、阅读中心与三层记忆工作区。',
-  'html-vault': '浏览并打开 HTML Vault 内置应用。',
-  fenghuang: '直接进入凤煌创作套件主入口。',
-  'fenghuang-early': '打开历史保留的凤煌早期合集。',
-  'clawx-gui': '打开 ClawX 图形工作台。',
-  'opencode-gui': '打开 OpenCode 图形门户。',
-  'opencode-cli': '打开 OpenCode CLI 工作台。',
-  finder: '浏览当前桌面里可直接打开的应用。',
-  terminal: '查看当前主程序的运行状态。',
-  'calendar-app': '按月查看日历和当天日期。',
-  'tasks-app': '集中查看和勾选当前事项。',
-  'alarms-app': '整理提醒和启用状态。',
-  'notes-app': '记录便签和临时说明。',
-  diary: '保留日记与长文本记录入口。',
+  'kui-chat': '打开聊天、角色和历史会话。',
+  'ai-agent': '管理智能体、任务和工具链。',
+  settings: '调整外观、窗口和运行偏好。',
+  'frontend-converter': '接入网页、本地程序和展示页。',
+  codeEditor: '打开代码编辑器工作台。',
+  webChat: '打开 Agent Creator。',
+  'short-book-lab': '短篇拆书与内容分析。',
+  'medium-short': '中短篇创作和阅读工作区。',
+  'html-vault': '浏览 HTML Vault 内置应用。',
+  fenghuang: '打开凤煌创作套件。',
+  'fenghuang-early': '打开凤煌历史合集。',
+  'clawx-gui': '打开 ClawX 图形界面。',
+  'opencode-gui': '打开 OpenCode 桌面门户。',
+  'opencode-cli': '打开 OpenCode CLI。',
+  finder: '查看全部应用和接入项。',
+  terminal: '查看运行状态和快捷操作。',
+  'calendar-app': '查看日期和日程。',
+  'tasks-app': '查看当前事项。',
+  'alarms-app': '管理提醒。',
+  'notes-app': '记录便签。',
+  diary: '打开日记与长文本记录。',
 };
 
 const MOBILE_TAB_APP_MAP: Record<Exclude<MobileTabId, 'home'>, string> = {
@@ -283,6 +298,43 @@ const getImportedAppStatus = (app: DesktopAppDefinition) => {
   return '内置组件';
 };
 
+const getLauncherTypeLabel = (app: DesktopAppDefinition) => {
+  if (app.runtime === 'component') return app.kind === 'system' ? '系统工具' : '内置工具';
+  if (app.runtime === 'static-web') return '静态应用';
+  if (app.runtime === 'generated-web') return '生成应用';
+  if (app.runtime === 'native-exe') return '本地程序';
+  return '工具';
+};
+
+const getLauncherStatusLabel = (app: DesktopAppDefinition) => {
+  if (app.runtime === 'component') return '可直接打开';
+  return getImportedAppStatus(app);
+};
+
+const isLauncherAppReady = (app: DesktopAppDefinition) => {
+  if (app.runtime === 'component') return true;
+  if (app.runtime === 'static-web') return Boolean(app.route);
+  if (app.runtime === 'generated-web') return Boolean(app.bundle?.html);
+  if (app.runtime === 'native-exe') return Boolean(app.native?.executablePath);
+  return true;
+};
+
+const buildLauncherItem = (
+  app: DesktopAppDefinition,
+  groupLabel: string,
+  groupId: LauncherGroupFilter,
+): LauncherItem => ({
+  app,
+  id: app.id,
+  title: app.title,
+  description: APP_SUMMARY_MAP[app.id] ?? app.description,
+  typeLabel: getLauncherTypeLabel(app),
+  statusLabel: getLauncherStatusLabel(app),
+  groupLabel,
+  groupId,
+  isReady: isLauncherAppReady(app),
+});
+
 const DeferredContentFallback: React.FC<{
   title: string;
   description: string;
@@ -339,6 +391,9 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
   const [mobileViewportHeight, setMobileViewportHeight] = useState<number | null>(null);
   const [appSearch, setAppSearch] = useState('');
   const [desktopNotice, setDesktopNotice] = useState<DesktopNotice | null>(null);
+  const [selectedLauncherAppId, setSelectedLauncherAppId] = useState<string | null>(null);
+  const [recentLauncherAppIds, setRecentLauncherAppIds] = useState<string[]>([]);
+  const [launcherGroupFilter, setLauncherGroupFilter] = useState<LauncherGroupFilter>('all');
   const [nextZIndex, setNextZIndex] = useState(20);
   const [preferences, setPreferences] = useState<DesktopPreferences>(() =>
     readLocalState(DESKTOP_PREFERENCES_STORAGE_KEY, DEFAULT_DESKTOP_PREFERENCES),
@@ -369,6 +424,12 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
     }
   }, [onOpenRecharge]);
 
+  const openLoginGate = useCallback((mode: 'password' | 'register' = 'password') => {
+    if (typeof window === 'undefined') return;
+    const authPath = mode === 'register' ? '/login?forceLogin=1&mode=register' : '/login?forceLogin=1';
+    window.location.assign(buildRouterPath(buildAcceptanceAwarePath(authPath)));
+  }, []);
+
   const openOfficialWebsite = useCallback(() => {
     if (typeof window !== 'undefined') {
       window.open('https://fhwhkj.top/', '_blank', 'noopener,noreferrer');
@@ -377,6 +438,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
 
   const dragRef = useRef<{ id: string; startX: number; startY: number; x: number; y: number } | null>(null);
   const dockHideTimerRef = useRef<number | null>(null);
+  const appSearchInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     void loadDesktopApps().then(setCatalog);
@@ -521,8 +583,8 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
           app.id === 'frontend-converter'
             ? {
                 ...app,
-                title: '统一应用转换接口',
-                description: '接入源码、本地程序和外部展示页。',
+                title: '应用接入',
+                description: '接入网页、本地程序和展示页。',
                 height: Math.max(app.height, 780),
                 tags: Array.from(new Set([...(app.tags ?? []), 'core'])),
               }
@@ -602,6 +664,84 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
     () => visibleCatalog.filter((app) => matchesAppQuery(app, appSearch)),
     [appSearch, visibleCatalog],
   );
+  const commandShelfItems = useMemo(() => {
+    const seen = new Set<string>();
+    return [
+      ...filteredCoreApps.map((app) => buildLauncherItem(app, '常用', 'core')),
+      ...filteredImportedApps.map((app) => buildLauncherItem(app, '接入', 'imported')),
+      ...filteredUtilityApps.map((app) => buildLauncherItem(app, '系统', 'utility')),
+    ].filter((item) => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    });
+  }, [filteredCoreApps, filteredImportedApps, filteredUtilityApps]);
+  const recentLauncherItems = useMemo(
+    () =>
+      recentLauncherAppIds
+        .map((appId) => commandShelfItems.find((item) => item.id === appId))
+        .filter(Boolean) as LauncherItem[],
+    [commandShelfItems, recentLauncherAppIds],
+  );
+  const visibleCommandShelfItems = useMemo(
+    () =>
+      launcherGroupFilter === 'recent'
+        ? recentLauncherItems
+        : launcherGroupFilter === 'all'
+        ? commandShelfItems
+        : commandShelfItems.filter((item) => item.groupId === launcherGroupFilter),
+    [commandShelfItems, launcherGroupFilter, recentLauncherItems],
+  );
+  const pinnedLauncherItems = useMemo(() => {
+    const preferredIds = ['kui-chat', 'ai-agent', 'frontend-converter', 'codeEditor', 'webChat', 'short-book-lab'];
+    const preferred = preferredIds
+      .map((appId) => commandShelfItems.find((item) => item.id === appId))
+      .filter(Boolean) as LauncherItem[];
+    const fallback = commandShelfItems.filter((item) => item.groupId === 'core');
+    const seen = new Set<string>();
+
+    return [...preferred, ...fallback].filter((item) => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    }).slice(0, 6);
+  }, [commandShelfItems]);
+  const deckMode = appSearch.trim() ? 'search' : 'home';
+  const selectedLauncherItem = useMemo(
+    () =>
+      visibleCommandShelfItems.find((item) => item.id === selectedLauncherAppId) ??
+      visibleCommandShelfItems[0] ??
+      null,
+    [selectedLauncherAppId, visibleCommandShelfItems],
+  );
+  const launcherGroupTabs = useMemo(
+    () => [
+      { id: 'all' as const, label: '全部', count: commandShelfItems.length },
+      { id: 'core' as const, label: '常用', count: commandShelfItems.filter((item) => item.groupId === 'core').length },
+      { id: 'imported' as const, label: '接入', count: commandShelfItems.filter((item) => item.groupId === 'imported').length },
+      { id: 'utility' as const, label: '系统', count: commandShelfItems.filter((item) => item.groupId === 'utility').length },
+      { id: 'recent' as const, label: '最近', count: recentLauncherItems.length },
+    ],
+    [commandShelfItems, recentLauncherItems.length],
+  );
+  const deckRecentDockApps = useMemo(() => {
+    const orderedIds = [
+      ...windows.filter((item) => !item.minimized).map((item) => item.appId),
+      ...recentLauncherAppIds,
+      ...CORE_DOCK_APP_IDS,
+    ];
+    const seen = new Set<string>();
+
+    return orderedIds
+      .map((appId) => appsById.get(appId))
+      .filter((app): app is DesktopAppDefinition => Boolean(app))
+      .filter((app) => {
+        if (seen.has(app.id)) return false;
+        seen.add(app.id);
+        return true;
+      })
+      .slice(0, 9);
+  }, [appsById, recentLauncherAppIds, windows]);
   const mobileHomeApps = useMemo(() => {
     const seen = new Set<string>();
     return [...coreApps, ...utilityApps, ...importedDesktopApps]
@@ -661,6 +801,20 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
         ? APP_SUMMARY_MAP[mobileCurrentApp.id] ?? mobileCurrentApp.description
         : '保持纵向滚动，底部导航始终可切换。';
   const mobileAppMode = Boolean(mobileCurrentAppId);
+
+  useEffect(() => {
+    if (isMobile || visibleCommandShelfItems.length === 0) return;
+    if (!selectedLauncherAppId || !visibleCommandShelfItems.some((item) => item.id === selectedLauncherAppId)) {
+      setSelectedLauncherAppId(visibleCommandShelfItems[0].id);
+    }
+  }, [isMobile, selectedLauncherAppId, visibleCommandShelfItems]);
+
+  useEffect(() => {
+    if (isMobile) return undefined;
+    const timer = window.setTimeout(() => appSearchInputRef.current?.focus(), 80);
+    return () => window.clearTimeout(timer);
+  }, [isMobile]);
+
   const calendarCells = useMemo(() => {
     const start = new Date(currentTime.getFullYear(), currentTime.getMonth(), 1);
     const totalDays = new Date(currentTime.getFullYear(), currentTime.getMonth() + 1, 0).getDate();
@@ -841,12 +995,12 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
                 x: Math.min(item.x, Math.max(24, window.innerWidth - targetWidth - 24)),
                 y: Math.min(item.y, Math.max(56, window.innerHeight - targetHeight - 48)),
               }
-            : { ...item, active: false },
+            : { ...item, active: false, minimized: true },
         );
       }
-      const offset = prev.length * 24;
+      const offset = 0;
       return [
-        ...prev.map((item) => ({ ...item, active: false })),
+        ...prev.map((item) => ({ ...item, active: false, minimized: true })),
         {
           id: `${app.id}-${Date.now()}`,
           appId: app.id,
@@ -875,6 +1029,76 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
     }
     if (app) openApp(app);
   }, [appsById, openApp]);
+
+  const markLauncherRecent = useCallback((appId: string) => {
+    setRecentLauncherAppIds((prev) => [appId, ...prev.filter((id) => id !== appId)].slice(0, 5));
+  }, []);
+
+  const openLauncherItem = useCallback((appId: string) => {
+    setSelectedLauncherAppId(appId);
+    markLauncherRecent(appId);
+    openWindow(appId);
+  }, [markLauncherRecent, openWindow]);
+
+  const handleDeckKeyDown = useCallback((event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Escape') {
+      if (appSearch) {
+        event.preventDefault();
+        setAppSearch('');
+      }
+      return;
+    }
+
+    if (!appSearch && /^[1-6]$/.test(event.key) && pinnedLauncherItems.length > 0) {
+      const target = event.target as HTMLElement | null;
+      if (target?.tagName !== 'INPUT') {
+        const item = pinnedLauncherItems[Number(event.key) - 1];
+        if (item) {
+          event.preventDefault();
+          openLauncherItem(item.id);
+        }
+      }
+      return;
+    }
+
+    if (!['ArrowDown', 'ArrowUp', 'Enter'].includes(event.key)) return;
+    if (visibleCommandShelfItems.length === 0) return;
+
+    const selectedId = selectedLauncherItem?.id ?? selectedLauncherAppId ?? visibleCommandShelfItems[0].id;
+    const selectedIndex = Math.max(0, visibleCommandShelfItems.findIndex((item) => item.id === selectedId));
+
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      openLauncherItem(selectedId);
+      return;
+    }
+
+    event.preventDefault();
+    const direction = event.key === 'ArrowDown' ? 1 : -1;
+    const nextIndex = (selectedIndex + direction + visibleCommandShelfItems.length) % visibleCommandShelfItems.length;
+    setSelectedLauncherAppId(visibleCommandShelfItems[nextIndex].id);
+  }, [appSearch, openLauncherItem, pinnedLauncherItems, selectedLauncherAppId, selectedLauncherItem, visibleCommandShelfItems]);
+
+  const handleLauncherKeyDown = useCallback((event: React.KeyboardEvent<HTMLButtonElement>) => {
+    handleDeckKeyDown(event);
+  }, [handleDeckKeyDown]);
+
+  useEffect(() => {
+    if (isMobile) return undefined;
+
+    const onShortcut = (event: KeyboardEvent) => {
+      if (appSearch || !/^[1-6]$/.test(event.key)) return;
+      const target = event.target as HTMLElement | null;
+      if (target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable) return;
+      const item = pinnedLauncherItems[Number(event.key) - 1];
+      if (!item) return;
+      event.preventDefault();
+      openLauncherItem(item.id);
+    };
+
+    window.addEventListener('keydown', onShortcut);
+    return () => window.removeEventListener('keydown', onShortcut);
+  }, [appSearch, isMobile, openLauncherItem, pinnedLauncherItems]);
 
   const handleMobileTabChange = useCallback((tab: MobileTabId) => {
     setMobileMenuOpen(false);
@@ -1282,6 +1506,14 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
                   <span className={styles.mobileTopPill}>窗口 {visibleWindowCount}</span>
                 </div>
                 <div className={styles.mobileHomeActions}>
+                  <button type="button" className={styles.mobileHomeActionButton} onClick={() => openLoginGate('password')}>
+                    <LogIn size={16} />
+                    <span>登录</span>
+                  </button>
+                  <button type="button" className={styles.mobileHomeActionButton} onClick={() => openLoginGate('register')}>
+                    <UserPlus size={16} />
+                    <span>注册</span>
+                  </button>
                   <button type="button" className={styles.mobileHomeActionButton} onClick={openRechargeCenter}>
                     <ShoppingBag size={16} />
                     <span>充值中心</span>
@@ -1416,12 +1648,12 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
           <button className={styles.appleButton} aria-label="凤煌科技">
             <img src="/favicon.png" alt="凤煌科技" className={styles.brandLogo} />
           </button>
-          <button className={styles.menuButton}>文件</button>
+          <button className={styles.menuButton}>应用</button>
           <button className={styles.menuButton}>视图</button>
-          <div className={styles.brandPill}><LayoutGrid size={14} /><span>{activeWindow?.title ?? '凤煌科技'}</span></div>
+          <div className={styles.brandPill}><LayoutGrid size={14} /><span>{activeWindow?.title ?? '工具启动器'}</span></div>
         </div>
         <div className={styles.menuRight}>
-          <div className={styles.statusPill}><Activity size={14} /><span>凤煌科技统一运行时</span></div>
+          <div className={styles.statusPill}><Activity size={14} /><span>{visibleWindowCount} 个窗口</span></div>
           <div className={styles.statusPill}><Bell size={14} /><span>{nextAlarm ? `${nextAlarm.time} ${nextAlarm.label}` : '今天暂无提醒'}</span></div>
           <button className={styles.menuIconButton} onClick={() => setDarkMode((value) => !value)}>{darkMode ? <SunMedium size={14} /> : <MoonStar size={14} />}</button>
           <span className={styles.menuClock}>{currentTime.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' })} · {timeLabel}</span>
@@ -1437,165 +1669,239 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
         </div>
       ) : null}
       <div className={styles.desktopStage}>
-        <main className={styles.overviewColumn}>
-          <section className={styles.heroPanel}>
-            <div className={styles.heroTopRow}>
-              <div className={styles.heroIntro}>
-                <span className={styles.heroEyebrow}>主程序</span>
-                <h1 className={styles.heroTitle}>凤煌桌面</h1>
-                <p className={styles.heroCopy}>常用应用放在第一层，桌面内容直接滚动查看，找到后立即打开。</p>
+        <main className={styles.commandCenter}>
+          <section className={styles.launchpadFrame}>
+            <div className={styles.deckTopbar}>
+              <div className={styles.deckBrand}>
+                <img src="/favicon.png" alt="" />
+                <div>
+                  <span>桌面启动器</span>
+                  <strong>凤煌</strong>
+                </div>
               </div>
-              <div className={styles.heroTimeCard}>
-                <span className={styles.cardLabel}>当前时间</span>
-                <strong className={styles.heroTime}>{timeLabel}</strong>
-                <span className={styles.heroDate}>{fullDateLabel}</span>
-                <span className={styles.heroMeta}>{activeWindow?.title ? `当前窗口：${activeWindow.title}` : '准备就绪'}</span>
-              </div>
-            </div>
-            <label className={styles.desktopSearchBar}>
-              <Search size={16} />
-              <input
-                value={appSearch}
-                onChange={(event) => setAppSearch(event.target.value)}
-                placeholder="搜索应用、系统工具或接入页"
-              />
-            </label>
-            <div className={styles.heroActionRow}>
-              <button type="button" className={styles.heroActionButton} onClick={openRechargeCenter}>
-                <ShoppingBag size={17} />
-                <span>充值中心</span>
-              </button>
-              <button type="button" className={styles.heroActionButton} onClick={openOfficialWebsite}>
-                <Globe2 size={17} />
-                <span>官网入口</span>
-              </button>
-            </div>
-            <div className={styles.coreAppGrid}>
-              {filteredCoreApps.map((app) => (
-                <button key={app.id} className={styles.coreAppCard} onClick={() => openWindow(app.id)}>
-                  <div className={styles.coreAppHeader}>
-                    <div className={styles.desktopIconBadge} style={{ background: app.color }}>
-                      {renderAppIcon(app, 18)}
-                    </div>
-                    <span className={styles.coreAppOpen}>打开</span>
-                  </div>
-                  <strong>{app.title}</strong>
-                  <p>{APP_SUMMARY_MAP[app.id] ?? app.description}</p>
+
+              <label className={styles.deckSearch}>
+                <Search size={18} />
+                <input
+                  ref={appSearchInputRef}
+                  value={appSearch}
+                  onChange={(event) => setAppSearch(event.target.value)}
+                  onKeyDown={handleDeckKeyDown}
+                  placeholder="搜索应用、工具或接入项"
+                />
+                <kbd>Enter</kbd>
+              </label>
+
+              <div className={styles.deckAccount} aria-label="账号和系统入口">
+                <button type="button" onClick={() => openLoginGate('password')}>
+                  <LogIn size={15} />
+                  <span>登录</span>
                 </button>
-              ))}
+                <button type="button" onClick={() => openLoginGate('register')}>
+                  <UserPlus size={15} />
+                  <span>注册</span>
+                </button>
+                <button type="button" onClick={openRechargeCenter}>
+                  <ShoppingBag size={15} />
+                  <span>充值</span>
+                </button>
+                <button type="button" onClick={openOfficialWebsite} aria-label="官网入口">
+                  <Globe2 size={15} />
+                </button>
+              </div>
             </div>
-          </section>
-          <section className={styles.iconDeck}>
-            <div className={styles.sectionHeader}>
-              <div>
-                <p className={styles.cardLabel}>{appSearch.trim() ? '搜索结果' : '已接入应用'}</p>
-                <h3 className={styles.sectionTitle}>{appSearch.trim() ? '匹配入口' : '外部与展示应用'}</h3>
-              </div>
-              <span className={styles.sectionHint}>
-                {appSearch.trim()
-                  ? `${filteredAllApps.length} 个匹配项`
-                  : `${filteredImportedApps.length} 个已接入应用，静态页面会先校验可达性`}
-              </span>
+
+            <div className={styles.deckStatusline}>
+              <span>{activeWindow?.title ? `当前 ${activeWindow.title}` : '工作台待命'}</span>
+              <span>{visibleWindowCount} 窗口</span>
+              <span>{importedAppHealth.ready} 可用</span>
+              <span>{nextAlarm ? `${nextAlarm.time} ${nextAlarm.label}` : `${enabledAlarmCount} 提醒`}</span>
             </div>
-            {!appSearch.trim() ? (
-              <div className={styles.appHealthStrip}>
-                <span className={styles.appHealthChip}>
-                  总数 <strong>{importedAppHealth.total}</strong>
-                </span>
-                <span className={styles.appHealthChip}>
-                  静态页 <strong>{importedAppHealth.staticWeb}</strong>
-                </span>
-                <span className={styles.appHealthChip}>
-                  生成包 <strong>{importedAppHealth.generatedWeb}</strong>
-                </span>
-                <span className={styles.appHealthChip}>
-                  本地程序 <strong>{importedAppHealth.nativeExe}</strong>
-                </span>
-                <span className={`${styles.appHealthChip} ${styles.appHealthChipReady}`}>
-                  可用 <strong>{importedAppHealth.ready}</strong>
-                </span>
-                <span className={`${styles.appHealthChip} ${styles.appHealthChipMissing}`}>
-                  需修复 <strong>{importedAppHealth.missing}</strong>
-                </span>
-              </div>
-            ) : null}
-            {(appSearch.trim() ? filteredAllApps : filteredImportedApps).length === 0 ? (
-              <div className={styles.emptyState}>
-                {appSearch.trim()
-                  ? '没有找到匹配的应用。'
-                  : '当前还没有已接入应用。可以先从源码、本地程序或外部页面接入一个。'}
-              </div>
-            ) : (
-              <div className={styles.desktopGrid}>
-                {(appSearch.trim() ? filteredAllApps : filteredImportedApps).map((app) => (
-                  <button key={app.id} className={styles.desktopIcon} onClick={() => openWindow(app.id)}>
-                    <div className={styles.desktopIconBadge} style={{ background: app.color }}>
-                      {renderAppIcon(app, 20)}
-                    </div>
-                    <span>{app.title}</span>
-                    <small className={styles.desktopIconMeta}>{getImportedAppStatus(app)}</small>
+
+            <div className={styles.deckLayout}>
+              <nav className={styles.deckNav} aria-label="启动器分类">
+                {launcherGroupTabs.map((tab) => (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    className={launcherGroupFilter === tab.id ? styles.deckNavActive : ''}
+                    onClick={() => setLauncherGroupFilter(tab.id)}
+                  >
+                    <span>{tab.label}</span>
+                    <strong>{tab.count}</strong>
                   </button>
                 ))}
-              </div>
-            )}
+              </nav>
+
+              <main className={styles.deckMain}>
+                <section className={styles.deckPulse} aria-label="工作脉冲">
+                  <div className={styles.deckPulseTitle}>
+                    <span>{deckMode === 'search' ? '搜索结果' : '常用入口'}</span>
+                    <strong>{deckMode === 'search' ? '找到这些入口' : '快速打开'}</strong>
+                  </div>
+                  <div className={styles.deckPulseStats}>
+                    <span><strong>{visibleWindowCount}</strong> 运行</span>
+                    <span><strong>{recentLauncherItems.length}</strong> 最近</span>
+                    <span><strong>{importedAppHealth.ready}</strong> 可用</span>
+                  </div>
+                  <div className={styles.deckQuickRail} aria-label="快速入口">
+                    {(deckRecentDockApps.length > 0 ? deckRecentDockApps : pinnedLauncherItems.map((item) => item.app)).slice(0, 4).map((app) => {
+                      const active = windows.some((windowItem) => windowItem.appId === app.id && !windowItem.minimized);
+                      const selected = selectedLauncherItem?.id === app.id;
+
+                      return (
+                        <button
+                          key={app.id}
+                          type="button"
+                          className={`${styles.deckQuickItem} ${selected ? styles.deckQuickItemSelected : ''}`}
+                          onClick={() => setSelectedLauncherAppId(app.id)}
+                          onDoubleClick={() => openLauncherItem(app.id)}
+                        >
+                          <span>{renderAppIcon(app, 16)}</span>
+                          <strong>{app.title}</strong>
+                          {active ? <i /> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </section>
+
+                {deckMode === 'home' && pinnedLauncherItems.length > 0 ? (
+                  <section className={styles.deckPinnedGrid} aria-label="核心入口">
+                    {pinnedLauncherItems.map((item, index) => {
+                      const selected = selectedLauncherItem?.id === item.id;
+                      const active = windows.some((windowItem) => windowItem.appId === item.id && !windowItem.minimized);
+
+                      return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          className={`${styles.deckTile} ${selected ? styles.deckTileSelected : ''}`}
+                          aria-current={selected ? 'true' : undefined}
+                          onClick={() => setSelectedLauncherAppId(item.id)}
+                          onDoubleClick={() => openLauncherItem(item.id)}
+                          onFocus={() => setSelectedLauncherAppId(item.id)}
+                          onKeyDown={handleLauncherKeyDown}
+                        >
+                          <span className={styles.deckTileIndex}>{String(index + 1).padStart(2, '0')}</span>
+                          <span className={styles.deckTileIcon}>{renderAppIcon(item.app, 24)}</span>
+                          <span className={styles.deckTileCopy}>
+                            <strong>{item.title}</strong>
+                            <small>{item.description}</small>
+                          </span>
+                          <span className={styles.deckTileMeta}>{active ? '运行中' : item.typeLabel}</span>
+                        </button>
+                      );
+                    })}
+                  </section>
+                ) : null}
+
+                <section className={styles.deckCommandList} aria-label={deckMode === 'search' ? '搜索结果' : '全部入口'}>
+                  <div className={styles.deckSectionHeader}>
+                    <span>{deckMode === 'search' ? '搜索结果' : launcherGroupFilter === 'all' ? '全部入口' : `${launcherGroupTabs.find((tab) => tab.id === launcherGroupFilter)?.label ?? '应用'}入口`}</span>
+                    <strong>{visibleCommandShelfItems.length}</strong>
+                  </div>
+
+                  {visibleCommandShelfItems.length === 0 ? (
+                    <div className={styles.deckEmpty}>
+                      <strong>{appSearch.trim() ? '没有匹配入口' : '暂无最近打开'}</strong>
+                      <span>{appSearch.trim() ? '换一个关键词，或清空搜索回到工作台。' : '打开一个工具后，这里会留下最近入口。'}</span>
+                      {appSearch.trim() ? (
+                        <button type="button" onClick={() => setAppSearch('')}>清空搜索</button>
+                      ) : null}
+                    </div>
+                  ) : visibleCommandShelfItems.map((item) => {
+                    const selected = selectedLauncherItem?.id === item.id;
+                    const recent = recentLauncherAppIds.includes(item.id);
+                    const active = windows.some((windowItem) => windowItem.appId === item.id && !windowItem.minimized);
+
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={`${styles.deckCommand} ${selected ? styles.deckCommandSelected : ''}`}
+                        aria-current={selected ? 'true' : undefined}
+                        onClick={() => setSelectedLauncherAppId(item.id)}
+                        onDoubleClick={() => openLauncherItem(item.id)}
+                        onFocus={() => setSelectedLauncherAppId(item.id)}
+                        onKeyDown={handleLauncherKeyDown}
+                      >
+                        <span className={styles.deckCommandIcon}>{renderAppIcon(item.app, 18)}</span>
+                        <span className={styles.deckCommandCopy}>
+                          <strong>{item.title}</strong>
+                          <small>{item.description}</small>
+                        </span>
+                        <span className={styles.deckCommandMeta}>
+                          {active ? <i>运行中</i> : null}
+                          {recent ? <i>最近</i> : null}
+                          <em>{item.groupLabel}</em>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </section>
+              </main>
+
+              <aside className={styles.deckInspector} aria-label="选中工具详情">
+                <div className={styles.deckInspectorMark}>
+                  {selectedLauncherItem ? renderAppIcon(selectedLauncherItem.app, 32) : <LayoutGrid size={32} />}
+                </div>
+                <div className={styles.deckInspectorCopy}>
+                  <span>{selectedLauncherItem?.groupLabel ?? '启动器'}</span>
+                  <strong>{selectedLauncherItem?.title ?? '未选择工具'}</strong>
+                  <p>{selectedLauncherItem?.description ?? '选择一个入口，右侧会出现打开动作和运行状态。'}</p>
+                </div>
+                <div className={styles.deckInspectorMeta}>
+                  <span>
+                    <small>类型</small>
+                    <strong>{selectedLauncherItem?.typeLabel ?? '-'}</strong>
+                  </span>
+                  <span>
+                    <small>状态</small>
+                    <strong>{selectedLauncherItem?.statusLabel ?? '-'}</strong>
+                  </span>
+                  <span>
+                    <small>窗口</small>
+                    <strong>
+                      {selectedLauncherItem
+                        ? windows.some((item) => item.appId === selectedLauncherItem.id && !item.minimized) ? '运行中' : '未打开'
+                        : '-'}
+                    </strong>
+                  </span>
+                </div>
+                <div className={styles.deckInspectorActions}>
+                  <button
+                    type="button"
+                    className={styles.deckPrimaryAction}
+                    disabled={!selectedLauncherItem}
+                    onClick={() => selectedLauncherItem && openLauncherItem(selectedLauncherItem.id)}
+                  >
+                    打开
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => selectedLauncherItem && setDesktopNotice({ kind: 'success', text: `${selectedLauncherItem.title} 已加入固定候选。` })}
+                    disabled={!selectedLauncherItem}
+                  >
+                    固定
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => selectedLauncherItem && setDesktopNotice({ kind: 'success', text: `${selectedLauncherItem.title} · ${selectedLauncherItem.statusLabel}` })}
+                    disabled={!selectedLauncherItem}
+                  >
+                    详情
+                  </button>
+                </div>
+                <div className={styles.deckHint}>
+                  <span>↑↓ 选择</span>
+                  <span>Enter 打开</span>
+                  <span>Esc 清空</span>
+                </div>
+              </aside>
+            </div>
           </section>
         </main>
-        <aside className={styles.libraryColumn}>
-          <section className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div>
-                <p className={styles.cardLabel}>桌面状态</p>
-                <strong>当前概览</strong>
-              </div>
-              <span className={styles.appZoneCount}>{visibleWindowCount}</span>
-            </div>
-            <div className={styles.overviewList}>
-              <div className={styles.overviewRow}>
-                <span>活动窗口</span>
-                <strong>{visibleWindowCount}</strong>
-              </div>
-              <div className={styles.overviewRow}>
-                <span>已完成事项</span>
-                <strong>{completedTaskCount}</strong>
-              </div>
-              <div className={styles.overviewRow}>
-                <span>启用提醒</span>
-                <strong>{enabledAlarmCount}</strong>
-              </div>
-              <div className={styles.overviewRow}>
-                <span>底部 Dock</span>
-                <strong>{dockApps.length} 个入口</strong>
-              </div>
-              <div className={styles.overviewRow}>
-                <span>下一提醒</span>
-                <strong>{nextAlarm ? `${nextAlarm.time} ${nextAlarm.label}` : '今日无提醒'}</strong>
-              </div>
-            </div>
-          </section>
-          <section className={styles.appZone}>
-            <div className={styles.appZoneHeader}>
-              <div>
-                <strong>系统工具</strong>
-                <span>设置、日历、任务、便签和桌面基础工具。</span>
-              </div>
-              <span className={styles.appZoneCount}>{filteredUtilityApps.length}</span>
-            </div>
-            {filteredUtilityApps.length === 0 ? (
-              <div className={styles.emptyState}>没有匹配的系统工具。</div>
-            ) : (
-              <div className={styles.desktopGrid}>
-                {filteredUtilityApps.map((app) => (
-                  <button key={app.id} className={styles.desktopIcon} onClick={() => openWindow(app.id)}>
-                    <div className={styles.desktopIconBadge} style={{ background: app.color }}>
-                      {renderAppIcon(app, 20)}
-                    </div>
-                    <span>{app.title}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-        </aside>
       </div>
       {windows.filter((item) => !item.minimized).sort((a, b) => a.zIndex - b.zIndex).map((item) => (
         <div key={item.id} className={`${styles.windowShell} ${item.active ? styles.windowActive : ''}`} style={{ left: item.x, top: item.y, width: item.width, height: item.height, zIndex: item.zIndex }} onMouseDown={() => focusWindow(item.id)}>
@@ -1635,11 +1941,11 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
         onMouseEnter={revealDock}
         onMouseLeave={() => scheduleDockHide()}
       >
-        {dockApps.map((app) => {
+        {deckRecentDockApps.map((app) => {
           const active = windows.some((item) => item.appId === app.id && !item.minimized);
           return (
             <button key={app.id} className={styles.dockItem} onClick={() => openWindow(app.id)}>
-              <div className={styles.dockBadge} style={{ background: app.color }}>{renderAppIcon(app, 20)}</div>
+              <div className={styles.dockBadge}>{renderAppIcon(app, 20)}</div>
               <span>{app.title}</span>
               {active ? <i className={styles.dockIndicator} /> : null}
             </button>
