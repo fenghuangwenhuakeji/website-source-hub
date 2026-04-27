@@ -1,6 +1,6 @@
 {
   "name": "@website-source-hub/client-desktop",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "description": "Thin Electron shell for the normalized client-web bundle",
   "main": "electron/main.js",

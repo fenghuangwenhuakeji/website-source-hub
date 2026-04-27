@@ -248,7 +248,7 @@ export default function ProfileCenter() {
   const diamondToPointsRate = Math.max(1, toNumber(rules.diamondToPointsRate, 1));
   const commissionRules = Array.isArray(rules.commissionRules) ? rules.commissionRules : [];
   const payoutReady = Boolean(payoutProfile?.realName && payoutProfile?.payoutAccount);
-  const canEnterMain = isLocalAcceptanceMode() || Boolean(profile.duration?.canEnter);
+  const canEnterMain = true;
   const isLocalWechatMock = Boolean(wechatBinding?.authUrl?.includes('/api/wechat/mock-login/'));
 
   useEffect(() => {
@@ -650,14 +650,14 @@ export default function ProfileCenter() {
                     {wechatBound ? '微信已绑定' : '微信未绑定'}
                   </Tag>
                   <Tag className={styles.metaPill} icon={<SafetyCertificateOutlined />}>
-                    {canEnterMain ? '已兑换可用时长' : '尚未兑换时长'}
+                    {profile.duration?.canEnter || isLocalAcceptanceMode() ? '已兑换可用时长' : '可进入主程序'}
                   </Tag>
                 </Space>
                 <div className={styles.buttonRow}>
                   <Button type="primary" className={styles.primaryButton} icon={<WalletOutlined />} onClick={() => navigate(buildAcceptanceAwarePath('/recharge'))}>
                     返回充值中心
                   </Button>
-                  <Button className={styles.secondaryButton} onClick={() => navigate(buildAcceptanceAwarePath('/main'))} disabled={!canEnterMain}>
+                  <Button className={styles.secondaryButton} onClick={() => navigate(buildAcceptanceAwarePath('/main'))}>
                     进入主程序
                   </Button>
                   <Button className={styles.secondaryButton} icon={<ReloadOutlined />} onClick={() => void refreshPage(true)} loading={refreshing}>

@@ -286,11 +286,7 @@ export default function RechargeCenter() {
   );
   const isDurationExpired = !accessEnabled && hasDurationRecord;
   const accessStateLabel = localAcceptanceMode ? '本地验收' : accessEnabled ? '已开通' : isDurationExpired ? '已过期' : '待兑换';
-  const entryButtonLabel = accessEnabled
-    ? '进入主程序'
-    : isDurationExpired
-      ? '时长已过期'
-      : '先兑换时长';
+  const entryButtonLabel = '进入主程序';
   const settlementDays = Math.max(1, toNumber(referralRules?.settlementDays, 3));
   const recruitBoostPaidUsers = Math.max(1, toNumber(referralRules?.recruitBoostPaidUsers, 5));
   const diamondToPointsRate = Math.max(1, toNumber(referralRules?.diamondToPointsRate, 1));
@@ -626,7 +622,6 @@ export default function RechargeCenter() {
                   <Button
                     type="primary"
                     size="large"
-                    disabled={!accessEnabled}
                     className={styles.primaryButton}
                     onClick={() => navigate(buildAcceptanceAwarePath('/main'))}
                   >

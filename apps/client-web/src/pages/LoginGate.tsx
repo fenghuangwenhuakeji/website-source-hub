@@ -148,7 +148,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
         return;
       }
 
-      navigate(buildAcceptanceAwarePath(access.needsRecharge ? '/recharge' : '/main'), { replace: true });
+      navigate(buildAcceptanceAwarePath('/main'), { replace: true });
     };
 
     void syncExistingSession();
@@ -263,7 +263,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     });
 
     onLoginSuccess?.();
-    navigate(buildAcceptanceAwarePath(localAcceptanceMode ? '/main' : '/recharge'), { replace: true });
+    navigate(buildAcceptanceAwarePath('/main'), { replace: true });
   };
 
   const showCodeMessage = (response: any, successText: string) => {

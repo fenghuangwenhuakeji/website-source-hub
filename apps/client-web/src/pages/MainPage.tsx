@@ -79,11 +79,6 @@ export default function MainPage(_props: MainPageProps) {
         return;
       }
 
-      if (access.needsRecharge) {
-        redirectToOfficial(buildOfficialPath('/recharge', { from: APP_MAIN_PATH }));
-        return;
-      }
-
       setReady(true);
     })();
   }, []);

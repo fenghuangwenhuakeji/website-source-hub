@@ -8,7 +8,7 @@ const APP_NAME = '凤煌';
 const APP_ID = 'com.fenghuang.desktop';
 const APP_PROTOCOL = 'fenghuang';
 const DEFAULT_CLOUD_ORIGIN = 'https://fhwhkj.top';
-const DEFAULT_ENTRY_PATH = '/login';
+const DEFAULT_ENTRY_PATH = '/access/main';
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 const ACCEPTANCE_MODE_MARKER = path.join(DIST_DIR, '.acceptance-mode.json');
 
@@ -231,6 +231,14 @@ function getEntryPath() {
     return isLocalAcceptanceMode() ? '/main?localAcceptance=1' : DEFAULT_ENTRY_PATH;
 }
 
+function getEntryUrl() {
+    if (isLocalAcceptanceMode()) {
+        return `${localAppOrigin}${getEntryPath()}`;
+    }
+
+    return new URL(DEFAULT_ENTRY_PATH, CLOUD_ORIGIN).toString();
+}
+
 function focusMainWindow() {
     if (!mainWindow) {
         return;
@@ -255,8 +263,7 @@ function handleProtocolUrl(url) {
         return;
     }
 
-    const entryPath = isLocalAcceptanceMode() ? '/main?localAcceptance=1' : '/main';
-    mainWindow.loadURL(`${localAppOrigin}${entryPath}`);
+    mainWindow.loadURL(getEntryUrl());
     focusMainWindow();
 }
 
@@ -533,7 +540,7 @@ function startLocalServer() {
 
 function resolveNavigationUrl(url) {
     try {
-        return new URL(url, `${localAppOrigin}${getEntryPath()}`);
+        return new URL(url, getEntryUrl());
     } catch {
         return null;
     }
@@ -541,7 +548,15 @@ function resolveNavigationUrl(url) {
 
 function isAppUrl(url) {
     const resolvedUrl = resolveNavigationUrl(url);
-    return resolvedUrl != null && resolvedUrl.origin === localAppOrigin;
+    if (!resolvedUrl) {
+        return false;
+    }
+
+    if (resolvedUrl.origin === localAppOrigin) {
+        return true;
+    }
+
+    return !isLocalAcceptanceMode() && resolvedUrl.origin === CLOUD_ORIGIN;
 }
 
 function createFallbackWindow(error) {
@@ -596,10 +611,12 @@ function createWindow() {
         show: false,
     });
 
-    mainWindow.loadURL(`${localAppOrigin}${getEntryPath()}`);
+    mainWindow.loadURL(getEntryUrl());
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-        if (!isAppUrl(url)) {
+        if (isAppUrl(url)) {
+            mainWindow.loadURL(url);
+        } else {
             shell.openExternal(url);
         }
 
