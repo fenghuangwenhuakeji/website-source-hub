@@ -1,14 +1,30 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { Spin } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { buildAcceptanceAwarePath } from '../lib/acceptanceMode';
 import { checkRechargeRequired, isLoggedIn, logout } from '../lib/permissionManager';
+import { buildOfficialPath, resolveOfficialSiteUrl } from '../lib/officialSiteUrl';
 
 type MainPageProps = {
   onLogout?: () => void;
 };
 
 const MacOSDesktop = lazy(() => import('@/components/MacOSDesktop'));
+const APP_MAIN_PATH = '/access/main';
+
+function redirectToOfficial(path: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.location.replace(resolveOfficialSiteUrl(path));
+}
+
+function openOfficial(path: string) {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  window.location.assign(resolveOfficialSiteUrl(path));
+}
 
 function DesktopShellFallback() {
   return (
@@ -47,31 +63,30 @@ function DesktopShellFallback() {
 }
 
 export default function MainPage(_props: MainPageProps) {
-  const navigate = useNavigate();
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     void (async () => {
       if (!isLoggedIn()) {
-        navigate(buildAcceptanceAwarePath('/login'), { replace: true });
+        redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
         return;
       }
 
       const access = await checkRechargeRequired();
       if (access.needsLogin) {
         logout();
-        navigate(buildAcceptanceAwarePath('/login'), { replace: true });
+        redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
         return;
       }
 
       if (access.needsRecharge) {
-        navigate(buildAcceptanceAwarePath('/recharge'), { replace: true });
+        redirectToOfficial(buildOfficialPath('/recharge', { from: APP_MAIN_PATH }));
         return;
       }
 
       setReady(true);
     })();
-  }, [navigate]);
+  }, []);
 
   if (!ready) {
     return (
@@ -103,7 +118,7 @@ export default function MainPage(_props: MainPageProps) {
       }}
     >
       <Suspense fallback={<DesktopShellFallback />}>
-        <MacOSDesktop onOpenRecharge={() => navigate(buildAcceptanceAwarePath('/recharge'))} />
+        <MacOSDesktop onOpenRecharge={() => openOfficial(buildOfficialPath('/recharge', { from: APP_MAIN_PATH }))} />
       </Suspense>
     </div>
   );

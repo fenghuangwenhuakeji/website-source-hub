@@ -58,8 +58,7 @@ import {
   updateInstalledDesktopApp,
   type DesktopAppDefinition,
 } from '@/lib';
-import { buildRouterPath } from '@/lib/routerBase';
-import { buildAcceptanceAwarePath } from '@/lib/acceptanceMode';
+import { buildOfficialPath, resolveOfficialSiteUrl } from '@/lib/officialSiteUrl';
 import { applyThemeMode, resolveThemeMode, setPreferredThemeMode, subscribeThemeMode } from '@/lib/themePreference';
 import { readScopedStorageValue, writeScopedStorageValue } from '@/lib/userScopedStorage';
 
@@ -420,14 +419,14 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
     }
 
     if (typeof window !== 'undefined') {
-      window.location.assign(buildRouterPath('/recharge'));
+      window.location.assign(resolveOfficialSiteUrl(buildOfficialPath('/recharge', { from: '/access/main' })));
     }
   }, [onOpenRecharge]);
 
   const openLoginGate = useCallback((mode: 'password' | 'register' = 'password') => {
     if (typeof window === 'undefined') return;
-    const authPath = mode === 'register' ? '/login?forceLogin=1&mode=register' : '/login?forceLogin=1';
-    window.location.assign(buildRouterPath(buildAcceptanceAwarePath(authPath)));
+    const authPath = mode === 'register' ? '/register' : '/login';
+    window.location.assign(resolveOfficialSiteUrl(buildOfficialPath(authPath, { from: '/access/main' })));
   }, []);
 
   const openOfficialWebsite = useCallback(() => {

@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
-import { resolveDesktopLoginUrl } from '../utils/desktopAccess';
 import { apiClient } from '../utils/api';
 import { useAuthStore } from '../store/auth';
+import { buildPathWithFrom, getSafeReturnPath, openReturnPath } from '../utils/safeReturnPath';
 
 const registerSchema = z
   .object({
@@ -26,9 +26,12 @@ type RegisterForm = z.infer<typeof registerSchema>;
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { setAuth } = useAuthStore();
-  const wechatLoginHref = resolveDesktopLoginUrl({ mode: 'wechat', from: '/register' });
-  const smsLoginHref = resolveDesktopLoginUrl({ mode: 'sms', from: '/register' });
+  const returnPath = getSafeReturnPath(location.search);
+  const wechatLoginHref = buildPathWithFrom('/login?mode=wechat', returnPath);
+  const smsLoginHref = buildPathWithFrom('/login?mode=sms', returnPath);
+  const loginHref = buildPathWithFrom('/login', returnPath);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -59,7 +62,7 @@ export default function RegisterPage() {
         throw new Error('Invalid register response');
       }
       setAuth(user, token, refreshToken);
-      navigate('/dashboard');
+      openReturnPath(returnPath, navigate);
     } catch (err: any) {
       setError(err.response?.data?.error || '注册失败，请稍后再试');
     } finally {
@@ -133,7 +136,7 @@ export default function RegisterPage() {
               <a href={smsLoginHref} className="btn btn-secondary btn-sm">
                 短信登录
               </a>
-              <Link to="/login" className="btn btn-secondary btn-sm">
+              <Link to={loginHref} className="btn btn-secondary btn-sm">
                 返回登录
               </Link>
             </div>

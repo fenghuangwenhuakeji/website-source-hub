@@ -19,6 +19,24 @@ interface User {
   birthday?: string;
   location?: string;
   website?: string;
+  points?: number;
+  totalRecharge?: number;
+  referralCode?: string | null;
+  lastLoginAt?: string | null;
+  createdAt?: string | null;
+  bindingStatus?: {
+    phoneBound?: boolean;
+    phoneVerified?: boolean;
+    wechatBound?: boolean;
+    wechatBoundAt?: string | null;
+  };
+  duration?: {
+    isActive?: boolean;
+    isPermanent?: boolean;
+    expiresAt?: string | null;
+    canEnter?: boolean;
+    remainingSeconds?: number;
+  };
 }
 
 interface AuthState {

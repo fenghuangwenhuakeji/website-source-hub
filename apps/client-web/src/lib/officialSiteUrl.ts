@@ -25,6 +25,24 @@ function normalizeOfficialPath(path: string) {
   return trimmed;
 }
 
+function isSafeInternalPath(path: string) {
+  return path.startsWith('/') && !path.startsWith('//');
+}
+
+export function buildOfficialPath(path = '/login', options: { from?: string } = {}) {
+  const normalizedPath = normalizeOfficialPath(path);
+  const [pathname, query = ''] = normalizedPath.split('?');
+  const params = new URLSearchParams(query);
+  const from = (options.from || '').trim();
+
+  if (from && isSafeInternalPath(from)) {
+    params.set('from', from);
+  }
+
+  const nextQuery = params.toString();
+  return nextQuery ? `${pathname}?${nextQuery}` : pathname;
+}
+
 export function resolveOfficialSiteUrl(path = '/login') {
   const normalizedPath = normalizeOfficialPath(path);
 
