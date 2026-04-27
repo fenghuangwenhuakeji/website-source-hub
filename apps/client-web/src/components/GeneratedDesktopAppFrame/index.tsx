@@ -1,5 +1,5 @@
 import React from 'react';
-import { AlertTriangle, Copy, ExternalLink, FolderOpen, Gauge, HardDrive, Loader2, Package, RefreshCw } from 'lucide-react';
+import { Copy, ExternalLink, FolderOpen, Gauge, HardDrive, Package, RefreshCw } from 'lucide-react';
 import styles from './index.module.scss';
 import { launchNativeApp } from '@/lib/nativeAppLauncher';
 import { buildRouterPath, getRouterBase } from '@/lib/routerBase';
@@ -560,41 +560,8 @@ const GeneratedDesktopAppFrame: React.FC<GeneratedDesktopAppFrameProps> = ({ app
   if (app.runtime === 'static-web' && app.route) {
     const frameClassName = `${styles.frame} ${styles.frameScaled}`;
     const frameKey = `${userScopeId}:${staticRoute || app.route}-${staticRouteRetrySeed}`;
-    const routeStatusTone =
-      staticRouteStatus === 'ready'
-        ? styles.routeStatusReady
-        : staticRouteStatus === 'checking'
-          ? styles.routeStatusChecking
-          : styles.routeStatusError;
-
     return (
-      <div className={styles.frameShell}>
-        <div className={styles.metaBar}>
-          <div className={styles.metaList}>
-            <span className={styles.metaPill}>
-              <Package size={12} />
-              静态应用包
-            </span>
-            <span className={styles.metaPill}>
-              <Gauge size={12} />
-              {staticRoute || app.route}
-            </span>
-            <span className={`${styles.metaPill} ${routeStatusTone}`}>
-              {staticRouteStatus === 'checking' ? <Loader2 size={12} className={styles.spinIcon} /> : <AlertTriangle size={12} />}
-              {staticRouteStatus === 'ready'
-                ? '已挂载'
-                : staticRouteStatus === 'checking'
-                  ? '检查中'
-                  : '需要修复'}
-            </span>
-          </div>
-
-          <div className={styles.metaList}>
-            <span>{staticRouteStatus === 'ready' ? '公共资源目录' : '打开前先检查 bundle'}</span>
-            <span>{staticRouteMessage || '支持网页与移动端'}</span>
-          </div>
-        </div>
-
+      <div className={`${styles.frameShell} ${styles.staticImmersiveShell}`}>
         {staticRouteStatus === 'ready' ? (
           <div className={styles.frameBody} ref={frameBodyRef} style={frameScaleStyle}>
           <div className={styles.frameViewport}>

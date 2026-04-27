@@ -12,6 +12,12 @@
   isolation: isolate;
 }
 
+.staticImmersiveShell {
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 100%;
+  background: #080b0c;
+}
+
 .metaBar {
   display: flex;
   align-items: center;
