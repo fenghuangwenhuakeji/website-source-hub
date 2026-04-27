@@ -1,7 +1,10 @@
 const { contextBridge, ipcRenderer, shell } = require('electron');
-const path = require('path');
 
 let workspacePath = '';
+
+function inferPathSeparator(inputPath = '') {
+    return /^[a-zA-Z]:[\\/]/.test(inputPath) || inputPath.includes('\\') ? '\\' : '/';
+}
 
 function normalizeWorkspacePath(inputPath) {
     if (typeof inputPath !== 'string') {
@@ -9,7 +12,24 @@ function normalizeWorkspacePath(inputPath) {
     }
 
     const trimmedPath = inputPath.replace(/^["']|["']$/g, '').trim();
-    return trimmedPath ? trimmedPath.replace(/\//g, path.sep) : '';
+    if (!trimmedPath) {
+        return '';
+    }
+
+    return inferPathSeparator(trimmedPath) === '\\'
+        ? trimmedPath.replace(/\//g, '\\')
+        : trimmedPath.replace(/\\/g, '/');
+}
+
+function isAbsolutePath(inputPath) {
+    return /^([a-zA-Z]:[\\/]|\\\\|\/)/.test(inputPath);
+}
+
+function joinWorkspacePath(basePath, relativePath) {
+    const separator = inferPathSeparator(basePath);
+    const base = basePath.replace(/[\\/]+$/g, '');
+    const child = relativePath.replace(/^[\\/]+/g, '');
+    return `${base}${separator}${child}`;
 }
 
 function resolveWorkspacePath(inputPath) {
@@ -18,15 +38,15 @@ function resolveWorkspacePath(inputPath) {
         return normalizedPath;
     }
 
-    if (path.isAbsolute(normalizedPath)) {
-        return path.normalize(normalizedPath);
+    if (isAbsolutePath(normalizedPath)) {
+        return normalizedPath;
     }
 
     if (!workspacePath) {
         return normalizedPath;
     }
 
-    return path.join(workspacePath, normalizedPath);
+    return joinWorkspacePath(workspacePath, normalizedPath);
 }
 
 async function unwrapDirectoryResult(targetPath) {

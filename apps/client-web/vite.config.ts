@@ -805,7 +805,7 @@ function serveStaticFile(filePath: string, res: any) {
 
 const config = ({ mode }: ConfigEnv): UserConfigExport => {
   const env = loadEnv(mode, process.cwd(), '');
-  const isProd = env.NODE_ENV === 'production';
+  const isProd = mode === 'production' || env.NODE_ENV === 'production';
   const isTest = env.NODE_ENV === 'test';
   const isAnalyze = env.ANALYZE === 'analyze';
   const sentryAuthToken = env.SENTRY_AUTH_TOKEN;
@@ -826,6 +826,9 @@ const config = ({ mode }: ConfigEnv): UserConfigExport => {
     }
     if (isTest && bizProjectName) {
       return '/' + bizProjectName + '/';
+    }
+    if (isProd) {
+      return '/access/';
     }
     return '/';
   };

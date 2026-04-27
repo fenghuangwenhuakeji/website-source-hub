@@ -419,6 +419,13 @@ function resolveStaticFile(requestPath) {
         }
     }
 
+    if (normalizedPath.startsWith('/access/')) {
+        const accessDistPath = safeJoin(DIST_DIR, normalizedPath.slice('/access/'.length));
+        if (accessDistPath && fs.existsSync(accessDistPath) && fs.statSync(accessDistPath).isFile()) {
+            return accessDistPath;
+        }
+    }
+
     const distPath = safeJoin(DIST_DIR, normalizedPath);
     if (distPath && fs.existsSync(distPath) && fs.statSync(distPath).isFile()) {
         return distPath;
