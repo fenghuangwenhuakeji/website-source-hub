@@ -341,6 +341,44 @@ function resolveDesktopBundlePath(normalizedPath) {
     return null;
 }
 
+function resolveStaticAppPath(normalizedPath) {
+    const accessPrefix = '/access/apps/';
+    const directPrefix = '/apps/';
+    let appRelativePath = '';
+
+    if (normalizedPath.startsWith(accessPrefix)) {
+        appRelativePath = normalizedPath.slice(accessPrefix.length);
+    } else if (normalizedPath.startsWith(directPrefix)) {
+        appRelativePath = normalizedPath.slice(directPrefix.length);
+    } else {
+        return null;
+    }
+
+    if (!appRelativePath) {
+        return null;
+    }
+
+    const appsDir = path.join(DIST_DIR, 'apps');
+    const candidatePath = safeJoin(appsDir, appRelativePath);
+
+    if (!candidatePath) {
+        return null;
+    }
+
+    if (fs.existsSync(candidatePath) && fs.statSync(candidatePath).isFile()) {
+        return candidatePath;
+    }
+
+    if (fs.existsSync(candidatePath) && fs.statSync(candidatePath).isDirectory()) {
+        const indexPath = path.join(candidatePath, 'index.html');
+        if (fs.existsSync(indexPath) && fs.statSync(indexPath).isFile()) {
+            return indexPath;
+        }
+    }
+
+    return null;
+}
+
 function safeJoin(baseDir, requestPath) {
     const cleanedPath = requestPath.replace(/^\/+/, '');
     const resolvedPath = path.resolve(baseDir, cleanedPath);
@@ -356,9 +394,14 @@ function safeJoin(baseDir, requestPath) {
 function resolveStaticFile(requestPath) {
     const normalizedPath = normalizeRequestPath(requestPath);
     const desktopBundlePath = resolveDesktopBundlePath(normalizedPath);
+    const staticAppPath = resolveStaticAppPath(normalizedPath);
 
     if (desktopBundlePath) {
         return desktopBundlePath;
+    }
+
+    if (staticAppPath) {
+        return staticAppPath;
     }
 
     if (normalizedPath.startsWith('/static/')) {

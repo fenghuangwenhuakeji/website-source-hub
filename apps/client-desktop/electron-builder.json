@@ -30,6 +30,20 @@
     "icon": "electron/assets/icon.ico",
     "signAndEditExecutable": false
   },
+  "mac": {
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["universal"]
+      },
+      {
+        "target": "zip",
+        "arch": ["universal"]
+      }
+    ],
+    "category": "public.app-category.productivity",
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
   "nsis": {
     "oneClick": false,
     "perMachine": true,

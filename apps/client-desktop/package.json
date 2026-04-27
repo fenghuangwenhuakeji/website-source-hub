@@ -9,6 +9,7 @@
   "scripts": {
     "prepare:dist": "node ./scripts/prepare-dist.mjs",
     "start": "electron .",
+    "build:mac": "npm run prepare:dist && electron-builder --config electron-builder.json --mac --universal",
     "build:win": "npm run prepare:dist && electron-builder --config electron-builder.json --win",
     "build:win:acceptance": "node ./scripts/build-win-acceptance.mjs"
   },
