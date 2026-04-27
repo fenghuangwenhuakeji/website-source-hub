@@ -3,9 +3,8 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import { db, getDatabaseAdapter } from '../config/database.js';
 import { config } from '../config/index.js';
-import { authMiddleware, type AuthRequest } from '../middleware/auth.js';
+import { authMiddleware, generateRefreshToken, generateToken, type AuthRequest } from '../middleware/auth.js';
 import { ApiError } from '../middleware/errorHandler.js';
-import { generateToken } from '../middleware/auth.js';
 
 const router = Router();
 const LOGIN_STATE_TTL_MS = 10 * 60 * 1000;
@@ -18,6 +17,7 @@ type LoginStateRecord = {
   createdAt: number;
   bindUserId?: string;
   token?: string;
+  refreshToken?: string;
   user?: Record<string, unknown>;
   message?: string;
 };
@@ -606,6 +606,11 @@ router.get('/callback', async (req: Request, res: Response, next: NextFunction) 
         username: user.username,
         role: user.role || 'user',
       });
+      const refreshToken = generateRefreshToken({
+        userId: String(user.id),
+        username: user.username,
+        role: user.role || 'user',
+      });
 
       loginStateStore.set(state, {
         state,
@@ -613,6 +618,7 @@ router.get('/callback', async (req: Request, res: Response, next: NextFunction) 
         status: 'success',
         createdAt: existingState.createdAt,
         token,
+        refreshToken,
         user: createWechatUserPayload(user),
         message: 'Login successful. Return to the desktop page to continue.',
       });
@@ -705,6 +711,7 @@ router.get('/status/:state', async (req: Request, res: Response, next: NextFunct
         mode: record.mode,
         status: record.status,
         token: record.token,
+        refreshToken: record.refreshToken,
         user: record.user,
         message:
           record.message || (record.status === 'pending' ? 'Waiting for QR confirmation.' : 'Status updated.'),
