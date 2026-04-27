@@ -22,6 +22,19 @@ type LoginStateRecord = {
   message?: string;
 };
 
+type WechatTokenData = {
+  openid: string;
+  unionid?: string;
+  access_token: string;
+  refresh_token?: string;
+  expires_in?: number;
+};
+
+type WechatUserProfile = {
+  nickname: string;
+  avatarUrl: string;
+};
+
 const loginStateStore = new Map<string, LoginStateRecord>();
 
 function createState(): string {
@@ -80,16 +93,64 @@ async function exchangeCodeForWechatToken(code: string) {
     throw ApiError.internal(`WeChat authorization failed: ${tokenData.errmsg || tokenData.errcode}`);
   }
 
-  return tokenData as {
-    openid: string;
-    unionid?: string;
-    access_token: string;
-    refresh_token?: string;
-    expires_in?: number;
+  return tokenData as WechatTokenData;
+}
+
+function normalizeWechatProfileValue(value: unknown): string {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function isFallbackWechatNickname(value: unknown): boolean {
+  const nickname = normalizeWechatProfileValue(value);
+  return !nickname || /^WeChat User\s+/i.test(nickname) || /^微信用户/.test(nickname);
+}
+
+function buildWechatFallbackNickname(openid: string): string {
+  return `微信用户${String(openid || '').slice(-6)}`;
+}
+
+async function fetchWechatUserInfo(tokenData: WechatTokenData): Promise<WechatUserProfile | null> {
+  const accessToken = normalizeWechatProfileValue(tokenData.access_token);
+  const openid = normalizeWechatProfileValue(tokenData.openid);
+
+  if (!accessToken || !openid) {
+    return null;
+  }
+
+  try {
+    const userInfoUrl =
+      `https://api.weixin.qq.com/sns/userinfo?access_token=${encodeURIComponent(accessToken)}` +
+      `&openid=${encodeURIComponent(openid)}&lang=zh_CN`;
+    const response = await axios.get(userInfoUrl);
+    const data = response.data;
+
+    if (!data || data.errcode) {
+      console.warn('[wechat-login] Unable to fetch WeChat user info:', data?.errmsg || data?.errcode || 'empty response');
+      return null;
+    }
+
+    return {
+      nickname: normalizeWechatProfileValue(data.nickname),
+      avatarUrl: normalizeWechatProfileValue(data.headimgurl),
+    };
+  } catch (error) {
+    console.warn('[wechat-login] Unable to fetch WeChat user info:', error instanceof Error ? error.message : String(error));
+    return null;
+  }
+}
+
+function createWechatUserPayload(user: any): Record<string, unknown> {
+  return {
+    id: user.id,
+    username: user.username,
+    nickname: user.nickname,
+    avatar: user.avatar_url,
+    role: user.role || 'user',
+    points: Number(user.points || 0),
   };
 }
 
-async function findOrCreateWechatUser(openid: string, unionid?: string) {
+async function findOrCreateWechatUser(openid: string, unionid?: string, profile: WechatUserProfile | null = null) {
   const users = await db.query<any[]>(
     `SELECT *
      FROM users
@@ -101,15 +162,27 @@ async function findOrCreateWechatUser(openid: string, unionid?: string) {
 
   if (users.length > 0) {
     const user = users[0];
+    const nextNickname = normalizeWechatProfileValue(profile?.nickname);
+    const nextAvatar = normalizeWechatProfileValue(profile?.avatarUrl);
+    const shouldSyncNickname = nextNickname && isFallbackWechatNickname(user.nickname) ? 1 : 0;
+
     await db.execute(
       `UPDATE users
        SET wechat_openid = ?,
            wechat_unionid = COALESCE(?, wechat_unionid),
+           nickname = CASE
+             WHEN ? = 1 THEN ?
+             ELSE nickname
+           END,
+           avatar_url = CASE
+             WHEN ? <> '' AND (avatar_url IS NULL OR avatar_url = '') THEN ?
+             ELSE avatar_url
+           END,
            wechat_bound_at = COALESCE(wechat_bound_at, NOW()),
            must_bind_contact = 0,
            last_login = NOW()
        WHERE id = ?`,
-      [openid, unionid || null, user.id],
+      [openid, unionid || null, shouldSyncNickname, nextNickname, nextAvatar, nextAvatar, user.id],
     );
 
     const latest = await db.query<any[]>('SELECT * FROM users WHERE id = ? LIMIT 1', [user.id]);
@@ -118,22 +191,23 @@ async function findOrCreateWechatUser(openid: string, unionid?: string) {
 
   const userId = uuidv4();
   const username = `wx_${Date.now().toString().slice(-8)}${Math.random().toString(36).slice(2, 4)}`;
-  const nickname = `WeChat User ${openid.slice(-6)}`;
+  const nickname = normalizeWechatProfileValue(profile?.nickname) || buildWechatFallbackNickname(openid);
+  const avatarUrl = normalizeWechatProfileValue(profile?.avatarUrl) || null;
   const referralCode = generateReferralCode();
 
   await db.execute(
     `INSERT INTO users (
-      id, username, password_hash, nickname, role, status, points, total_recharge, total_earnings,
+      id, username, password_hash, nickname, avatar_url, role, status, points, total_recharge, total_earnings,
       wechat_openid, wechat_unionid, wechat_bound_at, referral_code, must_bind_contact, created_at, last_login
-    ) VALUES (?, ?, ?, ?, 'user', 'active', 0, 0, 0, ?, ?, NOW(), ?, 0, NOW(), NOW())`,
-    [userId, username, '', nickname, openid, unionid || null, referralCode],
+    ) VALUES (?, ?, ?, ?, ?, 'user', 'active', 0, 0, 0, ?, ?, NOW(), ?, 0, NOW(), NOW())`,
+    [userId, username, '', nickname, avatarUrl, openid, unionid || null, referralCode],
   );
 
   const created = await db.query<any[]>('SELECT * FROM users WHERE id = ? LIMIT 1', [userId]);
   return created[0];
 }
 
-async function bindWechatToUser(userId: string, openid: string, unionid?: string) {
+async function bindWechatToUser(userId: string, openid: string, unionid?: string, profile: WechatUserProfile | null = null) {
   const currentRows = await db.query<any[]>(
     `SELECT *
      FROM users
@@ -174,15 +248,27 @@ async function bindWechatToUser(userId: string, openid: string, unionid?: string
     throw ApiError.badRequest('This WeChat account is already bound to another user.');
   }
 
+  const nextNickname = normalizeWechatProfileValue(profile?.nickname);
+  const nextAvatar = normalizeWechatProfileValue(profile?.avatarUrl);
+  const shouldSyncNickname = nextNickname && isFallbackWechatNickname(currentUser.nickname) ? 1 : 0;
+
   await db.execute(
     `UPDATE users
      SET wechat_openid = ?,
          wechat_unionid = COALESCE(?, wechat_unionid),
+         nickname = CASE
+           WHEN ? = 1 THEN ?
+           ELSE nickname
+         END,
+         avatar_url = CASE
+           WHEN ? <> '' AND (avatar_url IS NULL OR avatar_url = '') THEN ?
+           ELSE avatar_url
+         END,
          wechat_bound_at = COALESCE(wechat_bound_at, NOW()),
          must_bind_contact = 0,
          last_login = NOW()
      WHERE id = ?`,
-    [openid, unionid || null, userId],
+    [openid, unionid || null, shouldSyncNickname, nextNickname, nextAvatar, nextAvatar, userId],
   );
 
   const latest = await db.query<any[]>('SELECT * FROM users WHERE id = ? LIMIT 1', [userId]);
@@ -205,11 +291,7 @@ async function completeLocalDevWechatLogin(state: string, createdAt: number): Pr
     createdAt,
     token,
     user: {
-      id: user.id,
-      username: user.username,
-      nickname: user.nickname,
-      role: user.role || 'user',
-      points: Number(user.points || 0),
+      ...createWechatUserPayload(user),
     },
     message: 'Local development mode: WeChat login has been confirmed. Return to the desktop window to continue.',
   };
@@ -232,11 +314,7 @@ async function completeLocalDevWechatBind(
     status: 'success',
     createdAt,
     user: {
-      id: user.id,
-      username: user.username,
-      nickname: user.nickname,
-      role: user.role || 'user',
-      points: Number(user.points || 0),
+      ...createWechatUserPayload(user),
     },
     message: 'Local development mode: the WeChat account has been bound to your current user.',
   };
@@ -504,29 +582,25 @@ router.get('/callback', async (req: Request, res: Response, next: NextFunction) 
     }
 
     const tokenData = await exchangeCodeForWechatToken(code);
+    const wechatProfile = await fetchWechatUserInfo(tokenData);
+
     if (existingState.mode === 'bind') {
       if (!existingState.bindUserId) {
         throw ApiError.badRequest('Binding state is missing the current user.');
       }
 
-      const user = await bindWechatToUser(existingState.bindUserId, tokenData.openid, tokenData.unionid);
+      const user = await bindWechatToUser(existingState.bindUserId, tokenData.openid, tokenData.unionid, wechatProfile);
 
       loginStateStore.set(state, {
         state,
         mode: 'bind',
         status: 'success',
         createdAt: existingState.createdAt,
-        user: {
-          id: user.id,
-          username: user.username,
-          nickname: user.nickname,
-          role: user.role || 'user',
-          points: Number(user.points || 0),
-        },
+        user: createWechatUserPayload(user),
         message: 'WeChat binding successful. Return to the desktop page to continue.',
       });
     } else {
-      const user = await findOrCreateWechatUser(tokenData.openid, tokenData.unionid);
+      const user = await findOrCreateWechatUser(tokenData.openid, tokenData.unionid, wechatProfile);
       const token = generateToken({
         userId: String(user.id),
         username: user.username,
@@ -539,13 +613,7 @@ router.get('/callback', async (req: Request, res: Response, next: NextFunction) 
         status: 'success',
         createdAt: existingState.createdAt,
         token,
-        user: {
-          id: user.id,
-          username: user.username,
-          nickname: user.nickname,
-          role: user.role || 'user',
-          points: Number(user.points || 0),
-        },
+        user: createWechatUserPayload(user),
         message: 'Login successful. Return to the desktop page to continue.',
       });
     }
