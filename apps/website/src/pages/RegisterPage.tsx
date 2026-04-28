@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +13,8 @@ const registerSchema = z
     username: z.string().min(3, '用户名至少需要 3 位').max(20, '用户名最多 20 位'),
     nickname: z.string().min(2, '昵称至少需要 2 位').max(20, '昵称最多 20 位'),
     email: z.string().email('请输入正确的邮箱').optional().or(z.literal('')),
-    phone: z.string().regex(/^1[3-9]\d{9}$/, '请输入正确的手机号').optional().or(z.literal('')),
+    phone: z.string().regex(/^1[3-9]\d{9}$/, '请输入正确的手机号'),
+    phoneCode: z.string().regex(/^\d{6}$/, '请输入 6 位短信验证码'),
     password: z.string().min(6, '密码至少需要 6 位'),
     confirmPassword: z.string(),
   })
@@ -24,6 +25,27 @@ const registerSchema = z
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
+function normalizeRegisterError(error: any) {
+  const rawMessage =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.message ||
+    '';
+
+  const message = String(rawMessage);
+  if (!message) return '注册失败，请稍后再试';
+  if (message.includes('must bind a phone number') || message.includes('Phone registration requires')) {
+    return '注册需要先填写手机号并完成短信验证码验证。';
+  }
+  if (message.includes('Invalid phone number')) return '手机号格式不正确。';
+  if (message.includes('verification') || message.includes('Verification')) return '短信验证码不正确或已过期，请重新获取。';
+  if (message.includes('already exists')) return '用户名、手机号、邮箱或微信账号已存在，请更换后再试。';
+  if (message.includes('too frequently') || message.includes('Sending too frequently')) return '验证码发送太频繁，请稍后再试。';
+  if (message.includes('Invalid request parameters')) return '提交信息不完整，请检查后再试。';
+  if (message.includes('Invalid register response')) return '注册成功返回异常，请刷新后尝试登录。';
+  return message;
+}
+
 export default function RegisterPage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,26 +55,68 @@ export default function RegisterPage() {
   const smsLoginHref = buildPathWithFrom('/login?mode=sms', returnPath);
   const loginHref = buildPathWithFrom('/login', returnPath);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
+  const [countdown, setCountdown] = useState(0);
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
 
+  useEffect(() => {
+    if (countdown <= 0) return;
+    const timer = window.setTimeout(() => setCountdown((value) => Math.max(value - 1, 0)), 1000);
+    return () => window.clearTimeout(timer);
+  }, [countdown]);
+
+  const handleSendCode = async () => {
+    const phone = getValues('phone')?.trim();
+    setError('');
+    setNotice('');
+
+    if (!/^1[3-9]\d{9}$/.test(phone || '')) {
+      setError('请先填写正确的手机号。');
+      return;
+    }
+
+    try {
+      setIsSendingCode(true);
+      const response = await apiClient.post('/api/sms/send-code', {
+        phoneNumber: phone,
+        purpose: 'register',
+      });
+
+      if (response.data?.success === false) {
+        throw new Error(response.data?.message || '验证码发送失败');
+      }
+
+      setNotice('验证码已发送，请查看手机短信。');
+      setCountdown(60);
+    } catch (err: any) {
+      setError(normalizeRegisterError(err) || '验证码发送失败，请稍后再试');
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
+
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
     setError('');
+    setNotice('');
 
     try {
       const response = await apiClient.post('/api/auth/register', {
         username: data.username,
         nickname: data.nickname,
         email: data.email || undefined,
-        phone: data.phone || undefined,
+        phone: data.phone,
+        phoneCode: data.phoneCode,
         password: data.password,
       });
 
@@ -64,7 +128,7 @@ export default function RegisterPage() {
       setAuth(user, token, refreshToken);
       openReturnPath(returnPath, navigate);
     } catch (err: any) {
-      setError(err.response?.data?.error || '注册失败，请稍后再试');
+      setError(normalizeRegisterError(err));
     } finally {
       setIsLoading(false);
     }
@@ -81,6 +145,7 @@ export default function RegisterPage() {
 
             <form className="auth-form-body" onSubmit={handleSubmit(onSubmit)}>
               {error ? <div className="auth-alert">{error}</div> : null}
+              {notice ? <div className="auth-alert auth-alert-success">{notice}</div> : null}
 
               <div className="auth-grid-two">
                 <label className="auth-field">
@@ -105,10 +170,26 @@ export default function RegisterPage() {
 
                 <label className="auth-field">
                   <span>手机号</span>
-                  <input {...register('phone')} placeholder="可选" />
+                  <input {...register('phone')} placeholder="用于接收注册验证码" />
                   {errors.phone ? <small>{errors.phone.message}</small> : null}
                 </label>
               </div>
+
+              <label className="auth-field">
+                <span>短信验证码</span>
+                <div className="auth-code-row">
+                  <input {...register('phoneCode')} placeholder="请输入 6 位验证码" />
+                  <button
+                    type="button"
+                    className="btn btn-secondary btn-sm"
+                    disabled={isSendingCode || countdown > 0}
+                    onClick={() => void handleSendCode()}
+                  >
+                    {countdown > 0 ? `${countdown}s 后重发` : isSendingCode ? '发送中...' : '发送验证码'}
+                  </button>
+                </div>
+                {errors.phoneCode ? <small>{errors.phoneCode.message}</small> : null}
+              </label>
 
               <div className="auth-grid-two">
                 <label className="auth-field">
