@@ -1,0 +1,235 @@
+.shell {
+  position: relative;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: calc(env(safe-area-inset-top, 0px) + 28px) 20px calc(env(safe-area-inset-bottom, 0px) + 28px);
+  color: #f8fafc;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(248, 113, 113, 0.22), transparent 28%),
+    radial-gradient(circle at 80% 8%, rgba(20, 184, 166, 0.2), transparent 26%),
+    linear-gradient(145deg, #090d18 0%, #101827 48%, #1a120c 100%);
+}
+
+.shell::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.32;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 78%);
+}
+
+.orbOne,
+.orbTwo {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 999px;
+  filter: blur(8px);
+  opacity: 0.6;
+  animation: floatOrb 7s ease-in-out infinite;
+}
+
+.orbOne {
+  left: max(-120px, 4vw);
+  top: 12vh;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.28), rgba(245, 158, 11, 0));
+}
+
+.orbTwo {
+  right: max(-120px, 5vw);
+  bottom: 8vh;
+  background: radial-gradient(circle, rgba(45, 212, 191, 0.22), rgba(45, 212, 191, 0));
+  animation-delay: -2.6s;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  width: min(520px, 100%);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 34px 30px 30px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 30px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.06)),
+    rgba(9, 13, 24, 0.76);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(24px);
+}
+
+.brandMark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 2px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.95), rgba(239, 68, 68, 0.9));
+  box-shadow: 0 18px 42px rgba(248, 113, 113, 0.24);
+}
+
+.brandMark img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.28));
+}
+
+.brandMark span {
+  position: absolute;
+  inset: -9px;
+  border-radius: 30px;
+  border: 1px solid rgba(251, 191, 36, 0.34);
+  animation: pulseRing 1.8s ease-out infinite;
+}
+
+.eyebrow {
+  margin: 0;
+  color: rgba(254, 243, 199, 0.86);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.card h1 {
+  margin: 0;
+  color: #fff7ed;
+  font-size: clamp(26px, 5vw, 38px);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+
+.description {
+  max-width: 380px;
+  margin: 0;
+  color: rgba(226, 232, 240, 0.74);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.progressBar {
+  width: min(360px, 100%);
+  height: 8px;
+  margin-top: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.progressBar span {
+  display: block;
+  width: 42%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #fbbf24, #fb7185, #2dd4bf);
+  animation: sweep 1.55s ease-in-out infinite;
+}
+
+.steps {
+  width: min(380px, 100%);
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.42);
+  color: rgba(248, 250, 252, 0.78);
+  font-size: 13px;
+  text-align: left;
+}
+
+.step span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  color: #111827;
+  background: #fef3c7;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.step strong {
+  font-weight: 700;
+}
+
+.compact .card {
+  padding: 28px 24px;
+}
+
+.compact .steps {
+  display: none;
+}
+
+@keyframes sweep {
+  0% {
+    transform: translateX(-110%);
+  }
+  55% {
+    transform: translateX(78%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.24);
+    opacity: 0;
+  }
+}
+
+@keyframes floatOrb {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(12px, -18px, 0) scale(1.08);
+  }
+}
+
+@media (max-width: 560px) {
+  .card {
+    padding: 28px 20px 24px;
+    border-radius: 24px;
+  }
+
+  .brandMark {
+    width: 62px;
+    height: 62px;
+    border-radius: 20px;
+  }
+
+  .brandMark img {
+    width: 36px;
+    height: 36px;
+  }
+}

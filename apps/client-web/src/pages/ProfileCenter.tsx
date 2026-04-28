@@ -7,7 +7,6 @@ import {
   Form,
   Input,
   Row,
-  Skeleton,
   Space,
   Tag,
   Typography,
@@ -37,6 +36,7 @@ import {
   type ThemeMode,
 } from '../lib/themePreference';
 import { getWechatInitialMessage, normalizeWechatUiMessage } from '../lib/wechatUiMessage';
+import AccessLoading from '../components/AccessLoading';
 import styles from './authExperience.module.scss';
 
 const { Title, Text, Paragraph } = Typography;
@@ -607,12 +607,11 @@ export default function ProfileCenter() {
 
   if (loading) {
     return (
-      <div
-        className={`${styles.shell} ${styles.rechargeShell} ${themeMode === 'dark' ? styles.themeDark : ''}`}
-        style={{ display: 'grid', placeItems: 'center' }}
-      >
-        <Skeleton active paragraph={{ rows: 8 }} style={{ width: 'min(960px, calc(100vw - 32px))' }} />
-      </div>
+      <AccessLoading
+        title="正在加载账号中心"
+        description="正在同步你的账号资料、权益和绑定状态。"
+        steps={['读取账号资料', '同步会员权益', '检查安全绑定']}
+      />
     );
   }
 

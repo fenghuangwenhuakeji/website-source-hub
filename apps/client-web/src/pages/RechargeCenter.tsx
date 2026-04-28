@@ -10,7 +10,6 @@ import {
   Modal,
   QRCode,
   Row,
-  Skeleton,
   Tag,
   Typography,
   message,
@@ -35,6 +34,7 @@ import {
   subscribeThemeMode,
   type ThemeMode,
 } from '../lib/themePreference';
+import AccessLoading from '../components/AccessLoading';
 import styles from './authExperience.module.scss';
 
 const { Title, Text } = Typography;
@@ -567,9 +567,12 @@ export default function RechargeCenter() {
         </button>
 
         {loading ? (
-          <div className={styles.loadingState}>
-            <Skeleton active paragraph={{ rows: 8 }} style={{ width: 'min(100%, 780px)' }} />
-          </div>
+          <AccessLoading
+            title="正在加载充值中心"
+            description="正在同步账号权益、套餐和支付状态。"
+            steps={['读取账号权益', '加载套餐信息', '准备支付入口']}
+            compact
+          />
         ) : (
           <div className={styles.rechargeLayout}>
             <section className={styles.compactHeader}>

@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import AccessLoading from './components/AccessLoading';
 import { isLoggedIn, logout } from './lib/permissionManager';
 import { buildOfficialPath, resolveOfficialSiteUrl } from './lib/officialSiteUrl';
 
@@ -39,23 +39,7 @@ function getOfficialAuthPath(search: string) {
 
 function PageFallback({ label }: { label: string }) {
   return (
-    <div
-      style={{
-        minHeight: '100dvh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding:
-          'calc(env(safe-area-inset-top, 0px) + 24px) 20px calc(env(safe-area-inset-bottom, 0px) + 24px)',
-        background:
-          'radial-gradient(circle at top left, rgba(124, 58, 237, 0.24), transparent 30%), radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 24%), linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%)',
-      }}
-    >
-      <div style={{ display: 'grid', justifyItems: 'center', gap: 12, textAlign: 'center' }}>
-        <Spin size="large" />
-        <div style={{ color: '#dbe7ff', fontSize: 14, fontWeight: 600 }}>{label}</div>
-      </div>
-    </div>
+    <AccessLoading title={label} description="桌面模块正在接入，请稍候片刻。" compact />
   );
 }
 
@@ -96,23 +80,11 @@ function App() {
 
   if (page === 'loading') {
     return (
-      <div
-        style={{
-          minHeight: '100dvh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding:
-            'calc(env(safe-area-inset-top, 0px) + 24px) 20px calc(env(safe-area-inset-bottom, 0px) + 24px)',
-          background:
-            'radial-gradient(circle at top left, rgba(124, 58, 237, 0.24), transparent 30%), radial-gradient(circle at top right, rgba(34, 211, 238, 0.16), transparent 24%), linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%)',
-        }}
-      >
-        <div style={{ display: 'grid', justifyItems: 'center', gap: 12 }}>
-          <Spin size="large" />
-          <div style={{ color: '#dbe7ff', fontSize: 14, fontWeight: 600 }}>正在加载中...</div>
-        </div>
-      </div>
+      <AccessLoading
+        title="正在启动凤煌应用端"
+        description="正在检查登录状态，并准备你的应用桌面。"
+        steps={['检查登录状态', '读取本地会话', '进入凤煌应用端']}
+      />
     );
   }
 

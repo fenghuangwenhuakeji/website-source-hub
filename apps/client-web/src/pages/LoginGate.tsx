@@ -7,7 +7,6 @@ import {
   Input,
   Modal,
   Row,
-  Spin,
   Tabs,
   Typography,
   message,
@@ -30,6 +29,7 @@ import { checkRechargeRequired, isLoggedIn, logout } from '../lib/permissionMana
 import { getRouterBase } from '../lib/routerBase';
 import { applyThemeMode, resolveThemeMode, setPreferredThemeMode, subscribeThemeMode, type ThemeMode } from '../lib/themePreference';
 import { getWechatInitialMessage, normalizeWechatUiMessage } from '../lib/wechatUiMessage';
+import AccessLoading from '../components/AccessLoading';
 import styles from './authExperience.module.scss';
 
 const { Title, Text } = Typography;
@@ -563,16 +563,11 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
   if (sessionChecking) {
     return (
-      <div className={`${styles.shell} ${styles.loginShell} ${themeMode === 'dark' ? styles.themeDark : ''}`}>
-        <div className={styles.inner}>
-          <button type="button" className={styles.themeToggle} onClick={toggleThemeMode}>
-            <span>{themeMode === 'dark' ? '切到浅色' : '切到深色'}</span>
-          </button>
-          <div className={styles.loadingState}>
-            <Spin size="large" tip="正在确认状态" />
-          </div>
-        </div>
-      </div>
+      <AccessLoading
+        title="正在确认登录状态"
+        description="正在检查当前账号会话，并为你准备统一登录入口。"
+        steps={['读取本地登录态', '同步账号信息', '准备登录面板']}
+      />
     );
   }
 
