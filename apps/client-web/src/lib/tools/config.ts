@@ -159,10 +159,10 @@ export function getProviderDefaults(provider: LLMProvider): Partial<LLMConfig> {
  */
 export function validateConfig(config: LLMConfig): string | null {
   if (!config.apiKey.trim()) {
-    return 'API Key 不能为空';
+    return 'API 密钥不能为空';
   }
   if (!config.baseUrl.trim()) {
-    return 'Base URL 不能为空';
+    return '基础地址不能为空';
   }
   if (!config.model.trim()) {
     return 'Model 不能为空';
@@ -171,7 +171,7 @@ export function validateConfig(config: LLMConfig): string | null {
     return 'Temperature 必须在 0-2 之间';
   }
   if (config.maxTokens < 1 || config.maxTokens > 100000) {
-    return 'Max Tokens 必须在 1-100000 之间';
+    return '最大令牌数必须在 1-100000 之间';
   }
   return null;
 }

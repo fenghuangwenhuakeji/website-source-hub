@@ -1478,7 +1478,7 @@ const PoolModal: React.FC<{
           {pType === 'text' && (
             <>
               <div className={styles.field}>
-                <label className={styles.label}>Temperature ({pTemperature})</label>
+                <label className={styles.label}>温度 ({pTemperature})</label>
                 <input
                   className={styles.fieldInput}
                   type="range"
@@ -1490,7 +1490,7 @@ const PoolModal: React.FC<{
                 />
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Max Tokens</label>
+                <label className={styles.label}>最大令牌数</label>
                 <input
                   className={styles.fieldInput}
                   type="number"
@@ -1502,7 +1502,7 @@ const PoolModal: React.FC<{
                 />
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Custom Headers</label>
+                <label className={styles.label}>自定义请求头</label>
                 <textarea
                   className={styles.fieldInput}
                   value={pCustomHeaders}
@@ -1685,7 +1685,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Temperature ({temperature})</label>
+        <label className={styles.label}>温度 ({temperature})</label>
         <input
           className={styles.fieldInput}
           type="range"
@@ -1698,7 +1698,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Max Tokens</label>
+        <label className={styles.label}>最大令牌数</label>
         <input
           className={styles.fieldInput}
           type="number"
@@ -1711,7 +1711,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label}>Custom Headers</label>
+        <label className={styles.label}>自定义请求头</label>
         <textarea
           className={styles.fieldInput}
           value={customHeaders}
@@ -1768,7 +1768,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.formGroup}>
-        <label>Custom Headers</label>
+        <label>自定义请求头</label>
         <textarea
           className={`${styles.formControl} ${styles.formTextarea}`}
           value={igCustomHeaders}
@@ -1872,28 +1872,28 @@ const SettingsModal: React.FC<{
                   <div className={styles.typeOptionIcon}><MessageSquare size={20} /></div>
                   <div className={styles.typeOptionInfo}>
                     <div className={styles.typeOptionName}>{t('settings.textType')}</div>
-                    <div className={styles.typeOptionDesc}>LLM / Chat Completion</div>
+                    <div className={styles.typeOptionDesc}>大语言模型 / 对话补全</div>
                   </div>
                 </div>
                 <div className={styles.typeOption} onClick={() => { setTypeSelectorOpen(false); setActiveSection('image'); }}>
                   <div className={styles.typeOptionIcon}><Image size={20} /></div>
                   <div className={styles.typeOptionInfo}>
                     <div className={styles.typeOptionName}>{t('settings.imageType')}</div>
-                    <div className={styles.typeOptionDesc}>Image Generation</div>
+                    <div className={styles.typeOptionDesc}>图像生成</div>
                   </div>
                 </div>
                 <div className={styles.typeOption} onClick={() => { setTypeSelectorOpen(false); setActiveSection('video'); }}>
                   <div className={styles.typeOptionIcon}><Video size={20} /></div>
                   <div className={styles.typeOptionInfo}>
                     <div className={styles.typeOptionName}>{t('settings.videoType')}</div>
-                    <div className={styles.typeOptionDesc}>Video Generation</div>
+                    <div className={styles.typeOptionDesc}>视频生成</div>
                   </div>
                 </div>
                 <div className={styles.typeOption} onClick={() => { setTypeSelectorOpen(false); setActiveSection('audio'); }}>
                   <div className={styles.typeOptionIcon}><Music size={20} /></div>
                   <div className={styles.typeOptionInfo}>
                     <div className={styles.typeOptionName}>{t('settings.audioType')}</div>
-                    <div className={styles.typeOptionDesc}>Audio / TTS Generation</div>
+                    <div className={styles.typeOptionDesc}>音频 / 语音生成</div>
                   </div>
                 </div>
               </div>
@@ -1981,7 +1981,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.formGroup}>
-        <label>Custom Headers</label>
+        <label>自定义请求头</label>
         <textarea
           className={`${styles.formControl} ${styles.formTextarea}`}
           value={vgCustomHeaders}
@@ -2039,7 +2039,7 @@ const SettingsModal: React.FC<{
       </div>
 
       <div className={styles.formGroup}>
-        <label>Custom Headers</label>
+        <label>自定义请求头</label>
         <textarea
           className={`${styles.formControl} ${styles.formTextarea}`}
           value={agCustomHeaders}

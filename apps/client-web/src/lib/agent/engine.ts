@@ -207,7 +207,7 @@ async function callLLM(
   const apiConfig = JSON.parse(readScopedStorageValue(API_CONFIG_STORAGE_KEY) || '{}') as ApiConfig;
 
   if (!apiConfig.apiKey) {
-    throw new Error('未配置 API Key，请先在设置中配置');
+    throw new Error('未配置 API 密钥，请先在设置中配置');
   }
 
   const response = await fetch('/api/llm-proxy', {

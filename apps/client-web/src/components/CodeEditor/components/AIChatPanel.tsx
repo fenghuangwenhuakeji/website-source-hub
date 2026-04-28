@@ -243,7 +243,7 @@ const AIChatPanel: React.FC<AIChatPanelProps> = ({
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="输入你的问题... (Enter 发送, Shift+Enter 换行)"
+          placeholder="输入你的问题...（回车发送，Shift + 回车换行）"
           rows={2}
         />
         <button onClick={sendMessage} disabled={!input.trim() || isLoading}>

@@ -1208,7 +1208,7 @@ export default function WritingWorkbench({
                         : buildCoverStyle(project.title || project.id, project.type)
                     }
                   >
-                    <div className="text-xs uppercase tracking-[0.18em] text-[var(--fh-text-inverse)]/70">Cover</div>
+                    <div className="text-xs uppercase tracking-[0.18em] text-[var(--fh-text-inverse)]/70">封面</div>
                     <div className="mt-8 text-3xl font-black leading-tight">{project.title}</div>
                     <div className="mt-3 text-xs text-[var(--fh-text-inverse)]/70">
                       {WRITING_TYPE_META[project.type].shortLabel} · {project.genre || '未分类'}

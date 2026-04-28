@@ -132,7 +132,7 @@ const CodeSandbox: React.FC<CodeSandboxProps> = ({
         <iframe
           ref={iframeRef}
           className="preview-iframe"
-          title="HTML Preview"
+          title="HTML 预览"
           sandbox="allow-scripts"
         />
       )}

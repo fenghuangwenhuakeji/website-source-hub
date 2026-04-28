@@ -141,7 +141,7 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
               <img src={logoSrc} alt="凤煌科技" className="logo-img" />
               <span className="logo-text">
                 <span className="logo-title">凤煌科技</span>
-                <span className="logo-subtitle">Creative Tech Brand</span>
+                <span className="logo-subtitle">创作科技品牌</span>
               </span>
             </Link>
 

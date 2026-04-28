@@ -283,7 +283,7 @@ export default function ClawCodePanel({
     <div className={styles.runtimeView}>
       <section className={styles.hero}>
         <div>
-          <p className={styles.kicker}>Claw Code Runtime</p>
+          <p className={styles.kicker}>Claw Code 运行时</p>
           <h2>命令、工具、会话与分析一体化面板</h2>
           <p className={styles.heroCopy}>
             这里把执行链路、命令匹配、工具路由和输出统一收口，方便和对话共用一套
@@ -349,7 +349,7 @@ export default function ClawCodePanel({
             }
           }}
           rows={5}
-          placeholder="输入提示词，Cmd/Ctrl + Enter 立即执行。"
+          placeholder="输入提示词，Cmd/Ctrl + 回车立即执行。"
         />
 
         <div className={styles.toggleRow}>
@@ -676,7 +676,7 @@ export default function ClawCodePanel({
     <div className={styles.panelRoot}>
       <header className={styles.panelHeader}>
         <div>
-          <p className={styles.kicker}>Claw Code</p>
+          <p className={styles.kicker}>Claw Code 面板</p>
           <h2>运行时、命令、工具、会话、分析</h2>
         </div>
         <div className={styles.panelHeaderAside}>

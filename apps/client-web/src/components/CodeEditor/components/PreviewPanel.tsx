@@ -175,7 +175,7 @@ const PreviewPanel: React.FC<PreviewPanelProps> = ({
             key={key}
             className={styles.iframe}
             sandbox="allow-scripts allow-same-origin"
-            title="preview"
+            title="预览"
           />
         </div>
       </div>

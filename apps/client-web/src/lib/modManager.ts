@@ -550,7 +550,7 @@ export class ModManager {
 
   getCurrentTargetsDescription(): string {
     const targets = this.getCurrentTargets();
-    if (targets.length === 0) return 'No pending targets.';
+    if (targets.length === 0) return '没有待完成目标。';
     return targets.map((t) => `- [${t.target_id}] ${t.description}`).join('\n');
   }
 
@@ -562,12 +562,12 @@ export class ModManager {
     progressInfo?: StageProgressInfo;
   } {
     if (this.state.is_finished) {
-      return { message: 'All stages already completed.', stageCompleted: false };
+      return { message: '所有阶段已完成。', stageCompleted: false };
     }
 
     const stage = this.currentStage;
     if (!stage) {
-      return { message: 'No current stage found.', stageCompleted: false };
+      return { message: '未找到当前阶段。', stageCompleted: false };
     }
 
     const validTargets = Object.keys(stage.stage_targets).map(Number);
@@ -584,14 +584,14 @@ export class ModManager {
     }
 
     if (newlyCompleted.length === 0) {
-      return { message: 'No new targets completed.', stageCompleted: false };
+      return { message: '没有新的目标被完成。', stageCompleted: false };
     }
 
     // Check if all targets in current stage are done
     const allDone = validTargets.every((id) => this.state.completed_targets.includes(id));
     if (!allDone) {
       return {
-        message: `Completed targets: [${newlyCompleted.join(', ')}]. Remaining targets in stage.`,
+        message: `已完成目标：[${newlyCompleted.join(', ')}]。当前阶段还有目标未完成。`,
         stageCompleted: false,
       };
     }
@@ -606,7 +606,7 @@ export class ModManager {
     if (this.state.current_stage_index >= this.config.stage_count) {
       this.state = { ...this.state, is_finished: true };
       return {
-        message: `Stage "${stage.stage_name}" completed! All stages finished!`,
+        message: `阶段“${stage.stage_name}”已完成，所有阶段已结束。`,
         stageCompleted: true,
         progressInfo: {
           stage_progress: {
@@ -620,7 +620,7 @@ export class ModManager {
 
     const nextStage = this.config.stages[this.state.current_stage_index];
     return {
-      message: `Stage "${stage.stage_name}" completed! Moving to "${nextStage.stage_name}".`,
+      message: `阶段“${stage.stage_name}”已完成，即将进入“${nextStage.stage_name}”。`,
       stageCompleted: true,
       progressInfo: {
         stage_progress: {
@@ -637,7 +637,7 @@ export class ModManager {
 
   buildStageReminder(): string {
     if (this.state.is_finished) {
-      return `[Story Complete] All stages of "${this.config.mod_name_en}" have been completed. You are now in free conversation mode.\n`;
+      return `[故事已完成] “${this.config.mod_name_en}”的所有阶段都已完成。现在进入自由对话模式。\n`;
     }
 
     const stage = this.currentStage;

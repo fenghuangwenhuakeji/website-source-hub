@@ -239,7 +239,7 @@ const AgentSidebar: React.FC<AgentSidebarProps> = ({
           <p className={styles.memoryKicker}>记忆面板</p>
           <h3>当前智能体状态总览</h3>
         </div>
-        <span className={styles.memoryBadge}>Memory</span>
+        <span className={styles.memoryBadge}>记忆</span>
       </div>
 
       <div className={styles.memoryStats}>

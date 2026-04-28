@@ -295,7 +295,7 @@ export async function runAgentLoop(
 // 测试连接
 export async function testAgentConnection(config: LLMConfig): Promise<{ success: boolean; message: string }> {
   if (!config.apiKey) {
-    return { success: false, message: 'API Key 不能为空' };
+    return { success: false, message: 'API 密钥不能为空' };
   }
 
   try {

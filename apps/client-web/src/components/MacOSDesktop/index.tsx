@@ -1688,7 +1688,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
                   onKeyDown={handleDeckKeyDown}
                   placeholder="搜索应用、工具或接入项"
                 />
-                <kbd>Enter</kbd>
+                <kbd>回车</kbd>
               </label>
 
               <div className={styles.deckAccount} aria-label="账号和系统入口">
@@ -1894,7 +1894,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
                 </div>
                 <div className={styles.deckHint}>
                   <span>↑↓ 选择</span>
-                  <span>Enter 打开</span>
+                  <span>回车打开</span>
                   <span>Esc 清空</span>
                 </div>
               </aside>
@@ -1923,7 +1923,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
             onMouseEnter={revealDock}
             onMouseLeave={() => scheduleDockHide()}
             onClick={revealDock}
-            aria-label="显示底部 Dock"
+            aria-label="显示底部程序坞"
           />
           <button
             type="button"
@@ -1931,7 +1931,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
             onMouseEnter={revealDock}
             onMouseLeave={() => scheduleDockHide()}
             onClick={revealDock}
-            aria-label="显示底部 Dock"
+            aria-label="显示底部程序坞"
           />
         </>
       ) : null}
@@ -2141,7 +2141,7 @@ const TerminalPanel: React.FC<{
     createTerminalEntry('hint', '凤煌终端已连接。输入 help 查看可用命令。'),
     createTerminalEntry(
       'output',
-      `当前主题：${darkMode ? '深色' : '浅色'}，Dock：${preferences.autoHideDock ? '自动隐藏' : '常驻显示'}`,
+      `当前主题：${darkMode ? '深色' : '浅色'}，程序坞：${preferences.autoHideDock ? '自动隐藏' : '常驻显示'}`,
     ),
   ]);
   const outputRef = useRef<HTMLDivElement | null>(null);
@@ -2177,7 +2177,7 @@ const TerminalPanel: React.FC<{
             createTerminalEntry('output', 'apps · 查看可打开应用'),
             createTerminalEntry('output', 'open <应用名或 appId> · 直接打开应用'),
             createTerminalEntry('output', 'theme dark|light · 切换主题'),
-            createTerminalEntry('output', 'dock auto|show · 切换 Dock 策略'),
+            createTerminalEntry('output', 'dock auto|show · 切换程序坞策略'),
             createTerminalEntry('output', 'tasks · 查看任务概览'),
             createTerminalEntry('output', 'alarms · 查看提醒概览'),
             createTerminalEntry('output', 'windows · 查看活动窗口'),
@@ -2192,7 +2192,7 @@ const TerminalPanel: React.FC<{
             createTerminalEntry('output', `主题同步：${darkMode ? '深色模式' : '浅色模式'}`),
             createTerminalEntry(
               'output',
-              `底部 Dock：${preferences.autoHideDock ? '自动隐藏，靠近底边唤起' : '常驻显示'}`,
+              `底部程序坞：${preferences.autoHideDock ? '自动隐藏，靠近底边唤起' : '常驻显示'}`,
             ),
           );
           break;
@@ -2232,13 +2232,13 @@ const TerminalPanel: React.FC<{
         case 'dock':
           if (arg === 'auto') {
             onUpdatePreference('autoHideDock', true);
-            nextEntries.push(createTerminalEntry('output', '底部 Dock 已改为自动隐藏'));
+            nextEntries.push(createTerminalEntry('output', '底部程序坞已改为自动隐藏'));
             break;
           }
           if (arg === 'show') {
             onUpdatePreference('autoHideDock', false);
             onRevealDock();
-            nextEntries.push(createTerminalEntry('output', '底部 Dock 已改为常驻显示'));
+            nextEntries.push(createTerminalEntry('output', '底部程序坞已改为常驻显示'));
             break;
           }
           nextEntries.push(createTerminalEntry('error', '请输入 dock auto 或 dock show'));
@@ -2297,7 +2297,7 @@ const TerminalPanel: React.FC<{
       <div className={styles.terminalToolbar}>
         <div>
           <strong>桌面终端</strong>
-          <span>支持状态查询、打开应用、主题切换和 Dock 控制。</span>
+          <span>支持状态查询、打开应用、主题切换和程序坞控制。</span>
         </div>
         <div className={styles.terminalQuickActions}>
           {['help', 'status', 'apps', 'tasks'].map((command) => (
@@ -2386,7 +2386,7 @@ const SettingsPanel: React.FC<{
     { label: '活动窗口', value: visibleWindowCount },
     { label: '已接入应用', value: installedAppCount },
     { label: '提醒', value: enabledAlarmCount },
-    { label: 'Dock', value: dockAppCount },
+    { label: '程序坞', value: dockAppCount },
   ];
 
   return (
@@ -2396,7 +2396,7 @@ const SettingsPanel: React.FC<{
           <div className={styles.settingsMobileHeroCopy}>
             <p className={styles.settingsMobileKicker}>系统设置</p>
             <h3>上下滑动查看，不再像假面板。</h3>
-            <span>主题、交互、Dock、提醒和当前工作区状态都统一到一页里，手机上也能直接调整。</span>
+            <span>主题、交互、程序坞、提醒和当前工作区状态都统一到一页里，手机上也能直接调整。</span>
           </div>
           <div className={styles.settingsMobileStats}>
             {mobileStats.map((item) => (
@@ -2412,7 +2412,7 @@ const SettingsPanel: React.FC<{
       <section className={styles.settingsHero}>
         <div className={styles.settingsHeroCopy}>
           <p className={styles.settingsMobileKicker}>桌面控制台</p>
-          <h3>把主题、提醒、Dock 和触控偏好收进同一页。</h3>
+          <h3>把主题、提醒、程序坞和触控偏好收进同一页。</h3>
           <span>这里的设置会直接影响桌面壳和系统工具，不再只是展示性按钮。</span>
         </div>
         <div className={styles.settingsActionList}>
@@ -2452,7 +2452,7 @@ const SettingsPanel: React.FC<{
           <strong>{enabledAlarmCount}</strong>
         </div>
         <div className={styles.settingsSummaryCard}>
-          <span>Dock 状态</span>
+          <span>程序坞状态</span>
           <strong>{preferences.autoHideDock ? '自动隐藏' : '常驻显示'}</strong>
         </div>
       </section>
@@ -2487,7 +2487,7 @@ const SettingsPanel: React.FC<{
         <div className={styles.settingsOption}>
           <div className={styles.settingsOptionCopy}>
             <strong>减少动态效果</strong>
-            <span>关闭夸张动画，切页和 Dock 动作会更利落。</span>
+            <span>关闭夸张动画，切页和程序坞动作会更利落。</span>
           </div>
           <button
             className={styles.settingsGhostToggle}
@@ -2498,7 +2498,7 @@ const SettingsPanel: React.FC<{
         </div>
         <div className={styles.settingsOption}>
           <div className={styles.settingsOptionCopy}>
-            <strong>Dock 自动隐藏</strong>
+            <strong>程序坞自动隐藏</strong>
             <span>默认给内容腾出空间，靠近底边再唤起底部应用栏。</span>
           </div>
           <button
@@ -2565,7 +2565,7 @@ const SettingsPanel: React.FC<{
           <strong>{activeWindowTitles.length ? activeWindowTitles.join('、') : '暂无打开窗口'}</strong>
         </div>
         <div className={styles.settingsStatusRow}>
-          <span>底部 Dock 入口</span>
+          <span>底部程序坞入口</span>
           <strong>{dockAppCount} 个</strong>
         </div>
       </section>

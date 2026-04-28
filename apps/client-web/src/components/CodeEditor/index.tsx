@@ -650,7 +650,7 @@ const CodeEditor: React.FC = () => {
   const handleTestConnection = useCallback(async () => {
     if (!agentConfig.apiKey) {
       setTestStatus('error');
-      setTestMessage('API Key 不能为空');
+      setTestMessage('API 密钥不能为空');
       return;
     }
     setTestStatus('testing');
@@ -794,7 +794,7 @@ const CodeEditor: React.FC = () => {
     return (
       <div className={styles.loading}>
         <div className={styles.spinner} />
-        <span>Loading...</span>
+        <span>加载中...</span>
       </div>
     );
   }
@@ -832,7 +832,7 @@ const CodeEditor: React.FC = () => {
             <button
               className={styles.settingsBtn}
               onClick={() => setShowAgentSettings(true)}
-              title="Agent 设置"
+              title="智能体设置"
             >
               <Settings size={14} />
             </button>
@@ -905,7 +905,7 @@ const CodeEditor: React.FC = () => {
           <div className={styles.chatInputArea}>
             {!agentConfig.apiKey && (
               <div className={styles.apiKeyWarning}>
-                请先配置 API Key
+                请先配置 API 密钥
               </div>
             )}
             <input
@@ -913,7 +913,7 @@ const CodeEditor: React.FC = () => {
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-              placeholder={agentConfig.apiKey ? "输入消息... (Enter 发送)" : "请先配置 API Key"}
+              placeholder={agentConfig.apiKey ? "输入消息...（回车发送）" : "请先配置 API 密钥"}
               disabled={isChatLoading || !agentConfig.apiKey}
             />
             <button
@@ -932,7 +932,7 @@ const CodeEditor: React.FC = () => {
               <h3 className={styles.modalTitle}>Agent 设置</h3>
 
               <div className={styles.formGroup}>
-                <label>Provider</label>
+                <label>服务商</label>
                 <select
                   value={agentConfig.provider}
                   onChange={(e) => handleProviderChange(e.target.value as LLMProvider)}
@@ -941,12 +941,12 @@ const CodeEditor: React.FC = () => {
                   <option value="anthropic">Anthropic</option>
                   <option value="deepseek">DeepSeek</option>
                   <option value="minimax">MiniMax</option>
-                  <option value="custom">Custom</option>
+                  <option value="custom">自定义</option>
                 </select>
               </div>
 
               <div className={styles.formGroup}>
-                <label>API Key</label>
+                <label>API 密钥</label>
                 <input
                   type="password"
                   value={agentConfig.apiKey}
@@ -956,7 +956,7 @@ const CodeEditor: React.FC = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Base URL</label>
+                <label>基础地址</label>
                 <input
                   type="text"
                   value={agentConfig.baseUrl}
@@ -965,7 +965,7 @@ const CodeEditor: React.FC = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Model</label>
+                <label>模型</label>
                 <input
                   type="text"
                   value={agentConfig.model}
@@ -974,7 +974,7 @@ const CodeEditor: React.FC = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Temperature ({agentConfig.temperature})</label>
+                <label>温度 ({agentConfig.temperature})</label>
                 <input
                   type="range"
                   min="0"
@@ -986,7 +986,7 @@ const CodeEditor: React.FC = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Max Tokens</label>
+                <label>最大令牌数</label>
                 <input
                   type="number"
                   min="100"
@@ -998,7 +998,7 @@ const CodeEditor: React.FC = () => {
               </div>
 
               <div className={styles.formGroup}>
-                <label>Custom Headers (JSON)</label>
+                <label>自定义请求头 (JSON)</label>
                 <textarea
                   value={agentConfig.customHeaders || ''}
                   onChange={(e) => setAgentConfig((prev) => ({ ...prev, customHeaders: e.target.value }))}

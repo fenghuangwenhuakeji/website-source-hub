@@ -472,7 +472,7 @@ export default function ProfilePage() {
               <input
                 {...register('website')}
                 type="text"
-                placeholder="https://yourwebsite.com"
+                placeholder="https://你的站点.com"
               />
               {errors.website && (
                 <small>{errors.website.message}</small>

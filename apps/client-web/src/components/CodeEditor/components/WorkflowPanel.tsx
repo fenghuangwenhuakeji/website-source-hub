@@ -218,13 +218,13 @@ const WorkflowPanel: React.FC<WorkflowPanelProps> = ({
         </div>
         {step.agentName && (
           <div className={styles.stepMeta}>
-            <span className={styles.metaLabel}>Agent:</span>
+            <span className={styles.metaLabel}>智能体：</span>
             <span className={styles.metaValue}>{step.agentName}</span>
           </div>
         )}
         {step.skillName && (
           <div className={styles.stepMeta}>
-            <span className={styles.metaLabel}>Skill:</span>
+            <span className={styles.metaLabel}>技能：</span>
             <span className={styles.metaValue}>{step.skillName}</span>
           </div>
         )}

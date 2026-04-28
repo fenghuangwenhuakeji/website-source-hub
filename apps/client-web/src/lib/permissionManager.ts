@@ -168,7 +168,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Fe
         status: response.status,
       };
     } catch {
-      return { success: false, message: 'Network error', status: 0 };
+      return { success: false, message: '网络异常', status: 0 };
     }
   };
 
@@ -248,7 +248,7 @@ export async function checkRechargeRequired(): Promise<{
     return { needsRecharge: true, totalRecharge: 0, needsLogin: true };
   }
 
-  if (res.message === 'Network error') {
+  if (res.message === '网络异常') {
     return { needsRecharge: true, totalRecharge: 0, needsLogin: false };
   }
 

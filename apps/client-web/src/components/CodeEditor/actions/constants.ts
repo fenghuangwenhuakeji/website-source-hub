@@ -151,7 +151,7 @@ export const Button: React.FC<ButtonProps> = ({
 export const Header: React.FC = () => {
   return (
     <header className="header">
-      <h1>My App</h1>
+      <h1>我的应用</h1>
     </header>
   );
 };
@@ -200,9 +200,9 @@ function App() {
     <div className="App">
       <Header />
       <main>
-        <h2>Welcome to VibeCoding</h2>
+        <h2>欢迎使用 VibeCoding</h2>
         <Button onClick={() => alert('Hello!')}>
-          Click me
+          点我试试
         </Button>
       </main>
     </div>
@@ -233,7 +233,7 @@ export default App;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VibeCoding App</title>
+  <title>VibeCoding 应用</title>
 </head>
 <body>
   <div id="root"></div>
@@ -281,17 +281,17 @@ export default App;
     name: 'README.md',
     path: '/README.md',
     type: 'file',
-    content: `# VibeCoding Project
+    content: `# VibeCoding 项目
 
-This is a sample project for VibeCoding IDE.
+这是一个 VibeCoding IDE 示例项目。
 
-## Features
+## 功能
 
 - React + TypeScript
-- Component-based architecture
-- Modern development workflow
+- 组件化架构
+- 现代化开发流程
 
-## Getting Started
+## 开始使用
 
 \`\`\`bash
 npm install
