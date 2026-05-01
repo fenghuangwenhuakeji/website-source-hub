@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>循环细纲版</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">循环细纲</p>
+        <h1>反复迭代的细纲工作台</h1>
+        <p>用“种子-冲突-爆点-回收-升级”的循环，把一条主线不断推深，适合做持续扩张的细纲。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">循环推进</span>
+        <span class="pill">细纲结构</span>
+        <span class="pill">可持续扩张</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>输入区</h2><p>把循环推进最关键的种子和升级点填进去。</p></div></div>
+        <form id="workspace-form" class="form-grid">
+          <label class="field"><span>故事种子</span><input name="seed" placeholder="例如：主角每救一个人就会丢失一段记忆"></label>
+          <label class="field"><span>升级方向</span><input name="upgrade" placeholder="例如：从个人代价升级到整个城邦危机"></label>
+          <div class="inline-grid">
+            <label class="field"><span>循环次数</span><input name="loops" value="4"></label>
+            <label class="field"><span>每轮爆点</span><input name="burst" placeholder="例如：身份暴露"></label>
+          </div>
+          <label class="field"><span>想保留的情绪</span><input name="emotion" placeholder="例如：疼痛感、压迫感、回甘"></label>
+          <label class="field"><span>补充说明</span><textarea name="notes" placeholder="说明你希望在哪一轮出现最大反转。"></textarea></label>
+        </form>
+        <div class="button-row">
+          <button id="generate-button" class="primary-btn" type="button">生成循环细纲</button>
+          <button id="reset-button" class="ghost-btn" type="button">清空草稿</button>
+        </div>
+      </div></section>
+
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>结果区</h2><p id="result-summary">把主线按循环方式往深处推，每一轮都更重。</p></div><span id="status-text" class="pill">等待生成</span></div>
+        <div id="result-grid" class="result-grid"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initGeneratorPage({
+        storageKey: 'fh-fenghuang-loop-outline',
+        summary: '把主线按循环方式往深处推，每一轮都更重。',
+        generate(data) {
+          const loopCount = Math.max(1, Math.min(6, Number(data.loops || 4)));
+          const cards = [];
+          for (let index = 0; index < loopCount; index += 1) {
+            cards.push({
+              title: `循环 ${index + 1}`,
+              bullets: [
+                `种子：围绕“${data.seed || '故事种子'}”开启新的局面。`,
+                '冲突：让角色必须付出比上一轮更高的代价。',
+                `爆点：在本轮安排“${data.burst || '关键爆点'}”的不同版本。`,
+                '回收：把前一轮埋下的线索或情绪收回来。',
+                `升级：朝“${data.upgrade || '升级方向'}”继续抬高赌注。`
+              ],
+            });
+          }
+          cards.push({
+            title: '情绪总线',
+            paragraphs: [
+              `整条细纲要一直保留“${data.emotion || '情绪张力'}”这条暗线，不要每轮都换气质。`,
+              `额外提示：${data.notes || '把最大反转放在最后两轮之间，前面多做铺垫。'}`
+            ],
+          });
+          return cards;
+        },
+      });
+    });
+  </script>
+</body>
+</html>

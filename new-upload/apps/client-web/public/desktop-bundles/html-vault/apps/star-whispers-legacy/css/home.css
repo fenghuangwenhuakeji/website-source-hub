@@ -1,0 +1,2256 @@
+/* ==================== 星语心伴首页样式 - Home Page Styles ==================== */
+/* 对标测测App设计风格 */
+
+/* ==================== CSS变量与主题 ==================== */
+:root {
+    /* 主题色 - 成人版 */
+    --primary-gradient: linear-gradient(135deg, #4F46E5 0%, #7C3AED 55%, #0EA5E9 100%);
+    --secondary-gradient: linear-gradient(135deg, #14B8A6 0%, #0EA5E9 100%);
+    --accent-color: #F8C94A;
+    --accent-soft: rgba(248, 201, 74, 0.14);
+    
+    /* 功能模块颜色 */
+    --horoscope-color: #FF6B6B;
+    --test-color: #4ECDC4;
+    --tarot-color: #9B59B6;
+    --bazi-color: #14B8A6;
+    --insight-color: #14B8A6;
+    --chat-color: #3498DB;
+    --community-color: #2ECC71;
+    
+    /* 背景色 */
+    --bg-primary: #07111f;
+    --bg-secondary: #14233a;
+    --bg-tertiary: #1d3150;
+    --bg-card: rgba(13, 24, 43, 0.72);
+    --bg-card-strong: rgba(11, 20, 37, 0.9);
+    --surface-border: rgba(255, 255, 255, 0.08);
+    
+    /* 文字色 */
+    --text-primary: #ffffff;
+    --text-secondary: rgba(241, 245, 249, 0.78);
+    --text-muted: rgba(191, 219, 254, 0.56);
+    
+    /* 圆角 */
+    --radius-sm: 12px;
+    --radius-md: 20px;
+    --radius-lg: 28px;
+    --radius-xl: 36px;
+    
+    /* 阴影 */
+    --shadow-card: 0 24px 60px rgba(3, 8, 20, 0.32);
+    --shadow-button: 0 12px 24px rgba(24, 42, 74, 0.22);
+    
+    /* 动画 */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* 儿童版主题 */
+[data-theme="child"] {
+    --primary-gradient: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+    --bg-primary: #1a1a2e;
+    --radius-lg: 30px;
+}
+
+/* 青少年版主题 */
+[data-theme="teen"] {
+    --primary-gradient: linear-gradient(135deg, #6C5CE7 0%, #A29BFE 100%);
+    --bg-primary: #16213e;
+}
+
+/* ==================== 基础样式重置 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: "SF Pro Display", "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", sans-serif;
+    background: var(--bg-primary);
+    background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.26), transparent 28%),
+                radial-gradient(circle at 85% 10%, rgba(14, 165, 233, 0.2), transparent 22%),
+                radial-gradient(circle at bottom right, rgba(20, 184, 166, 0.12), transparent 26%),
+                linear-gradient(180deg, #07111f 0%, #0c1830 52%, #091120 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    inset: auto;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(40px);
+    opacity: 0.5;
+}
+
+body::before {
+    width: 240px;
+    height: 240px;
+    top: 120px;
+    right: -60px;
+    background: rgba(79, 70, 229, 0.2);
+    border-radius: 50%;
+}
+
+body::after {
+    width: 280px;
+    height: 280px;
+    bottom: 80px;
+    left: -80px;
+    background: rgba(14, 165, 233, 0.16);
+    border-radius: 50%;
+}
+
+/* ==================== 星空背景 ==================== */
+.stars-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* ==================== 加载动画 ==================== */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-logo {
+    font-size: 64px;
+    animation: float 2s ease-in-out infinite;
+    display: inline-block;
+    filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+}
+
+.loading-text {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 20px 0;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: textFade 1.5s ease-in-out infinite;
+}
+
+/* 流畅的呼吸点动画 */
+.loading-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.loading-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    animation: dotPulse 1.2s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.loading-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loading-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.loading-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* 环形脉冲动画替代旋转spinner */
+.loading-ring {
+    width: 60px;
+    height: 60px;
+    margin: 16px auto 0;
+    position: relative;
+}
+
+.loading-ring::before,
+.loading-ring::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    border-top-color: var(--accent-color);
+    border-right-color: rgba(255, 215, 0, 0.5);
+}
+
+.loading-ring::before {
+    animation: ringRotate 1.5s linear infinite;
+}
+
+.loading-ring::after {
+    animation: ringRotate 1.5s linear infinite reverse;
+    opacity: 0.5;
+    transform: scale(0.8);
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0) scale(1); 
+    }
+    50% { 
+        transform: translateY(-12px) scale(1.05); 
+    }
+}
+
+@keyframes textFade {
+    0%, 100% { 
+        opacity: 1; 
+    }
+    50% { 
+        opacity: 0.6; 
+    }
+}
+
+@keyframes dotPulse {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes ringRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ==================== 主容器 ==================== */
+.app-container {
+    width: min(100%, 1240px);
+    max-width: 1240px;
+    margin: 0 auto;
+    min-height: 100vh;
+    position: relative;
+    background: transparent;
+    z-index: 1;
+    padding: 0 18px 24px;
+}
+
+/* ==================== 页面头部与基础组件 ==================== */
+.page-header {
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 16px 18px;
+    background: var(--primary-gradient);
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-card);
+}
+
+.page-header::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -25%;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.page-header .header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+}
+
+.back-btn,
+.header-btn,
+.placeholder {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.back-btn,
+.header-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.page-title {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.page-subtitle {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    margin-top: 14px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.82);
+    line-height: 1.6;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    box-shadow: var(--shadow-button);
+}
+
+.btn-primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-lg {
+    min-height: 52px;
+    font-size: 15px;
+}
+
+.btn-sm {
+    padding: 10px 14px;
+    font-size: 13px;
+}
+
+.result-actions {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+}
+
+.result-actions .btn {
+    flex: 1;
+}
+
+/* ==================== 顶部区域 ==================== */
+.header-section {
+    padding: calc(20px + env(safe-area-inset-top, 0px)) 16px 20px;
+    background: linear-gradient(180deg, rgba(10, 18, 34, 0.92), rgba(14, 24, 46, 0.86));
+    border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: var(--shadow-card);
+}
+
+.header-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -30%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.header-section::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -20%;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.logo-text {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.header-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.header-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* ==================== 每日签语卡片 ==================== */
+.daily-quote-card {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    margin-top: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.quote-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.quote-title {
+    font-size: 14px;
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
+.quote-date {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.quote-content {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.quote-author {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ==================== 主导航标签 ==================== */
+.main-nav {
+    display: flex;
+    background: rgba(10, 19, 35, 0.78);
+    border-radius: 24px;
+    margin: 20px 16px;
+    padding: 6px;
+    backdrop-filter: blur(18px);
+    position: sticky;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    z-index: 30;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 16px 32px rgba(7, 17, 31, 0.28);
+}
+
+.nav-tab {
+    flex: 1;
+    min-height: 46px;
+    padding: 12px 10px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border: none;
+    background: transparent;
+}
+
+.nav-tab.active {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.nav-tab:hover:not(.active) {
+    color: var(--text-primary);
+}
+
+/* ==================== 内容区域 ==================== */
+.content-section {
+    padding: 0 16px calc(120px + env(safe-area-inset-bottom, 0px));
+}
+
+.section-shell,
+.feature-item,
+.horoscope-card,
+.test-card,
+.tarot-cards,
+.research-card,
+.discover-banner .banner-card,
+.topic-item,
+.article-card,
+.daily-test-card,
+.post-card,
+.service-item,
+.function-item,
+.zodiac-info-card,
+.test-result-card,
+.profile-card,
+.profile-stats,
+.result-item {
+    box-shadow: var(--shadow-card);
+}
+
+.hero-surface {
+    margin-bottom: 24px;
+    padding: 24px;
+    border-radius: 32px;
+    background: linear-gradient(145deg, rgba(9, 18, 34, 0.88), rgba(19, 37, 68, 0.68));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: var(--shadow-card);
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 18px;
+}
+
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.07);
+    color: #bfdbfe;
+    font-size: 12px;
+    margin-bottom: 14px;
+}
+
+.hero-title {
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    margin-bottom: 14px;
+}
+
+.hero-copy {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-secondary);
+    max-width: 700px;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.mode-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.mode-card {
+    display: block;
+    padding: 18px;
+    border-radius: 24px;
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: var(--transition-normal);
+}
+
+.mode-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.mode-card.professional {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.24), rgba(14, 165, 233, 0.18));
+}
+
+.mode-card.casual {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.22), rgba(124, 58, 237, 0.15));
+}
+
+.mode-label {
+    display: inline-flex;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+
+.mode-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.mode-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+}
+
+.hero-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+}
+
+.hero-metric {
+    padding: 16px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.hero-metric-value {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.hero-metric-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: var(--accent-color);
+}
+
+.section-more {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.section-more:hover {
+    color: var(--text-primary);
+}
+
+/* ==================== 功能入口网格 ==================== */
+.feature-section {
+    margin-bottom: 24px;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    text-decoration: none;
+    min-height: 118px;
+    padding: 18px 10px;
+    background: linear-gradient(180deg, rgba(17, 29, 52, 0.86), rgba(11, 20, 37, 0.92));
+    border-radius: 22px;
+    backdrop-filter: blur(16px);
+    transition: var(--transition-normal);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.feature-item:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.feature-icon.horoscope { background: linear-gradient(135deg, #FF6B6B, #FF8E8E); }
+.feature-icon.test { background: linear-gradient(135deg, #4ECDC4, #6EE7DE); }
+.feature-icon.tarot { background: linear-gradient(135deg, #9B59B6, #BB7FD0); }
+.feature-icon.bazi { background: linear-gradient(135deg, #0F766E, #14B8A6); }
+.feature-icon.chat { background: linear-gradient(135deg, #3498DB, #5DADE2); }
+.feature-icon.community { background: linear-gradient(135deg, #2ECC71, #58D68D); }
+.feature-icon.npti { background: linear-gradient(135deg, #E74C3C, #EC7063); }
+.feature-icon.settings { background: linear-gradient(135deg, #95A5A6, #B2BEC3); }
+
+.feature-name {
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* ==================== 星座选择器 ==================== */
+.zodiac-section {
+    margin-bottom: 24px;
+}
+
+.zodiac-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.zodiac-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 4px;
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    border: 2px solid transparent;
+}
+
+.zodiac-item:hover,
+.zodiac-item.active {
+    border-color: var(--horoscope-color);
+    background: rgba(255, 107, 107, 0.2);
+}
+
+.zodiac-symbol {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.zodiac-name {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+/* ==================== 运势卡片 ==================== */
+.horoscope-section {
+    margin-bottom: 24px;
+}
+
+.horoscope-card {
+    background: linear-gradient(180deg, rgba(13, 24, 43, 0.84), rgba(9, 18, 34, 0.95));
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.horoscope-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.horoscope-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.horoscope-info {
+    flex: 1;
+}
+
+.horoscope-info h3 {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.horoscope-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.horoscope-score {
+    text-align: right;
+}
+
+.score-stars {
+    color: var(--accent-color);
+    display: block;
+    margin-bottom: 4px;
+}
+
+.score-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.horoscope-scores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.score-item {
+    text-align: center;
+}
+
+.score-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.score-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 4px;
+}
+
+.score-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 1s ease;
+}
+
+.score-fill.love { background: #FF6B6B; }
+.score-fill.career { background: #4ECDC4; }
+.score-fill.wealth { background: #FFD700; }
+
+.score-value {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.lucky-elements {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.lucky-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.lucky-item i {
+    color: var(--accent-color);
+}
+
+/* ==================== 热门测试 ==================== */
+.test-section {
+    margin-bottom: 24px;
+}
+
+.test-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.test-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: linear-gradient(180deg, rgba(15, 27, 47, 0.82), rgba(9, 18, 34, 0.94));
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-decoration: none;
+    transition: var(--transition-normal);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.test-card:hover {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.test-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+}
+
+.test-icon.mbti { background: linear-gradient(135deg, #667eea, #764ba2); }
+.test-icon.npti { background: linear-gradient(135deg, #f093fb, #f5576c); }
+.test-icon.eq { background: linear-gradient(135deg, #4ECDC4, #44A08D); }
+.test-icon.stress { background: linear-gradient(135deg, #FF6B6B, #FF8E8E); }
+
+.test-info {
+    flex: 1;
+}
+
+.test-info h4 {
+    font-size: 15px;
+    margin-bottom: 4px;
+    color: var(--text-primary);
+}
+
+.test-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.test-meta {
+    text-align: right;
+}
+
+.test-count {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: block;
+}
+
+.test-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ECDC4;
+    border-radius: 10px;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+/* ==================== 塔罗占卜入口 ==================== */
+.tarot-section {
+    margin-bottom: 24px;
+}
+
+.tarot-cards {
+    background: linear-gradient(180deg, rgba(15, 27, 47, 0.82), rgba(9, 18, 34, 0.94));
+    backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.tarot-preview {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tarot-card-item {
+    width: 60px;
+    height: 90px;
+    background: linear-gradient(135deg, #9B59B6, #BB7FD0);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: var(--transition-normal);
+}
+
+.tarot-card-item:hover {
+    transform: translateY(-8px) rotateY(10deg);
+}
+
+.tarot-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+/* ==================== 研究与证据卡片 ==================== */
+.section-note {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+.research-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.research-card {
+    background: linear-gradient(180deg, rgba(16, 30, 52, 0.9), rgba(10, 20, 37, 0.94));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(14px);
+    border-radius: 20px;
+    padding: 16px;
+}
+
+.research-source {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--accent-color);
+    margin-bottom: 10px;
+}
+
+.research-stat {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.research-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.research-copy {
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+.research-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #9bd8ff;
+    text-decoration: none;
+}
+
+.insight-strip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scroll-snap-type: x proximity;
+}
+
+.insight-strip::-webkit-scrollbar {
+    display: none;
+}
+
+.insight-card {
+    min-width: 240px;
+    scroll-snap-align: start;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.insight-label {
+    display: inline-flex;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--accent-color);
+    font-size: 11px;
+    margin-bottom: 10px;
+}
+
+.insight-card h4 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.insight-card p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+}
+
+/* ==================== 底部导航栏 ==================== */
+.bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: rgba(7, 17, 31, 0.88);
+    backdrop-filter: blur(20px);
+    display: flex;
+    justify-content: space-around;
+    padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px));
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    box-shadow: 0 -14px 28px rgba(7, 17, 31, 0.22);
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+}
+
+.nav-item.active {
+    color: var(--accent-color);
+}
+
+.nav-item:hover {
+    color: var(--text-primary);
+}
+
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 4px;
+}
+
+.nav-item span {
+    font-size: 10px;
+}
+
+/* ==================== 响应式适配 ==================== */
+@media (max-width: 430px) {
+    .app-container {
+        max-width: 100%;
+        padding: 0 0 18px;
+    }
+
+    .main-nav {
+        margin: 14px 12px 18px;
+    }
+    
+    .feature-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
+    
+    .feature-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 20px;
+    }
+    
+    .feature-name {
+        font-size: 11px;
+    }
+    
+    .zodiac-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+    }
+    
+    .zodiac-symbol {
+        font-size: 18px;
+    }
+    
+    .zodiac-name {
+        font-size: 9px;
+    }
+
+    .research-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 920px) {
+    .app-container {
+        max-width: 100%;
+        padding-inline: 0;
+    }
+
+    .hero-grid,
+    .hero-metrics {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 390px) {
+    .feature-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .page-title {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 360px) {
+    .header-section {
+        padding: 16px 12px;
+    }
+    
+    .content-section {
+        padding: 0 12px 100px;
+    }
+    
+    .horoscope-scores {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+    
+    .lucky-elements {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .page-header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .research-stat {
+        font-size: 22px;
+    }
+}
+
+@media (min-width: 1080px) {
+    .header-section {
+        margin-top: 24px;
+        border-radius: 32px;
+    }
+
+    .main-nav {
+        margin-inline: 0;
+    }
+
+    .content-section {
+        padding-inline: 0;
+    }
+
+    #tab-home.active {
+        display: grid;
+        grid-template-columns: minmax(0, 1.32fr) minmax(320px, 0.88fr);
+        gap: 20px;
+        align-items: start;
+    }
+
+    #tab-home .hero-surface,
+    #tab-home .feature-section,
+    #tab-home .zodiac-section {
+        grid-column: 1 / -1;
+    }
+
+    #tab-home .horoscope-section,
+    #tab-home .test-section:first-of-type,
+    #tab-home .tarot-section {
+        grid-column: 1;
+    }
+
+    #tab-home .test-section:last-of-type {
+        grid-column: 2;
+        align-self: start;
+        position: sticky;
+        top: 104px;
+    }
+
+    #tab-discover.active,
+    #tab-community.active {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+    }
+}
+
+/* ==================== 暗色模式优化 ==================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-card: rgba(255, 255, 255, 0.08);
+    }
+}
+
+/* ==================== 动画效果 ==================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.feature-item,
+.zodiac-item,
+.test-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.feature-item:nth-child(1) { animation-delay: 0.1s; }
+.feature-item:nth-child(2) { animation-delay: 0.15s; }
+.feature-item:nth-child(3) { animation-delay: 0.2s; }
+.feature-item:nth-child(4) { animation-delay: 0.25s; }
+.feature-item:nth-child(5) { animation-delay: 0.3s; }
+.feature-item:nth-child(6) { animation-delay: 0.35s; }
+.feature-item:nth-child(7) { animation-delay: 0.4s; }
+.feature-item:nth-child(8) { animation-delay: 0.45s; }
+
+/* ==================== 标签页内容切换 ==================== */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+/* ==================== 发现页面样式 ==================== */
+.discover-section {
+    margin-bottom: 24px;
+}
+
+.discover-banner {
+    margin-bottom: 16px;
+}
+
+.banner-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    color: white;
+}
+
+.banner-card.gradient-1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.banner-content h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.banner-content p {
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.banner-icon {
+    font-size: 48px;
+}
+
+/* 热门话题 */
+.topic-list {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+.topic-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.topic-item:last-child {
+    border-bottom: none;
+}
+
+.topic-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    margin: 0 -16px;
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+}
+
+.topic-rank {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+}
+
+.topic-rank.rank-1 {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+}
+
+.topic-rank.rank-2 {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+    color: #000;
+}
+
+.topic-rank.rank-3 {
+    background: linear-gradient(135deg, #CD7F32, #B87333);
+    color: #fff;
+}
+
+.topic-name {
+    flex: 1;
+    font-size: 14px;
+}
+
+.topic-heat {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* 精选文章 */
+.article-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.article-card {
+    display: flex;
+    gap: 16px;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    text-decoration: none;
+    transition: var(--transition-normal);
+}
+
+.article-card:hover {
+    transform: translateX(4px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.article-image {
+    width: 80px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    flex-shrink: 0;
+}
+
+.article-info {
+    flex: 1;
+}
+
+.article-info h4 {
+    font-size: 15px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.article-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.4;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.article-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* 每日一测 */
+.daily-test-card {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    text-align: center;
+}
+
+.daily-test-header {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.test-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.test-date {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.daily-test-card h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.daily-test-card p {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-bottom: 16px;
+}
+
+.start-test-btn {
+    display: inline-block;
+    background: white;
+    color: #f5576c;
+    padding: 10px 32px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.start-test-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* ==================== 社区页面样式 ==================== */
+.community-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.community-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.community-tab {
+    padding: 8px 16px;
+    background: var(--bg-card);
+    border: none;
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.community-tab.active {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.community-tab:hover:not(.active) {
+    color: var(--text-primary);
+}
+
+.post-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.post-btn:hover {
+    transform: scale(1.05);
+}
+
+/* 帖子列表 */
+.post-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.post-card {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.post-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-right: 12px;
+}
+
+.post-author {
+    flex: 1;
+}
+
+.author-name {
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+}
+
+.post-time {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+.post-tag {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+}
+
+.post-tag.tag-zodiac {
+    background: rgba(255, 107, 107, 0.2);
+    color: #FF6B6B;
+}
+
+.post-tag.tag-tarot {
+    background: rgba(155, 89, 182, 0.2);
+    color: #9B59B6;
+}
+
+.post-tag.tag-bazi {
+    background: rgba(230, 126, 34, 0.2);
+    color: #E67E22;
+}
+
+.post-tag.tag-test {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ECDC4;
+}
+
+.post-content p {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+.post-image {
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.post-footer {
+    display: flex;
+    gap: 24px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.post-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.post-action:hover {
+    color: var(--accent-color);
+}
+
+.post-action i {
+    font-size: 16px;
+}
+
+/* ==================== 我的页面样式 ==================== */
+.profile-card-section {
+    background: var(--primary-gradient);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.profile-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-info h3 {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.profile-info p {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.login-btn {
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    padding-top: 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.stat-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* 我的服务 */
+.mine-section {
+    margin-bottom: 24px;
+}
+
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.service-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: var(--transition-normal);
+}
+
+.service-item:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.service-icon {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.service-item span {
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+/* 我的星座卡片 */
+.zodiac-info-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+}
+
+.zodiac-info-left {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.zodiac-big-symbol {
+    font-size: 40px;
+}
+
+.zodiac-info-right h4 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.zodiac-info-right p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+/* 功能列表 */
+.function-list {
+    background: var(--bg-card);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+}
+
+.function-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.function-item:last-child {
+    border-bottom: none;
+}
+
+.function-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.function-item i:first-child {
+    width: 24px;
+    margin-right: 16px;
+    font-size: 16px;
+    color: var(--accent-color);
+}
+
+.function-item span {
+    flex: 1;
+    font-size: 14px;
+}
+
+.function-item i:last-child {
+    color: var(--text-muted);
+    font-size: 12px;
+}
+
+/* ==================== 亮色统一升级覆盖 ==================== */
+:root {
+    --font-body: "Avenir Next", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    --font-display: "Iowan Old Style", "Palatino Linotype", "Noto Serif SC", "Songti SC", serif;
+    --primary-gradient: linear-gradient(135deg, #ff9f8a 0%, #ffc56f 48%, #7dc5ff 100%);
+    --secondary-gradient: linear-gradient(135deg, #8fd9c7 0%, #9ed8ff 100%);
+    --accent-color: #ff8f7b;
+    --accent-soft: rgba(255, 143, 123, 0.12);
+    --horoscope-color: #ff7e8c;
+    --test-color: #73cdbb;
+    --tarot-color: #98a8ff;
+    --bazi-color: #69c5bf;
+    --insight-color: #73cdbb;
+    --chat-color: #79bbff;
+    --community-color: #73cdbb;
+    --bg-primary: #fffaf3;
+    --bg-secondary: #fffdfb;
+    --bg-tertiary: #eef7ff;
+    --bg-card: rgba(255, 255, 255, 0.82);
+    --bg-card-strong: rgba(255, 255, 255, 0.94);
+    --surface-border: rgba(98, 126, 156, 0.14);
+    --text-primary: #19324b;
+    --text-secondary: #60768e;
+    --text-muted: #8a9cb0;
+    --shadow-card: 0 20px 48px rgba(42, 85, 122, 0.12);
+    --shadow-button: 0 12px 24px rgba(42, 85, 122, 0.09);
+}
+
+html,
+body {
+    font-family: var(--font-body);
+    background:
+        radial-gradient(circle at 12% 18%, rgba(255, 178, 153, 0.24), transparent 0 24%),
+        radial-gradient(circle at 84% 10%, rgba(125, 197, 255, 0.2), transparent 0 22%),
+        radial-gradient(circle at 82% 82%, rgba(143, 217, 199, 0.18), transparent 0 18%),
+        linear-gradient(180deg, #fffaf3 0%, #fffdfb 52%, #eef7ff 100%);
+    color: var(--text-primary);
+}
+
+h1,
+h2,
+h3,
+h4,
+.logo-text,
+.page-title,
+.section-title,
+.spotlight-title,
+.journey-title,
+.route-title,
+.board-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+body::before {
+    background: rgba(255, 178, 153, 0.2);
+}
+
+body::after {
+    background: rgba(125, 197, 255, 0.18);
+}
+
+.star {
+    background: rgba(255, 182, 135, 0.68);
+}
+
+.app-container {
+    width: min(100%, 1440px);
+    max-width: 1440px;
+    padding: 0 20px 28px;
+}
+
+.page-header,
+.header-section {
+    color: var(--text-primary);
+    border-color: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 24px 56px rgba(255, 143, 123, 0.14);
+}
+
+.page-subtitle,
+.quote-date,
+.quote-author,
+.score-label,
+.score-value,
+.topic-heat,
+.article-meta,
+.post-time,
+.author-name,
+.stat-label,
+.service-item span,
+.topic-name,
+.article-info p,
+.post-action,
+.function-item i:last-child,
+.zodiac-name,
+.test-info p,
+.horoscope-info p,
+.tarot-desc {
+    color: var(--text-secondary);
+}
+
+.logo-icon,
+.header-btn,
+.daily-quote-card,
+.hero-kicker,
+.mode-label,
+.hero-metric,
+.quote-title {
+    background: rgba(255, 255, 255, 0.78);
+    color: var(--text-primary);
+}
+
+.main-nav {
+    background: rgba(255, 255, 255, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    box-shadow: 0 16px 32px rgba(42, 85, 122, 0.1);
+}
+
+.nav-tab {
+    color: var(--text-secondary);
+}
+
+.nav-tab.active {
+    color: #fff;
+}
+
+.hero-surface,
+.feature-item,
+.horoscope-card,
+.test-card,
+.tarot-cards,
+.research-card,
+.insight-card,
+.topic-list,
+.article-card,
+.daily-test-card,
+.post-card,
+.service-item,
+.function-list,
+.zodiac-info-card,
+.record-item,
+.banner-card,
+.community-post {
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
+}
+
+.feature-item:hover,
+.test-card:hover,
+.article-card:hover,
+.service-item:hover,
+.topic-item:hover {
+    background: rgba(255, 246, 239, 0.98);
+}
+
+.mode-card,
+.insight-item,
+.mini-item,
+.record-link {
+    background: rgba(255, 250, 245, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.92);
+    color: var(--text-primary);
+}
+
+.mode-card p,
+.hero-copy,
+.research-copy,
+.insight-card p,
+.post-content p,
+.record-copy p,
+.daily-test-card p,
+.topic-item,
+.lucky-elements,
+.daily-quote-card,
+.quote-content {
+    color: var(--text-secondary);
+}
+
+.zodiac-item {
+    background: rgba(255, 255, 255, 0.78);
+    border-color: rgba(255, 255, 255, 0.92);
+}
+
+.zodiac-item:hover,
+.zodiac-item.active {
+    background: rgba(255, 241, 236, 0.98);
+}
+
+.section-more,
+.article-meta span,
+.community-tab,
+.score-text,
+.test-tag {
+    color: var(--text-primary);
+}
+
+.community-tab,
+.post-btn,
+.record-link,
+.function-item:hover {
+    background: rgba(255, 255, 255, 0.78);
+}
+
+.topic-list,
+.function-list {
+    background: rgba(255, 255, 255, 0.76);
+}
+
+.bottom-nav {
+    width: min(calc(100% - 28px), 1220px);
+    max-width: 1220px;
+    bottom: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.94);
+    border-radius: 28px;
+    box-shadow: 0 18px 40px rgba(42, 85, 122, 0.12);
+}
+
+.nav-item:hover {
+    color: var(--accent-color);
+}
+
+.tab-content.active {
+    animation: fadeIn 0.35s ease;
+}
+
+@media (max-width: 920px) {
+    .app-container {
+        padding-inline: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .app-container {
+        padding: 0 0 18px;
+    }
+
+    .bottom-nav {
+        width: 100%;
+        bottom: 0;
+        border-radius: 24px 24px 0 0;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+    }
+}

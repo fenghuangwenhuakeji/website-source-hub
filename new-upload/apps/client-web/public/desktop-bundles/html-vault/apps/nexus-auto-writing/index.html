@@ -1,0 +1,6199 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <title>超无穹统一工作台</title>
+    <style>
+/* inlined from styles.css */
+:root {
+  color-scheme: dark;
+  --bg: #040406;
+  --bg-panel: rgba(8, 8, 11, 0.96);
+  --bg-card: rgba(13, 13, 18, 0.96);
+  --bg-soft: rgba(255, 255, 255, 0.02);
+  --line: #1a1a20;
+  --line-strong: rgba(0, 255, 200, 0.32);
+  --text: #b8b8c8;
+  --text-soft: rgba(184, 184, 200, 0.78);
+  --text-dim: rgba(86, 86, 104, 0.94);
+  --accent: #00ffc8;
+  --accent-strong: #00c8ff;
+  --accent-soft: rgba(0, 255, 200, 0.08);
+  --warning: #ffaa00;
+  --danger: #ff3040;
+  --radius-xl: 12px;
+  --radius-lg: 10px;
+  --radius-md: 8px;
+  --radius-sm: 6px;
+  --shadow: 0 24px 60px rgba(0, 0, 0, 0.48);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --viewport-offset: 0px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Courier New", "JetBrains Mono", "PingFang SC", monospace;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(0, 200, 255, 0.08), transparent 24%),
+    radial-gradient(circle at left bottom, rgba(0, 255, 200, 0.06), transparent 20%),
+    linear-gradient(180deg, #050507 0%, #020203 100%);
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+textarea {
+  color: var(--text);
+}
+
+pre,
+code {
+  font-family: "JetBrains Mono", "Consolas", monospace;
+}
+
+.hidden,
+.hidden-dev {
+  display: none !important;
+}
+
+.cosmos {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.star,
+.nebula {
+  position: absolute;
+  border-radius: 999px;
+}
+
+.star {
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.72);
+}
+
+.star-a {
+  top: 12%;
+  left: 9%;
+  width: 3px;
+  height: 3px;
+}
+
+.star-b {
+  top: 26%;
+  right: 18%;
+  width: 4px;
+  height: 4px;
+}
+
+.star-c {
+  bottom: 18%;
+  left: 56%;
+  width: 2px;
+  height: 2px;
+}
+
+.nebula {
+  filter: blur(80px);
+  opacity: 0.4;
+}
+
+.nebula-a {
+  top: -5%;
+  right: -8%;
+  width: 340px;
+  height: 340px;
+  background: rgba(0, 200, 255, 0.15);
+}
+
+.nebula-b {
+  left: -10%;
+  bottom: -16%;
+  width: 320px;
+  height: 320px;
+  background: rgba(0, 255, 200, 0.12);
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 50;
+  min-width: 220px;
+  max-width: 360px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(8, 8, 11, 0.98);
+  box-shadow: var(--shadow);
+  transform: translateY(-10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.is-success {
+  border-color: rgba(0, 255, 200, 0.26);
+}
+
+.toast.is-error {
+  border-color: rgba(255, 48, 64, 0.3);
+}
+
+.console-shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 14px;
+  min-height: 100dvh;
+  padding:
+    calc(14px + var(--safe-top))
+    calc(14px + var(--safe-right))
+    calc(14px + var(--safe-bottom))
+    calc(14px + var(--safe-left));
+}
+
+.console-shell.is-sidebar-collapsed {
+  grid-template-columns: 108px minmax(0, 1fr);
+}
+
+.console-shell.is-sidebar-collapsed .sidebar {
+  padding: 12px 10px;
+}
+
+.console-shell.is-sidebar-collapsed .brand-copy,
+.console-shell.is-sidebar-collapsed .side-card h2,
+.console-shell.is-sidebar-collapsed .side-card h3,
+.console-shell.is-sidebar-collapsed .side-card .section-label,
+.console-shell.is-sidebar-collapsed .mode-button span,
+.console-shell.is-sidebar-collapsed .domain-card span,
+.console-shell.is-sidebar-collapsed .domain-card-footer,
+.console-shell.is-sidebar-collapsed .tool-grid,
+.console-shell.is-sidebar-collapsed .grow,
+.console-shell.is-sidebar-collapsed #createDomainBtn {
+  display: none !important;
+}
+
+.console-shell.is-sidebar-collapsed .brand-block h1 {
+  font-size: 16px;
+  margin-bottom: 0;
+}
+
+.console-shell.is-sidebar-collapsed .side-card {
+  padding: 10px;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(9, 9, 13, 0.98), rgba(5, 5, 8, 0.98)),
+    radial-gradient(circle at top right, rgba(0, 255, 200, 0.04), transparent 42%);
+  box-shadow: var(--shadow);
+}
+
+.sidebar {
+  position: sticky;
+  top: 14px;
+  display: grid;
+  gap: 12px;
+  align-self: start;
+  max-height: calc(100dvh - 28px);
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: var(--radius-xl);
+}
+
+.sidebar-mask {
+  display: none;
+}
+
+.mobile-only {
+  display: none !important;
+}
+
+.sidebar::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar,
+.domain-list::-webkit-scrollbar,
+.stack-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb,
+.domain-list::-webkit-scrollbar-thumb,
+.stack-list::-webkit-scrollbar-thumb {
+  background: rgba(0, 255, 200, 0.16);
+  border-radius: 999px;
+}
+
+.sidebar,
+.domain-list,
+.stack-list,
+.chat-messages,
+.modal-card {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mobile-sheet-handle {
+  width: 56px;
+  height: 5px;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.18), rgba(0, 255, 200, 0.58));
+  box-shadow: 0 0 16px rgba(0, 255, 200, 0.16);
+}
+
+.mobile-action-strip {
+  gap: 8px;
+}
+
+.mobile-action-button {
+  justify-content: center;
+  min-height: 46px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+
+.sidebar-head,
+.card-head,
+.composer-actions,
+.conversation-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.sidebar-head {
+  align-items: flex-start;
+}
+
+.card-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.brand-block h1,
+.conversation-copy h2 {
+  margin: 8px 0 10px;
+  line-height: 1.08;
+}
+
+.brand-block h1 {
+  font-size: 26px;
+}
+
+.brand-copy,
+.panel-copy,
+.hint-text,
+.guide-copy {
+  color: var(--text-soft);
+  line-height: 1.7;
+}
+
+.side-card,
+.conversation-top,
+.chat-stage,
+.context-card,
+.modal-card {
+  border-radius: var(--radius-xl);
+}
+
+.side-card,
+.conversation-top,
+.chat-stage,
+.context-card,
+.modal-card {
+  padding: 14px;
+}
+
+.side-card,
+.context-card {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.side-card.grow {
+  min-height: 0;
+}
+
+.compact-head h2,
+.compact-head h3 {
+  margin: 8px 0 0;
+}
+
+.compact-head h2 {
+  font-size: 17px;
+}
+
+.compact-head h3 {
+  font-size: 18px;
+}
+
+.block-button {
+  width: 100%;
+}
+
+.tool-grid,
+.conversation-status,
+.conversation-actions,
+.composer-buttons,
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.conversation-status {
+  min-width: 0;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.api-hero-card {
+  display: grid;
+  gap: 14px;
+  padding: 14px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 255, 200, 0.14);
+  background:
+    radial-gradient(circle at top right, rgba(0, 200, 255, 0.08), transparent 34%),
+    rgba(0, 255, 200, 0.03);
+}
+
+.api-hero-copy h4 {
+  margin: 8px 0 10px;
+  font-size: 24px;
+}
+
+.provider-grid,
+.api-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.provider-button {
+  width: 100%;
+  min-height: 72px;
+  padding: 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, rgba(14, 14, 19, 0.98), rgba(7, 7, 10, 0.98)),
+    rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  text-align: left;
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease,
+    background 150ms ease;
+}
+
+.provider-button strong,
+.provider-button span {
+  display: block;
+}
+
+.provider-button strong {
+  margin-bottom: 6px;
+}
+
+.provider-button span {
+  color: var(--text-soft);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.provider-button:hover,
+.provider-button.is-active {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg, rgba(12, 22, 24, 0.98), rgba(7, 10, 14, 1)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.key-field input {
+  min-height: 52px;
+  font-size: 15px;
+}
+
+.advanced-box {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.02);
+  overflow: hidden;
+}
+
+.advanced-box summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  list-style: none;
+  color: var(--text);
+}
+
+.advanced-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.advanced-box summary::after {
+  content: "⌄";
+  color: var(--accent);
+  transition: transform 150ms ease;
+}
+
+.advanced-box[open] summary::after {
+  transform: rotate(180deg);
+}
+
+.advanced-copy {
+  margin: 0;
+  padding: 0 16px 14px;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.advanced-grid {
+  padding: 0 16px 16px;
+}
+
+.api-action-row > * {
+  flex: 1 1 180px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.form-field,
+.toggle-field {
+  display: grid;
+  gap: 6px;
+  color: var(--text-soft);
+  font-size: 13px;
+}
+
+.wide-field {
+  grid-column: 1 / -1;
+}
+
+.form-field input {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 13px 14px;
+  outline: none;
+  transition: border-color 150ms ease, background 150ms ease;
+}
+
+.form-field input:focus {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.toggle-field {
+  align-content: end;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.toggle-field input {
+  accent-color: var(--accent-strong);
+}
+
+.icon-button {
+  min-width: 34px;
+  width: 34px;
+  padding: 0;
+}
+
+.ghost-button,
+.primary-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.ghost-button {
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+}
+
+.primary-button {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 200, 0.22),
+    rgba(0, 200, 255, 0.1)
+  );
+  color: var(--text);
+}
+
+.ghost-button:hover,
+.primary-button:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+}
+
+.danger-outline {
+  border-color: rgba(255, 48, 64, 0.22);
+  color: #ff8f9a;
+}
+
+.danger-outline:hover {
+  border-color: rgba(255, 48, 64, 0.36);
+  background: rgba(255, 48, 64, 0.08);
+}
+
+.small {
+  min-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+}
+
+.mode-list,
+.domain-list,
+.stack-list,
+.api-method-list {
+  display: grid;
+  gap: 10px;
+}
+
+.simple-stack .ghost-button,
+.simple-stack .primary-button,
+.simple-stack .mode-button {
+  width: 100%;
+}
+
+.mode-button,
+.domain-card {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(15, 15, 20, 0.96), rgba(8, 8, 12, 0.98)),
+    rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  text-align: left;
+  padding: 12px 13px;
+  transition:
+    border-color 150ms ease,
+    transform 150ms ease,
+    background 150ms ease;
+}
+
+.mode-button:hover,
+.mode-button.is-active,
+.domain-card:hover,
+.domain-card.is-active {
+  border-color: var(--line-strong);
+  transform: translateY(-1px);
+  background:
+    linear-gradient(180deg, rgba(16, 20, 24, 0.98), rgba(9, 12, 15, 1)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.mode-button strong,
+.mode-button span,
+.domain-card strong,
+.domain-card span {
+  display: block;
+}
+
+.mode-button span,
+.domain-card span {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.domain-list {
+  max-height: 260px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.session-record-list {
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.domain-card-head,
+.domain-card-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.domain-card-footer {
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.domain-preview {
+  opacity: 0.92;
+}
+
+.record-card {
+  display: grid;
+  gap: 8px;
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 255, 200, 0.1);
+  background: rgba(0, 255, 200, 0.03);
+}
+
+.record-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.record-role {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 200, 0.16);
+  color: var(--accent);
+}
+
+.record-role.is-user {
+  border-color: rgba(0, 200, 255, 0.2);
+  color: var(--accent-strong);
+}
+
+.record-copy {
+  color: var(--text-soft);
+  line-height: 1.62;
+  word-break: break-word;
+}
+
+.status-chip,
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 200, 0.18);
+  background: rgba(0, 255, 200, 0.05);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.main-shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  min-width: 0;
+  min-height: calc(100dvh - 28px - var(--safe-top) - var(--safe-bottom));
+}
+
+.conversation-top {
+  flex-wrap: wrap;
+}
+
+.conversation-copy {
+  min-width: min(100%, 520px);
+}
+
+.conversation-copy h2 {
+  font-size: 28px;
+}
+
+.chat-stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  min-height: 0;
+}
+
+.user-guide {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 255, 200, 0.12);
+  background: rgba(0, 255, 200, 0.03);
+}
+
+.guide-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 200, 0.18);
+  background: rgba(0, 255, 200, 0.04);
+  color: var(--accent);
+  font-size: 12px;
+}
+
+.guide-copy {
+  flex: 1 1 320px;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.workspace-view {
+  min-width: 0;
+}
+
+.chat-stage .workspace-view {
+  min-height: 0;
+}
+
+#chatView.workspace-view {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 12px;
+  min-height: min(660px, calc(100dvh - 250px));
+}
+
+.chat-messages {
+  min-height: 260px;
+  max-height: none;
+  overflow-y: auto;
+  display: grid;
+  gap: 12px;
+  padding: 12px 10px;
+  border: 1px solid rgba(0, 255, 200, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.018);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.chat-empty {
+  min-height: 220px;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px dashed rgba(0, 255, 200, 0.12);
+  background: rgba(255, 255, 255, 0.012);
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.message-row {
+  display: flex;
+  max-width: 100%;
+}
+
+.message-row.is-user {
+  justify-content: flex-end;
+}
+
+.message-card {
+  width: fit-content;
+  max-width: min(760px, 86%);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background:
+    linear-gradient(180deg, rgba(12, 12, 16, 0.98), rgba(6, 6, 9, 0.99)),
+    rgba(255, 255, 255, 0.02);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+}
+
+.message-row.is-user .message-card {
+  max-width: min(520px, 70%);
+  border-color: rgba(0, 200, 255, 0.2);
+  background:
+    linear-gradient(180deg, rgba(10, 20, 22, 0.98), rgba(7, 12, 14, 0.99)),
+    rgba(255, 255, 255, 0.02);
+}
+
+.message-card.is-streaming {
+  border-color: rgba(0, 255, 200, 0.22);
+  box-shadow: 0 18px 42px rgba(0, 255, 200, 0.06);
+}
+
+.message-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--text-dim);
+  font-size: 12px;
+}
+
+.message-content {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.72;
+}
+
+.message-thinking {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 255, 200, 0.12);
+  background: rgba(0, 255, 200, 0.04);
+}
+
+.message-thinking-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.message-thinking-head strong {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.message-thinking-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.message-thinking-steps .thinking-step {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+.stream-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 1em;
+  margin-left: 3px;
+  vertical-align: text-bottom;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.composer {
+  margin-top: 0;
+  padding: 12px;
+  border: 1px solid rgba(0, 255, 200, 0.1);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(9, 9, 13, 0.98), rgba(4, 4, 6, 0.98)),
+    rgba(255, 255, 255, 0.02);
+  display: grid;
+  gap: 12px;
+}
+
+.thinking-panel {
+  display: none;
+  gap: 10px;
+  padding: 14px 16px;
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(0, 255, 200, 0.16);
+  background:
+    linear-gradient(180deg, rgba(0, 255, 200, 0.07), rgba(0, 255, 200, 0.03)),
+    rgba(10, 12, 14, 0.92);
+}
+
+.thinking-panel[hidden] {
+  display: none !important;
+}
+
+.thinking-panel.is-visible {
+  display: grid;
+}
+
+.thinking-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+}
+
+.thinking-head strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 15px;
+}
+
+.thinking-percent {
+  color: var(--accent);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.thinking-bar {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 255, 200, 0.14);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.thinking-bar-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background:
+    linear-gradient(90deg, rgba(0, 255, 200, 0.6), rgba(0, 170, 255, 0.92));
+  box-shadow: 0 0 18px rgba(0, 255, 200, 0.16);
+  transition: width 180ms ease;
+}
+
+.thinking-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.thinking-step {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 255, 200, 0.1);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-soft);
+  font-size: 12px;
+}
+
+.thinking-step.is-active {
+  border-color: rgba(0, 255, 200, 0.22);
+  background: rgba(0, 255, 200, 0.08);
+  color: var(--text);
+}
+
+.composer-input,
+.panel-textarea {
+  width: 100%;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 13px 14px;
+  outline: none;
+  transition: border-color 150ms ease, background 150ms ease;
+  resize: none;
+}
+
+.composer-input:focus,
+.panel-textarea:focus {
+  border-color: var(--line-strong);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.composer-input {
+  min-height: 92px;
+  line-height: 1.72;
+}
+
+.context-grid,
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.context-card.wide {
+  grid-column: 1 / -1;
+}
+
+.stack-item,
+.api-method {
+  padding: 11px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 255, 200, 0.1);
+  background: rgba(0, 255, 200, 0.03);
+  color: var(--text-soft);
+  line-height: 1.62;
+}
+
+.api-method strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.code-block {
+  margin: 0;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 255, 200, 0.12);
+  background: rgba(1, 1, 2, 0.96);
+  color: #d8f7ff;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.65;
+  font-size: 13px;
+}
+
+.modal-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.modal-mask {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.64);
+  backdrop-filter: blur(2px);
+}
+
+.modal-card {
+  position: relative;
+  z-index: 1;
+  width: min(960px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  margin: 16px auto;
+  overflow: auto;
+}
+
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.modal-head h3 {
+  margin: 8px 0 0;
+  font-size: 24px;
+}
+
+.modal-body {
+  display: grid;
+  gap: 16px;
+}
+
+@media (max-width: 1180px) {
+  .console-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .console-shell.is-sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-height: 820px) and (min-width: 981px) {
+  .console-shell {
+    gap: 12px;
+    padding:
+      calc(12px + var(--safe-top))
+      calc(12px + var(--safe-right))
+      calc(12px + var(--safe-bottom))
+      calc(12px + var(--safe-left));
+  }
+
+  .sidebar {
+    top: 12px;
+    gap: 10px;
+    max-height: calc(100dvh - 24px);
+    padding: 12px;
+  }
+
+  .brand-block h1 {
+    font-size: 24px;
+  }
+
+  .side-card,
+  .conversation-top,
+  .chat-stage,
+  .context-card {
+    padding: 12px;
+  }
+
+  .main-shell {
+    gap: 12px;
+    min-height: calc(100dvh - 24px - var(--safe-top) - var(--safe-bottom));
+  }
+
+  .conversation-copy h2 {
+    font-size: 24px;
+    margin: 6px 0 8px;
+  }
+
+  .brand-copy,
+  .panel-copy,
+  .hint-text,
+  .guide-copy {
+    font-size: 13px;
+    line-height: 1.55;
+  }
+
+  .chat-stage {
+    gap: 10px;
+  }
+
+  .user-guide {
+    padding: 10px 12px;
+  }
+
+  #chatView.workspace-view {
+    min-height: calc(100dvh - 290px);
+    gap: 10px;
+  }
+
+  .chat-messages {
+    min-height: 180px;
+    padding: 10px 8px;
+  }
+
+  .composer {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .composer-input {
+    min-height: 72px;
+  }
+}
+
+@media (max-width: 980px) {
+  .console-shell {
+    padding:
+      calc(12px + var(--safe-top))
+      calc(12px + var(--safe-right))
+      calc(12px + var(--safe-bottom) + var(--viewport-offset))
+      calc(12px + var(--safe-left));
+    gap: 12px;
+  }
+
+  .console-shell.is-sidebar-collapsed {
+    grid-template-columns: 1fr;
+  }
+
+  .mobile-only {
+    display: block !important;
+  }
+
+  button.mobile-only {
+    display: inline-flex !important;
+  }
+
+  .mobile-sheet-handle.mobile-only {
+    display: block !important;
+  }
+
+  .mobile-action-strip.mobile-only {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sidebar {
+    position: fixed;
+    top: auto;
+    left: 10px;
+    right: 10px;
+    bottom: 0;
+    z-index: 70;
+    width: auto;
+    height: min(84dvh, 780px);
+    max-height: calc(100dvh - 10px - var(--safe-top));
+    padding:
+      0
+      14px
+      calc(18px + var(--safe-bottom))
+      14px;
+    gap: 12px;
+    border-radius: 24px 24px 0 0;
+    transform: translateY(calc(100% + 28px + var(--sidebar-drag-offset, 0px)));
+    transition: transform 220ms ease, box-shadow 220ms ease;
+  }
+
+  .console-shell.is-sidebar-open .sidebar {
+    transform: translateY(var(--sidebar-drag-offset, 0px));
+    box-shadow: 0 -28px 80px rgba(0, 0, 0, 0.58);
+  }
+
+  .sidebar-mask {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 65;
+    border: 0;
+    background: rgba(0, 0, 0, 0.56);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+  }
+
+  .console-shell.is-sidebar-open .sidebar-mask {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .main-shell {
+    min-height: calc(100dvh - 24px - var(--viewport-offset));
+  }
+
+  .mobile-sheet-handle {
+    position: sticky;
+    top: calc(10px + var(--safe-top));
+    z-index: 4;
+    margin: calc(10px + var(--safe-top)) auto 6px;
+  }
+
+  .sidebar-head {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    padding: 8px 0 10px;
+    background:
+      linear-gradient(180deg, rgba(8, 8, 12, 0.98), rgba(8, 8, 12, 0.92) 78%, rgba(8, 8, 12, 0));
+    backdrop-filter: blur(18px);
+  }
+
+  .side-card {
+    padding: 14px;
+  }
+
+  .conversation-top {
+    position: sticky;
+    top: calc(12px + var(--safe-top));
+    z-index: 20;
+    backdrop-filter: blur(18px);
+  }
+
+  .mobile-action-strip {
+    margin-top: -2px;
+  }
+
+  .chat-stage {
+    min-height: calc(100dvh - 180px - var(--viewport-offset));
+    gap: 12px;
+  }
+
+  .user-guide {
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .guide-pill {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .guide-copy {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .workspace-view {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  #chatView.workspace-view {
+    display: flex;
+    min-height: 0;
+  }
+
+  .chat-messages {
+    flex: 1 1 auto;
+    min-height: 40vh;
+    max-height: none;
+    padding: 0 2px 18px;
+    scroll-padding-bottom: 180px;
+  }
+
+  .message-row {
+    padding: 0 2px;
+  }
+
+  .message-card {
+    max-width: 100%;
+    border-radius: 16px;
+    padding: 12px 13px;
+  }
+
+  .message-row.is-user .message-card {
+    max-width: min(86vw, 520px);
+  }
+
+  .composer {
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    padding:
+      12px
+      12px
+      calc(12px + var(--safe-bottom) + var(--viewport-offset));
+    border: 1px solid rgba(0, 255, 200, 0.12);
+    border-radius: 22px 22px 0 0;
+    background:
+      linear-gradient(180deg, rgba(4, 4, 6, 0.24), rgba(4, 4, 6, 0.94) 24%, rgba(4, 4, 6, 0.99));
+    box-shadow: 0 -18px 48px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(18px);
+  }
+
+  .composer-actions {
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .composer-buttons {
+    display: grid;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    width: 100%;
+  }
+
+  .composer-buttons > * {
+    width: 100%;
+    min-height: 46px;
+    justify-content: center;
+  }
+
+  .composer-input {
+    min-height: 104px;
+    max-height: 42dvh;
+    padding: 14px 14px 12px;
+    border-radius: 18px;
+    font-size: 16px;
+  }
+
+  .conversation-status {
+    width: calc(100% + 4px);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0 2px 4px;
+    margin: 0 -2px;
+    scroll-snap-type: x proximity;
+  }
+
+  .status-chip {
+    flex: 0 0 auto;
+    justify-content: center;
+    white-space: nowrap;
+    scroll-snap-align: start;
+  }
+
+  .session-record-list {
+    max-height: none;
+  }
+
+  .provider-grid,
+  .api-summary-grid,
+  .context-grid,
+  .modal-grid,
+  .form-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .modal-card {
+    width: 100vw;
+    min-height: min(92dvh, 100dvh);
+    max-height: min(92dvh, calc(100dvh - var(--viewport-offset)));
+    margin: auto 0 0;
+    border-radius: 24px 24px 0 0;
+    padding:
+      0
+      14px
+      calc(18px + var(--safe-bottom) + var(--viewport-offset));
+  }
+
+  .modal-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: calc(14px + var(--safe-top)) 0 12px;
+    margin-bottom: 12px;
+    background:
+      linear-gradient(180deg, rgba(8, 8, 12, 0.98), rgba(8, 8, 12, 0.92) 78%, rgba(8, 8, 12, 0));
+    backdrop-filter: blur(18px);
+  }
+
+  .modal-body {
+    padding-bottom: 6px;
+  }
+}
+
+@media (max-width: 920px) {
+  .context-grid,
+  .modal-grid,
+  .provider-grid,
+  .api-summary-grid,
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .chat-messages {
+    max-height: none;
+    min-height: 320px;
+  }
+
+  .thinking-head {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .card-head,
+  .composer-actions,
+  .conversation-top {
+    flex-direction: column;
+  }
+
+  .brand-block h1 {
+    font-size: 24px;
+  }
+
+  .conversation-copy h2 {
+    font-size: 26px;
+  }
+
+  .conversation-copy,
+  .conversation-actions,
+  .tool-grid,
+  .composer-buttons {
+    width: 100%;
+  }
+
+  .conversation-actions {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .conversation-actions > * {
+    flex: 1 1 calc(50% - 4px);
+    justify-content: center;
+  }
+
+  .tool-grid > *,
+  .composer-buttons > * {
+    flex: 1 1 100%;
+  }
+
+  .mobile-action-strip.mobile-only {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .composer-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .composer-buttons > * {
+    flex: 0 0 auto;
+  }
+
+  .status-chip {
+    flex-basis: auto;
+  }
+
+  .thinking-head,
+  .message-thinking-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .thinking-percent {
+    font-size: 16px;
+  }
+
+  .api-hero-copy h4 {
+    font-size: 22px;
+  }
+
+  .modal-card {
+    width: 100vw;
+    min-height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+    padding-bottom: calc(18px + var(--safe-bottom) + var(--viewport-offset));
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <div class="cosmos" aria-hidden="true">
+      <span class="star star-a"></span>
+      <span class="star star-b"></span>
+      <span class="star star-c"></span>
+      <span class="nebula nebula-a"></span>
+      <span class="nebula nebula-b"></span>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <div class="console-shell">
+      <aside class="sidebar panel">
+        <div class="mobile-sheet-handle mobile-only" aria-hidden="true"></div>
+        <div class="sidebar-head">
+          <div class="brand-block">
+            <p class="section-label">NEXUS OS</p>
+            <h1>NEXUS OS</h1>
+            <p class="brand-copy">v2.0 真值执行协议</p>
+          </div>
+          <button
+            id="sidebarToggleBtn"
+            class="ghost-button small icon-button"
+            type="button"
+            aria-label="折叠侧栏"
+          >
+            ✕
+          </button>
+        </div>
+
+        <button id="createDomainBtn" class="primary-button block-button" type="button">
+          + 新建对话域
+        </button>
+
+        <section class="side-card">
+          <div class="card-head compact-head">
+            <div>
+              <p class="section-label">批量自动化流水线</p>
+              <h2>选择结果类型</h2>
+            </div>
+          </div>
+          <div id="quickModeList" class="mode-list simple-stack"></div>
+        </section>
+
+        <section class="side-card">
+          <div class="card-head compact-head">
+            <div>
+              <p class="section-label">上下文与记忆</p>
+              <h2>保留长期状态</h2>
+            </div>
+          </div>
+          <div class="tool-grid">
+            <button id="tabContext" class="ghost-button block-button" type="button">
+              查看/编辑记忆摘要
+            </button>
+            <button id="quickCompressBtn" class="ghost-button block-button" type="button">
+              强制压缩当前上下文
+            </button>
+            <button id="statePanelBtn" class="ghost-button block-button" type="button">
+              NEXUS 状态机面板
+            </button>
+          </div>
+        </section>
+
+        <section class="side-card grow">
+          <div class="card-head compact-head">
+            <div>
+              <p class="section-label">对话列表</p>
+              <h2>当前工作域</h2>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button id="clearDomainBtn" class="ghost-button small danger-outline" type="button">
+              一键清空
+            </button>
+          </div>
+          <div id="domainList" class="domain-list"></div>
+        </section>
+
+        <section class="side-card">
+          <div class="card-head compact-head">
+            <div>
+              <p class="section-label">会话记录</p>
+              <h2>当前会话历史</h2>
+            </div>
+          </div>
+          <div id="sessionRecordList" class="stack-list session-record-list"></div>
+        </section>
+
+        <section class="side-card">
+          <div class="card-head compact-head">
+            <div>
+              <p class="section-label">工具</p>
+              <h2>导出与报告</h2>
+            </div>
+          </div>
+          <div class="tool-grid">
+            <button id="apiSettingsBtn" class="ghost-button block-button" type="button">
+              API 设置
+            </button>
+            <button id="exportDomainBtn" class="ghost-button block-button" type="button">
+              导出当前对话
+            </button>
+            <button id="reportBtn" class="ghost-button block-button" type="button">
+              创作数据报告
+            </button>
+          </div>
+        </section>
+
+        <div class="hidden-dev" aria-hidden="true">
+          <div id="sidebarSnapshot"></div>
+          <nav id="baselineNav"></nav>
+          <div id="moduleRail"></div>
+          <button id="tabPrompt" type="button"></button>
+          <button id="copyPromptBtn" type="button"></button>
+          <button id="copyPayloadBtn" type="button"></button>
+        </div>
+      </aside>
+
+      <button
+        id="mobileSidebarMask"
+        class="sidebar-mask"
+        type="button"
+        aria-label="关闭侧栏"
+      ></button>
+
+      <main class="main-shell">
+        <header class="conversation-top panel">
+          <div class="conversation-copy">
+            <p class="section-label">用户交互区</p>
+            <h2 id="domainTitle">尚未建立对话域</h2>
+            <p id="domainSubtitle" class="panel-copy">
+              只需要输入你的想法、目标或修改要求，剩下的提示词、模块编排和上下文压缩会在后台自动处理。
+            </p>
+          </div>
+
+          <div class="conversation-status">
+            <span id="domainBadge" class="status-chip">未初始化</span>
+            <span id="apiStatusBadge" class="status-chip">API 未配置</span>
+            <span id="streamStatusBadge" class="status-chip">流式关闭</span>
+            <span id="memoryBadge" class="status-chip">压缩 0 次</span>
+          </div>
+
+          <div class="conversation-actions">
+            <button
+              id="mobileSidebarBtn"
+              class="ghost-button mobile-only"
+              type="button"
+            >
+              菜单
+            </button>
+            <button id="tabChat" class="ghost-button" type="button">返回对话</button>
+          </div>
+        </header>
+
+        <nav class="mobile-action-strip mobile-only" aria-label="移动快捷操作">
+          <button
+            id="mobileQuickWorkbenchBtn"
+            class="ghost-button mobile-action-button"
+            type="button"
+          >
+            工作台
+          </button>
+          <button
+            id="mobileQuickContextBtn"
+            class="ghost-button mobile-action-button"
+            type="button"
+          >
+            记忆
+          </button>
+          <button
+            id="mobileQuickApiBtn"
+            class="ghost-button mobile-action-button"
+            type="button"
+          >
+            API
+          </button>
+          <button
+            id="mobileQuickStateBtn"
+            class="ghost-button mobile-action-button"
+            type="button"
+          >
+            状态
+          </button>
+        </nav>
+
+        <section class="chat-stage panel">
+          <div class="user-guide">
+            <div class="guide-pill">输入想法</div>
+            <div class="guide-pill">选择模式</div>
+            <div class="guide-pill">继续优化</div>
+            <div class="guide-copy">
+              用户只需要表达需求。后台会自动套用提示词、记忆摘要、状态管理和输出映射，不再前台暴露复杂模块。
+            </div>
+          </div>
+
+          <div id="chatView" class="workspace-view">
+            <div id="chatMessages" class="chat-messages"></div>
+
+            <section
+              id="thinkingPanel"
+              class="thinking-panel"
+              aria-live="polite"
+              aria-atomic="true"
+              hidden
+            >
+              <div class="thinking-head">
+                <div>
+                  <p class="section-label">正在思考中</p>
+                  <strong id="thinkingLabel">正在整理上下文和记忆...</strong>
+                </div>
+                <span id="thinkingPercent" class="thinking-percent">0%</span>
+              </div>
+
+              <div
+                id="thinkingBar"
+                class="thinking-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+              >
+                <div id="thinkingBarFill" class="thinking-bar-fill"></div>
+              </div>
+
+              <div id="thinkingSteps" class="thinking-steps"></div>
+            </section>
+
+            <div class="composer">
+              <textarea
+                id="chatInput"
+                class="composer-input"
+                rows="4"
+                placeholder="直接输入你的想法、要做的内容、想修改的地方，或者补充限制条件……"
+              ></textarea>
+
+              <div class="composer-actions">
+                <span id="composerHint" class="hint-text">
+                  当前未配置真实接口，发送消息时会走本地模拟回复。
+                </span>
+
+                <div class="composer-buttons">
+                  <button id="compressBtn" class="ghost-button" type="button">
+                    压缩上下文
+                  </button>
+                  <button id="sendBtn" class="primary-button" type="button">发送</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="contextView" class="workspace-view hidden">
+            <div class="context-grid">
+              <article class="context-card wide">
+                <div class="card-head compact-head">
+                  <div>
+                    <p class="section-label">记忆摘要</p>
+                    <h3>长期记忆</h3>
+                  </div>
+                  <button id="saveSummaryBtn" class="ghost-button small" type="button">
+                    保存摘要
+                  </button>
+                </div>
+                <textarea
+                  id="summaryInput"
+                  class="panel-textarea"
+                  rows="8"
+                  placeholder="在这里查看或补充长期记忆摘要。"
+                ></textarea>
+              </article>
+
+              <article class="context-card wide">
+                <div class="card-head compact-head">
+                  <div>
+                    <p class="section-label">固定上下文</p>
+                    <h3>锚点</h3>
+                  </div>
+                  <button id="saveAnchorsBtn" class="ghost-button small" type="button">
+                    保存锚点
+                  </button>
+                </div>
+                <textarea
+                  id="anchorsInput"
+                  class="panel-textarea"
+                  rows="6"
+                  placeholder="一行一个锚点，例如：必须保留的人设、世界观规则、当前目标。"
+                ></textarea>
+              </article>
+
+              <article class="context-card">
+                <div class="card-head compact-head">
+                  <div>
+                    <p class="section-label">待继续</p>
+                    <h3>开放回路</h3>
+                  </div>
+                </div>
+                <div id="openLoopPreview" class="stack-list compact-stack"></div>
+              </article>
+
+              <article class="context-card">
+                <div class="card-head compact-head">
+                  <div>
+                    <p class="section-label">近期上下文</p>
+                    <h3>窗口消息</h3>
+                  </div>
+                </div>
+                <div id="contextWindowPreview" class="stack-list compact-stack"></div>
+              </article>
+
+              <article class="context-card wide">
+                <div class="card-head compact-head">
+                  <div>
+                    <p class="section-label">压缩日志</p>
+                    <h3>智能压缩</h3>
+                  </div>
+                </div>
+                <div id="compressionInfo" class="stack-list compact-stack"></div>
+              </article>
+            </div>
+          </div>
+
+          <div id="promptView" class="workspace-view hidden hidden-dev" aria-hidden="true">
+            <pre id="promptPreview" class="code-block"></pre>
+            <pre id="payloadPreview" class="code-block"></pre>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <div id="apiSettingsModal" class="modal-shell hidden">
+      <div class="modal-mask" data-close-modal="api"></div>
+      <section class="modal-card panel">
+        <div class="modal-head">
+          <div>
+            <p class="section-label">API 设置</p>
+            <h3>模型与接口配置</h3>
+          </div>
+          <button
+            id="apiSettingsClose"
+            class="ghost-button small icon-button"
+            type="button"
+            aria-label="关闭 API 设置"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <section class="api-hero-card">
+            <div class="api-hero-copy">
+              <p class="section-label">快速接入</p>
+              <h4>默认只需要填 API Key</h4>
+              <p class="panel-copy">
+                先选一个服务商预设，系统会自动带入接口地址和默认模型。默认推荐
+                DeepSeek，正常情况下只补上 Key 就能直接开始对话。
+              </p>
+            </div>
+            <div id="providerPresetList" class="provider-grid"></div>
+          </section>
+
+          <div class="api-summary-grid">
+            <div class="stack-item">
+              <strong id="apiPresetTitle">DeepSeek</strong>
+              <span id="apiPresetHint">已自动带入接口地址和默认模型，只需要补 Key。</span>
+            </div>
+            <div class="stack-item">
+              <strong>当前模型</strong>
+              <span id="apiPresetModelText">deepseek-chat</span>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <input id="apiProvider" type="hidden" value="deepseek" />
+
+            <label class="form-field wide-field key-field">
+              <span>API Key</span>
+              <input id="apiKey" type="password" placeholder="只需要填这里，例如 sk-..." />
+            </label>
+
+            <details id="apiAdvancedBox" class="advanced-box">
+              <summary>高级设置</summary>
+              <p class="advanced-copy">
+                只有在你要切换自定义接口、改模型，或者调整上下文压缩策略时，才需要动下面这些参数。
+              </p>
+
+              <div class="form-grid advanced-grid">
+                <label class="form-field">
+                  <span>Base URL</span>
+                  <input
+                    id="apiBaseUrl"
+                    type="text"
+                    placeholder="https://api.example.com/v1"
+                  />
+                </label>
+
+                <label class="form-field">
+                  <span>Model ID</span>
+                  <input
+                    id="apiModel"
+                    type="text"
+                    placeholder="gpt-4o / deepseek-chat / glm-4.6 ..."
+                  />
+                </label>
+
+                <div class="form-row">
+                  <label class="form-field">
+                    <span>Temperature</span>
+                    <input
+                      id="apiTemperature"
+                      type="number"
+                      min="0"
+                      max="2"
+                      step="0.1"
+                      value="0.7"
+                    />
+                  </label>
+
+                  <label class="form-field">
+                    <span>窗口消息数</span>
+                    <input
+                      id="contextWindowSize"
+                      type="number"
+                      min="4"
+                      max="60"
+                      step="1"
+                      value="12"
+                    />
+                  </label>
+                </div>
+
+                <div class="form-row">
+                  <label class="form-field">
+                    <span>压缩阈值</span>
+                    <input
+                      id="compressionThreshold"
+                      type="number"
+                      min="6"
+                      max="120"
+                      step="1"
+                      value="18"
+                    />
+                  </label>
+
+                  <label class="toggle-field" for="streamToggle">
+                    <span>流式输出</span>
+                    <input id="streamToggle" type="checkbox" checked />
+                  </label>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div class="tool-grid api-action-row">
+            <button id="saveApiBtn" class="primary-button" type="button">保存配置</button>
+            <button id="testApiBtn" class="ghost-button" type="button">连接测试</button>
+            <button id="mockReplyBtn" class="ghost-button" type="button">本地模拟</button>
+          </div>
+
+          <div id="apiResult" class="stack-list compact-stack"></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="statePanelModal" class="modal-shell hidden">
+      <div class="modal-mask" data-close-modal="state"></div>
+      <section class="modal-card panel">
+        <div class="modal-head">
+          <div>
+            <p class="section-label">NEXUS 状态机面板</p>
+            <h3 id="referenceTitle">系统状态</h3>
+          </div>
+          <button
+            id="statePanelClose"
+            class="ghost-button small icon-button"
+            type="button"
+            aria-label="关闭状态面板"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p id="referenceSummary" class="panel-copy"></p>
+
+          <div class="modal-grid">
+            <article class="context-card">
+              <div class="card-head compact-head">
+                <div>
+                  <p class="section-label">记忆状态</p>
+                  <h3>会话摘要</h3>
+                </div>
+              </div>
+              <div id="memoryOverview" class="stack-list compact-stack"></div>
+            </article>
+
+            <article class="context-card">
+              <div class="card-head compact-head">
+                <div>
+                  <p class="section-label">后台模块</p>
+                  <h3 id="activeModuleTitle">总控后台</h3>
+                </div>
+              </div>
+              <p id="activeModuleCopy" class="panel-copy"></p>
+              <div id="activeModuleMethods" class="api-method-list"></div>
+            </article>
+          </div>
+
+          <div id="referenceTags" class="tag-cloud"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+/* inlined from app.js */
+const baselines = [
+  {
+    id: "nexus-v2",
+    title: "NEXUS OS 2.0",
+    subtitle: "规则与执行母版",
+    summary:
+      "负责真值执行协议、状态机、批量流水线、对话域、上下文压缩和执行节奏。",
+    features: ["规则控制台", "状态机", "批量流水线", "压缩策略"],
+  },
+  {
+    id: "meta-v13",
+    title: "元叙事系统 v13.0",
+    subtitle: "AI 工作台母版",
+    summary:
+      "负责模块侧栏、Prompt、对话、上下文和 API 配置的工作台结构。",
+    features: ["模块侧栏", "Prompt", "对话系统", "API 配置"],
+  },
+  {
+    id: "nexus-v4",
+    title: "NEXUS OS 4.0",
+    subtitle: "主程序门厅母版",
+    summary: "负责主程序入口、统一总控气质和主壳层的母版语义。",
+    features: ["主程序门厅", "统一入口", "控制舱", "桌面感"],
+  },
+];
+
+const modes = [
+  {
+    id: "short",
+    title: "[SHORT] 自动短篇 6k-15k",
+    summary: "快速起短篇，强调钩子、冲突和即时交付。",
+    directive: "优先短篇结构、钩子和冲突密度。",
+  },
+  {
+    id: "medium",
+    title: "[MEDIUM] 自动中篇 15k-50k",
+    summary: "中篇叙事，强调章节组织和持续推进。",
+    directive: "优先章节结构、节奏层次和持续推进。",
+  },
+  {
+    id: "long",
+    title: "[LONG] 自动长篇 50k+",
+    summary: "长篇骨架与卷结构，强调记忆稳定和状态控制。",
+    directive: "优先卷结构、长期记忆和角色状态一致性。",
+  },
+  {
+    id: "script",
+    title: "[M10] 剧本自动转制",
+    summary: "正文转剧本，强调场景、对白和镜头语义。",
+    directive: "优先场景切分、对白和剧本格式。",
+  },
+  {
+    id: "storyboard",
+    title: "[M10] 分镜自动切分",
+    summary: "故事转分镜，强调镜头、运动和节奏节点。",
+    directive: "优先镜头切分、镜头景别和可视化输出。",
+  },
+];
+
+const modules = [
+  {
+    id: "m01",
+    code: "M01",
+    title: "总控后台",
+    cluster: "核心协议",
+    summary: "负责调度模块、对话域、压缩、导出和执行链路统筹。",
+    role: "统筹 M02-M09，并管理会话生命周期。",
+    methods: [
+      "create_domain",
+      "run_batch",
+      "compress_context",
+      "manage_memory",
+      "export_report",
+    ],
+    seed: "你是统一工作台的总控后台，先判断任务，再调度模块，再给出可执行下一步。",
+  },
+  {
+    id: "m02",
+    code: "M02",
+    title: "状态管理",
+    cluster: "核心协议",
+    summary: "维护角色、世界、冲突、情绪和状态迁移。",
+    role: "负责状态机、生命周期和异常检查。",
+    methods: [
+      "state_transition",
+      "lifecycle",
+      "foreshadowing",
+      "generate_character",
+      "worldline_sync",
+      "inspection",
+    ],
+    seed: "你是状态管理模块，输出状态、转移、风险和缺口。",
+  },
+  {
+    id: "m03",
+    code: "M03",
+    title: "角色卡模板",
+    cluster: "核心协议",
+    summary: "管理角色卡、口吻、关系和人物约束。",
+    role: "负责角色稳定、口吻统一和人物驱动输出。",
+    methods: [
+      "character_id",
+      "segment_context",
+      "user_message",
+      "network_data",
+    ],
+    seed: "你是角色卡模板模块，优先维护角色稳定与口吻统一。",
+  },
+  {
+    id: "m04",
+    code: "M04",
+    title: "拆书融合创新",
+    cluster: "创新管道",
+    summary: "负责拆书、融合、创新和变体生成。",
+    role: "从上游素材中抽结构、变量和创新切口。",
+    methods: ["disassemble", "fuse", "innovate"],
+    seed: "你是拆书融合创新模块，不复述原文，优先抽结构和变量。",
+  },
+  {
+    id: "m05",
+    code: "M05",
+    title: "联网调研",
+    cluster: "创新管道",
+    summary: "负责趋势、热梗、用户偏好和外部信息补给。",
+    role: "负责外部信息收集与赛道调研。",
+    methods: ["search_trending"],
+    seed: "你是联网调研模块，优先输出趋势、平台偏好和热点语义。",
+  },
+  {
+    id: "m06",
+    code: "M06",
+    title: "正文管理",
+    cluster: "存储层",
+    summary: "负责正文持久化、章节追加和正文统计。",
+    role: "负责正文单元累积与内容管理。",
+    methods: ["append_segment", "get_chapter", "get_all", "stats"],
+    seed: "你是正文管理模块，输出可继续积累的正文单元和结构标记。",
+  },
+  {
+    id: "m07",
+    code: "M07",
+    title: "世界观管理",
+    cluster: "存储层",
+    summary: "负责规则登记、世界线同步和设定一致性。",
+    role: "负责世界规则、设定冲突与规则修复。",
+    methods: ["check_consistency", "sync_worldline"],
+    seed: "你是世界观管理模块，优先发现设定冲突与规则漂移。",
+  },
+  {
+    id: "m08",
+    code: "M08",
+    title: "市场分析师",
+    cluster: "市场与输出",
+    summary: "负责题材对标、风险预警和用户匹配。",
+    role: "负责赛道判断、风险提示和市场洞察。",
+    methods: ["market_analysis", "ip_audit", "risk_warning"],
+    seed: "你是市场分析师模块，优先判断赛道、人群和风险。",
+  },
+  {
+    id: "m09",
+    code: "M09",
+    title: "输出映射层",
+    cluster: "市场与输出",
+    summary: "负责结构卡、剧本、分镜、故事板和交付映射。",
+    role: "负责把内容转成标准交付物。",
+    methods: [
+      "export_structure_card",
+      "export_script",
+      "export_storyboard",
+      "export_script_kill",
+    ],
+    seed: "你是输出映射层，优先把内容转成标准交付格式。",
+  },
+];
+
+const STORE = {
+  meta: "cwyq-unified-meta-v4",
+  domains: "cwyq-unified-domains-v4",
+  api: "cwyq-unified-api-v4",
+};
+
+const DEFAULT_PROVIDER_ID = "deepseek";
+
+const PROVIDER_PRESETS = {
+  deepseek: {
+    id: "deepseek",
+    label: "DeepSeek",
+    badge: "默认 3.2",
+    baseUrl: "https://api.deepseek.com/v1",
+    model: "deepseek-3.2",
+    hint: "默认带入 DeepSeek 3.2；如果你控制台里的模型名不同，再到高级设置里改。",
+  },
+  openai: {
+    id: "openai",
+    label: "OpenAI",
+    badge: "默认 5.4",
+    baseUrl: "https://api.openai.com/v1",
+    model: "gpt-5.4",
+    hint: "默认带入 OpenAI 5.4，适合通用创作和主力对话。",
+  },
+  qwen: {
+    id: "qwen",
+    label: "通义千问",
+    badge: "默认 3.6",
+    baseUrl: "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    model: "qwen-3.6",
+    hint: "默认带入通义 3.6；如厂商后台名称不同，可在高级设置里改。",
+  },
+  kimi: {
+    id: "kimi",
+    label: "Kimi",
+    badge: "默认 2.5",
+    baseUrl: "https://api.moonshot.cn/v1",
+    model: "kimi-2.5",
+    hint: "默认带入 Kimi 2.5，适合长上下文和长篇整理。",
+  },
+  glm: {
+    id: "glm",
+    label: "智谱 GLM",
+    badge: "默认 5.1",
+    baseUrl: "https://open.bigmodel.cn/api/paas/v4",
+    model: "glm-5.1",
+    hint: "默认带入智谱 5.1 通用模型，适合国内主线路切换。",
+  },
+  glm_code: {
+    id: "glm_code",
+    label: "智谱 Coding Plan",
+    badge: "编码专用",
+    baseUrl: "https://open.bigmodel.cn/api/coding/paas/v4",
+    model: "5.1",
+    hint: "这是新的智谱 Coding Plan 预设，默认走 Coding 端点，模型默认就是 5.1，适合编码规划和实现任务。",
+  },
+  minimax: {
+    id: "minimax",
+    label: "MiniMax",
+    badge: "默认 2.5",
+    baseUrl: "https://api.minimaxi.com/v1",
+    model: "MiniMax-M2.5",
+    hint: "默认带入 MiniMax 官方兼容端点和 MiniMax-M2.5；如果你走海外站点或别的模型，再手动改。",
+  },
+  openrouter: {
+    id: "openrouter",
+    label: "OpenRouter",
+    badge: "多模型",
+    baseUrl: "https://openrouter.ai/api/v1",
+    model: "openai/gpt-4o-mini",
+    hint: "适合你自己在网关里切换模型。",
+  },
+  custom: {
+    id: "custom",
+    label: "自定义",
+    badge: "手动填写",
+    baseUrl: "",
+    model: "",
+    hint: "用你自己的代理或特殊接口时，再打开高级设置填写。",
+  },
+};
+
+const API_DEFAULT = {
+  provider: DEFAULT_PROVIDER_ID,
+  baseUrl: PROVIDER_PRESETS[DEFAULT_PROVIDER_ID].baseUrl,
+  model: PROVIDER_PRESETS[DEFAULT_PROVIDER_ID].model,
+  apiKey: "",
+  temperature: 0.7,
+  windowSize: 12,
+  compressionThreshold: 18,
+  stream: true,
+};
+
+const state = {
+  currentBaselineId: "nexus-v2",
+  currentModuleId: "m01",
+  currentTab: "chat",
+  currentDomainId: "",
+  domains: [],
+  api: { ...API_DEFAULT },
+  thinking: {
+    visible: false,
+    domainId: "",
+    messageId: "",
+    label: "",
+    progress: 0,
+    steps: [],
+    chunkCount: 0,
+  },
+  sending: false,
+  toastTimer: 0,
+  thinkingTimer: 0,
+  abortController: null,
+  apiCheckText: "尚未测试接口。",
+};
+
+const el = {
+  shell: document.querySelector(".console-shell"),
+  sidebar: document.querySelector(".sidebar"),
+  toast: document.querySelector("#toast"),
+  sidebarSnapshot: document.querySelector("#sidebarSnapshot"),
+  baselineNav: document.querySelector("#baselineNav"),
+  sidebarToggleBtn: document.querySelector("#sidebarToggleBtn"),
+  mobileSidebarBtn: document.querySelector("#mobileSidebarBtn"),
+  mobileSidebarMask: document.querySelector("#mobileSidebarMask"),
+  mobileQuickWorkbenchBtn: document.querySelector("#mobileQuickWorkbenchBtn"),
+  mobileQuickContextBtn: document.querySelector("#mobileQuickContextBtn"),
+  mobileQuickApiBtn: document.querySelector("#mobileQuickApiBtn"),
+  mobileQuickStateBtn: document.querySelector("#mobileQuickStateBtn"),
+  createDomainBtn: document.querySelector("#createDomainBtn"),
+  moduleRail: document.querySelector("#moduleRail"),
+  quickModeList: document.querySelector("#quickModeList"),
+  domainTitle: document.querySelector("#domainTitle"),
+  domainSubtitle: document.querySelector("#domainSubtitle"),
+  domainBadge: document.querySelector("#domainBadge"),
+  apiStatusBadge: document.querySelector("#apiStatusBadge"),
+  streamStatusBadge: document.querySelector("#streamStatusBadge"),
+  memoryBadge: document.querySelector("#memoryBadge"),
+  quickCompressBtn: document.querySelector("#quickCompressBtn"),
+  clearDomainBtn: document.querySelector("#clearDomainBtn"),
+  exportDomainBtn: document.querySelector("#exportDomainBtn"),
+  reportBtn: document.querySelector("#reportBtn"),
+  apiSettingsBtn: document.querySelector("#apiSettingsBtn"),
+  apiSettingsModal: document.querySelector("#apiSettingsModal"),
+  apiSettingsClose: document.querySelector("#apiSettingsClose"),
+  statePanelBtn: document.querySelector("#statePanelBtn"),
+  statePanelModal: document.querySelector("#statePanelModal"),
+  statePanelClose: document.querySelector("#statePanelClose"),
+  tabChat: document.querySelector("#tabChat"),
+  tabPrompt: document.querySelector("#tabPrompt"),
+  tabContext: document.querySelector("#tabContext"),
+  copyPromptBtn: document.querySelector("#copyPromptBtn"),
+  copyPayloadBtn: document.querySelector("#copyPayloadBtn"),
+  chatView: document.querySelector("#chatView"),
+  promptView: document.querySelector("#promptView"),
+  contextView: document.querySelector("#contextView"),
+  chatMessages: document.querySelector("#chatMessages"),
+  thinkingPanel: document.querySelector("#thinkingPanel"),
+  thinkingLabel: document.querySelector("#thinkingLabel"),
+  thinkingBar: document.querySelector("#thinkingBar"),
+  thinkingBarFill: document.querySelector("#thinkingBarFill"),
+  thinkingPercent: document.querySelector("#thinkingPercent"),
+  thinkingSteps: document.querySelector("#thinkingSteps"),
+  chatInput: document.querySelector("#chatInput"),
+  composerHint: document.querySelector("#composerHint"),
+  compressBtn: document.querySelector("#compressBtn"),
+  sendBtn: document.querySelector("#sendBtn"),
+  promptPreview: document.querySelector("#promptPreview"),
+  payloadPreview: document.querySelector("#payloadPreview"),
+  summaryInput: document.querySelector("#summaryInput"),
+  anchorsInput: document.querySelector("#anchorsInput"),
+  saveSummaryBtn: document.querySelector("#saveSummaryBtn"),
+  saveAnchorsBtn: document.querySelector("#saveAnchorsBtn"),
+  openLoopPreview: document.querySelector("#openLoopPreview"),
+  contextWindowPreview: document.querySelector("#contextWindowPreview"),
+  compressionInfo: document.querySelector("#compressionInfo"),
+  domainList: document.querySelector("#domainList"),
+  sessionRecordList: document.querySelector("#sessionRecordList"),
+  providerPresetList: document.querySelector("#providerPresetList"),
+  apiProvider: document.querySelector("#apiProvider"),
+  apiPresetTitle: document.querySelector("#apiPresetTitle"),
+  apiPresetHint: document.querySelector("#apiPresetHint"),
+  apiPresetModelText: document.querySelector("#apiPresetModelText"),
+  apiAdvancedBox: document.querySelector("#apiAdvancedBox"),
+  apiBaseUrl: document.querySelector("#apiBaseUrl"),
+  apiModel: document.querySelector("#apiModel"),
+  apiKey: document.querySelector("#apiKey"),
+  apiTemperature: document.querySelector("#apiTemperature"),
+  contextWindowSize: document.querySelector("#contextWindowSize"),
+  compressionThreshold: document.querySelector("#compressionThreshold"),
+  streamToggle: document.querySelector("#streamToggle"),
+  saveApiBtn: document.querySelector("#saveApiBtn"),
+  testApiBtn: document.querySelector("#testApiBtn"),
+  mockReplyBtn: document.querySelector("#mockReplyBtn"),
+  apiResult: document.querySelector("#apiResult"),
+  memoryOverview: document.querySelector("#memoryOverview"),
+  activeModuleTitle: document.querySelector("#activeModuleTitle"),
+  activeModuleCopy: document.querySelector("#activeModuleCopy"),
+  activeModuleMethods: document.querySelector("#activeModuleMethods"),
+  referenceTitle: document.querySelector("#referenceTitle"),
+  referenceSummary: document.querySelector("#referenceSummary"),
+  referenceTags: document.querySelector("#referenceTags"),
+};
+
+const sidebarDrag = {
+  active: false,
+  startY: 0,
+  currentY: 0,
+};
+
+const STOP_WORDS = new Set([
+  "我们",
+  "你们",
+  "他们",
+  "这个",
+  "那个",
+  "一个",
+  "现在",
+  "然后",
+  "继续",
+  "已经",
+  "因为",
+  "所以",
+  "需要",
+  "可以",
+  "就是",
+  "当前",
+  "进行",
+  "模块",
+  "系统",
+  "工作台",
+  "对话域",
+  "输出",
+  "内容",
+  "以及",
+  "关于",
+  "如果",
+  "之后",
+  "里面",
+  "这里",
+]);
+
+// region: data
+// endregion: data
+
+// region: utils
+const uid = (prefix) =>
+  `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
+const safe = (raw, fallback) => {
+  try {
+    return raw ? JSON.parse(raw) : fallback;
+  } catch {
+    return fallback;
+  }
+};
+
+const normalizeComparableUrl = (value = "") =>
+  String(value || "")
+    .trim()
+    .replace(/\/chat\/completions\/?$/i, "")
+    .replace(/\/+$/, "");
+
+const MINIMAX_LEGACY_BASE_URLS = new Set([
+  "https://api.minimax.chat",
+  "https://api.minimax.chat/v1",
+]);
+
+const MINIMAX_LEGACY_MODELS = new Set([
+  "minimax-2.5",
+  "MiniMax-2.5",
+  "minimax-m2.5",
+  "M2.5",
+]);
+
+const clip = (text, max = 96) => {
+  const value = String(text || "").replace(/\s+/g, " ").trim();
+  return value.length > max ? `${value.slice(0, max)}…` : value || "空";
+};
+
+const esc = (text) =>
+  String(text || "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+const STATE_BLOCK_START = "[[NEXUS_STATE]]";
+const STATE_BLOCK_END = "[[/NEXUS_STATE]]";
+
+const AUTO_DEFAULT_TARGETS = {
+  short: 10000,
+  medium: 18000,
+  long: 50000,
+  script: 12000,
+  storyboard: 8000,
+};
+
+const AUTO_BATCH_TARGETS = {
+  short: 2200,
+  medium: 2600,
+  long: 3000,
+  script: 1800,
+  storyboard: 1400,
+};
+
+function createStoryState(partial = {}) {
+  return {
+    brief: String(partial.brief || ""),
+    objective: String(partial.objective || ""),
+    phase: String(partial.phase || "idle"),
+    currentTask: String(partial.currentTask || ""),
+    tone: String(partial.tone || ""),
+    nextBeat: String(partial.nextBeat || ""),
+    characters: Array.isArray(partial.characters)
+      ? partial.characters
+          .map((item) => ({
+            name: clip(item?.name || "", 24),
+            role: clip(item?.role || "", 24),
+            goal: clip(item?.goal || "", 36),
+            status: clip(item?.status || "", 28),
+            relation: clip(item?.relation || "", 28),
+          }))
+          .filter((item) => item.name)
+          .slice(0, 8)
+      : [],
+    worldRules: unique(
+      (Array.isArray(partial.worldRules) ? partial.worldRules : [])
+        .map((item) => clip(item, 48))
+        .filter(Boolean)
+    ).slice(0, 8),
+    conflicts: unique(
+      (Array.isArray(partial.conflicts) ? partial.conflicts : [])
+        .map((item) => clip(item, 52))
+        .filter(Boolean)
+    ).slice(0, 8),
+    outline: unique(
+      (Array.isArray(partial.outline) ? partial.outline : [])
+        .map((item) => clip(item, 64))
+        .filter(Boolean)
+    ).slice(0, 10),
+  };
+}
+
+function createAutomationState(partial = {}) {
+  return {
+    enabled: Boolean(partial.enabled),
+    status: String(partial.status || "idle"),
+    targetWords: Math.max(0, Number(partial.targetWords || 0)),
+    currentWords: Math.max(0, Number(partial.currentWords || 0)),
+    iterations: Math.max(0, Number(partial.iterations || 0)),
+    maxIterations: Math.max(0, Number(partial.maxIterations || 0)),
+    batchTarget: Math.max(0, Number(partial.batchTarget || 0)),
+    lastUserRequest: String(partial.lastUserRequest || ""),
+    currentPhase: String(partial.currentPhase || ""),
+    startedAt: String(partial.startedAt || ""),
+    completedAt: String(partial.completedAt || ""),
+    lastError: String(partial.lastError || ""),
+  };
+}
+
+function hydrateDomain(raw = {}) {
+  const base = buildDomain({
+    title: raw.title,
+    moduleId: raw.moduleId,
+    modeId: raw.modeId,
+    summary: raw.summary,
+    pinnedFacts: Array.isArray(raw.pinnedFacts) ? raw.pinnedFacts : [],
+    messages: Array.isArray(raw.messages) ? raw.messages : [],
+  });
+
+  return {
+    ...base,
+    id: raw.id || base.id,
+    constraintHints: Array.isArray(raw.constraintHints) ? raw.constraintHints : [],
+    logicAnchors: Array.isArray(raw.logicAnchors) ? raw.logicAnchors : [],
+    openLoops: Array.isArray(raw.openLoops) ? raw.openLoops : [],
+    compressionCount: Math.max(0, Number(raw.compressionCount || 0)),
+    lastCompressionAt: String(raw.lastCompressionAt || ""),
+    memoryLog: Array.isArray(raw.memoryLog) ? raw.memoryLog : [],
+    lastUsage: raw.lastUsage || null,
+    storyState: createStoryState(raw.storyState),
+    automation: createAutomationState(raw.automation),
+    createdAt: String(raw.createdAt || base.createdAt),
+    updatedAt: String(raw.updatedAt || base.updatedAt),
+  };
+}
+
+function ensureDomainAutomation(domain) {
+  if (!domain.storyState) {
+    domain.storyState = createStoryState();
+  } else {
+    domain.storyState = createStoryState(domain.storyState);
+  }
+
+  if (!domain.automation) {
+    domain.automation = createAutomationState();
+  } else {
+    domain.automation = createAutomationState(domain.automation);
+  }
+
+  return domain;
+}
+
+function measureTextUnits(text = "") {
+  const value = String(text || "");
+  const cjk = (value.match(/[\u4e00-\u9fff]/g) || []).length;
+  const western = (value.match(/[A-Za-z0-9_]+/g) || []).length;
+  return cjk + western;
+}
+
+function parseRequestedWordCount(text = "") {
+  const value = String(text || "").replace(/,/g, "");
+  const wan = value.match(/(\d+(?:\.\d+)?)\s*(?:万|w)\s*字?/i);
+  if (wan) return Math.round(Number(wan[1]) * 10000);
+
+  const qian = value.match(/(\d+(?:\.\d+)?)\s*(?:千|k)\s*字?/i);
+  if (qian) return Math.round(Number(qian[1]) * 1000);
+
+  const chars = value.match(/(\d{4,6})\s*字/);
+  if (chars) return Math.round(Number(chars[1]));
+
+  const words = value.match(/(\d{4,6})\s*words?/i);
+  if (words) return Math.round(Number(words[1]));
+
+  return 0;
+}
+
+function shouldAutoWrite(domain, input) {
+  if (!domain) return false;
+  const value = String(input || "").trim();
+  if (!value) return false;
+  if (parseRequestedWordCount(value) >= 4000) return true;
+  if (!["short", "medium", "long", "script"].includes(domain.modeId || "")) return false;
+  return /(写完|开写|开始写|直接写|生成|创作|续写|扩写|输出|正文|小说|剧本|一口气|全自动)/.test(
+    value
+  );
+}
+
+function resolveAutoTargetWords(domain, input) {
+  return (
+    parseRequestedWordCount(input) ||
+    AUTO_DEFAULT_TARGETS[domain?.modeId || "short"] ||
+    AUTO_DEFAULT_TARGETS.short
+  );
+}
+
+function stripStateEnvelope(text = "") {
+  const value = String(text || "");
+  const start = value.indexOf(STATE_BLOCK_START);
+  if (start === -1) return value;
+  const end = value.indexOf(STATE_BLOCK_END, start + STATE_BLOCK_START.length);
+  if (end === -1) {
+    return value.slice(0, start).trimEnd();
+  }
+  return `${value.slice(0, start)}${value.slice(end + STATE_BLOCK_END.length)}`.trim();
+}
+
+function parseStateEnvelope(text = "") {
+  const value = String(text || "");
+  const start = value.indexOf(STATE_BLOCK_START);
+  const end = value.indexOf(STATE_BLOCK_END, start + STATE_BLOCK_START.length);
+  if (start === -1 || end === -1) return null;
+  return safe(value.slice(start + STATE_BLOCK_START.length, end).trim(), null);
+}
+
+const time = (value) =>
+  value
+    ? new Intl.DateTimeFormat("zh-CN", {
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date(value))
+    : "未记录";
+
+const sleep = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+const unique = (items) => [...new Set(items.filter(Boolean))];
+
+const getBaseline = (id) => baselines.find((item) => item.id === id) || baselines[0];
+const getMode = (id) => modes.find((item) => item.id === id) || modes[0];
+const getModule = (id) => modules.find((item) => item.id === id) || modules[0];
+const getDomain = (id) => state.domains.find((item) => item.id === id) || null;
+const currentDomain = () => getDomain(state.currentDomainId);
+const currentBaseline = () => getBaseline(state.currentBaselineId);
+const currentModule = () => getModule(state.currentModuleId);
+const isMobileViewport = () => window.matchMedia("(max-width: 980px)").matches;
+
+function providerBaseUrl(id) {
+  return normalizeComparableUrl(PROVIDER_PRESETS[id]?.baseUrl || "");
+}
+
+function resolveProviderId(raw = {}) {
+  if (raw.provider && PROVIDER_PRESETS[raw.provider]) {
+    return raw.provider;
+  }
+
+  const normalizedBaseUrl = String(raw.baseUrl || "")
+    .replace(/\/chat\/completions\/?$/i, "")
+    .replace(/\/+$/, "");
+
+  if (MINIMAX_LEGACY_BASE_URLS.has(normalizedBaseUrl)) {
+    return "minimax";
+  }
+
+  const matched = Object.values(PROVIDER_PRESETS).find(
+    (preset) => preset.id !== "custom" && providerBaseUrl(preset.id) === normalizedBaseUrl
+  );
+
+  return matched?.id || DEFAULT_PROVIDER_ID;
+}
+
+function normalizeProviderBaseUrl(provider, baseUrl, preset) {
+  const rawBaseUrl = String(baseUrl || "").trim();
+  if (!rawBaseUrl) return preset.baseUrl;
+
+  const normalizedBaseUrl = normalizeComparableUrl(rawBaseUrl);
+  if (provider === "minimax" && MINIMAX_LEGACY_BASE_URLS.has(normalizedBaseUrl)) {
+    return preset.baseUrl;
+  }
+
+  return rawBaseUrl;
+}
+
+function normalizeProviderModel(provider, model, preset) {
+  const rawModel = String(model || "").trim();
+  if (!rawModel) return preset.model;
+
+  if (provider === "minimax" && MINIMAX_LEGACY_MODELS.has(rawModel)) {
+    return preset.model;
+  }
+
+  return rawModel;
+}
+
+function sanitizeTemperatureForProvider(provider, value) {
+  const temperature = Number(value);
+  if (!Number.isFinite(temperature)) return API_DEFAULT.temperature;
+  if (provider === "minimax") {
+    if (temperature <= 0 || temperature > 1) {
+      return 1;
+    }
+  }
+  return temperature;
+}
+
+function hydrateApiConfig(raw = {}) {
+  const provider = resolveProviderId(raw);
+  const preset = PROVIDER_PRESETS[provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+  const nextBaseUrl = normalizeProviderBaseUrl(provider, raw.baseUrl, preset);
+  const nextModel = normalizeProviderModel(provider, raw.model, preset);
+  const windowSize = Number(raw.windowSize);
+  const compressionThreshold = Number(raw.compressionThreshold);
+
+  return {
+    ...API_DEFAULT,
+    ...raw,
+    provider,
+    baseUrl: nextBaseUrl,
+    model: nextModel,
+    apiKey: String(raw.apiKey ?? API_DEFAULT.apiKey),
+    temperature: sanitizeTemperatureForProvider(provider, raw.temperature),
+    windowSize: Math.max(
+      4,
+      Number.isFinite(windowSize) ? windowSize : API_DEFAULT.windowSize
+    ),
+    compressionThreshold: Math.max(
+      6,
+      Number.isFinite(compressionThreshold)
+        ? compressionThreshold
+        : API_DEFAULT.compressionThreshold
+    ),
+    stream: raw.stream === undefined ? API_DEFAULT.stream : Boolean(raw.stream),
+  };
+}
+
+const apiReady = () =>
+  Boolean(
+    state.api.baseUrl.trim() && state.api.model.trim() && state.api.apiKey.trim()
+  );
+
+function scrollChat() {
+  if (!el.chatMessages) return;
+  el.chatMessages.scrollTop = el.chatMessages.scrollHeight;
+}
+
+function resizeComposerInput() {
+  if (!el.chatInput) return;
+  const minHeight = isMobileViewport() ? 104 : 132;
+  const maxHeight = isMobileViewport() ? 230 : 280;
+  el.chatInput.style.height = "auto";
+  const nextHeight = Math.min(maxHeight, Math.max(minHeight, el.chatInput.scrollHeight));
+  el.chatInput.style.height = `${nextHeight}px`;
+}
+
+function resetThinkingState() {
+  return {
+    visible: false,
+    domainId: "",
+    messageId: "",
+    label: "",
+    progress: 0,
+    steps: [],
+    chunkCount: 0,
+  };
+}
+
+function updateThinkingState(domainId, messageId, patch = {}) {
+  window.clearTimeout(state.thinkingTimer);
+
+  const previous =
+    state.thinking.domainId === domainId && state.thinking.messageId === messageId
+      ? state.thinking
+      : resetThinkingState();
+  const additions = [
+    ...(Array.isArray(patch.steps) ? patch.steps : []),
+    ...(patch.step ? [patch.step] : []),
+  ];
+  const progress = Math.max(
+    Number(previous.progress || 0),
+    Math.min(100, Math.max(0, Number(patch.progress ?? previous.progress ?? 0)))
+  );
+
+  state.thinking = {
+    ...previous,
+    ...patch,
+    visible: patch.visible ?? true,
+    domainId,
+    messageId,
+    progress,
+    steps: unique([...(previous.steps || []), ...additions]),
+    chunkCount: Number(patch.chunkCount ?? previous.chunkCount ?? 0),
+  };
+}
+
+function clearThinkingState(messageId = "", { delay = 0 } = {}) {
+  const run = () => {
+    if (messageId && state.thinking.messageId !== messageId) return;
+    state.thinking = resetThinkingState();
+    renderComposer();
+    renderChat();
+  };
+
+  window.clearTimeout(state.thinkingTimer);
+  if (delay > 0) {
+    state.thinkingTimer = window.setTimeout(run, delay);
+    return;
+  }
+  run();
+}
+
+function advanceThinkingProgress(domainId, messageId) {
+  if (!state.thinking.visible || state.thinking.messageId !== messageId) return;
+
+  const chunkCount = Number(state.thinking.chunkCount || 0) + 1;
+  const progress =
+    chunkCount === 1 ? 58 : Math.min(94, 58 + Math.min(chunkCount - 1, 12) * 3);
+
+  updateThinkingState(domainId, messageId, {
+    label: chunkCount === 1 ? "正在输出首段内容..." : "正在持续流式输出...",
+    progress,
+    chunkCount,
+    step: chunkCount === 1 ? "已接收首段输出" : "持续流式输出",
+  });
+}
+
+const endpoint = () =>
+  /\/chat\/completions\/?$/.test(state.api.baseUrl)
+    ? state.api.baseUrl
+    : `${state.api.baseUrl.replace(/\/$/, "")}/chat/completions`;
+
+function toast(message, type = "success") {
+  el.toast.textContent = message;
+  el.toast.className = `toast is-visible is-${type}`;
+  clearTimeout(state.toastTimer);
+  state.toastTimer = window.setTimeout(() => {
+    el.toast.className = "toast";
+  }, 2400);
+}
+
+function saveMeta() {
+  localStorage.setItem(
+    STORE.meta,
+    JSON.stringify({
+      currentBaselineId: state.currentBaselineId,
+      currentModuleId: state.currentModuleId,
+      currentTab: state.currentTab,
+      currentDomainId: state.currentDomainId,
+    })
+  );
+}
+
+function saveDomains() {
+  localStorage.setItem(STORE.domains, JSON.stringify(state.domains));
+}
+
+function saveApi() {
+  localStorage.setItem(STORE.api, JSON.stringify(state.api));
+}
+
+function loadState() {
+  const meta = safe(localStorage.getItem(STORE.meta), {});
+  const storedDomains = safe(localStorage.getItem(STORE.domains), []);
+  state.currentBaselineId = meta.currentBaselineId || state.currentBaselineId;
+  state.currentModuleId = meta.currentModuleId || state.currentModuleId;
+  state.currentTab = meta.currentTab || state.currentTab;
+  state.currentDomainId = meta.currentDomainId || state.currentDomainId;
+  state.api = hydrateApiConfig(safe(localStorage.getItem(STORE.api), API_DEFAULT));
+  state.domains = (Array.isArray(storedDomains) ? storedDomains : []).map((item) =>
+    hydrateDomain(item)
+  );
+}
+// endregion: utils
+
+// region: domain-state
+function buildDomain({
+  title,
+  moduleId = state.currentModuleId,
+  modeId = "short",
+  summary = "",
+  pinnedFacts = [],
+  messages = [],
+} = {}) {
+  const now = new Date().toISOString();
+  return {
+    id: uid("domain"),
+    title: title || "新对话域",
+    moduleId,
+    modeId,
+    summary,
+    pinnedFacts,
+    constraintHints: [],
+    logicAnchors: [],
+    openLoops: [],
+    compressionCount: 0,
+    lastCompressionAt: "",
+    memoryLog: [],
+    lastUsage: null,
+    storyState: createStoryState(),
+    automation: createAutomationState(),
+    messages,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
+function ensureSeed() {
+  if (!state.domains.length) {
+    state.domains.push(
+      buildDomain({
+        title: "欢迎对话域",
+        moduleId: "m01",
+        modeId: "long",
+        summary: "用于统筹整套系统的长期方向、模块调度、上下文和输出规则。",
+        pinnedFacts: [
+          "统一页必须围绕 元叙事系统 / NEXUS OS2.0 / NEXUS OS4.0",
+          "工作台必须保留对话系统、上下文、API 和智能压缩",
+        ],
+        messages: [
+          {
+            id: uid("msg"),
+            role: "assistant",
+            content:
+              "已建立初始对话域。现在只需要选择模式并输入你的想法，后台会自动完成提示词编排、记忆和输出映射。",
+            createdAt: new Date().toISOString(),
+          },
+        ],
+      })
+    );
+  }
+
+  if (!state.currentDomainId || !currentDomain()) {
+    state.currentDomainId = state.domains[0].id;
+  }
+
+  state.currentModuleId = currentDomain()?.moduleId || state.currentModuleId;
+}
+
+function mutateDomainById(id, mutator, options = {}) {
+  const domain = getDomain(id);
+  if (!domain) return null;
+
+  const { persist = true, touch = true } = options;
+  mutator(domain);
+
+  if (touch) {
+    domain.updatedAt = new Date().toISOString();
+  }
+
+  if (persist) {
+    saveDomains();
+  }
+
+  return domain;
+}
+
+function updateCurrentDomain(mutator, options = {}) {
+  return mutateDomainById(state.currentDomainId, mutator, options);
+}
+
+function maybeUpdateDomainTitle(domain) {
+  const firstUser = domain.messages.find((item) => item.role === "user");
+  if (!firstUser) return;
+
+  const defaultTitle = `${getModule(domain.moduleId).title} 对话域`;
+  if (
+    !domain.title ||
+    domain.title === defaultTitle ||
+    domain.title === "新对话域" ||
+    domain.title === "欢迎对话域"
+  ) {
+    domain.title = clip(firstUser.content, 18);
+  }
+}
+
+const HARD_CONSTRAINT_PATTERN =
+  /(必须|一定|务必|核心|关键|重点|保留|禁止|不能|不要|避免|只要|只需要|采用|参考|使用|改成|做成|优化|补充|压缩|去AI|去ai|逻辑|一致性|第一人称|第三人称|短篇|中篇|长篇|剧本|分镜|风格|口吻|节奏|钩子|反转|设定|世界观|视角|开篇|章末|对话格式|对话|比喻|长句|段落|潜台词|感官|日常细节|鲜活度|时间线|OOC|内心独白)/;
+
+const LOGIC_ANCHOR_PATTERN =
+  /(角色|人设|关系|世界观|设定|规则|时间线|伏笔|钩子|结局|目标|限制|风格|模式|模型|章节|视角|口吻|冲突|情绪|记忆|状态|分镜|剧本|开篇|章末|对话|反转|成长|代价|线索|信息差)/;
+
+function splitConstraintFragments(text) {
+  return String(text || "")
+    .split(/[。！？\n\r]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function extractConstraintHints(messages) {
+  const result = [];
+  const recentUserMessages = messages.filter((item) => item.role === "user").slice(-12);
+
+  for (const message of recentUserMessages) {
+    const fragments = splitConstraintFragments(message.content);
+
+    for (const fragment of fragments) {
+      if (!HARD_CONSTRAINT_PATTERN.test(fragment)) continue;
+      result.push(clip(fragment, 54));
+      if (result.length >= 8) {
+        return unique(result);
+      }
+    }
+
+    if (!result.length && HARD_CONSTRAINT_PATTERN.test(String(message.content || ""))) {
+      result.push(clip(message.content, 54));
+    }
+  }
+
+  return unique(result).slice(0, 8);
+}
+
+function extractLogicAnchors(messages) {
+  const result = [];
+  const recentMessages = messages.slice(-16);
+
+  for (const message of recentMessages) {
+    const fragments = splitConstraintFragments(message.content);
+
+    for (const fragment of fragments) {
+      if (!LOGIC_ANCHOR_PATTERN.test(fragment)) continue;
+      result.push(clip(fragment, 60));
+      if (result.length >= 10) {
+        return unique(result);
+      }
+    }
+  }
+
+  return unique(result).slice(0, 10);
+}
+
+function extractKeywords(messages) {
+  const text = messages.map((item) => String(item.content || "")).join(" ");
+  const tokens = text.match(/[\u4e00-\u9fa5A-Za-z0-9_-]{2,12}/g) || [];
+  const result = [];
+
+  for (const raw of tokens) {
+    const token = raw.trim();
+    if (!token) continue;
+    if (/^\d+$/.test(token)) continue;
+    if (STOP_WORDS.has(token)) continue;
+    if (result.includes(token)) continue;
+    result.push(token);
+    if (result.length >= 8) break;
+  }
+
+  return result;
+}
+
+function detectOpenLoops(messages) {
+  const candidates = [];
+  const recent = messages.slice(-12);
+
+  for (const message of recent) {
+    const content = clip(message.content, 78);
+    if (!content) continue;
+
+    if (
+      message.role === "user" &&
+      /[?？]$|继续|下一步|还要|需要|改成|做成|优化|补|修|增加|实现|请|帮我/.test(
+        message.content
+      )
+    ) {
+      candidates.push(`用户待处理：${content}`);
+    }
+
+    if (
+      message.role === "assistant" &&
+      /下一步|待处理|建议|需要|可继续|后续|应当/.test(message.content)
+    ) {
+      candidates.push(`系统建议：${content}`);
+    }
+  }
+
+  return unique(candidates).slice(0, 6);
+}
+
+function buildSummary(previousSummary, oldMessages, domain = null) {
+  const userGoals = oldMessages
+    .filter((item) => item.role === "user")
+    .slice(-4)
+    .map((item) => clip(item.content, 120));
+
+  const systemActions = oldMessages
+    .filter((item) => item.role === "assistant")
+    .slice(-4)
+    .map((item) => clip(item.content.split(/\n+/)[0], 120));
+
+  const topics = extractKeywords(oldMessages);
+  const carry = detectOpenLoops(oldMessages);
+  const constraints = extractConstraintHints(oldMessages);
+  const logicAnchors = unique([
+    ...(domain?.pinnedFacts || []),
+    ...(domain?.logicAnchors || []),
+    ...extractLogicAnchors(oldMessages),
+  ]).slice(0, 8);
+  const storyState = createStoryState(domain?.storyState);
+  const sections = [];
+
+  if (previousSummary) {
+    sections.push(`旧记忆：${clip(previousSummary, 220)}`);
+  }
+
+  if (userGoals.length) {
+    sections.push(`用户近阶段目标：\n- ${userGoals.join("\n- ")}`);
+  }
+
+  if (systemActions.length) {
+    sections.push(`系统已完成：\n- ${systemActions.join("\n- ")}`);
+  }
+
+  if (topics.length) {
+    sections.push(`核心主题：${topics.join(" / ")}`);
+  }
+
+  if (constraints.length) {
+    sections.push(`硬性约束：\n- ${constraints.join("\n- ")}`);
+  }
+
+  if (logicAnchors.length) {
+    sections.push(`逻辑锚点：\n- ${logicAnchors.join("\n- ")}`);
+  }
+
+  if (storyState.characters.length || storyState.worldRules.length || storyState.conflicts.length) {
+    sections.push(
+      [
+        "状态机摘要：",
+        storyState.objective ? `- 目标：${storyState.objective}` : "",
+        storyState.nextBeat ? `- 下一拍：${storyState.nextBeat}` : "",
+        storyState.characters.length
+          ? `- 角色卡：${storyState.characters
+              .map((item) => [item.name, item.role, item.goal].filter(Boolean).join(" / "))
+              .join("；")}`
+          : "",
+        storyState.worldRules.length ? `- 世界规则：${storyState.worldRules.join("；")}` : "",
+        storyState.conflicts.length ? `- 核心冲突：${storyState.conflicts.join("；")}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n")
+    );
+  }
+
+  if (carry.length) {
+    sections.push(`待继续：\n- ${carry.join("\n- ")}`);
+  }
+
+  return sections.join("\n\n") || `已压缩 ${oldMessages.length} 条历史消息。`;
+}
+
+function refreshDerivedMemory(domain) {
+  ensureDomainAutomation(domain);
+  domain.constraintHints = extractConstraintHints(domain.messages);
+  domain.logicAnchors = unique([
+    ...(domain.pinnedFacts || []),
+    ...extractLogicAnchors(domain.messages),
+  ]).slice(0, 10);
+  domain.openLoops = detectOpenLoops(domain.messages);
+  maybeUpdateDomainTitle(domain);
+}
+
+function compressDomain(domain, reason = "手动压缩") {
+  const keep = Math.max(4, Number(state.api.windowSize) || API_DEFAULT.windowSize);
+
+  if (domain.messages.length <= keep) return 0;
+
+  const oldMessages = domain.messages.slice(0, domain.messages.length - keep);
+  const recentMessages = domain.messages.slice(-keep);
+  const summary = buildSummary(domain.summary, oldMessages, domain);
+  const openLoops = detectOpenLoops([...oldMessages, ...recentMessages]);
+  const constraintHints = extractConstraintHints([...oldMessages, ...recentMessages]);
+  const logicAnchors = unique([
+    ...(domain.pinnedFacts || []),
+    ...extractLogicAnchors([...oldMessages, ...recentMessages]),
+  ]).slice(0, 10);
+
+  domain.summary = summary;
+  domain.constraintHints = constraintHints;
+  domain.logicAnchors = logicAnchors;
+  domain.openLoops = openLoops;
+  domain.messages = recentMessages;
+  domain.lastCompressionAt = new Date().toISOString();
+  domain.compressionCount = (domain.compressionCount || 0) + 1;
+  domain.memoryLog = [
+    {
+      id: uid("mem"),
+      time: domain.lastCompressionAt,
+      note: `${reason}：压缩 ${oldMessages.length} 条历史消息，保留最近 ${recentMessages.length} 条。`,
+      snapshot: clip(summary, 140),
+    },
+    ...(domain.memoryLog || []),
+  ].slice(0, 20);
+
+  maybeUpdateDomainTitle(domain);
+  return oldMessages.length;
+}
+
+function maybeAutoCompress(domainId, reason = "自动压缩") {
+  const domain = getDomain(domainId);
+  if (!domain) return 0;
+
+  const threshold =
+    Number(state.api.compressionThreshold) || API_DEFAULT.compressionThreshold;
+
+  if (domain.messages.length >= threshold) {
+    const count = compressDomain(domain, reason);
+    saveDomains();
+    return count;
+  }
+
+  return 0;
+}
+
+function createDomain(options = {}) {
+  const active = currentDomain();
+  const domain = buildDomain({
+    moduleId: options.moduleId || state.currentModuleId,
+    modeId: options.modeId || active?.modeId || "short",
+    ...options,
+  });
+  state.domains.unshift(domain);
+  state.currentDomainId = domain.id;
+  state.currentModuleId = domain.moduleId;
+  saveDomains();
+  saveMeta();
+  renderAll();
+  toast(`已创建对话域：${domain.title}`);
+}
+
+function removeDomain(id) {
+  if (state.domains.length === 1) {
+    return toast("至少保留一个对话域。", "error");
+  }
+
+  state.domains = state.domains.filter((item) => item.id !== id);
+  if (state.currentDomainId === id) {
+    state.currentDomainId = state.domains[0]?.id || "";
+  }
+  state.currentModuleId = currentDomain()?.moduleId || state.currentModuleId;
+  saveDomains();
+  saveMeta();
+  renderAll();
+  toast("已删除对话域。");
+}
+
+function clearCurrentDomainContent() {
+  const domain = currentDomain();
+  if (!domain) return;
+
+  updateCurrentDomain((draft) => {
+    draft.title = "新对话域";
+    draft.summary = "";
+    draft.pinnedFacts = [];
+    draft.constraintHints = [];
+    draft.logicAnchors = [];
+    draft.openLoops = [];
+    draft.compressionCount = 0;
+    draft.lastCompressionAt = "";
+    draft.memoryLog = [];
+    draft.lastUsage = null;
+    draft.storyState = createStoryState();
+    draft.automation = createAutomationState();
+    draft.messages = [
+      {
+        id: uid("msg"),
+        role: "assistant",
+        content: "当前会话内容已清空，现在可以重新开始输入新的需求。",
+        createdAt: new Date().toISOString(),
+        streaming: false,
+        error: false,
+      },
+    ];
+  });
+
+  state.thinking = resetThinkingState();
+  if (el.chatInput) {
+    el.chatInput.value = "";
+  }
+  renderAll();
+  scrollChat();
+  toast("已清空当前会话内容。");
+}
+
+function setDomain(id) {
+  state.currentDomainId = id;
+  state.currentModuleId = currentDomain()?.moduleId || state.currentModuleId;
+  saveMeta();
+  renderAll();
+}
+
+function setModule(id) {
+  state.currentModuleId = id;
+  updateCurrentDomain((domain) => {
+    domain.moduleId = id;
+    maybeUpdateDomainTitle(domain);
+  });
+  saveMeta();
+  renderAll();
+}
+
+function setBaseline(id) {
+  state.currentBaselineId = id;
+  saveMeta();
+  renderAll();
+}
+
+function setTab(id) {
+  state.currentTab = id;
+  saveMeta();
+  renderViews();
+}
+
+function setMode(id) {
+  const mode = getMode(id);
+  updateCurrentDomain((domain) => {
+    domain.modeId = id;
+  });
+  renderAll();
+  toast(`已切换到 ${mode.title}`);
+}
+// endregion: domain-state
+
+function getModeProtocol(modeId) {
+  switch (modeId) {
+    case "short":
+      return [
+        "视角：强制第一人称“我”，删掉“我知道/我感到/我意识到/我看到自己/我注意到/我能想象”这类过滤词。",
+        "开篇：100字内必须先见动作或对话，300字内必须出现钩子、冲突或反转。",
+        "句法：短句优先，单句尽量不超25字，段落短，避免整段解释。",
+        "对白：使用「」独立成段，对话必须有功能，能推剧情、做人设或埋信息差。",
+        "情绪：允许更浓烈，但仍优先动作化；爽/虐/甜可以极少量直写。",
+        "反转：默认至少有一次微反转或信息错位，并且必须做变异。",
+        "节奏：钩子密度高，冲突推进快，不允许前半段发散。",
+        "结尾：最后一句必须保留未完成动作、时间压力、意外信息或信息差。",
+      ];
+    case "medium":
+      return [
+        "视角：强制第三人称有限，只写主视角角色能观察、推断到的信息。",
+        "结构：默认章节化推进，每章都要有推进、转折或新的情绪变化。",
+        "句法：保持去AI味，避免解释句和逻辑连词堆叠。",
+        "对白：使用「」独立成段，对话不能只有信息传达，还要带潜台词或人物压力。",
+        "节奏：信息释放递增，避免同一情绪原地打转。",
+        "人物：至少维持两条人物或关系线同步推进，但不能乱切视角。",
+        "反转：每个阶段至少有一次明显的节奏变化或认知偏移。",
+        "结尾：章末必须带悬念、错位、反常信息或下一轮冲突入口。",
+      ];
+    case "long":
+      return [
+        "视角：强制第三人称有限，严禁直接描写其他角色内心。",
+        "结构：卷结构优先，成长阶段、重大挫折、代价交换必须清楚。",
+        "状态：严格维护角色成长线、伏笔回收、世界规则和状态一致性。",
+        "句法：保持克制，不要为了华丽感牺牲清晰度和可信度。",
+        "对白：用传统引号，人物口吻必须稳定，不让多人说成一种声音。",
+        "节奏：章与章之间要有推进梯度，避免高位情绪连续疲劳，也避免低位拖沓。",
+        "伏笔：默认持续埋设短中长期伏笔，但不能失控膨胀。",
+        "结尾：每章都要给后续留钩子、问题或代价，不允许平落。",
+      ];
+    case "script":
+      return [
+        "转制原则：把叙述改成场景、动作、对白和可见信息，删除心理解释句。",
+        "场景：明确场号、地点、时间、人物动作和场次功能。",
+        "对白：所有对白都必须能推进剧情、揭示关系、埋信息差或制造情绪。",
+        "镜头感：优先写可拍、可演、可分场的结果，不写抽象总结。",
+        "内心：禁止直接写“他想/她感到”，改成动作、停顿、眼神、环境反馈。",
+        "节奏：每场都要有明确进入点和离开点，不能平铺直叙。",
+        "转换：把小说语言压成表演语言、调度语言和画面语言。",
+        "收束：每场末尾都尽量留动作、视线、信息差或新压力。",
+      ];
+    case "storyboard":
+      return [
+        "按镜头拆分，不写空泛总结，优先画面、动作、景别和节奏节点。",
+        "每个镜头都要可视化，避免抽象心理描写。",
+        "输出应便于继续转分镜、故事板或视频提示词。",
+      ];
+    default:
+      return [
+        "保持叙事视角稳定，优先动作、细节和结果。",
+        "输出必须可继续执行，不要写空洞说明。",
+      ];
+  }
+}
+
+function getPerspectiveRule(modeId) {
+  if (modeId === "short") {
+    return "SHORT 强制第一人称“我”，删掉“我知道/我感到/我意识到/我看到自己/我注意到/我能想象”这类过滤词。";
+  }
+
+  if (modeId === "medium" || modeId === "long") {
+    return "MEDIUM/LONG 强制第三人称有限视角，只能写主视角角色能观察、推断到的信息，严禁直接描写其他角色内心。";
+  }
+
+  return "默认保持单一稳定视角，不随意切换叙事人称。";
+}
+
+function buildProtocolSnapshot(domain) {
+  const modeId = domain?.modeId || "short";
+
+  return {
+    version: "M06-M07-core",
+    perspective: getPerspectiveRule(modeId),
+    l1Focus: [
+      "视角锁死",
+      "禁止解释癖",
+      "禁止烂俗比喻",
+      "禁止虚词模糊",
+      "情绪动作化",
+      "单句<=25字",
+      "章末必须有钩子",
+      "开篇100字内必须见动作或对话",
+      "时间线只向前",
+      "主角行为一致",
+    ],
+    l2Focus: [
+      "每章至少两种感官",
+      "每章至少一个共情小动作",
+      "短句比例提升",
+      "允许潜台词",
+      "加入日常细节和偶然事件",
+    ],
+    freshness: [
+      "开写前内部确定本章情绪目标",
+      "内部匹配三个参考案例及变异问题",
+      "至少做一次变异反转",
+      "鲜活度不足时先重写再输出",
+    ],
+  };
+}
+
+function buildWritingKernel(domain) {
+  const mode = getMode(domain?.modeId || "short");
+  const modeRules = getModeProtocol(mode.id);
+  const dialogueRule =
+    mode.id === "long"
+      ? "LONG 使用传统引号；SHORT/MEDIUM 用「」并尽量独立成段。"
+      : "SHORT/MEDIUM 用「」独立成段；LONG 使用传统引号。";
+
+  return [
+    "你是【超无穹·真值引擎】在当前工作台中的后台执行内核。",
+    "优先级固定为：用户最新明确需求 > 已确认设定与长期记忆 > 逻辑一致性 > 去AI味表达 > 模块职责。",
+    "M06 视角锁定：",
+    `- ${getPerspectiveRule(mode.id)}`,
+    "M06 L1 铁律，违反就先在内部重写后再输出：",
+    "- 视角锁死，严禁乱切视角。",
+    "- 禁止解释癖：禁用“这不是…而是…/不是因为…恰恰是因为…/这意味着…/换句话说…/其实…”开头。",
+    "- 禁止烂俗比喻：禁用“像刀/阳光/风/水/火/石头”，新颖比喻每千字最多两处。",
+    "- 禁止虚词模糊：删除“似乎/仿佛/好像”这类模糊词，除非用户明确要求朦胧感。",
+    "- 禁止情绪标签：默认不用“他很愤怒/她很伤心”，改写成动作、环境、对白；只有短篇且明确爽/虐/甜时才允许少量直写。",
+    "- 禁止连续长句：单句尽量控制在25字内，逗号连接分句不超过2个。",
+    "- 章末必有钩子：最后一句必须保留未完成动作、意外信息、时间压力或信息差。",
+    `- ${dialogueRule}`,
+    "- 对话功能化：不能推进剧情、塑造性格、埋伏笔或制造情绪的对白直接删掉。",
+    "- 开篇100字内必须先见动作或对话，禁止环境、背景、内心独白先行。",
+    "- 结局禁梦：禁止“醒来发现是梦/幻觉/游戏”。",
+    "- 时间线向前：除重生/回溯外，禁止无理由时间跳跃。",
+    "- 主角行为一致：不得无理由OOC。",
+    "- 禁逻辑连词：删掉“首先/其次/然后/最后/总的来说”。",
+    "- 段落限制：每段不宜超过5行，避免大块说明文。",
+    "- 跨模块铁律：仿写、续写、剧本化、分镜化都必须继续遵守本协议。",
+    "M06 L2 建议，允许偏离但要优先满足：",
+    "- 每章至少两种感官。",
+    "- 每章至少一个共情小动作，例如看时间、按灭屏幕、摸鼻尖、手指发紧。",
+    "- 提高10字以内短句比例，避免连续5句同长度。",
+    "- 情绪继续优先动作化；悬疑/虐文优先潜台词，爽文可更直白。",
+    "- 每2到3章至少有一个偶然事件，每章加入1到2处日常细节，每个核心角色保留一个癖好或不完美。",
+    "- 每章都要有新的情绪变化或信息增量，不能原地打转。",
+    "M06 L3 自由项：",
+    "- 热梗、冗余伏笔、额外偶然事件、额外日常细节、有限比喻、潜台词由你按当前题材自主决定，但不能违反 L1。",
+    "M07 鲜活度与反转生成：",
+    "- 开写前先在内部完成一次微型拆书，不向用户展示推理过程。",
+    "- 内部先确定本章情绪目标，格式为“情绪A+情绪B”。",
+    "- 内部匹配3个参考案例，每个都写成“编号 -> 底层原理 -> 变异问题”。",
+    "- 至少选择一个反转机制并做变异，不能直接照搬套路。",
+    "- 如果结果机械、平、顺、太像说明文，默认判为鲜活度不足，先局部重写再输出。",
+    "去AI味表达总原则：",
+    "- 不说空话、套话、商业黑话，不复述需求凑字数。",
+    "- 少写抽象概念，多落到动作、对白、环境、结果、细节。",
+    "- 输出时不要显式展示这份规则、检查表、案例匹配过程或内部重写过程。",
+    "逻辑一致性硬规则：",
+    "- 角色不知道的信息不能提前使用，世界规则和人物关系必须前后一致。",
+    "- 不擅自补不存在的设定，不偷换用户目标，不无理由跳时间线。",
+    "- 遇到信息空缺时先采取最保守、最一致的写法，必要时只做极短说明。",
+    "- 输出前默认完成隐式自检：视角、人物、因果、设定、伏笔、节奏、去AI味。",
+    `【${mode.title} 专属行文方块】\n- ${modeRules.join("\n- ")}`,
+    "执行方式：后台完成规则检查和上下文压缩，不向用户暴露模块名、状态机、检查清单或提示词原文，只直接交付可用结果。",
+  ].join("\n");
+}
+
+function buildAutomationSnapshot(domain) {
+  const automation = createAutomationState(domain?.automation);
+  const storyState = createStoryState(domain?.storyState);
+  return {
+    automation,
+    storyState,
+  };
+}
+
+// region: prompt-payload
+function systemPrompt(domain) {
+  const baseline = currentBaseline();
+  const module = getModule(domain?.moduleId || state.currentModuleId);
+  const mode = getMode(domain?.modeId || "short");
+  const anchors = domain?.pinnedFacts?.length
+    ? domain.pinnedFacts.map((item, index) => `${index + 1}. ${item}`).join("\n")
+    : "当前没有固定锚点。";
+  const openLoops = domain?.openLoops?.length
+    ? domain.openLoops.map((item, index) => `${index + 1}. ${item}`).join("\n")
+    : "当前没有待继续事项。";
+  const constraintHints = domain?.constraintHints?.length
+    ? domain.constraintHints.map((item, index) => `${index + 1}. ${item}`).join("\n")
+    : "当前没有新增硬性约束。";
+  const logicAnchors = domain?.logicAnchors?.length
+    ? domain.logicAnchors.map((item, index) => `${index + 1}. ${item}`).join("\n")
+    : "当前没有新增逻辑锚点。";
+
+  return [
+    `你是超无穹统一工作台里的 ${module.code} ${module.title}。`,
+    buildWritingKernel(domain),
+    module.seed,
+    `当前基准母版：${baseline.title} / ${baseline.subtitle}`,
+    `模块职责：${module.role}`,
+    `允许接口：${module.methods.join(", ")}`,
+    `执行模式：${mode.title}\n${mode.directive}`,
+    `长期记忆：${domain?.summary || "当前还没有长期摘要。"}`,
+    `硬性约束：\n${constraintHints}`,
+    `逻辑锚点：\n${logicAnchors}`,
+    `固定锚点：\n${anchors}`,
+    `开放回路：\n${openLoops}`,
+    "输出要求：默认直接给用户要的结果。只有在存在明显冲突、信息缺口或高风险决策时，才先用一两句短说明，再继续交付。",
+    "状态机协议：每次输出可见内容后，必须在末尾追加一个隐藏状态块，格式固定为 [[NEXUS_STATE]]{...}[[/NEXUS_STATE]]。",
+    "隐藏状态块只给后台解析，用户不会看到。JSON 请优先包含 phase、objective、brief、currentTask、nextBeat、characters、worldRules、conflicts、outline 这些字段。",
+    "characters 数组中的每个角色尽量包含 name、role、goal、status、relation；worldRules、conflicts、outline 请只保留真正影响后续续写的关键项。",
+    "如果本轮是自动续写，只输出新增正文，不重复前文，不总结，不解释，不把隐藏状态块说明给用户。",
+  ].join("\n\n");
+}
+
+function buildContextPacket(domain) {
+  const modeId = domain?.modeId || "short";
+  return {
+    domainId: domain?.id || "",
+    domainTitle: domain?.title || "",
+    moduleId: domain?.moduleId || "",
+    modeId,
+    modeGuide: getModeProtocol(modeId),
+    protocolSnapshot: buildProtocolSnapshot(domain),
+    summary: domain?.summary || "",
+    constraintHints: domain?.constraintHints || [],
+    logicAnchors: domain?.logicAnchors || [],
+    pinnedFacts: domain?.pinnedFacts || [],
+    openLoops: domain?.openLoops || [],
+    compressionCount: domain?.compressionCount || 0,
+    lastCompressionAt: domain?.lastCompressionAt || "",
+    messageCount: domain?.messages?.length || 0,
+    windowSize: Number(state.api.windowSize) || API_DEFAULT.windowSize,
+    storyEngine: buildAutomationSnapshot(domain),
+  };
+}
+
+function payload(domain, stream = state.api.stream, extraMessages = []) {
+  const keep = Number(state.api.windowSize) || API_DEFAULT.windowSize;
+  const recent = (domain?.messages || [])
+    .slice(-keep)
+    .filter((message) => !(message.streaming && !String(message.content || "").trim()));
+
+  return {
+    model: state.api.model,
+    stream,
+    temperature: Number(state.api.temperature || API_DEFAULT.temperature),
+    messages: [
+      { role: "system", content: systemPrompt(domain) },
+      {
+        role: "system",
+        content: `上下文包：\n${JSON.stringify(buildContextPacket(domain), null, 2)}`,
+      },
+      ...recent.map((message) => ({
+        role: message.role === "assistant" ? "assistant" : "user",
+        content: toPayloadContent(message),
+      })),
+      ...extraMessages,
+    ],
+  };
+}
+
+function finalizeRequestBody(requestBody) {
+  const nextBody = {
+    ...requestBody,
+    model: normalizeProviderModel(
+      state.api.provider,
+      requestBody?.model,
+      PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID]
+    ),
+    temperature: sanitizeTemperatureForProvider(state.api.provider, requestBody?.temperature),
+  };
+
+  return nextBody;
+}
+
+function toPayloadContent(message) {
+  const content = String(message?.content || "");
+  if (!content) return content;
+  if (measureTextUnits(content) <= 6000) return content;
+  if (message?.role === "assistant") {
+    return `以下是当前作品最近的续写尾段，只用于承接上下文，请直接从这里往后写，不要重写前文：\n${content.slice(-6000)}`;
+  }
+  return content.slice(-4000);
+}
+
+function buildAutoPlan(domain, input) {
+  const targetWords = resolveAutoTargetWords(domain, input);
+  const batchTarget =
+    AUTO_BATCH_TARGETS[domain?.modeId || "short"] || AUTO_BATCH_TARGETS.short;
+  const maxIterations = Math.max(
+    2,
+    Math.min(40, Math.ceil(targetWords / Math.max(1000, batchTarget * 0.82)) + 1)
+  );
+
+  return createAutomationState({
+    enabled: true,
+    status: "running",
+    targetWords,
+    currentWords: 0,
+    iterations: 0,
+    maxIterations,
+    batchTarget,
+    lastUserRequest: String(input || "").trim(),
+    currentPhase: "初始化故事状态机",
+    startedAt: new Date().toISOString(),
+    completedAt: "",
+    lastError: "",
+  });
+}
+
+function updateDomainAutomation(domainId, patch = {}) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      ensureDomainAutomation(domain);
+      domain.automation = createAutomationState({
+        ...domain.automation,
+        ...patch,
+      });
+    },
+    { persist: true, touch: true }
+  );
+}
+
+function mergeStoryState(domain, nextState = {}) {
+  ensureDomainAutomation(domain);
+  const current = createStoryState(domain.storyState);
+  const incoming = createStoryState({
+    ...current,
+    ...nextState,
+    characters:
+      Array.isArray(nextState.characters) && nextState.characters.length
+        ? nextState.characters
+        : current.characters,
+    worldRules:
+      Array.isArray(nextState.worldRules) && nextState.worldRules.length
+        ? nextState.worldRules
+        : current.worldRules,
+    conflicts:
+      Array.isArray(nextState.conflicts) && nextState.conflicts.length
+        ? nextState.conflicts
+        : current.conflicts,
+    outline:
+      Array.isArray(nextState.outline) && nextState.outline.length
+        ? nextState.outline
+        : current.outline,
+  });
+
+  domain.storyState = incoming;
+
+  const derivedAnchors = unique([
+    ...incoming.characters.map((item) =>
+      [item.name, item.role, item.goal, item.status, item.relation].filter(Boolean).join(" / ")
+    ),
+    ...incoming.worldRules,
+    ...incoming.conflicts,
+    incoming.nextBeat,
+  ])
+    .map((item) => clip(item, 60))
+    .filter(Boolean);
+
+  domain.logicAnchors = unique([...(domain.logicAnchors || []), ...derivedAnchors]).slice(0, 10);
+  domain.openLoops = unique([incoming.nextBeat, ...(domain.openLoops || [])]).slice(0, 6);
+}
+
+function seedStoryState(domain, input, plan) {
+  ensureDomainAutomation(domain);
+  mergeStoryState(domain, {
+    brief: clip(input, 160),
+    objective: clip(input, 120),
+    phase: "planning",
+    currentTask: `自动执行 ${getMode(domain.modeId || "short").title}`,
+    tone: getMode(domain.modeId || "short").directive,
+    nextBeat: "根据用户要求进入首轮写作",
+    outline: unique([clip(input, 64)]),
+  });
+  domain.automation = createAutomationState({
+    ...domain.automation,
+    ...plan,
+  });
+}
+
+function measureAssistantMessage(domainId, messageId) {
+  const domain = getDomain(domainId);
+  const message = domain?.messages?.find((item) => item.id === messageId);
+  return measureTextUnits(stripStateEnvelope(message?.content || ""));
+}
+
+function buildContinuationMessages(domain, plan, iteration, currentWords) {
+  const mode = getMode(domain?.modeId || "short");
+  const remaining = Math.max(0, Number(plan.targetWords || 0) - Number(currentWords || 0));
+  const batchTarget = Math.max(
+    800,
+    Math.min(Number(plan.batchTarget || 0) || AUTO_BATCH_TARGETS[mode.id], remaining || plan.batchTarget)
+  );
+  const storyState = createStoryState(domain?.storyState);
+  const isFinalPass = remaining <= batchTarget * 1.2 || iteration + 1 >= Number(plan.maxIterations || 0);
+  const outputType =
+    mode.id === "script"
+      ? "新增剧本场景"
+      : mode.id === "storyboard"
+        ? "新增分镜内容"
+        : "新增正文";
+
+  return [
+    {
+      role: "user",
+      content: [
+        `【后台自动续写任务】第 ${iteration + 1} 轮 / 最多 ${plan.maxIterations} 轮`,
+        `目标总字数：约 ${plan.targetWords} 字；当前已完成：约 ${currentWords} 字；本轮新增目标：约 ${batchTarget} 字。`,
+        `用户原始需求：${plan.lastUserRequest}`,
+        `当前阶段：${storyState.phase || "drafting"}；当前任务：${storyState.currentTask || "持续推进主线"}。`,
+        `当前待写节点：${storyState.nextBeat || "承接上轮最后一个动作继续往下写"}`,
+        `请只输出${outputType}，不要重复前文，不要复述设定，不要总结，不要解释。`,
+        isFinalPass
+          ? "这一轮优先完成结尾或阶段性收束，但仍然要自然收尾，不要突然跳结论。"
+          : "这一轮优先推进冲突和情绪，不要过早总结或完结。",
+        `输出末尾必须追加隐藏状态块：${STATE_BLOCK_START}{...}${STATE_BLOCK_END}`,
+      ].join("\n"),
+    },
+  ];
+}
+
+function buildMockAutoReply(domain, plan, iteration, currentWords) {
+  const storyState = createStoryState(domain?.storyState);
+  const remaining = Math.max(0, plan.targetWords - currentWords);
+  const batchTarget = Math.max(900, Math.min(plan.batchTarget || 1600, remaining || plan.batchTarget));
+  const beatA = storyState.objective || clip(plan.lastUserRequest, 36);
+  const beatB = storyState.nextBeat || "主角被迫继续往前走";
+  const beatC = storyState.conflicts[0] || "新的阻力突然出现";
+  const beatD = storyState.worldRules[0] || "规则开始反噬旧选择";
+
+  let content = "";
+  while (measureTextUnits(content) < batchTarget) {
+    content += `${beatA}。${beatB}。${beatC}。${beatD}。`;
+  }
+
+  const nextState = {
+    phase: remaining <= batchTarget * 1.2 ? "ending" : iteration === 0 ? "drafting" : "continuing",
+    objective: storyState.objective || clip(plan.lastUserRequest, 96),
+    brief: clip(stripStateEnvelope(content), 140),
+    currentTask: remaining <= batchTarget * 1.2 ? "收束主线并完成当前作品" : "继续推进主线冲突",
+    nextBeat:
+      remaining <= batchTarget * 1.2 ? "完成最后一段收束" : "承接当前冲突继续下一场戏",
+    characters: storyState.characters,
+    worldRules: storyState.worldRules,
+    conflicts: unique([...(storyState.conflicts || []), beatC]).slice(0, 6),
+    outline: unique([...(storyState.outline || []), beatB]).slice(0, 8),
+  };
+
+  return `${content}\n${STATE_BLOCK_START}\n${JSON.stringify(nextState, null, 2)}\n${STATE_BLOCK_END}`;
+}
+
+function mockReply(userText) {
+  const domain = currentDomain();
+  const module = currentModule();
+  const mode = getMode(domain?.modeId || "short");
+  const openLoops = domain?.openLoops?.length
+    ? domain.openLoops.slice(0, 3).join("；")
+    : "当前没有开放回路";
+  const anchors = domain?.pinnedFacts?.length
+    ? domain.pinnedFacts.slice(0, 3).join("；")
+    : "当前没有固定锚点";
+
+  return [
+    "【本地模拟回复】",
+    `当前模块：${module.code} ${module.title}`,
+    `执行模式：${mode.title}`,
+    `收到任务：${userText}`,
+    `模块职责：${module.role}`,
+    `可调用接口：${module.methods.join(" / ")}`,
+    `当前锚点：${anchors}`,
+    `待继续事项：${openLoops}`,
+    "下一步建议：",
+    "1. 明确本轮交付格式。",
+    "2. 把需要长期保留的设定写进锚点。",
+    "3. 如果准备接真实模型，保持流式输出开启后再发送一次。",
+  ].join("\n");
+}
+
+function mockReply(userText) {
+  const domain = currentDomain();
+  const module = currentModule();
+  const mode = getMode(domain?.modeId || "short");
+  const openLoops = domain?.openLoops?.length
+    ? domain.openLoops.slice(0, 3).join("，")
+    : "当前没有开放回路";
+  const anchors = domain?.pinnedFacts?.length
+    ? domain.pinnedFacts.slice(0, 3).join("，")
+    : "当前没有固定锚点";
+  const constraints = domain?.constraintHints?.length
+    ? domain.constraintHints.slice(0, 3).join("，")
+    : "当前没有新增硬约束";
+
+  return [
+    "【本地模拟回复】",
+    `当前模块：${module.code} ${module.title}`,
+    `执行模式：${mode.title}`,
+    `收到任务：${userText}`,
+    "后台协议：已启用去AI味与逻辑一致性双校验",
+    `模块职责：${module.role}`,
+    `可调用接口：${module.methods.join(" / ")}`,
+    `当前硬约束：${constraints}`,
+    `当前锚点：${anchors}`,
+    `待继续事项：${openLoops}`,
+    "下一步建议：",
+    "1. 继续明确本轮交付格式和强限制。",
+    "2. 把必须长期保留的设定写进锚点或记忆摘要。",
+    "3. 如果准备接真实模型，直接发送下一轮需求即可。",
+  ].join("\n");
+}
+
+function mockHash(text = "") {
+  let hash = 0;
+  for (const char of String(text || "")) {
+    hash = (hash * 131 + char.charCodeAt(0)) >>> 0;
+  }
+  return hash;
+}
+
+function pickMock(items, seed, offset = 0) {
+  if (!Array.isArray(items) || !items.length) return "";
+  return items[Math.abs((seed + offset * 17) % items.length)];
+}
+
+function buildMockScaffold(domain, plan) {
+  const storyState = createStoryState(domain?.storyState);
+  const modeId = domain?.modeId || "short";
+  const request = String(
+    plan?.lastUserRequest || storyState.objective || domain?.messages?.slice(-1)?.[0]?.content || ""
+  ).trim();
+  const seed = mockHash(`${domain?.id || "mock"}|${request}|${modeId}`);
+  const trope = /扮猪吃虎/.test(request) ? "pretendWeak" : "default";
+
+  const protagonists = ["沈砚", "周临川", "许惊鸿", "陈默", "陆沉", "裴渡"];
+  const rivals = ["赵天野", "韩子昂", "谢承宇", "宋骁", "顾闻洲", "杜衡"];
+  const allies = ["林晚星", "苏禾", "温宁", "乔栀", "秦昭", "程知意"];
+  const mentors = ["齐叔", "梁教授", "顾老", "闻叔", "陈馆主", "宁总"];
+  const settings =
+    trope === "pretendWeak"
+      ? [
+          "天衡资本终审会场",
+          "万象科技竞标大厅",
+          "临江一中保送答辩室",
+          "东岚医院联合评审厅",
+          "青川古玩行春拍会场",
+        ]
+      : ["城市会客厅", "商务答辩室", "发布会后台", "集团会议室"];
+  const stakes = [
+    "拿下今晚唯一的核心名额",
+    "决定三千万项目最终归属",
+    "改写所有人对胜负的判断",
+    "把早就该清算的人一并掀下去",
+  ];
+  const talents = [
+    "把一团乱账在脑子里瞬间排成最优解",
+    "只看一眼细节就能反推出整套布局",
+    "在最短时间里拆穿别人的伪装和漏洞",
+    "临场重构一套足够致命的反击方案",
+  ];
+  const masks = [
+    "一只旧得发白的帆布包",
+    "洗得褪色的工装外套",
+    "一双边角开胶的旧鞋",
+    "一副看起来廉价又普通的黑框眼镜",
+  ];
+  const covers = [
+    "送资料的临时杂工",
+    "被塞进角落的旁听生",
+    "毫不起眼的实习生",
+    "专门跑腿的外包助理",
+  ];
+  const reveals = [
+    "三年前封榜后突然消失的匿名天才",
+    "圈子里一直找不到本人的黑马代号",
+    "那个只留下纪录、从不露面的第一名",
+    "被业内当成传闻的幕后狠人",
+  ];
+  const endings = [
+    "我把文件合上，连看都没再看他一眼。",
+    "他脸上的笑彻底碎了，连站都站不稳。",
+    "全场安静了三秒，才有人反应过来鼓掌。",
+    "我收回手，台下那点喧哗忽然变得很轻。",
+  ];
+
+  const protagonist = storyState.characters[0]?.name || pickMock(protagonists, seed, 0);
+  const rival = storyState.characters[1]?.name || pickMock(rivals, seed, 1);
+  const ally = storyState.characters[2]?.name || pickMock(allies, seed, 2);
+  const mentor = storyState.characters[3]?.name || pickMock(mentors, seed, 3);
+  const setting = pickMock(settings, seed, 4);
+  const stake = pickMock(stakes, seed, 5);
+  const talent = pickMock(talents, seed, 6);
+  const mask = pickMock(masks, seed, 7);
+  const cover = pickMock(covers, seed, 8);
+  const reveal = pickMock(reveals, seed, 9);
+  const finalLine = pickMock(endings, seed, 10);
+  const perspective = modeId === "short" ? "first" : "third";
+  const lead = perspective === "first" ? "我" : protagonist;
+  const pronoun = perspective === "first" ? "我" : "他";
+  const possessive = perspective === "first" ? "我的" : `${protagonist}的`;
+
+  return {
+    request,
+    seed,
+    trope,
+    modeId,
+    perspective,
+    protagonist,
+    rival,
+    ally,
+    mentor,
+    setting,
+    stake,
+    talent,
+    mask,
+    cover,
+    reveal,
+    finalLine,
+    lead,
+    pronoun,
+    possessive,
+  };
+}
+
+function buildMockNarrativeChunk(scaffold, iteration, batchTarget) {
+  const stage = Math.min(iteration, 5);
+  const isFirst = scaffold.perspective === "first";
+  const lead = scaffold.lead;
+  const pronoun = scaffold.pronoun;
+  const possessive = scaffold.possessive;
+  const protagonist = scaffold.protagonist;
+  const eventClock =
+    stage <= 1 ? "倒计时只剩二十分钟" : stage === 2 ? "最后一轮核验已经开始" : "全场都在等最后的结果";
+
+  const stageParagraphs = [
+    [
+      `${lead}背着${scaffold.mask}走进${scaffold.setting}时，门口的目光先落在${possessive}袖口上。那眼神很熟，像在看一个不该出现的人。`,
+      `${scaffold.rival}靠在签到台边，故意把声音放大：「这种场合也敢混进来？谁把${isFirst ? "你" : pronoun}安排进来的？」`,
+      `${lead}没接话，只把工作牌翻过去。牌子上写的是${scaffold.cover}。这层皮我披了半年，披到所有人都忘了我原本能站在哪。`,
+      `${scaffold.ally}从侧门快步过来，压低声音说评审名单临时改了，今天谁拿下答辩，谁就能${scaffold.stake}。`,
+      `${lead}抬眼扫了眼大屏。参赛文件刚挂出来，我就看见第三页数据被人动过。只改了一行，却足够让整套方案在关键点上崩盘。`,
+      `${isFirst ? "我装作没看见" : `${protagonist}装作没看见`}。装弱最大的好处，不是让人轻敌，而是让真正下手的人先露出手。`,
+      `后台有人在催，前台有人在笑，连保安都默认${isFirst ? "我" : pronoun}只是个帮人送资料的。没人知道，我等的就是今晚。`,
+      `${scaffold.rival}伸手把一份错版底稿塞进${isFirst ? "我" : pronoun}怀里，笑得客气又难看：「既然来了，就去把垃圾收拾干净。」`,
+      `${lead}低头看着那份底稿，指尖轻轻一顿。上面的笔迹很旧，偏偏有一处是今天刚补上的。有人太急了，急到连伪装都没做全。`,
+      `${eventClock}。主持人忽然点名，让${isFirst ? "我" : pronoun}把备用方案送上台。全场同时回头，等着看笑话。`,
+    ],
+    [
+      `${lead}把资料送上去的时候，台上的投影正好卡死。${scaffold.rival}皱着眉，第一句话不是救场，而是把锅甩给${isFirst ? "我" : pronoun}。`,
+      `「这种低级错误都能犯，你是来添乱的吧？」他一句话扔下来，评审席上已经有人开始不耐烦。`,
+      `${lead}站在原地，像是被这阵仗压住了，连辩解都慢半拍。越是这种时候，我越不能太快。鱼还没全咬钩。`,
+      `${scaffold.ally}替${isFirst ? "我" : pronoun}说了两句，却被${scaffold.rival}当众堵回去。对方甚至把迟到、外包、履历空白这些词，一个个拍到桌上。`,
+      `${lead}垂着眼，像极了被逼进墙角的人。可就在全场最乱的时候，${pronoun}顺手把服务器日志调了出来，指尖停在一串被删除又恢复的记录上。`,
+      `那串记录只闪了一秒，除了${lead}，没人意识到它意味着什么。有人在答辩开始前七分钟，偷偷改过底层参数。`,
+      `${scaffold.rival}以为${isFirst ? "我" : pronoun}已经慌了，索性乘胜追击，说要临时换题，当场重做一版，谁做不出来谁滚。`,
+      `规则就是这么定下来的。可这条规则先砸到的，是${isFirst ? "我" : pronoun}自己。为了把身份藏死，我的履历表里故意写成了只能打杂的普通人。现在，这份伪装反过来成了资格门槛。`,
+      `${scaffold.mentor}发来一句话，只有六个字：别急，让他抬高。${lead}看着那行字，终于笑了一下。`,
+      `我把手机扣在桌上，抬头时，评审席已经把临时考核通过了。全场等着我出丑，我偏偏答应了。`,
+    ],
+    [
+      `临时考核一开，所有人都围到大屏前。题目被故意提到了最刁钻的难度，连两位资深评审都皱了眉。`,
+      `${lead}没立刻动手，只把原始数据又看了一遍。真正要命的不是题，是藏在题里的陷阱。有人提前埋好了错误答案，就等我自己踩进去。`,
+      `${scaffold.rival}站在旁边，故意提醒评审「外包助理平时只负责跑腿，不懂也正常」。这种轻飘飘的羞辱，比破口大骂更恶心。`,
+      `${lead}依旧没反驳，只是把其中两页纸轻轻调换了顺序。这个动作很小，小到旁人以为${pronoun}只是紧张得手忙脚乱。`,
+      `${scaffold.ally}离得近，最先看见了那两页纸上的差别。她眼神一变，终于明白${isFirst ? "我根本不是不会" : `${protagonist}根本不是不会`}，而是在等对方把所有牌都摊出来。`,
+      `资格门槛、错版底稿、删改日志、临时换题，这些东西一层层压下来，像是旧选择反噬出的回旋镖。${lead}要是此刻退一步，前面半年就全白忍了。`,
+      `${pronoun === "我" ? "我" : protagonist}慢慢抬手，要了一支最普通的白板笔。没有高端设备，没有团队支援，只有一块空白板和全场越来越重的呼吸声。`,
+      `${lead}先写下的不是答案，而是${scaffold.rival}最笃定的那条逻辑链。写完以后，${pronoun}当着所有人的面，在中间画了一刀。`,
+      `「这里错了。」${isFirst ? "我" : protagonist}声音不高，却正好够全场听见。「不是算错，是从一开始就被人引到错路上了。」`,
+      `台下终于安静。连一直等着看笑话的人，都下意识往前坐了一点。`,
+    ],
+    [
+      `${lead}把第一处漏洞挑出来时，${scaffold.rival}还想笑。等第二处和第三处也被顺手剥开，他脸上的表情终于开始绷不住。`,
+      `白板上的线条越拉越快。前面所有人都还在讨论单点误差，${pronoun}已经把整套方案的骨架重新竖了起来。`,
+      `${scaffold.ally}盯着大屏，手心全是汗。她突然想起一个传闻，说三年前有个代号从不露面，只在公开场合留下过一次完整推演。`,
+      `${lead}没让他们猜太久。第八分钟，${pronoun}把最后一组参数敲定，投影重新亮起来，原本要崩的模型突然像活过来一样顺了。`,
+      `评审席上有人直接站起来：「谁教你的这一套？」`,
+      `${lead}抬眸看过去，语气平淡得像在说天气。「没人教。只是这套东西，本来就是${isFirst ? "我" : pronoun}先做出来的。」`,
+      `${scaffold.rival}立刻反驳，说${isFirst ? "我" : pronoun}在胡说，还想拿资历、职位和权限再压一轮。可刚才的服务器日志，已经被${scaffold.ally}投到了主屏幕上。`,
+      `删改时间、登录账号、备份恢复，全都对得上。那些原本用来钉死${lead}的规则，转头成了追责${scaffold.rival}的锁链。`,
+      `场子已经开始翻。可${lead}知道，这还不够。扮猪吃虎最狠的一下，不是证明我能赢，是让他知道自己输在哪。`,
+      `${pronoun === "我" ? "我" : protagonist}把笔轻轻一转，当众开始重写最终方案。`,
+    ],
+    [
+      `后面的十五分钟，没人再说话。${lead}一边写，一边把每一步都讲清楚，像把一把刀一寸寸推到桌面上。`,
+      `${scaffold.rival}前面偷走的灵感、篡改的参数、故意设置的陷阱，都被拆成最直白的证据摆出来。没有一句脏话，却比抽耳光还疼。`,
+      `有人原本看不起${isFirst ? "我" : pronoun}的衣着，有人嫌${isFirst ? "我" : pronoun}履历空白，有人笃定${isFirst ? "我" : pronoun}撑不过三分钟。现在，全场都只剩下听。`,
+      `${scaffold.mentor}终于从最后排走出来，把一张旧名片放到评审桌上。上面的名字已经磨旧，只留着一个业内没人敢轻看的代号。`,
+      `那一刻，台下像被人按了静音。${scaffold.ally}先吸了一口气，随后有人失声叫出那个名字。`,
+      `${lead}没承认，也没否认，只把最终页翻到大屏上。数据落定的瞬间，原本属于${scaffold.rival}的评分曲线直接塌了。`,
+      `评审主席看着结果，语气都变了：「今天这个名额，不，该说整场答辩，从头到尾都只有一个人配拿。」`,
+      `${scaffold.rival}终于急了，扑过来想抢那份底稿。${lead}先一步把文件收回，侧身避开，让他当着所有人扑了个空。`,
+      `台下有人开始鼓掌，一开始只是零星几下，后来整排整排地响起来。那些刚才还想踩人的人，现在连眼神都不敢对上。`,
+      `${lead}看着${scaffold.rival}发白的脸，只说了一句：「你不是看不起${scaffold.cover}吗。现在输给这个身份，丢不丢人？」`,
+    ],
+    [
+      `${scaffold.rival}被带走调查的时候，还在回头看${lead}。那眼神里终于没了轻蔑，只剩慌。`,
+      `${scaffold.ally}站在门口，问${isFirst ? "我" : pronoun}为什么要装这么久。${lead}把工牌摘下来，指腹在磨损的边角上停了一下。`,
+      `装弱从来不高明，只是有时候，站得太高会让人防着你，蹲得够低，反而能看清谁想踩你一脚。`,
+      `${scaffold.mentor}把新的邀请函递过来，说这次不用再藏。${lead}垂眼看了两秒，却没有立刻接。`,
+      `${pronoun === "我" ? "我" : protagonist}先走到角落，把那只陪了自己半年的${scaffold.mask}放在椅子上。那层皮替${pronoun}挡过风，也让${pronoun}把人心看得更清。`,
+      `门外还有很多人在等，等着道歉，等着攀关系，等着重新站队。可${lead}只是整理好袖口，朝灯最亮的地方走。`,
+      `${scaffold.ally}忽然在后面叫住${isFirst ? "我" : pronoun}，问以后是不是再也没人敢把${isFirst ? "我" : protagonist}当软柿子。`,
+      `${lead}回头笑了一下：「会的。总有人记不住疼。」`,
+      `${scaffold.finalLine}`,
+      `${isFirst ? "我" : protagonist}推门出去时，新的电话已经打进来。屏幕上只有一行字：下一场，玩点更大的。`,
+    ],
+  ];
+
+  const pool = stageParagraphs[stage] || stageParagraphs[stageParagraphs.length - 1];
+  let content = "";
+  let index = 0;
+  while (measureTextUnits(content) < batchTarget && index < pool.length) {
+    content += `${content ? "\n\n" : ""}${pool[index]}`;
+    index += 1;
+  }
+
+  return content;
+}
+
+function buildMockScriptChunk(scaffold, iteration, batchTarget) {
+  const stage = Math.min(iteration, 4);
+  const chunks = [
+    [
+      `[场${iteration + 1}] ${scaffold.setting} - 夜`,
+      `${scaffold.lead}背着${scaffold.mask}走进大厅，四周目光瞬间落在他身上。`,
+      `${scaffold.rival}冷笑：这种场合，也轮得到你进来？`,
+      `${scaffold.ally}压低声音：名单被改了，今晚输了就什么都没了。`,
+      `${scaffold.lead}抬眼看向大屏，察觉方案里有一处被人故意改动。`,
+      `【动作】${scaffold.lead}把错版底稿收进掌心，没有当场拆穿。`,
+    ],
+    [
+      `[场${iteration + 1}] 临时考核区 - 连续`,
+      `${scaffold.rival}把责任甩给${scaffold.lead}，要求现场换题重做。`,
+      `${scaffold.lead}看似迟钝，实则在观察每个人的反应。`,
+      `${scaffold.mentor}发来短信：别急，让他抬高。`,
+      `【动作】${scaffold.lead}拿起白板笔，在众目睽睽下写出第一条反证链。`,
+    ],
+    [
+      `[场${iteration + 1}] 白板前 - 夜`,
+      `${scaffold.lead}连拆三处漏洞，台下声音一点点消失。`,
+      `${scaffold.ally}盯着屏幕，意识到${scaffold.lead}一直在装弱。`,
+      `${scaffold.rival}还想狡辩，日志证据却被投上大屏。`,
+      `【动作】${scaffold.lead}转身，开始重构整套方案。`,
+    ],
+    [
+      `[场${iteration + 1}] 主屏前 - 夜`,
+      `${scaffold.lead}把最终页推上大屏，全场安静。`,
+      `${scaffold.mentor}放下一张旧名片，那个被封存的代号重新出现。`,
+      `${scaffold.rival}上前抢稿，扑空。`,
+      `${scaffold.lead}淡声：你输给的，就是你最看不起的人。`,
+    ],
+    [
+      `[场${iteration + 1}] 会场出口 - 夜`,
+      `${scaffold.rival}被带走调查。`,
+      `${scaffold.ally}追上来问：你还要继续装下去吗？`,
+      `${scaffold.lead}摘下工牌，语气平静：不用了。`,
+      `【收尾】${scaffold.finalLine}`,
+    ],
+  ];
+
+  let content = (chunks[stage] || chunks[chunks.length - 1]).join("\n");
+  while (measureTextUnits(content) < batchTarget * 0.82) {
+    content += `\n【补写】${scaffold.lead}继续推进局势，所有矛盾都朝公开摊牌的方向聚拢。`;
+  }
+  return content;
+}
+
+function buildMockStoryboardChunk(scaffold, iteration, batchTarget) {
+  const stage = Math.min(iteration, 4);
+  const shots = [
+    `镜头1｜全景｜${scaffold.setting}外景，人群涌入，${scaffold.lead}背着${scaffold.mask}独自入场｜3s`,
+    `镜头2｜中景｜${scaffold.rival}侧身拦住${scaffold.lead}，神情轻蔑｜4s`,
+    `镜头3｜特写｜${scaffold.lead}扫过被人篡改的关键数据，眼神没动｜3s`,
+    `镜头4｜中景｜${scaffold.ally}靠近低声提醒，局势突然收紧｜4s`,
+    `镜头5｜特写｜白板笔落下，第一条反证链出现｜3s`,
+    `镜头6｜全景｜全场噤声，目光同时转向大屏｜4s`,
+    `镜头7｜特写｜${scaffold.rival}脸色发白，手指收紧｜2s`,
+    `镜头8｜中景｜${scaffold.mentor}把旧名片放到桌上，身份反转爆开｜3s`,
+    `镜头9｜全景｜掌声响起，${scaffold.lead}转身离场｜4s`,
+  ];
+
+  let content = `分镜段落 ${stage + 1}\n${shots.join("\n")}`;
+  while (measureTextUnits(content) < batchTarget * 0.8) {
+    content += `\n补充镜头｜跟拍｜${scaffold.lead}继续推进局势，矛盾朝最终翻盘收束｜3s`;
+  }
+  return content;
+}
+
+function buildMockAutoReply(domain, plan, iteration, currentWords) {
+  const storyState = createStoryState(domain?.storyState);
+  const remaining = Math.max(0, plan.targetWords - currentWords);
+  const batchTarget = Math.max(900, Math.min(plan.batchTarget || 1600, remaining || plan.batchTarget));
+  const scaffold = buildMockScaffold(domain, plan);
+  const stage = Math.min(iteration, 5);
+  const isFinalPass = remaining <= batchTarget * 1.2 || iteration + 1 >= Number(plan.maxIterations || 0);
+
+  let content = "";
+  if (scaffold.modeId === "script") {
+    content = buildMockScriptChunk(scaffold, iteration, batchTarget);
+  } else if (scaffold.modeId === "storyboard") {
+    content = buildMockStoryboardChunk(scaffold, iteration, batchTarget);
+  } else {
+    content = buildMockNarrativeChunk(scaffold, iteration, batchTarget);
+  }
+
+  const phaseMap = ["opening", "pressure", "counterplay", "reveal", "showdown", "ending"];
+  const taskMap = [
+    "完成开场受辱与第一层钩子",
+    "让旧伪装开始反噬并压紧局势",
+    "埋好反击证据，准备公开翻盘",
+    "掀开第一层底牌，撕开对手漏洞",
+    "完成公开打脸和身份反转",
+    "收束后果，补最后一记反转",
+  ];
+  const beatMap = [
+    "被迫站到台前，继续忍住不揭牌",
+    "找到对手动手脚的铁证",
+    "把证据留到最公开的场合炸开",
+    "让更多旁观者意识到主角一直在装弱",
+    "用结果彻底碾压对手并完成追责",
+    "留一个更高阶的后手或邀约作为尾钩",
+  ];
+
+  const nextState = {
+    phase: isFinalPass ? "ending" : phaseMap[stage] || "continuing",
+    objective: storyState.objective || clip(plan.lastUserRequest, 96),
+    brief: clip(stripStateEnvelope(content), 140),
+    currentTask: isFinalPass ? "收束主线并完成当前作品" : taskMap[stage] || "继续推进主线冲突",
+    nextBeat: isFinalPass ? "完成最后一段收尾并留下余劲" : beatMap[stage] || "承接当前冲突继续下一场戏",
+    characters: [
+      { name: scaffold.protagonist, role: "主角", goal: "装弱隐忍后完成翻盘", status: "已掌握主动权", relation: "故事中心" },
+      { name: scaffold.rival, role: "对手", goal: "踩死主角并拿走成果", status: "局势失控", relation: "主要压迫源" },
+      { name: scaffold.ally, role: "盟友", goal: "看清真相并站到主角一侧", status: "由怀疑转向信服", relation: "关键见证人" },
+      { name: scaffold.mentor, role: "暗线支持者", goal: "压住主角，等最佳亮牌时机", status: "适时托底", relation: "幕后支点" },
+    ],
+    worldRules: [
+      `${scaffold.setting}只认最后结果，不认谁先声大`,
+      `装弱是护身壳，也是最容易反噬自己的旧选择`,
+      `公开场合的翻盘必须靠证据和结果一起落地`,
+    ],
+    conflicts: unique([
+      ...(storyState.conflicts || []),
+      `${scaffold.rival}持续当众压迫${scaffold.protagonist}`,
+      `${scaffold.protagonist}的伪装身份开始限制自己出手`,
+      `最终结果必须在公开场合完成逆转`,
+    ]).slice(0, 6),
+    outline: unique([
+      ...(storyState.outline || []),
+      "开场受辱",
+      "规则反噬",
+      "暗手布局",
+      "第一层反打",
+      "公开翻盘",
+      "收尾余钩",
+    ]).slice(0, 8),
+  };
+
+  return `${content}\n${STATE_BLOCK_START}\n${JSON.stringify(nextState, null, 2)}\n${STATE_BLOCK_END}`;
+}
+
+function mockReply(userText) {
+  const domain = currentDomain();
+  const module = currentModule();
+  const mode = getMode(domain?.modeId || "short");
+  const plan = createAutomationState({
+    enabled: false,
+    targetWords: 1200,
+    batchTarget: 900,
+    maxIterations: 1,
+    lastUserRequest: userText,
+  });
+  const preview = stripStateEnvelope(buildMockAutoReply(domain, plan, 0, 0));
+
+  return [
+    "【本地预览模式】",
+    "当前还没连上真实 API，所以这里只生成一小段本地样稿，用来演示写作方向和页面流转。",
+    `当前模块：${module.code} ${module.title}`,
+    `执行模式：${mode.title}`,
+    "样稿预览：",
+    preview,
+    "如果要真的按目标字数自动写满，请先在 API 设置里补上 Key，再直接发送需求。",
+  ].join("\n\n");
+}
+
+function extractTextPart(part) {
+  if (typeof part === "string") return part;
+  if (typeof part?.text === "string") return part.text;
+  if (typeof part?.content === "string") return part.content;
+  if (typeof part?.value === "string") return part.value;
+  return "";
+}
+
+function extractResponseText(data) {
+  if (!data) return "";
+
+  if (typeof data.output_text === "string") {
+    return data.output_text;
+  }
+
+  const choice = data.choices?.[0];
+  if (typeof choice?.message?.content === "string") {
+    return choice.message.content;
+  }
+
+  if (Array.isArray(choice?.message?.content)) {
+    return choice.message.content.map(extractTextPart).join("");
+  }
+
+  if (typeof choice?.delta?.content === "string") {
+    return choice.delta.content;
+  }
+
+  if (Array.isArray(choice?.delta?.content)) {
+    return choice.delta.content.map(extractTextPart).join("");
+  }
+
+  if (Array.isArray(data.output)) {
+    return data.output
+      .flatMap((item) => item?.content || [])
+      .map(extractTextPart)
+      .join("");
+  }
+
+  return "";
+}
+// endregion: prompt-payload
+
+// region: api-stream
+function parseRawPayload(raw) {
+  const text = String(raw || "").trim();
+  if (!text) {
+    return { content: "", usage: null };
+  }
+
+  if (text.startsWith("data:")) {
+    let content = "";
+    let usage = null;
+    const blocks = text.split(/\r?\n\r?\n/);
+
+    for (const block of blocks) {
+      const lines = block
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+
+      for (const line of lines) {
+        if (!line.startsWith("data:")) continue;
+        const payloadText = line.slice(5).trim();
+        if (!payloadText || payloadText === "[DONE]") continue;
+
+        try {
+          const parsed = JSON.parse(payloadText);
+          usage = parsed.usage || usage;
+          content += extractResponseText(parsed);
+        } catch {
+          // ignore non-json stream fragments
+        }
+      }
+    }
+
+    return { content, usage };
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+    return {
+      content: extractResponseText(parsed) || text,
+      usage: parsed.usage || null,
+    };
+  } catch {
+    return { content: text, usage: null };
+  }
+}
+
+async function parseError(response) {
+  const raw = await response.text().catch(() => "");
+  const parsed = parseRawPayload(raw);
+  return parsed.content || `HTTP ${response.status}`;
+}
+
+async function consumeEventStream(response, onDelta) {
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error("接口未返回可读取的流。");
+  }
+
+  const decoder = new TextDecoder("utf-8");
+  let buffer = "";
+  let usage = null;
+
+  const processBlock = (block) => {
+    const lines = block
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    for (const line of lines) {
+      if (!line.startsWith("data:")) continue;
+      const raw = line.slice(5).trim();
+      if (!raw) continue;
+      if (raw === "[DONE]") return "done";
+
+      try {
+        const parsed = JSON.parse(raw);
+        usage = parsed.usage || usage;
+        const chunk = extractResponseText(parsed);
+        if (chunk) onDelta(chunk);
+      } catch {
+        // ignore invalid chunks
+      }
+    }
+
+    return "continue";
+  };
+
+  while (true) {
+    const { value, done } = await reader.read();
+    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+
+    const blocks = buffer.split(/\r?\n\r?\n/);
+    buffer = blocks.pop() || "";
+
+    for (const block of blocks) {
+      if (processBlock(block) === "done") {
+        return { usage };
+      }
+    }
+
+    if (done) break;
+  }
+
+  if (buffer.trim()) {
+    processBlock(buffer);
+  }
+
+  return { usage };
+}
+
+async function streamText(text, onDelta) {
+  const chunks = String(text || "").match(/.{1,18}/gs) || [String(text || "")];
+  for (const chunk of chunks) {
+    onDelta(chunk);
+    await sleep(28);
+  }
+}
+
+function pushMessage(domainId, message) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      domain.messages.push(message);
+      refreshDerivedMemory(domain);
+    },
+    { persist: true, touch: true }
+  );
+}
+
+function createAssistantPlaceholder(domainId) {
+  const messageId = uid("msg");
+
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      domain.messages.push({
+        id: messageId,
+        role: "assistant",
+        content: "",
+        createdAt: new Date().toISOString(),
+        streaming: true,
+        error: false,
+      });
+    },
+    { persist: true, touch: true }
+  );
+
+  return messageId;
+}
+
+function appendAssistantChunk(domainId, messageId, chunk) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      const target = domain.messages.find((item) => item.id === messageId);
+      if (target) {
+        target.content += chunk;
+      }
+    },
+    { persist: false, touch: false }
+  );
+
+  if (state.currentDomainId === domainId) {
+    renderChat();
+    scrollChat();
+  }
+}
+
+function finalizeAssistant(domainId, messageId, extras = {}) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      const target = domain.messages.find((item) => item.id === messageId);
+      if (target) {
+        target.streaming = false;
+        target.error = Boolean(extras.error);
+      }
+
+      if (extras.usage) {
+        domain.lastUsage = extras.usage;
+      }
+
+      refreshDerivedMemory(domain);
+    },
+    { persist: true, touch: true }
+  );
+}
+
+function replaceAssistantMessage(domainId, messageId, content, extras = {}) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      const target = domain.messages.find((item) => item.id === messageId);
+      if (target) {
+        target.content = content;
+        target.streaming = false;
+        target.error = Boolean(extras.error);
+      }
+
+      refreshDerivedMemory(domain);
+    },
+    { persist: true, touch: true }
+  );
+}
+
+function appendAssistantChunk(domainId, messageId, chunk) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      const target = domain.messages.find((item) => item.id === messageId);
+      if (target) {
+        target.content += chunk;
+      }
+    },
+    { persist: false, touch: false }
+  );
+
+  advanceThinkingProgress(domainId, messageId);
+
+  if (state.currentDomainId === domainId) {
+    renderComposer();
+    renderChat();
+    scrollChat();
+  }
+}
+
+function finalizeAssistant(domainId, messageId, extras = {}) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      const target = domain.messages.find((item) => item.id === messageId);
+      if (target) {
+        target.streaming = false;
+        target.error = Boolean(extras.error);
+      }
+
+      if (extras.usage) {
+        domain.lastUsage = extras.usage;
+      }
+
+      refreshDerivedMemory(domain);
+    },
+    { persist: true, touch: true }
+  );
+
+  updateThinkingState(domainId, messageId, {
+    label: extras.error ? "本轮输出失败" : "本轮输出完成",
+    progress: 100,
+    step: extras.error ? "请求异常" : "结果整理完成",
+  });
+  renderComposer();
+  renderChat();
+  clearThinkingState(messageId, { delay: extras.error ? 1800 : 900 });
+}
+
+async function requestCompletion(domainId, messageId) {
+  const domain = getDomain(domainId);
+  const requestBody = payload(domain, state.api.stream);
+  state.abortController = new AbortController();
+
+  const response = await fetch(endpoint(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${state.api.apiKey}`,
+    },
+    body: JSON.stringify(requestBody),
+    signal: state.abortController.signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+
+  if (state.api.stream && contentType.includes("text/event-stream")) {
+    const result = await consumeEventStream(response, (chunk) => {
+      appendAssistantChunk(domainId, messageId, chunk);
+    });
+    return result;
+  }
+
+  const raw = await response.text();
+  const parsed = parseRawPayload(raw);
+  appendAssistantChunk(domainId, messageId, parsed.content);
+  return { usage: parsed.usage };
+}
+
+async function requestCompletion(domainId, messageId, options = {}) {
+  const domain = getDomain(domainId);
+  const requestBody = finalizeRequestBody(
+    payload(domain, state.api.stream, options.extraMessages || [])
+  );
+  state.abortController = new AbortController();
+
+  updateThinkingState(domainId, messageId, {
+    label: options.label || "正在连接模型接口...",
+    progress: Math.max(16, Number(options.progress || 24)),
+    step: options.step || "已发送到模型接口",
+    chunkCount: 0,
+  });
+  renderComposer();
+  renderChat();
+
+  const response = await fetch(endpoint(), {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${state.api.apiKey}`,
+    },
+    body: JSON.stringify(requestBody),
+    signal: state.abortController.signal,
+  });
+
+  if (!response.ok) {
+    throw new Error(await parseError(response));
+  }
+
+  const contentType = response.headers.get("content-type") || "";
+  let rawOutput = "";
+  let visibleLength = 0;
+  updateThinkingState(domainId, messageId, {
+    label: options.responseLabel || "模型已响应，正在准备首段输出...",
+    progress: Math.max(42, Number(options.responseProgress || 42)),
+    step: options.responseStep || "模型已建立响应",
+  });
+  renderComposer();
+  renderChat();
+
+  if (state.api.stream && contentType.includes("text/event-stream")) {
+    const result = await consumeEventStream(response, (chunk) => {
+      rawOutput += chunk;
+      const visible = stripStateEnvelope(rawOutput);
+      const delta = visible.slice(visibleLength);
+      visibleLength = visible.length;
+      if (delta) {
+        appendAssistantChunk(domainId, messageId, delta);
+      }
+    });
+    return { usage: result.usage, state: parseStateEnvelope(rawOutput) };
+  }
+
+  const raw = await response.text();
+  const parsed = parseRawPayload(raw);
+  rawOutput = parsed.content;
+  appendAssistantChunk(domainId, messageId, stripStateEnvelope(parsed.content));
+  return { usage: parsed.usage, state: parseStateEnvelope(parsed.content) };
+}
+// endregion: api-stream
+
+// region: render
+function renderViews() {
+  const activeTab = state.currentTab || "chat";
+  el.chatView?.classList.toggle("hidden", activeTab !== "chat");
+  el.promptView?.classList.toggle("hidden", activeTab !== "prompt");
+  el.contextView?.classList.toggle("hidden", activeTab !== "context");
+  el.tabChat?.classList.toggle("is-active", activeTab === "chat");
+  el.tabPrompt?.classList.toggle("is-active", activeTab === "prompt");
+  el.tabContext?.classList.toggle("is-active", activeTab === "context");
+}
+
+function renderComposer() {
+  const domain = currentDomain();
+  const mode = getMode(domain?.modeId || "short");
+  const provider =
+    PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+  if (el.sendBtn) {
+    el.sendBtn.disabled = state.sending;
+    el.sendBtn.textContent = state.sending ? "执行中…" : "发送";
+  }
+
+  if (el.composerHint) {
+    el.composerHint.textContent = apiReady()
+      ? `当前已接入 ${provider.label}，发送后会按 ${mode.title} 直接流式输出。`
+      : state.api.baseUrl.trim() && state.api.model.trim()
+        ? `当前已带入 ${provider.label} 的默认配置，只差填写 API Key。`
+        : "当前还没有接入真实接口，发送消息时会走本地模拟回复。";
+  }
+}
+
+function renderComposer() {
+  const domain = currentDomain();
+  const mode = getMode(domain?.modeId || "short");
+  const provider =
+    PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+
+  if (el.sendBtn) {
+    el.sendBtn.disabled = state.sending;
+    el.sendBtn.textContent = state.sending ? "思考中..." : "发送";
+  }
+
+  if (el.composerHint) {
+    el.composerHint.textContent = apiReady()
+      ? `当前已接入 ${provider.label}，发送后会按 ${mode.title} 直接流式输出。Enter 发送，Shift+Enter 换行。`
+      : state.api.baseUrl.trim() && state.api.model.trim()
+        ? `当前已带入 ${provider.label} 的默认配置，只差填写 API Key。Enter 发送，Shift+Enter 换行。`
+        : "当前还没有接入真实接口，发送消息时会走本地模拟回复。Enter 发送，Shift+Enter 换行。";
+  }
+
+  if (el.thinkingPanel) {
+    const visible =
+      Boolean(state.thinking.visible) && state.thinking.domainId === state.currentDomainId;
+    el.thinkingPanel.hidden = !visible;
+    el.thinkingPanel.classList.toggle("is-visible", visible);
+
+    if (visible) {
+      const progress = Math.max(0, Math.min(100, Number(state.thinking.progress || 0)));
+      if (el.thinkingLabel) {
+        el.thinkingLabel.textContent = state.thinking.label || "正在整理上下文和记忆...";
+      }
+      if (el.thinkingPercent) {
+        el.thinkingPercent.textContent = `${progress}%`;
+      }
+      if (el.thinkingBar) {
+        el.thinkingBar.setAttribute("aria-valuenow", String(progress));
+      }
+      if (el.thinkingBarFill) {
+        el.thinkingBarFill.style.width = `${progress}%`;
+      }
+      if (el.thinkingSteps) {
+        el.thinkingSteps.innerHTML = (state.thinking.steps || [])
+          .slice(-4)
+          .map(
+            (step, index, steps) =>
+              `<span class="thinking-step${index === steps.length - 1 ? " is-active" : ""}">${esc(step)}</span>`
+          )
+          .join("");
+      }
+    }
+  }
+
+  resizeComposerInput();
+}
+
+function renderComposer() {
+  const domain = currentDomain();
+  const mode = getMode(domain?.modeId || "short");
+  const provider =
+    PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+  const automation = createAutomationState(domain?.automation);
+  const autoProgress =
+    automation.targetWords > 0
+      ? `${automation.currentWords}/${automation.targetWords} 字`
+      : "未设目标";
+
+  if (el.sendBtn) {
+    el.sendBtn.disabled = state.sending;
+    el.sendBtn.textContent =
+      state.sending && automation.enabled ? "自动写作中..." : state.sending ? "思考中..." : "发送";
+  }
+
+  if (el.composerHint) {
+    el.composerHint.textContent = automation.enabled && automation.status !== "idle"
+      ? `自动写作状态：${automation.status}；进度 ${autoProgress}；已执行 ${automation.iterations}/${automation.maxIterations} 轮。${automation.currentPhase || "后台正在根据状态机续写。"}`
+      : apiReady()
+        ? `当前已接入 ${provider.label}，后台会按 ${mode.title} 自动执行去AI味与逻辑一致性校验。Enter 发送，Shift+Enter 换行。`
+        : state.api.baseUrl.trim() && state.api.model.trim()
+          ? `当前已带入 ${provider.label} 的默认配置，只差填写 API Key；后台仍会自动执行去AI味与一致性校验。Enter 发送，Shift+Enter 换行。`
+          : "当前还没有接入真实接口，发送消息时会走本地模拟回复；后台仍会按去AI味和逻辑一致性协议给出结果。Enter 发送，Shift+Enter 换行。";
+  }
+
+  if (el.thinkingPanel) {
+    const visible =
+      Boolean(state.thinking.visible) && state.thinking.domainId === state.currentDomainId;
+    el.thinkingPanel.hidden = !visible;
+    el.thinkingPanel.classList.toggle("is-visible", visible);
+
+    if (visible) {
+      const progress = Math.max(0, Math.min(100, Number(state.thinking.progress || 0)));
+      if (el.thinkingLabel) {
+        el.thinkingLabel.textContent = state.thinking.label || "正在整理上下文和记忆...";
+      }
+      if (el.thinkingPercent) {
+        el.thinkingPercent.textContent = `${progress}%`;
+      }
+      if (el.thinkingBar) {
+        el.thinkingBar.setAttribute("aria-valuenow", String(progress));
+      }
+      if (el.thinkingBarFill) {
+        el.thinkingBarFill.style.width = `${progress}%`;
+      }
+      if (el.thinkingSteps) {
+        el.thinkingSteps.innerHTML = (state.thinking.steps || [])
+          .slice(-4)
+          .map(
+            (step, index, steps) =>
+              `<span class="thinking-step${index === steps.length - 1 ? " is-active" : ""}">${esc(step)}</span>`
+          )
+          .join("");
+      }
+    }
+  }
+
+  resizeComposerInput();
+}
+
+function renderSidebar() {
+  const domain = currentDomain();
+  const module = currentModule();
+  const baseline = currentBaseline();
+
+  if (el.sidebarSnapshot) {
+    const rows = [
+      `当前域：${domain?.title || "未建立"}`,
+      `基准：${baseline.title}`,
+      `模块：${module.code} ${module.title}`,
+      `模式：${getMode(domain?.modeId || "short").title}`,
+      `消息数：${domain?.messages.length || 0}`,
+      `压缩次数：${domain?.compressionCount || 0}`,
+    ];
+    el.sidebarSnapshot.innerHTML = rows
+      .map((item) => `<div class="stack-item">${esc(item)}</div>`)
+      .join("");
+  }
+
+  if (el.baselineNav) {
+    el.baselineNav.innerHTML = baselines
+      .map(
+        (item) => `
+          <button
+            class="nav-button${item.id === state.currentBaselineId ? " is-active" : ""}"
+            type="button"
+            data-baseline-id="${item.id}"
+          >
+            <strong>${esc(item.title)}</strong>
+            <span>${esc(item.subtitle)}</span>
+          </button>
+        `
+      )
+      .join("");
+  }
+
+  if (el.moduleRail) {
+    el.moduleRail.innerHTML = modules
+      .map(
+        (item) => `
+          <button
+            class="module-button${item.id === state.currentModuleId ? " is-active" : ""}"
+            type="button"
+            data-module-id="${item.id}"
+          >
+            <div class="module-button-head">
+              <span class="module-code">${item.code}</span>
+              <span class="tag-chip">${esc(item.cluster)}</span>
+            </div>
+            <strong>${esc(item.title)}</strong>
+            <span>${esc(item.summary)}</span>
+          </button>
+        `
+      )
+      .join("");
+  }
+
+  if (el.quickModeList) {
+    const activeModeId = domain?.modeId || "short";
+    el.quickModeList.innerHTML = modes
+      .map(
+        (item) => `
+          <button
+            class="mode-button${item.id === activeModeId ? " is-active" : ""}"
+            type="button"
+            data-mode-id="${item.id}"
+          >
+            <strong>${esc(item.title)}</strong>
+            <span>${esc(item.summary)}</span>
+          </button>
+        `
+      )
+      .join("");
+  }
+}
+
+function renderTopbar() {
+  const domain = currentDomain();
+  const module = currentModule();
+  const baseline = currentBaseline();
+  const mode = getMode(domain?.modeId || "short");
+  const provider =
+    PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+  const automation = createAutomationState(domain?.automation);
+  const autoPercent =
+    automation.targetWords > 0
+      ? Math.min(100, Math.round((automation.currentWords / automation.targetWords) * 100))
+      : 0;
+
+  if (el.domainTitle) {
+    el.domainTitle.textContent = domain?.title || "尚未建立对话域";
+  }
+
+  if (el.domainSubtitle) {
+    el.domainSubtitle.textContent = domain
+      ? automation.enabled && automation.status !== "idle"
+        ? `当前正在自动执行长文流水线：${automation.currentWords || 0}/${automation.targetWords || 0} 字，${automation.currentPhase || "后台会继续根据状态机自动续写。"}`
+        : `现在只需要继续输入你的想法、修改要求或补充限制。模式选择、提示词、状态机和上下文压缩都在后台自动运行。`
+      : "建立对话域后，直接输入需求即可。后台会自动接管提示词、记忆、压缩和输出逻辑。";
+  }
+
+  if (el.domainBadge) {
+    el.domainBadge.textContent = domain ? mode.title : "未初始化";
+  }
+
+  if (el.apiStatusBadge) {
+    el.apiStatusBadge.textContent = apiReady()
+      ? `${provider.label} 已连接`
+      : state.api.baseUrl.trim() && state.api.model.trim()
+        ? `${provider.label} 待填 Key`
+        : "本地模拟";
+  }
+
+  if (el.streamStatusBadge) {
+    el.streamStatusBadge.textContent = state.api.stream ? "流式输出" : "标准输出";
+  }
+
+  if (el.memoryBadge) {
+    el.memoryBadge.textContent = domain
+      ? automation.enabled && automation.status !== "idle"
+        ? `自动 ${autoPercent}% / 记忆 ${domain?.compressionCount || 0} 次压缩`
+        : `记忆 ${domain?.compressionCount || 0} 次压缩`
+      : "记忆未启用";
+  }
+}
+
+function renderDomainList() {
+  if (!el.domainList) return;
+
+  el.domainList.innerHTML = state.domains
+    .map((domain) => {
+      const mode = getMode(domain.modeId || "short");
+      const automation = createAutomationState(domain.automation);
+      const autoPercent =
+        automation.targetWords > 0
+          ? Math.min(100, Math.round((automation.currentWords / automation.targetWords) * 100))
+          : 0;
+      return `
+        <article
+          class="domain-card${domain.id === state.currentDomainId ? " is-active" : ""}"
+          data-domain-id="${domain.id}"
+        >
+          <div class="domain-card-head">
+            <strong>${esc(domain.title)}</strong>
+            <button
+              class="ghost-button small"
+              type="button"
+              data-remove-domain="${domain.id}"
+            >
+              删
+            </button>
+          </div>
+          <span>${esc(`模式：${mode.title}`)}</span>
+          <div class="domain-card-footer">
+            <span class="tag-chip">${domain.messages.length} 条</span>
+            <span class="tag-chip">${domain.compressionCount || 0} 压缩</span>
+            ${
+              automation.enabled && automation.status !== "idle"
+                ? `<span class="tag-chip">自动 ${autoPercent}%</span>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderChat() {
+  const domain = currentDomain();
+  if (!el.chatMessages) return;
+
+  if (!domain?.messages?.length) {
+    el.chatMessages.innerHTML = `
+      <div class="chat-empty">
+        <div>
+          <strong>还没有对话内容</strong>
+          <p>先建立一个对话域，或者在下方输入任务，让总控后台开始执行。</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  el.chatMessages.innerHTML = domain.messages
+    .map((message) => {
+      const roleLabel =
+        message.role === "user" ? "用户" : message.error ? "错误" : "系统";
+      const cursor = message.streaming
+        ? '<span class="stream-cursor" aria-hidden="true"></span>'
+        : "";
+      return `
+        <div class="message-row${message.role === "user" ? " is-user" : ""}">
+          <article class="message-card${message.streaming ? " is-streaming" : ""}">
+            <div class="message-meta">
+              <span>${roleLabel}</span>
+              <span>${time(message.createdAt)}</span>
+              ${message.error ? '<span class="status-chip">异常</span>' : ""}
+            </div>
+            <div class="message-content">${esc(message.content)}${cursor}</div>
+          </article>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderChat() {
+  const domain = currentDomain();
+  if (!el.chatMessages) return;
+
+  if (!domain?.messages?.length) {
+    el.chatMessages.innerHTML = `
+      <div class="chat-empty">
+        <div>
+          <strong>还没有对话内容</strong>
+          <p>先建立一个对话域，或者在下方输入任务，让总控后台开始执行。</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  el.chatMessages.innerHTML = domain.messages
+    .map((message) => {
+      const roleLabel = message.role === "user" ? "用户" : message.error ? "异常" : "系统";
+      const thinking =
+        message.streaming &&
+        state.thinking.visible &&
+        state.thinking.domainId === state.currentDomainId &&
+        state.thinking.messageId === message.id
+          ? state.thinking
+          : null;
+      const cursor =
+        message.streaming && message.content
+          ? '<span class="stream-cursor" aria-hidden="true"></span>'
+          : "";
+      const thinkingBlock = thinking
+        ? `
+            <div class="message-thinking">
+              <div class="message-thinking-head">
+                <strong>${esc(thinking.label || "正在思考中...")}</strong>
+                <span>${Math.round(Number(thinking.progress || 0))}%</span>
+              </div>
+              <div class="message-thinking-steps">
+                ${(thinking.steps || [])
+                  .slice(-3)
+                  .map(
+                    (step, index, steps) =>
+                      `<span class="thinking-step${index === steps.length - 1 ? " is-active" : ""}">${esc(step)}</span>`
+                  )
+                  .join("")}
+              </div>
+            </div>
+          `
+        : "";
+      const contentBlock =
+        message.content || cursor
+          ? `<div class="message-content">${esc(message.content)}${cursor}</div>`
+          : "";
+
+      return `
+        <div class="message-row${message.role === "user" ? " is-user" : ""}">
+          <article class="message-card${message.streaming ? " is-streaming" : ""}">
+            <div class="message-meta">
+              <span>${roleLabel}</span>
+              <span>${time(message.createdAt)}</span>
+              ${message.error ? '<span class="status-chip">异常</span>' : ""}
+            </div>
+            ${thinkingBlock}
+            ${contentBlock}
+          </article>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderPromptContext() {
+  const domain = currentDomain();
+  if (!domain) return;
+
+  if (el.promptPreview) {
+    el.promptPreview.textContent = systemPrompt(domain);
+  }
+
+  if (el.payloadPreview) {
+    el.payloadPreview.textContent = JSON.stringify(payload(domain, state.api.stream), null, 2);
+  }
+
+  if (el.summaryInput && document.activeElement !== el.summaryInput) {
+    el.summaryInput.value = domain.summary || "";
+  }
+
+  if (el.anchorsInput && document.activeElement !== el.anchorsInput) {
+    el.anchorsInput.value = (domain.pinnedFacts || []).join("\n");
+  }
+
+  if (el.openLoopPreview) {
+    el.openLoopPreview.innerHTML =
+      domain.openLoops?.length
+        ? domain.openLoops
+            .map((item) => `<div class="stack-item">${esc(item)}</div>`)
+            .join("")
+        : '<div class="stack-item">当前没有待继续事项。</div>';
+  }
+
+  if (el.contextWindowPreview) {
+    const keep = Number(state.api.windowSize) || API_DEFAULT.windowSize;
+    el.contextWindowPreview.innerHTML = (domain.messages || [])
+      .slice(-keep)
+      .map(
+        (item) => `
+          <div class="stack-item">
+            <strong>${item.role === "assistant" ? "系统" : "用户"}</strong><br />
+            ${esc(clip(item.content, 160))}
+          </div>
+        `
+      )
+      .join("");
+  }
+
+  if (el.compressionInfo) {
+    el.compressionInfo.innerHTML = `
+      <div class="stack-item">
+        当前窗口：${Number(state.api.windowSize) || API_DEFAULT.windowSize} 条消息<br />
+        自动压缩阈值：${
+          Number(state.api.compressionThreshold) || API_DEFAULT.compressionThreshold
+        } 条<br />
+        最近压缩：${domain.lastCompressionAt ? time(domain.lastCompressionAt) : "尚未压缩"}
+      </div>
+    `;
+  }
+
+  if (el.memoryOverview) {
+    const automation = createAutomationState(domain.automation);
+    const storyState = createStoryState(domain.storyState);
+    const memoryRows = [
+      `摘要长度：${(domain.summary || "").length} 字`,
+      `固定锚点：${domain.pinnedFacts?.length || 0} 条`,
+      `开放回路：${domain.openLoops?.length || 0} 条`,
+      `记忆日志：${domain.memoryLog?.length || 0} 条`,
+      `自动写作：${automation.status} / ${automation.currentWords || 0}${automation.targetWords ? ` / ${automation.targetWords}` : ""} 字`,
+      `角色卡：${storyState.characters.length} 人 / 世界规则：${storyState.worldRules.length} 条 / 核心冲突：${storyState.conflicts.length} 条`,
+      `接口状态：${apiReady() ? "真实 API" : "本地模拟"}`,
+    ];
+    el.memoryOverview.innerHTML = memoryRows
+      .map((item) => `<div class="stack-item">${esc(item)}</div>`)
+      .join("");
+  }
+
+  if (el.apiResult) {
+    el.apiResult.innerHTML = `<div class="stack-item">${esc(state.apiCheckText)}</div>`;
+  }
+}
+
+function renderActiveModule() {
+  const module = currentModule();
+  const baseline = currentBaseline();
+
+  if (el.activeModuleTitle) {
+    el.activeModuleTitle.textContent = `${module.code} ${module.title}`;
+  }
+
+  if (el.activeModuleCopy) {
+    el.activeModuleCopy.textContent = `${module.summary} 当前母版参考 ${baseline.title}。`;
+  }
+
+  if (el.activeModuleMethods) {
+    el.activeModuleMethods.innerHTML = module.methods
+      .map(
+        (method) => `
+          <div class="api-method">
+            <strong>${esc(method)}</strong>
+            <span>${esc(module.role)}</span>
+          </div>
+        `
+      )
+      .join("");
+  }
+
+  if (el.referenceTitle) {
+    el.referenceTitle.textContent = baseline.title;
+  }
+
+  if (el.referenceSummary) {
+    el.referenceSummary.textContent = baseline.summary;
+  }
+
+  if (el.referenceTags) {
+    el.referenceTags.innerHTML = baseline.features
+      .map((item) => `<span class="tag-chip">${esc(item)}</span>`)
+      .join("");
+  }
+}
+
+function renderDomainList() {
+  if (!el.domainList) return;
+
+  el.domainList.innerHTML = state.domains
+    .map((domain) => {
+      const mode = getMode(domain.modeId || "short");
+      const latestMessage = [...(domain.messages || [])].reverse().find((item) => item.content);
+      const preview = latestMessage ? clip(latestMessage.content, 42) : "暂无内容，点击继续输入";
+
+      return `
+        <article
+          class="domain-card${domain.id === state.currentDomainId ? " is-active" : ""}"
+          data-domain-id="${domain.id}"
+        >
+          <div class="domain-card-head">
+            <strong>${esc(domain.title)}</strong>
+            <button
+              class="ghost-button small"
+              type="button"
+              data-remove-domain="${domain.id}"
+            >
+              删
+            </button>
+          </div>
+          <span>${esc(`模式：${mode.title}`)}</span>
+          <span class="domain-preview">${esc(preview)}</span>
+          <div class="domain-card-footer">
+            <span class="tag-chip">${domain.messages.length} 条</span>
+            <span class="tag-chip">${domain.compressionCount || 0} 压缩</span>
+            <span class="tag-chip">${time(domain.updatedAt)}</span>
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderSessionRecordList() {
+  if (!el.sessionRecordList) return;
+  const domain = currentDomain();
+
+  if (!domain?.messages?.length) {
+    el.sessionRecordList.innerHTML =
+      '<div class="stack-item">当前还没有会话记录，发送第一条消息后会显示在这里。</div>';
+    return;
+  }
+
+  el.sessionRecordList.innerHTML = domain.messages
+    .slice(-8)
+    .reverse()
+    .map((message) => {
+      const roleLabel = message.role === "user" ? "用户" : message.error ? "异常" : "系统";
+      return `
+        <article class="record-card">
+          <div class="record-meta">
+            <span class="record-role${message.role === "user" ? " is-user" : ""}">${roleLabel}</span>
+            <span>${time(message.createdAt)}</span>
+          </div>
+          <div class="record-copy">${esc(clip(message.content || "正在等待内容...", 78))}</div>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function renderAll() {
+  renderViews();
+  renderComposer();
+  renderSidebar();
+  renderTopbar();
+  renderDomainList();
+  renderSessionRecordList();
+  renderChat();
+  renderPromptContext();
+  renderActiveModule();
+}
+// endregion: render
+
+// region: actions
+function renderProviderPresets() {
+  if (!el.providerPresetList) return;
+
+  el.providerPresetList.innerHTML = Object.values(PROVIDER_PRESETS)
+    .map(
+      (preset) => `
+        <button
+          class="provider-button${preset.id === state.api.provider ? " is-active" : ""}"
+          type="button"
+          data-provider-id="${preset.id}"
+        >
+          <strong>${esc(preset.label)}</strong>
+          <span>${esc(preset.badge)}</span>
+        </button>
+      `
+    )
+    .join("");
+}
+
+function renderApiPresetSummary() {
+  const preset =
+    PROVIDER_PRESETS[state.api.provider] || PROVIDER_PRESETS[DEFAULT_PROVIDER_ID];
+  const missingOnlyKey =
+    Boolean(state.api.baseUrl.trim() && state.api.model.trim()) && !state.api.apiKey.trim();
+
+  if (el.apiProvider) el.apiProvider.value = preset.id;
+  if (el.apiPresetTitle) el.apiPresetTitle.textContent = preset.label;
+  if (el.apiPresetHint) {
+    el.apiPresetHint.textContent =
+      preset.id === "custom"
+        ? "自定义模式需要你在高级设置里填写接口地址和模型。"
+        : missingOnlyKey
+          ? `当前已经带入 ${preset.label} 的地址和模型，只差填写 API Key。`
+          : preset.hint;
+  }
+  if (el.apiPresetModelText) {
+    el.apiPresetModelText.textContent = state.api.model || "未设置";
+  }
+  if (el.apiAdvancedBox) {
+    el.apiAdvancedBox.open =
+      preset.id === "custom" || !state.api.baseUrl.trim() || !state.api.model.trim();
+  }
+}
+
+function fillApiInputs() {
+  if (el.apiBaseUrl) el.apiBaseUrl.value = state.api.baseUrl || "";
+  if (el.apiModel) el.apiModel.value = state.api.model || "";
+  if (el.apiKey) el.apiKey.value = state.api.apiKey || "";
+  if (el.apiTemperature) el.apiTemperature.value = String(state.api.temperature);
+  if (el.contextWindowSize) el.contextWindowSize.value = String(state.api.windowSize);
+  if (el.compressionThreshold) {
+    el.compressionThreshold.value = String(state.api.compressionThreshold);
+  }
+  if (el.streamToggle) el.streamToggle.checked = Boolean(state.api.stream);
+  renderProviderPresets();
+  renderApiPresetSummary();
+}
+
+function applyProviderPreset(providerId, { silent = false } = {}) {
+  if (!PROVIDER_PRESETS[providerId]) return;
+
+  const preset = PROVIDER_PRESETS[providerId];
+  state.api = hydrateApiConfig({
+    ...state.api,
+    provider: providerId,
+    baseUrl:
+      providerId === "custom"
+        ? String(state.api.baseUrl || "").trim()
+        : preset.baseUrl,
+    model:
+      providerId === "custom"
+        ? String(state.api.model || "").trim()
+        : preset.model,
+  });
+  saveApi();
+  fillApiInputs();
+  renderAll();
+
+  if (!silent) {
+    toast(`已切换到 ${preset.label} 预设。`);
+  }
+}
+
+function saveApiFromInputs({ toastResult = true } = {}) {
+  state.api = hydrateApiConfig({
+    ...state.api,
+    provider: String(el.apiProvider?.value || state.api.provider || DEFAULT_PROVIDER_ID),
+    baseUrl: String(el.apiBaseUrl?.value || "").trim(),
+    model: String(el.apiModel?.value || "").trim(),
+    apiKey: String(el.apiKey?.value || "").trim(),
+    temperature: Number(el.apiTemperature?.value || API_DEFAULT.temperature),
+    windowSize: Number(el.contextWindowSize?.value || API_DEFAULT.windowSize),
+    compressionThreshold: Number(
+      el.compressionThreshold?.value || API_DEFAULT.compressionThreshold
+    ),
+    stream: Boolean(el.streamToggle?.checked),
+  });
+  saveApi();
+  fillApiInputs();
+  renderAll();
+  if (toastResult) {
+    toast("接口配置已保存。");
+  }
+}
+
+async function fallbackCopy(text) {
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "readonly");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+}
+
+async function copy(text, successText) {
+  try {
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+    } else {
+      await fallbackCopy(text);
+    }
+    toast(successText);
+  } catch {
+    toast("复制失败。", "error");
+  }
+}
+
+function buildReport(domain) {
+  const module = getModule(domain.moduleId);
+  const mode = getMode(domain.modeId || "short");
+  const lines = [
+    `# 创作数据报告`,
+    "",
+    `- 对话域：${domain.title}`,
+    `- 模块：${module.code} ${module.title}`,
+    `- 模式：${mode.title}`,
+    `- 消息数：${domain.messages.length}`,
+    `- 压缩次数：${domain.compressionCount || 0}`,
+    `- 最近压缩：${domain.lastCompressionAt || "尚未压缩"}`,
+    "",
+    `## 长期记忆摘要`,
+    domain.summary || "暂无摘要",
+    "",
+    `## 固定锚点`,
+    ...(domain.pinnedFacts?.length ? domain.pinnedFacts.map((item) => `- ${item}`) : ["- 暂无锚点"]),
+    "",
+    `## 开放回路`,
+    ...(domain.openLoops?.length ? domain.openLoops.map((item) => `- ${item}`) : ["- 暂无待继续事项"]),
+    "",
+    `## 最近对话`,
+    ...(domain.messages || []).map(
+      (message) =>
+        `### ${message.role === "assistant" ? "系统" : "用户"} ${time(message.createdAt)}\n${message.content}`
+    ),
+  ];
+  return lines.join("\n");
+}
+
+function exportDomain() {
+  const domain = currentDomain();
+  if (!domain) return;
+
+  const blob = new Blob([JSON.stringify(domain, null, 2)], {
+    type: "application/json;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${domain.title.replace(/[\\/:*?"<>|]/g, "_")}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+  toast("会话已导出。");
+}
+
+function exportReport() {
+  const domain = currentDomain();
+  if (!domain) return;
+
+  const blob = new Blob([buildReport(domain)], {
+    type: "text/markdown;charset=utf-8",
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${domain.title.replace(/[\\/:*?"<>|]/g, "_")}-创作数据报告.md`;
+  link.click();
+  URL.revokeObjectURL(url);
+  toast("创作数据报告已导出。");
+}
+
+function syncViewportInset() {
+  const viewport = window.visualViewport;
+  const offset = viewport
+    ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop)
+    : 0;
+  document.documentElement.style.setProperty("--viewport-offset", `${offset}px`);
+}
+
+function setSidebarDragOffset(offset = 0) {
+  el.shell?.style.setProperty("--sidebar-drag-offset", `${Math.max(0, Math.round(offset))}px`);
+}
+
+function resetSidebarDrag() {
+  sidebarDrag.active = false;
+  sidebarDrag.startY = 0;
+  sidebarDrag.currentY = 0;
+  setSidebarDragOffset(0);
+  if (el.sidebar) {
+    el.sidebar.style.transition = "";
+  }
+}
+
+function handleSidebarTouchStart(event) {
+  if (!isMobileViewport() || !el.shell?.classList.contains("is-sidebar-open")) return;
+  const target = event.target;
+  if (!(target instanceof Element)) return;
+  if (!target.closest(".mobile-sheet-handle, .sidebar-head")) return;
+  const touch = event.touches?.[0];
+  if (!touch) return;
+  sidebarDrag.active = true;
+  sidebarDrag.startY = touch.clientY;
+  sidebarDrag.currentY = touch.clientY;
+  if (el.sidebar) {
+    el.sidebar.style.transition = "none";
+  }
+}
+
+function handleSidebarTouchMove(event) {
+  if (!sidebarDrag.active) return;
+  const touch = event.touches?.[0];
+  if (!touch) return;
+  const delta = Math.max(0, touch.clientY - sidebarDrag.startY);
+  sidebarDrag.currentY = touch.clientY;
+  setSidebarDragOffset(delta);
+  if (delta > 0) {
+    event.preventDefault();
+  }
+}
+
+function handleSidebarTouchEnd() {
+  if (!sidebarDrag.active) return;
+  const delta = Math.max(0, sidebarDrag.currentY - sidebarDrag.startY);
+  resetSidebarDrag();
+  if (delta > 110) {
+    toggleSidebar(false);
+  }
+}
+
+function closeSidebarDrawer() {
+  resetSidebarDrag();
+  el.shell?.classList.remove("is-sidebar-open");
+  if (!document.querySelector(".modal-shell:not(.hidden)")) {
+    document.body.style.overflow = "";
+  }
+}
+
+function syncShellLayout() {
+  if (isMobileViewport()) {
+    el.shell?.classList.remove("is-sidebar-collapsed");
+  } else {
+    closeSidebarDrawer();
+  }
+  resetSidebarDrag();
+  syncViewportInset();
+  resizeComposerInput();
+}
+
+function toggleSidebar(forceOpen) {
+  if (isMobileViewport()) {
+    resetSidebarDrag();
+    const nextOpen =
+      typeof forceOpen === "boolean"
+        ? forceOpen
+        : !el.shell?.classList.contains("is-sidebar-open");
+    el.shell?.classList.toggle("is-sidebar-open", nextOpen);
+    document.body.style.overflow = nextOpen ? "hidden" : "";
+    return;
+  }
+
+  el.shell?.classList.remove("is-sidebar-open");
+  document.body.style.overflow = "";
+  el.shell?.classList.toggle("is-sidebar-collapsed");
+}
+
+function openStatePanel() {
+  closeSidebarDrawer();
+  el.statePanelModal?.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeStatePanel() {
+  el.statePanelModal?.classList.add("hidden");
+  if (!el.apiSettingsModal?.classList.contains("hidden")) return;
+  document.body.style.overflow = "";
+}
+
+function openApiSettings() {
+  closeSidebarDrawer();
+  fillApiInputs();
+  renderPromptContext();
+  el.apiSettingsModal?.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeApiSettings() {
+  el.apiSettingsModal?.classList.add("hidden");
+  if (!el.statePanelModal?.classList.contains("hidden")) return;
+  document.body.style.overflow = "";
+}
+
+function updateStoryEngine(domainId, { automation = null, storyState = null } = {}) {
+  mutateDomainById(
+    domainId,
+    (domain) => {
+      ensureDomainAutomation(domain);
+      if (automation) {
+        domain.automation = createAutomationState({
+          ...domain.automation,
+          ...automation,
+        });
+      }
+      if (storyState) {
+        mergeStoryState(domain, storyState);
+      }
+      refreshDerivedMemory(domain);
+    },
+    { persist: true, touch: true }
+  );
+}
+
+async function runAutomatedDraft(domainId, messageId, input, { mockOnly = false } = {}) {
+  const domain = getDomain(domainId);
+  if (!domain) {
+    return { usage: null, targetWords: 0, finalWords: 0, completed: false };
+  }
+
+  const plan = buildAutoPlan(domain, input);
+  mutateDomainById(
+    domainId,
+    (draft) => {
+      seedStoryState(draft, input, plan);
+      refreshDerivedMemory(draft);
+    },
+    { persist: true, touch: true }
+  );
+
+  let latestUsage = null;
+  let completed = false;
+
+  for (let iteration = 0; iteration < plan.maxIterations; iteration += 1) {
+    const liveDomain = getDomain(domainId);
+    if (!liveDomain) break;
+
+    const currentWords = measureAssistantMessage(domainId, messageId);
+    const remaining = Math.max(0, plan.targetWords - currentWords);
+
+    updateDomainAutomation(domainId, {
+      ...plan,
+      status: "running",
+      currentWords,
+      iterations: iteration,
+      currentPhase: remaining <= plan.batchTarget ? "进入收束阶段" : "自动续写中",
+      lastError: "",
+    });
+
+    updateThinkingState(domainId, messageId, {
+      label: `自动写作第 ${iteration + 1} 轮进行中`,
+      progress: Math.max(10, Math.min(96, Math.round((currentWords / plan.targetWords) * 100))),
+      steps: [
+        `目标 ${plan.targetWords} 字`,
+        `当前 ${currentWords} 字`,
+        `第 ${iteration + 1}/${plan.maxIterations} 轮`,
+      ],
+      chunkCount: 0,
+    });
+    renderComposer();
+    renderChat();
+
+    let result;
+    if (!mockOnly && apiReady()) {
+      result = await requestCompletion(domainId, messageId, {
+        extraMessages: buildContinuationMessages(liveDomain, plan, iteration, currentWords),
+        label: `自动写作第 ${iteration + 1} 轮：准备上下文`,
+        step: "已打包状态机与角色卡",
+        responseLabel: `自动写作第 ${iteration + 1} 轮：模型开始续写`,
+        responseStep: "正在流式写入新增正文",
+        progress: Math.max(18, Math.min(40, 18 + iteration * 3)),
+        responseProgress: Math.max(42, Math.min(68, 42 + iteration * 2)),
+      });
+    } else {
+      const rawMock = buildMockAutoReply(liveDomain, plan, iteration, currentWords);
+      let rawBuffer = "";
+      let visibleLength = 0;
+      await streamText(rawMock, (chunk) => {
+        rawBuffer += chunk;
+        const visible = stripStateEnvelope(rawBuffer);
+        const delta = visible.slice(visibleLength);
+        visibleLength = visible.length;
+        if (delta) {
+          appendAssistantChunk(domainId, messageId, delta);
+        }
+      });
+      result = { usage: null, state: parseStateEnvelope(rawMock) };
+    }
+
+    latestUsage = result?.usage || latestUsage;
+    if (result?.state) {
+      updateStoryEngine(domainId, {
+        storyState: result.state,
+        automation: {
+          currentPhase:
+            result.state.currentTask || result.state.phase || `第 ${iteration + 1} 轮完成`,
+        },
+      });
+    }
+
+    const nextWords = measureAssistantMessage(domainId, messageId);
+    const statePhase = String(result?.state?.phase || "");
+    const shouldFinish =
+      nextWords >= plan.targetWords * 0.96 ||
+      iteration + 1 >= plan.maxIterations ||
+      (/(ending|complete|finish|收束|完结)/i.test(statePhase) &&
+        nextWords >= plan.targetWords * 0.82);
+
+    updateDomainAutomation(domainId, {
+      ...plan,
+      currentWords: nextWords,
+      iterations: iteration + 1,
+      status: shouldFinish ? "done" : "running",
+      currentPhase: shouldFinish ? "自动写作完成" : "等待下一轮续写",
+      completedAt: shouldFinish ? new Date().toISOString() : "",
+    });
+
+    renderAll();
+    scrollChat();
+
+    if (shouldFinish) {
+      completed = true;
+      break;
+    }
+  }
+
+  const finalWords = measureAssistantMessage(domainId, messageId);
+  if (!completed) {
+    updateDomainAutomation(domainId, {
+      ...plan,
+      currentWords: finalWords,
+      status: finalWords > 0 ? "partial" : "error",
+      currentPhase: finalWords > 0 ? "达到安全轮数上限，等待下一次继续" : "自动写作未完成",
+      completedAt: new Date().toISOString(),
+    });
+  }
+
+  return {
+    usage: latestUsage,
+    targetWords: plan.targetWords,
+    finalWords,
+    completed,
+  };
+}
+
+async function send({ mockOnly = false } = {}) {
+  const domain = currentDomain();
+  const input = String(el.chatInput?.value || "").trim();
+  if (!domain || !input || state.sending) return;
+
+  state.sending = true;
+  pushMessage(domain.id, {
+    id: uid("msg"),
+    role: "user",
+    content: input,
+    createdAt: new Date().toISOString(),
+    streaming: false,
+    error: false,
+  });
+
+  updateCurrentDomain((draft) => {
+    maybeUpdateDomainTitle(draft);
+  });
+
+  if (el.chatInput) {
+    el.chatInput.value = "";
+  }
+
+  renderAll();
+  scrollChat();
+
+  const messageId = createAssistantPlaceholder(domain.id);
+  renderChat();
+  scrollChat();
+
+  try {
+    if (!mockOnly && apiReady()) {
+      const result = await requestCompletion(domain.id, messageId);
+      finalizeAssistant(domain.id, messageId, { usage: result.usage });
+      state.apiCheckText = "真实接口响应成功。";
+    } else {
+      await streamText(mockReply(input), (chunk) => {
+        appendAssistantChunk(domain.id, messageId, chunk);
+      });
+      finalizeAssistant(domain.id, messageId);
+    }
+
+    const compressed = maybeAutoCompress(domain.id);
+    if (compressed > 0) {
+      toast(`已自动压缩 ${compressed} 条历史消息。`);
+    }
+  } catch (error) {
+    const message =
+      error?.name === "AbortError" ? "本轮请求已中止。" : String(error?.message || error);
+    replaceAssistantMessage(domain.id, messageId, message, { error: true });
+    state.apiCheckText = message;
+    toast(message, "error");
+  } finally {
+    state.sending = false;
+    state.abortController = null;
+    renderAll();
+    scrollChat();
+  }
+}
+
+async function send({ mockOnly = false } = {}) {
+  const domain = currentDomain();
+  const input = String(el.chatInput?.value || "").trim();
+  if (!domain || !input || state.sending) return;
+
+  state.sending = true;
+  window.clearTimeout(state.thinkingTimer);
+  state.thinking = resetThinkingState();
+
+  pushMessage(domain.id, {
+    id: uid("msg"),
+    role: "user",
+    content: input,
+    createdAt: new Date().toISOString(),
+    streaming: false,
+    error: false,
+  });
+
+  updateCurrentDomain((draft) => {
+    maybeUpdateDomainTitle(draft);
+  });
+
+  if (el.chatInput) {
+    el.chatInput.value = "";
+  }
+
+  renderAll();
+  scrollChat();
+
+  const messageId = createAssistantPlaceholder(domain.id);
+  updateThinkingState(domain.id, messageId, {
+    label: "正在思考中...",
+    progress: 10,
+    steps: ["已接收需求", "正在整理上下文和记忆"],
+    chunkCount: 0,
+  });
+  renderComposer();
+  renderChat();
+  scrollChat();
+
+  try {
+    if (shouldAutoWrite(domain, input)) {
+      const result = await runAutomatedDraft(domain.id, messageId, input, { mockOnly });
+      finalizeAssistant(domain.id, messageId, { usage: result.usage });
+      state.apiCheckText = apiReady() ? "真实接口响应成功。" : "本地模拟自动写作完成。";
+      toast(
+        result.completed
+          ? `自动写作完成，约 ${result.finalWords}/${result.targetWords} 字。`
+          : `已自动续写到约 ${result.finalWords}/${result.targetWords} 字，后续可继续接写。`
+      );
+    } else if (!mockOnly && apiReady()) {
+      const result = await requestCompletion(domain.id, messageId);
+      finalizeAssistant(domain.id, messageId, { usage: result.usage });
+      state.apiCheckText = "真实接口响应成功。";
+    } else {
+      updateThinkingState(domain.id, messageId, {
+        label: "正在本地模拟生成...",
+        progress: 24,
+        step: "已切换为本地模拟",
+        chunkCount: 0,
+      });
+      renderComposer();
+      renderChat();
+
+      await streamText(mockReply(input), (chunk) => {
+        appendAssistantChunk(domain.id, messageId, chunk);
+      });
+      finalizeAssistant(domain.id, messageId);
+    }
+
+    const compressed = maybeAutoCompress(domain.id);
+    if (compressed > 0) {
+      toast(`已自动压缩 ${compressed} 条历史消息。`);
+    }
+  } catch (error) {
+    const message =
+      error?.name === "AbortError" ? "本轮请求已中止。" : String(error?.message || error);
+    replaceAssistantMessage(domain.id, messageId, message, { error: true });
+    updateDomainAutomation(domain.id, {
+      status: "error",
+      lastError: message,
+      currentPhase: "自动写作异常中断",
+      completedAt: new Date().toISOString(),
+    });
+    updateThinkingState(domain.id, messageId, {
+      label: error?.name === "AbortError" ? "本轮请求已中止" : "本轮输出失败",
+      progress: 100,
+      step: error?.name === "AbortError" ? "请求已中止" : "请求异常",
+    });
+    state.apiCheckText = message;
+    toast(message, "error");
+    clearThinkingState(messageId, { delay: 1800 });
+  } finally {
+    state.sending = false;
+    state.abortController = null;
+    renderAll();
+    scrollChat();
+  }
+}
+
+async function testApi() {
+  saveApiFromInputs({ toastResult: false });
+  if (!apiReady()) {
+    state.apiCheckText =
+      state.api.baseUrl.trim() && state.api.model.trim()
+        ? "请先填写 API Key。"
+        : "请先选择一个预设，或者在高级设置里填写 Base URL、Model 和 API Key。";
+    renderPromptContext();
+    toast("接口配置还不完整。", "error");
+    return;
+  }
+
+  state.apiCheckText = "正在测试接口连接…";
+  renderPromptContext();
+
+  try {
+    const response = await fetch(endpoint(), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${state.api.apiKey}`,
+      },
+      body: JSON.stringify(
+        finalizeRequestBody({
+          model: state.api.model,
+          stream: false,
+          temperature: Number(state.api.temperature || API_DEFAULT.temperature),
+          messages: [{ role: "user", content: "请回复：NEXUS 控制台连接正常。" }],
+        })
+      ),
+    });
+
+    if (!response.ok) {
+      throw new Error(await parseError(response));
+    }
+
+    const raw = await response.text();
+    const parsed = parseRawPayload(raw);
+    state.apiCheckText = parsed.content || "接口已连通，但没有返回正文。";
+    renderPromptContext();
+    toast("接口测试通过。");
+  } catch (error) {
+    state.apiCheckText = String(error?.message || error);
+    renderPromptContext();
+    toast("接口测试失败。", "error");
+  }
+}
+
+function manualCompress() {
+  const domain = currentDomain();
+  if (!domain) return;
+  const count = compressDomain(domain, "手动压缩");
+  saveDomains();
+  renderAll();
+  scrollChat();
+  toast(count > 0 ? `已压缩 ${count} 条历史消息。` : "当前还不需要压缩。");
+}
+
+function bind() {
+  el.sidebarToggleBtn?.addEventListener("click", toggleSidebar);
+  el.mobileSidebarBtn?.addEventListener("click", () => toggleSidebar(true));
+  el.mobileSidebarMask?.addEventListener("click", () => toggleSidebar(false));
+  el.mobileQuickWorkbenchBtn?.addEventListener("click", () => toggleSidebar(true));
+  el.mobileQuickContextBtn?.addEventListener("click", () => setTab("context"));
+  el.mobileQuickApiBtn?.addEventListener("click", openApiSettings);
+  el.mobileQuickStateBtn?.addEventListener("click", openStatePanel);
+  el.clearDomainBtn?.addEventListener("click", () => {
+    clearCurrentDomainContent();
+    closeSidebarDrawer();
+  });
+  el.createDomainBtn?.addEventListener("click", () => {
+    createDomain();
+    closeSidebarDrawer();
+  });
+  el.quickCompressBtn?.addEventListener("click", () => {
+    manualCompress();
+    closeSidebarDrawer();
+  });
+  el.exportDomainBtn?.addEventListener("click", exportDomain);
+  el.reportBtn?.addEventListener("click", exportReport);
+  el.apiSettingsBtn?.addEventListener("click", openApiSettings);
+  el.apiSettingsClose?.addEventListener("click", closeApiSettings);
+  el.statePanelBtn?.addEventListener("click", openStatePanel);
+  el.statePanelClose?.addEventListener("click", closeStatePanel);
+  el.tabChat?.addEventListener("click", () => setTab("chat"));
+  el.tabPrompt?.addEventListener("click", () => setTab("prompt"));
+  el.tabContext?.addEventListener("click", () => {
+    setTab("context");
+    closeSidebarDrawer();
+  });
+  el.copyPromptBtn?.addEventListener("click", () =>
+    copy(el.promptPreview?.textContent || "", "Prompt 已复制。")
+  );
+  el.copyPayloadBtn?.addEventListener("click", () =>
+    copy(el.payloadPreview?.textContent || "", "Payload 已复制。")
+  );
+  el.compressBtn?.addEventListener("click", manualCompress);
+  el.sendBtn?.addEventListener("click", () => send());
+  el.saveSummaryBtn?.addEventListener("click", () => {
+    updateCurrentDomain((domain) => {
+      domain.summary = String(el.summaryInput?.value || "").trim();
+    });
+    renderPromptContext();
+    toast("记忆摘要已保存。");
+  });
+  el.saveAnchorsBtn?.addEventListener("click", () => {
+    updateCurrentDomain((domain) => {
+      domain.pinnedFacts = unique(
+        String(el.anchorsInput?.value || "")
+          .split(/\r?\n/)
+          .map((item) => item.trim())
+      );
+    });
+    renderPromptContext();
+    toast("固定锚点已保存。");
+  });
+  el.saveApiBtn?.addEventListener("click", saveApiFromInputs);
+  el.testApiBtn?.addEventListener("click", testApi);
+  el.mockReplyBtn?.addEventListener("click", () => send({ mockOnly: true }));
+
+  el.providerPresetList?.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-provider-id]");
+    if (target?.dataset.providerId) {
+      applyProviderPreset(target.dataset.providerId);
+    }
+  });
+
+  el.baselineNav?.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-baseline-id]");
+    if (target?.dataset.baselineId) {
+      setBaseline(target.dataset.baselineId);
+    }
+  });
+
+  el.moduleRail?.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-module-id]");
+    if (target?.dataset.moduleId) {
+      setModule(target.dataset.moduleId);
+    }
+  });
+
+  el.quickModeList?.addEventListener("click", (event) => {
+    const target = event.target.closest("[data-mode-id]");
+    if (target?.dataset.modeId) {
+      setMode(target.dataset.modeId);
+      closeSidebarDrawer();
+    }
+  });
+
+  el.domainList?.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-remove-domain]");
+    if (removeButton?.dataset.removeDomain) {
+      event.stopPropagation();
+      removeDomain(removeButton.dataset.removeDomain);
+      return;
+    }
+
+    const domainCard = event.target.closest("[data-domain-id]");
+    if (domainCard?.dataset.domainId) {
+      setDomain(domainCard.dataset.domainId);
+      closeSidebarDrawer();
+    }
+  });
+
+  el.chatInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+      event.preventDefault();
+      send();
+    }
+  });
+  el.chatInput?.addEventListener("input", resizeComposerInput);
+  el.chatInput?.addEventListener("focus", () => {
+    if (isMobileViewport()) {
+      window.setTimeout(scrollChat, 140);
+    }
+  });
+
+  el.sidebar?.addEventListener("touchstart", handleSidebarTouchStart, { passive: true });
+  el.sidebar?.addEventListener("touchmove", handleSidebarTouchMove, { passive: false });
+  el.sidebar?.addEventListener("touchend", handleSidebarTouchEnd);
+  el.sidebar?.addEventListener("touchcancel", handleSidebarTouchEnd);
+
+  el.statePanelModal?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.dataset.closeModal === "state") {
+      closeStatePanel();
+    }
+  });
+
+  el.apiSettingsModal?.addEventListener("click", (event) => {
+    const target = event.target;
+    if (target instanceof HTMLElement && target.dataset.closeModal === "api") {
+      closeApiSettings();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeStatePanel();
+      closeApiSettings();
+      closeSidebarDrawer();
+    }
+  });
+
+  window.addEventListener("resize", syncShellLayout);
+  window.visualViewport?.addEventListener("resize", syncViewportInset);
+  window.visualViewport?.addEventListener("scroll", syncViewportInset);
+}
+// endregion: actions
+
+// region: init
+function init() {
+  loadState();
+  state.api = hydrateApiConfig(state.api);
+  ensureSeed();
+  state.domains.forEach(refreshDerivedMemory);
+  fillApiInputs();
+  bind();
+  syncShellLayout();
+  renderAll();
+  scrollChat();
+}
+
+init();
+// endregion: init
+
+</script>
+  </body>
+</html>

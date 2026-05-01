@@ -1,0 +1,1 @@
+export class Builder3DEngine extends BaseGameEngine { constructor(c){super(c); Modules.games.type='mc3d'; Modules.games.ctx=this.ctx; Modules.games.initMc3d(); this.draw=()=>{Modules.games.loop();}} }

@@ -1,0 +1,1 @@
+export class ShooterEngine extends BaseGameEngine { constructor(c){super(c); Modules.games.type='shooter'; Modules.games.ctx=this.ctx; Modules.games.initShooter(); this.draw=()=>{Modules.games.loop();}} }

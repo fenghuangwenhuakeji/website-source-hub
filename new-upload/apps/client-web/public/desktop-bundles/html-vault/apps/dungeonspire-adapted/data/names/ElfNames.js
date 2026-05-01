@@ -1,0 +1,1 @@
+export default ['Legolas', 'Thranduil', 'Galadriel', 'Elrond', 'Arwen'];

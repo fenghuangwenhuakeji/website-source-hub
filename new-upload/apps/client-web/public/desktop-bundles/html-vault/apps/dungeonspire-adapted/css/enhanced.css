@@ -1,0 +1,159 @@
+/* 
+=================================================================================================
+  DungeonSpire - Enhanced Visuals (VFX & Styles)
+  Version: 2.0.0
+  Description: Adds premium game feel, gold cards, glitch effects, and animations.
+=================================================================================================
+*/
+
+/* --- Golden Card Effect --- */
+.card.gold {
+    border: 2px solid #ffd700;
+    background: linear-gradient(135deg, #2c2c2c 0%, #4a4a2a 50%, #2c2c2c 100%);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    animation: holoSheen 3s infinite linear;
+}
+
+.card.gold .card-title {
+    color: #ffd700;
+    text-shadow: 0 0 5px #ffaa00;
+}
+
+@keyframes holoSheen {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+    100% { filter: brightness(1); }
+}
+
+/* --- Misfortune/Curse Card Effect --- */
+.card.misfortune {
+    border: 2px solid #800080;
+    background: #1a051a;
+    animation: glitchShake 2s infinite;
+}
+
+.card.misfortune .card-image {
+    filter: hue-rotate(180deg) contrast(1.5);
+}
+
+@keyframes glitchShake {
+    0% { transform: translate(0, 0); }
+    2% { transform: translate(-2px, 2px); }
+    4% { transform: translate(2px, -2px); }
+    6% { transform: translate(0, 0); }
+    100% { transform: translate(0, 0); }
+}
+
+/* --- Screen Shake --- */
+.shake-small {
+    animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.shake-medium {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.shake-heavy {
+    animation: shake 0.8s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* --- Compendium Grid --- */
+.compendium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    overflow-y: auto;
+    height: 70vh;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    border: 1px solid #444;
+}
+
+.compendium-item {
+    transform: scale(0.8);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.compendium-item:hover {
+    transform: scale(1.0);
+    z-index: 100;
+}
+
+/* --- Dialogue Box --- */
+.dialogue-overlay {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    border: 2px solid #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    color: #fff;
+    font-family: var(--font-header);
+    z-index: 9000;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.dialogue-portrait {
+    width: 64px;
+    height: 64px;
+    background: #333;
+    border-radius: 50%;
+    border: 2px solid #777;
+}
+
+.dialogue-text {
+    font-size: 1.1rem;
+}
+
+/* --- Shop Gambling --- */
+.gamble-slot {
+    width: 200px;
+    height: 300px;
+    border: 3px dashed #ffd700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.gamble-slot:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+/* --- Main Menu Revamp --- */
+#main-menu {
+    background: radial-gradient(circle, #2b1d1d 0%, #000000 100%);
+}
+
+.menu-btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transform: skew(-5deg);
+}
+
+.menu-btn-group button {
+    font-size: 1.5rem;
+    padding: 15px 40px;
+    border: 2px solid #555;
+    background: linear-gradient(90deg, #111, #222);
+    color: #aaa;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.menu-btn-group button:hover {
+    border-color: #ff4d4d;
+    color: #fff;
+    transform: translateX(10px) scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 77, 77, 0.4);
+}

@@ -1,0 +1,1 @@
+export default { id: 'npc_smith', name: 'Gorn', role: 'Upgrader', dialogue: 'I can fix anything.' };

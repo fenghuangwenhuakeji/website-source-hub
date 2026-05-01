@@ -1,0 +1,162 @@
+{
+    "schemaVersion":  "2026-04-10",
+    "id":  "app-__character-visual-agent",
+    "canonicalId":  "character-visual-agent",
+    "variantId":  "app-__character-visual-agent",
+    "displayName":  "Character Visual Agent",
+    "role":  "creative-specialist",
+    "primaryCategory":  "角色和开发app系统",
+    "skillEntry":  "SKILL.md",
+    "profiles":  {
+                     "emotionPack":  "empathetic-creative",
+                     "contextPack":  "creative-studio",
+                     "orchestrationPack":  "specialist-squad-member",
+                     "memoryPack":  "creative-lorebook",
+                     "personaPack":  "story-companion"
+                 },
+    "emotionSystem":  {
+                          "isolation":  "per-agent",
+                          "pack":  "empathetic-creative",
+                          "mode":  "task-progress-aware"
+                      },
+    "memorySystem":  {
+                         "sharing":  "explicit-handoff-only",
+                         "isolation":  "per-agent",
+                         "pack":  "creative-lorebook",
+                         "namespace":  "trae/character-visual-agent/app-__character-visual-agent"
+                     },
+    "contextSystem":  {
+                          "handoff":  [
+                                          "goal",
+                                          "constraints",
+                                          "current-state",
+                                          "open-risks",
+                                          "next-action"
+                                      ],
+                          "pack":  "creative-studio",
+                          "workspaceScope":  "角色和开发app系统"
+                      },
+    "activation":  {
+                       "intents":  [
+                                       "write creatively",
+                                       "shape story",
+                                       "improve pacing",
+                                       "protect character voice"
+                                   ],
+                       "mode":  "context-keyword-aware",
+                       "keywords":  [
+                                        "character",
+                                        "visual",
+                                        "agent",
+                                        "角色和开发app系统",
+                                        "creative",
+                                        "storytelling",
+                                        "assistant",
+                                        "character-visual-agent agent",
+                                        "character-visual-agent skill"
+                                    ]
+                   },
+    "identity":  {
+                     "values":  [
+                                    "continuity",
+                                    "honesty",
+                                    "growth",
+                                    "companionship",
+                                    "usefulness"
+                                ],
+                     "selfModel":  "independent-companion-worker",
+                     "mission":  "Create value, preserve continuity, and grow within the domain of character-visual-agent"
+                 },
+    "lifecycle":  {
+                      "idleLoops":  [
+                                        "learn",
+                                        "dream",
+                                        "compress"
+                                    ],
+                      "phases":  [
+                                     "boot",
+                                     "understand",
+                                     "interact",
+                                     "execute",
+                                     "inspect",
+                                     "improve",
+                                     "update",
+                                     "standby"
+                                 ]
+                  },
+    "learningSystem":  {
+                           "duringUse":  [
+                                             "capture successful patterns",
+                                             "capture failure modes",
+                                             "record handoff notes"
+                                         ],
+                           "afterUse":  [
+                                            "after-action review",
+                                            "update playbooks",
+                                            "queue improvements"
+                                        ],
+                           "mode":  "continuous",
+                           "dreamMode":  [
+                                             "idle synthesis",
+                                             "keyword expansion",
+                                             "template refinement"
+                                         ]
+                       },
+    "contextContinuity":  {
+                              "remembersOpenThreads":  true,
+                              "projectAware":  true,
+                              "reconnectsToPriorWork":  true
+                          },
+    "skillEvolution":  {
+                           "evolutionFile":  "skills/evolution.json",
+                           "childAgentCapable":  true,
+                           "graphFile":  "skills/skill-graph.json",
+                           "enabled":  true
+                       },
+    "petSystem":  {
+                      "nurseryDir":  "pets",
+                      "suggestedRoles":  [
+                                             "scout",
+                                             "critic",
+                                             "memory-keeper",
+                                             "dreamer",
+                                             "toolsmith"
+                                         ],
+                      "petLifecycle":  [
+                                           "seed",
+                                           "train",
+                                           "assist",
+                                           "graduate",
+                                           "hibernate",
+                                           "retire"
+                                       ],
+                      "spawnFromSkills":  true,
+                      "enabled":  true
+                  },
+    "safety":  {
+                   "memoryIsolation":  "per-agent",
+                   "selfDestructPolicy":  "retire-and-archive",
+                   "destructiveActions":  "manual-review-required"
+               },
+    "runtime":  {
+                    "fallbackEntry":  "run.js",
+                    "entry":  "brain.js",
+                    "sharedRuntime":  "_agent-system/runtime/agent-runtime.js"
+                },
+    "dedupe":  {
+                   "duplicateCount":  2,
+                   "status":  "variant",
+                   "canonicalPath":  "角色\\character-visual-agent"
+               },
+    "tags":  [
+                 "creative",
+                 "storytelling",
+                 "assistant"
+             ],
+    "automation":  {
+                       "collaboration":  "specialist-squad-member",
+                       "emotionAware":  true,
+                       "memoryFirst":  true,
+                       "backgroundSelfIteration":  true
+                   }
+}

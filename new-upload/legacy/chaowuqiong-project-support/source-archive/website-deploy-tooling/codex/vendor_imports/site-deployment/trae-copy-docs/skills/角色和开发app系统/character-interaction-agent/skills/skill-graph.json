@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "character-interaction-agent",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "creative",
+                          "storytelling",
+                          "assistant"
+                      ],
+    "specializations":  [
+                            "write creatively",
+                            "shape story",
+                            "improve pacing",
+                            "protect character voice"
+                        ]
+}

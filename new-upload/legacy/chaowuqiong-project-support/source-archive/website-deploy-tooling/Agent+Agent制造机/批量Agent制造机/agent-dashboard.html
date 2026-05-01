@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent生态系统仪表盘</title>
+    <!-- 使用本地Chart.js或内联简单图表 -->
+    <script>
+        // 简化的图表库，避免CDN被阻止
+        window.Chart = {
+            instances: [],
+            Doughnut: function(ctx, config) {
+                this.renderDoughnut(ctx, config);
+            },
+            Bar: function(ctx, config) {
+                this.renderBar(ctx, config);
+            },
+            renderDoughnut: function(ctx, config) {
+                const canvas = ctx.canvas;
+                const data = config.data;
+                const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                const colors = data.datasets[0].backgroundColor;
+                const labels = data.labels;
+                
+                // 创建SVG图表
+                let svg = '<svg viewBox="0 0 200 200" style="max-width: 300px; margin: 0 auto; display: block;">';
+                let startAngle = 0;
+                
+                data.datasets[0].data.forEach((value, i) => {
+                    const angle = (value / total) * 2 * Math.PI;
+                    const x1 = 100 + 80 * Math.cos(startAngle);
+                    const y1 = 100 + 80 * Math.sin(startAngle);
+                    const x2 = 100 + 80 * Math.cos(startAngle + angle);
+                    const y2 = 100 + 80 * Math.sin(startAngle + angle);
+                    const largeArc = angle > Math.PI ? 1 : 0;
+                    
+                    svg += `<path d="M 100 100 L ${x1} ${y1} A 80 80 0 ${largeArc} 1 ${x2} ${y2} Z" fill="${colors[i]}" stroke="white" stroke-width="2"/>`;
+                    startAngle += angle;
+                });
+                
+                svg += '</svg>';
+                
+                // 创建图例
+                let legend = '<div style="display: flex; justify-content: center; gap: 20px; margin-top: 15px; flex-wrap: wrap;">';
+                labels.forEach((label, i) => {
+                    const percentage = ((data.datasets[0].data[i] / total) * 100).toFixed(1);
+                    legend += `<div style="display: flex; align-items: center; gap: 5px;">
+                        <span style="width: 12px; height: 12px; background: ${colors[i]}; border-radius: 50%; display: inline-block;"></span>
+                        <span>${label}: ${data.datasets[0].data[i]} (${percentage}%)</span>
+                    </div>`;
+                });
+                legend += '</div>';
+                
+                canvas.style.display = 'none';
+                canvas.parentNode.innerHTML = svg + legend;
+            },
+            renderBar: function(ctx, config) {
+                const canvas = ctx.canvas;
+                const data = config.data;
+                const labels = data.labels;
+                const values = data.datasets[0].data;
+                const max = Math.max(...values);
+                const color = data.datasets[0].backgroundColor;
+                
+                // 创建CSS条形图
+                let html = '<div style="display: flex; align-items: flex-end; justify-content: space-around; height: 250px; padding: 20px; gap: 10px;">';
+                
+                labels.forEach((label, i) => {
+                    const height = (values[i] / max) * 100;
+                    html += `
+                        <div style="display: flex; flex-direction: column; align-items: center; flex: 1;">
+                            <div style="background: ${color}; width: 100%; max-width: 60px; height: ${height}%; border-radius: 5px 5px 0 0; display: flex; align-items: flex-end; justify-content: center; color: white; font-size: 12px; padding-bottom: 5px; min-height: 30px;">
+                                ${values[i]}
+                            </div>
+                            <div style="margin-top: 8px; font-size: 11px; text-align: center; writing-mode: vertical-rl; text-orientation: mixed;">${label}</div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                canvas.style.display = 'none';
+                canvas.parentNode.innerHTML = html;
+            }
+        };
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            padding: 40px 0;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-card .icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-card .label {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .chart-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .search-box input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .search-box button {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        
+        .search-box button:hover {
+            background: #5a67d8;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .filter-group select {
+            padding: 8px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+        }
+        
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .results-header h3 {
+            color: #333;
+        }
+        
+        .agent-list {
+            display: grid;
+            gap: 15px;
+        }
+        
+        .agent-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .agent-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .agent-priority {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        
+        .priority-high { background: #dc3545; }
+        .priority-medium { background: #ffc107; }
+        .priority-low { background: #28a745; }
+        
+        .agent-info {
+            flex: 1;
+        }
+        
+        .agent-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 3px;
+        }
+        
+        .agent-meta {
+            font-size: 0.85rem;
+            color: #666;
+        }
+        
+        .agent-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #667eea;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .category-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .category-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+        }
+        
+        .category-item .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .category-item .name {
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 0;
+            opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .filters {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Agent生态系统仪表盘</h1>
+            <p>全面管理 560 个 AI Agent | 32 个专业领域 | 7 个批次</p>
+        </header>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">🤖</div>
+                <div class="number" id="totalAgents">560</div>
+                <div class="label">总Agent数</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📁</div>
+                <div class="number" id="totalCategories">32</div>
+                <div class="label">分类数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">📦</div>
+                <div class="number" id="totalBatches">7</div>
+                <div class="label">批次数量</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon">🔴</div>
+                <div class="number" id="highPriority">280</div>
+                <div class="label">高优先级</div>
+            </div>
+        </div>
+
+        <!-- 图表区域 -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>📊 优先级分布</h3>
+                <canvas id="priorityChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>📈 分类统计 (Top 10)</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 分类浏览 -->
+        <div class="results-section">
+            <div class="results-header">
+                <h3>📁 按分类浏览</h3>
+            </div>
+            <div class="category-grid" id="categoryGrid">
+                <!-- 动态生成分类 -->
+            </div>
+        </div>
+
+        <!-- 搜索区域 -->
+        <div class="search-section">
+            <h3 style="margin-bottom: 20px;">🔍 搜索 Agent</h3>
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="输入关键词搜索 Agent...">
+                <button onclick="searchAgents()">搜索</button>
+            </div>
+            <div class="filters">
+                <div class="filter-group">
+                    <label>优先级:</label>
+                    <select id="priorityFilter" onchange="filterAgents()">
+                        <option value="">全部</option>
+                        <option value="high">高</option>
+                        <option value="medium">中</option>
+                        <option value="low">低</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>分类:</label>
+                    <select id="categoryFilter" onchange="filterAgents()">
+                        <option value="">全部</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>批次:</label>
+                    <select id="batchFilter" onchange="filterAgents()">
+                        <option value="">全部</option>
+                        <option value="1">批次 1</option>
+                        <option value="2">批次 2</option>
+                        <option value="3">批次 3</option>
+                        <option value="4-1">批次 4-1</option>
+                        <option value="4-2">批次 4-2</option>
+                        <option value="5-1">批次 5-1</option>
+                        <option value="5-2">批次 5-2</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 搜索结果 -->
+        <div class="results-section">
+            <div class="results-header">
+                <h3>📋 Agent 列表</h3>
+                <span id="resultCount">显示全部 560 个</span>
+            </div>
+            <div class="agent-list" id="agentList">
+                <!-- 动态生成Agent列表 -->
+            </div>
+        </div>
+
+        <footer>
+            <p>Creative IDE Agent生态系统 | 版本 2.0.0 | 最后更新: 2025-01-18</p>
+        </footer>
+    </div>
+
+    <script>
+        // Agent数据（简化版，实际应从YAML加载）
+        const agentData = {
+            categories: [
+                { name: "软件开发", count: 17, batch: "1" },
+                { name: "Web开发", count: 60, batch: "2" },
+                { name: "小说写作", count: 17, batch: "1" },
+                { name: "AI写作", count: 16, batch: "1" },
+                { name: "商业", count: 10, batch: "3" },
+                { name: "室内设计", count: 10, batch: "3" },
+                { name: "3D设计", count: 10, batch: "3" },
+                { name: "电商", count: 10, batch: "3" },
+                { name: "网络运营", count: 10, batch: "3" },
+                { name: "法律", count: 20, batch: "4-1" },
+                { name: "医疗", count: 20, batch: "4-1" },
+                { name: "教育", count: 20, batch: "4-1" },
+                { name: "金融", count: 20, batch: "4-1" },
+                { name: "人力资源", count: 20, batch: "4-1" },
+                { name: "营销", count: 20, batch: "4-2" },
+                { name: "心理学", count: 20, batch: "4-2" },
+                { name: "旅游", count: 20, batch: "4-2" },
+                { name: "美食", count: 20, batch: "4-2" },
+                { name: "健身", count: 20, batch: "4-2" },
+                { name: "农业", count: 20, batch: "5-1" },
+                { name: "制造业", count: 20, batch: "5-1" },
+                { name: "能源", count: 20, batch: "5-1" },
+                { name: "环保", count: 20, batch: "5-1" },
+                { name: "物流", count: 20, batch: "5-1" },
+                { name: "房地产", count: 20, batch: "5-2" },
+                { name: "汽车", count: 20, batch: "5-2" },
+                { name: "娱乐传媒", count: 20, batch: "5-2" },
+                { name: "政府公共", count: 20, batch: "5-2" },
+                { name: "科学研究", count: 20, batch: "5-2" }
+            ]
+        };
+
+        // 生成模拟Agent数据
+        let allAgents = [];
+        let agentIdCounter = 1;
+
+        agentData.categories.forEach(cat => {
+            for (let i = 0; i < cat.count; i++) {
+                const priorities = ['high', 'medium', 'low'];
+                const weights = [0.5, 0.43, 0.07]; // 50% high, 43% medium, 7% low
+                const priority = weightedRandom(priorities, weights);
+                
+                allAgents.push({
+                    id: `agent_${String(agentIdCounter).padStart(3, '0')}`,
+                    name: `${cat.name} Agent ${i + 1}`,
+                    category: cat.name,
+                    batch: cat.batch,
+                    priority: priority
+                });
+                agentIdCounter++;
+            }
+        });
+
+        function weightedRandom(items, weights) {
+            const random = Math.random();
+            let sum = 0;
+            for (let i = 0; i < items.length; i++) {
+                sum += weights[i];
+                if (random < sum) return items[i];
+            }
+            return items[items.length - 1];
+        }
+
+        // 初始化图表
+        function initCharts() {
+            // 优先级分布图
+            const priorityCtx = document.getElementById('priorityChart').getContext('2d');
+            const priorityStats = { high: 0, medium: 0, low: 0 };
+            allAgents.forEach(a => priorityStats[a.priority]++);
+            
+            new Chart(priorityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['高优先级', '中优先级', '低优先级'],
+                    datasets: [{
+                        data: [priorityStats.high, priorityStats.medium, priorityStats.low],
+                        backgroundColor: ['#dc3545', '#ffc107', '#28a745'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // 分类统计图
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            const topCategories = agentData.categories
+                .sort((a, b) => b.count - a.count)
+                .slice(0, 10);
+            
+            new Chart(categoryCtx, {
+                type: 'bar',
+                data: {
+                    labels: topCategories.map(c => c.name),
+                    datasets: [{
+                        label: 'Agent数量',
+                        data: topCategories.map(c => c.count),
+                        backgroundColor: '#667eea',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // 生成分类网格
+        function generateCategoryGrid() {
+            const grid = document.getElementById('categoryGrid');
+            agentData.categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'category-item';
+                item.innerHTML = `
+                    <div class="count">${cat.count}</div>
+                    <div class="name">${cat.name}</div>
+                `;
+                item.onclick = () => {
+                    document.getElementById('categoryFilter').value = cat.name;
+                    filterAgents();
+                };
+                grid.appendChild(item);
+            });
+        }
+
+        // 初始化分类筛选器
+        function initCategoryFilter() {
+            const select = document.getElementById('categoryFilter');
+            agentData.categories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.name;
+                option.textContent = cat.name;
+                select.appendChild(option);
+            });
+        }
+
+        // 渲染Agent列表
+        function renderAgents(agents) {
+            const list = document.getElementById('agentList');
+            const count = document.getElementById('resultCount');
+            list.innerHTML = '';
+            count.textContent = `显示 ${agents.length} 个结果`;
+            
+            agents.slice(0, 50).forEach(agent => { // 只显示前50个
+                const item = document.createElement('div');
+                item.className = 'agent-item';
+                item.innerHTML = `
+                    <div class="agent-priority priority-${agent.priority}"></div>
+                    <div class="agent-info">
+                        <div class="agent-name">${agent.name}</div>
+                        <div class="agent-meta">ID: ${agent.id} | 批次: ${agent.batch}</div>
+                    </div>
+                    <span class="agent-category">${agent.category}</span>
+                `;
+                list.appendChild(item);
+            });
+            
+            if (agents.length > 50) {
+                const more = document.createElement('div');
+                more.style.textAlign = 'center';
+                more.style.padding = '20px';
+                more.style.color = '#666';
+                more.textContent = `还有 ${agents.length - 50} 个结果...`;
+                list.appendChild(more);
+            }
+        }
+
+        // 搜索Agent
+        function searchAgents() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allAgents.filter(a => 
+                a.name.toLowerCase().includes(keyword) ||
+                a.category.toLowerCase().includes(keyword) ||
+                a.id.toLowerCase().includes(keyword)
+            );
+            renderAgents(filtered);
+        }
+
+        // 筛选Agent
+        function filterAgents() {
+            const priority = document.getElementById('priorityFilter').value;
+            const category = document.getElementById('categoryFilter').value;
+            const batch = document.getElementById('batchFilter').value;
+            
+            let filtered = allAgents;
+            
+            if (priority) {
+                filtered = filtered.filter(a => a.priority === priority);
+            }
+            if (category) {
+                filtered = filtered.filter(a => a.category === category);
+            }
+            if (batch) {
+                filtered = filtered.filter(a => a.batch === batch);
+            }
+            
+            renderAgents(filtered);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            generateCategoryGrid();
+            initCategoryFilter();
+            renderAgents(allAgents);
+            
+            // 搜索框回车事件
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchAgents();
+            });
+        });
+    </script>
+</body>
+</html>

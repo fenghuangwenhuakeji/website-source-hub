@@ -1,0 +1,1 @@
+export default { id: 'npc_inn', name: 'Barliman', role: 'Healer', dialogue: 'Rest your weary bones.' };

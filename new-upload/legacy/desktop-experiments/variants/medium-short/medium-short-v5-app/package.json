@@ -1,0 +1,16 @@
+{
+  "name": "chaowuqiong-medium-short-v5",
+  "productName": "中短篇创作V5",
+  "version": "1.0.0",
+  "description": "超无穹中短篇创作V5 - 桌面客户端",
+  "main": "electron/main.js",
+  "author": "超无穹团队",
+  "license": "MIT",
+  "scripts": {
+    "electron:start": "electron .",
+    "electron:build": "electron-builder --config electron-builder.json --win"
+  },
+  "devDependencies": {
+    "electron-builder": "^26.8.1"
+  }
+}

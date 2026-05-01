@@ -1,0 +1,1 @@
+export default { type: 'Merchant', icon: 'gold', chance: 0.1 };

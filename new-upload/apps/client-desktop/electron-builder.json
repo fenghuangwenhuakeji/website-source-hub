@@ -1,0 +1,63 @@
+{
+  "appId": "com.fenghuang.desktop",
+  "productName": "凤煌",
+  "directories": {
+    "output": "release"
+  },
+  "files": [
+    "electron/**/*",
+    "dist/**/*",
+    "package.json",
+    "!node_modules"
+  ],
+  "protocols": [
+    {
+      "name": "Fenghuang Desktop",
+      "schemes": ["fenghuang"]
+    }
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "icon": "electron/assets/icon.ico",
+    "signAndEditExecutable": false
+  },
+  "mac": {
+    "target": [
+      {
+        "target": "dmg",
+        "arch": ["universal"]
+      },
+      {
+        "target": "zip",
+        "arch": ["universal"]
+      }
+    ],
+    "category": "public.app-category.productivity",
+    "artifactName": "${productName}-${version}-${arch}.${ext}"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": true,
+    "allowToChangeInstallationDirectory": true,
+    "installerIcon": "electron/assets/icon.ico",
+    "uninstallerIcon": "electron/assets/icon.ico",
+    "installerHeaderIcon": "electron/assets/icon.ico",
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "menuCategory": "凤煌",
+    "shortcutName": "打开凤煌",
+    "uninstallDisplayName": "卸载凤煌"
+  },
+  "portable": {
+    "artifactName": "${productName}-${version}-Portable.exe"
+  }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#F8F9FA">
+    <meta name="description" content="中短篇创作工作台：章节、人物、设定、正文与 AI 生成一体化写作中心。">
+    <title>AI 中短篇写作中心 - 纯净版</title>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                accent: '#6366F1',
+                                dim: '#6B7280',
+                                main: '#1A1A2E',
+                                panel: 'rgba(255, 255, 255, 0.85)',
+                                border: 'rgba(0, 0, 0, 0.08)'
+                            },
+                            fontFamily: {
+                                mono: ['JetBrains Mono', 'Fira Code', 'monospace']
+                            },
+                            animation: {
+                                'fade-in': 'fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                                'spin-slow': 'spin 3s linear infinite'
+                            },
+                            keyframes: {
+                                fadeIn: {
+                                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                                    '100%': { opacity: '1', transform: 'translateY(0)' }
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+        });
+    </script>
+    <link rel="stylesheet" href="./assets/css/medium-writer.css">
+    <link rel="stylesheet" href="./mobile-overrides.css">
+</head>
+<body>
+    <div id="toast-area" style="z-index: 9999;"></div>
+
+    <div class="mobile-header" id="mobile-header">
+        <button class="mobile-hamburger" id="mobile-hamburger" onclick="window.App && App.toggleMobileMenu()" aria-label="打开菜单">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="mobile-title" id="mobile-title" onclick="window.App && App.nav('novella_writer')">中短篇创作</div>
+    </div>
+
+    <div class="mobile-overlay" id="mobile-overlay" onclick="window.App && App.closeMobileMenu()"></div>
+
+    <nav class="sidebar" aria-label="中短篇导航">
+        <div class="sidebar-item active" onclick="window.App && App.nav('novella_writer')" title="中短篇创作">
+            <i class="fa-solid fa-pen-nib"></i>
+            <span>中短篇创作</span>
+        </div>
+        <div class="sidebar-item" onclick="window.App && App.nav('rag_context')" title="RAG 上下文">
+            <i class="fa-solid fa-magnifying-glass-chart"></i>
+            <span>RAG 上下文</span>
+        </div>
+        <div class="sidebar-item" onclick="window.App && App.nav('memory_system')" title="三层记忆">
+            <i class="fa-solid fa-brain"></i>
+            <span>三层记忆</span>
+        </div>
+        <div class="sidebar-item" onclick="window.App && App.nav('reader_center')" title="阅读中心">
+            <i class="fa-solid fa-book-open"></i>
+            <span>阅读中心</span>
+        </div>
+        <div style="flex: 1"></div>
+        <div class="sidebar-item" onclick="window.App && App.nav('settings')" title="系统设置">
+            <i class="fa-solid fa-gear"></i>
+            <span>系统设置</span>
+        </div>
+    </nav>
+
+    <main class="viewport" id="viewport">
+        <section class="app-boot-fallback" id="app-boot-fallback">
+            <strong>中短篇创作正在启动</strong>
+            <span>如果长时间停留在这里，请刷新页面。</span>
+        </section>
+    </main>
+
+    <script src="./assets/js/medium-writer-runtime.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            window.setTimeout(() => {
+                const viewport = document.getElementById('viewport');
+                const fallback = document.getElementById('app-boot-fallback');
+                if (viewport && fallback && viewport.children.length > 1) {
+                    fallback.remove();
+                }
+            }, 300);
+        });
+    </script>
+</body>
+</html>

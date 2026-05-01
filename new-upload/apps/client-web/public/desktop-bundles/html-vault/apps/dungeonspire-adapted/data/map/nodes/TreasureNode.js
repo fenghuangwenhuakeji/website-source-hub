@@ -1,0 +1,1 @@
+export default { type: 'Chest', icon: 'chest', chance: 0.05 };

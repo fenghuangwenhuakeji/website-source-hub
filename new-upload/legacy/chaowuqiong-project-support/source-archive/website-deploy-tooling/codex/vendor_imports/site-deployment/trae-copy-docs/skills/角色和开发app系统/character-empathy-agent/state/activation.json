@@ -1,0 +1,20 @@
+{
+    "intents":  [
+                    "write creatively",
+                    "shape story",
+                    "improve pacing",
+                    "protect character voice"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "character",
+                     "empathy",
+                     "agent",
+                     "角色和开发app系统",
+                     "creative",
+                     "storytelling",
+                     "assistant",
+                     "character-empathy-agent agent",
+                     "character-empathy-agent skill"
+                 ]
+}

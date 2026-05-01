@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh root@115.190.158.182 "mysql -u root -pgong134135 chaowuqiong_db -e 'SELECT id, username, role, status FROM users WHERE username LIKE '\''%admin%'\'' OR role IN ('\''admin'\'', '\''super_admin'\'')';"

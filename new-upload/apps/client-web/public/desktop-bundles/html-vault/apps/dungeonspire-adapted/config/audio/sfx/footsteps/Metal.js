@@ -1,0 +1,1 @@
+export default { file: 'fs_metal.wav', volume: 0.8, pitchVar: 0.2 };

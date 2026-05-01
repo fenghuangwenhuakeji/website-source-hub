@@ -1,0 +1,42 @@
+{
+  "name": "批量创建测试Agent任务",
+  "project_name": "test-agents-project",
+  "output_dir": "generated-test-agents",
+  "agents": [
+    {
+      "name": "test-agent-1",
+      "title": "测试Agent 1",
+      "description": "用于测试的Agent",
+      "core_concept": "测试驱动开发",
+      "features": ["功能测试", "性能测试", "自动化测试"],
+      "priority": "high"
+    },
+    {
+      "name": "test-agent-2", 
+      "title": "测试Agent 2",
+      "description": "另一个测试Agent",
+      "core_concept": "持续集成",
+      "features": ["单元测试", "集成测试", "回归测试"],
+      "priority": "medium"
+    }
+  ],
+  "phases": [
+    {
+      "name": "需求分析",
+      "duration": "3天"
+    },
+    {
+      "name": "开发实现",
+      "duration": "5天"
+    },
+    {
+      "name": "测试验证",
+      "duration": "2天"
+    }
+  ],
+  "milestones": [
+    "完成需求文档",
+    "完成核心功能",
+    "通过所有测试"
+  ]
+}

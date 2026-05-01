@@ -1,0 +1,440 @@
+/**
+ * Aurora Glass Design System v1.0
+ * 极光玻璃设计系统 - 超无穹项目全面升级
+ * 
+ * 设计理念：
+ * - 极光渐变：流动的色彩过渡，营造梦幻科技感
+ * - 玻璃拟态：多层模糊效果，创造深度和层次
+ * - 微交互：细腻的动画反馈，提升用户体验
+ * - 高对比度：确保可读性和视觉冲击力
+ * - 圆角现代：柔和的几何形状，友好且专业
+ */
+
+// ============================================
+// 核心色彩系统 - 极光调色板
+// ============================================
+
+// 主色调 - 极光紫蓝
+$aurora-primary: #6366f1;
+$aurora-primary-light: #818cf8;
+$aurora-primary-lighter: #a5b4fc;
+$aurora-primary-dark: #4f46e5;
+$aurora-primary-darker: #3730a3;
+
+// 辅助色 - 极光粉紫
+$aurora-secondary: #a855f7;
+$aurora-secondary-light: #c084fc;
+$aurora-secondary-lighter: #d8b4fe;
+$aurora-secondary-dark: #9333ea;
+
+// 强调色 - 极光青绿
+$aurora-accent: #06b6d4;
+$aurora-accent-light: #22d3ee;
+$aurora-accent-lighter: #67e8f9;
+$aurora-accent-dark: #0891b2;
+
+// 渐变色
+$gradient-aurora: linear-gradient(135deg, #6366f1 0%, #8b5cf6 25%, #a855f7 50%, #c084fc 75%, #22d3ee 100%);
+$gradient-aurora-soft: linear-gradient(135deg, rgba(99, 102, 241, 0.8) 0%, rgba(139, 92, 246, 0.6) 50%, rgba(6, 182, 212, 0.8) 100%);
+$gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #12121a 50%, #0a0a0f 100%);
+$gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+
+// ============================================
+// 背景色彩系统 - 深邃宇宙
+// ============================================
+
+$bg-deep: #030305;
+$bg-dark: #08080c;
+$bg-base: #0f0f15;
+$bg-elevated: #16161d;
+$bg-overlay: #1c1c25;
+$bg-floating: #23232e;
+
+// ============================================
+// 文字色彩系统 - 层次分明
+// ============================================
+
+$text-primary: #ffffff;
+$text-secondary: rgba(255, 255, 255, 0.85);
+$text-tertiary: rgba(255, 255, 255, 0.6);
+$text-muted: rgba(255, 255, 255, 0.4);
+$text-disabled: rgba(255, 255, 255, 0.25);
+
+// ============================================
+// 边框与分割
+// ============================================
+
+$border-subtle: rgba(255, 255, 255, 0.06);
+$border-light: rgba(255, 255, 255, 0.1);
+$border-medium: rgba(255, 255, 255, 0.15);
+$border-strong: rgba(255, 255, 255, 0.2);
+$border-accent: rgba(99, 102, 241, 0.3);
+
+// ============================================
+// 功能色
+// ============================================
+
+$success: #10b981;
+$success-light: #34d399;
+$warning: #f59e0b;
+$warning-light: #fbbf24;
+$error: #ef4444;
+$error-light: #f87171;
+$info: #3b82f6;
+$info-light: #60a5fa;
+
+// ============================================
+// 间距系统 - 8px 基准
+// ============================================
+
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-8: 32px;
+$space-10: 40px;
+$space-12: 48px;
+$space-16: 64px;
+
+// ============================================
+// 圆角系统
+// ============================================
+
+$radius-sm: 6px;
+$radius-md: 10px;
+$radius-lg: 14px;
+$radius-xl: 18px;
+$radius-2xl: 24px;
+$radius-full: 9999px;
+
+// ============================================
+// 阴影系统 - 层次丰富
+// ============================================
+
+$shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.2);
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.25);
+$shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+$shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.35);
+$shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
+$shadow-2xl: 0 24px 64px rgba(0, 0, 0, 0.5);
+
+// 发光阴影
+$shadow-glow-sm: 0 0 12px rgba(99, 102, 241, 0.3);
+$shadow-glow-md: 0 0 24px rgba(99, 102, 241, 0.4);
+$shadow-glow-lg: 0 0 48px rgba(99, 102, 241, 0.5);
+$shadow-glow-accent: 0 0 32px rgba(6, 182, 212, 0.4);
+
+// ============================================
+// 动画系统 - 流畅自然
+// ============================================
+
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+$ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+$duration-fast: 150ms;
+$duration-normal: 250ms;
+$duration-slow: 350ms;
+$duration-slower: 500ms;
+
+// ============================================
+// Mixins - 核心效果
+// ============================================
+
+// 极光玻璃效果 - 标准
+@mixin aurora-glass {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    rgba(99, 102, 241, 0.05) 100%
+  );
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid $border-light;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+// 极光玻璃效果 - 深色
+@mixin aurora-glass-dark {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 22, 29, 0.9) 0%,
+    rgba(12, 12, 18, 0.95) 100%
+  );
+  backdrop-filter: blur(30px) saturate(180%);
+  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+// 极光玻璃效果 - 悬浮
+@mixin aurora-glass-floating {
+  background: linear-gradient(
+    135deg,
+    rgba(35, 35, 46, 0.85) 0%,
+    rgba(22, 22, 29, 0.9) 100%
+  );
+  backdrop-filter: blur(40px) saturate(200%);
+  -webkit-backdrop-filter: blur(40px) saturate(200%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(99, 102, 241, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+// 按钮基础样式
+@mixin aurora-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-primary;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.8) 0%, rgba(139, 92, 246, 0.8) 100%);
+  border: none;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $duration-fast $ease-out;
+  box-shadow: $shadow-sm, $shadow-glow-sm;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-md, $shadow-glow-md;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.9) 0%, rgba(139, 92, 246, 0.9) 100%);
+  }
+  
+  &:active {
+    transform: translateY(0);
+    box-shadow: $shadow-xs;
+  }
+}
+
+// 按钮次要样式
+@mixin aurora-button-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $space-2;
+  padding: $space-2 $space-4;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-secondary;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid $border-light;
+  border-radius: $radius-md;
+  cursor: pointer;
+  transition: all $duration-fast $ease-out;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: $border-medium;
+    color: $text-primary;
+  }
+}
+
+// 输入框样式
+@mixin aurora-input {
+  width: 100%;
+  padding: $space-3 $space-4;
+  font-size: 14px;
+  color: $text-primary;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid $border-subtle;
+  border-radius: $radius-md;
+  outline: none;
+  transition: all $duration-fast $ease-out;
+  
+  &::placeholder {
+    color: $text-muted;
+  }
+  
+  &:focus {
+    border-color: $aurora-primary;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+  
+  &:hover:not(:focus) {
+    border-color: $border-light;
+  }
+}
+
+// 卡片样式
+@mixin aurora-card {
+  @include aurora-glass;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  transition: all $duration-normal $ease-out;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg, $shadow-glow-sm;
+    border-color: rgba(99, 102, 241, 0.25);
+  }
+}
+
+// 标签样式
+@mixin aurora-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: $space-1 $space-2;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: $aurora-primary-light;
+  background: rgba(99, 102, 241, 0.15);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: $radius-sm;
+}
+
+// 滚动条样式
+@mixin aurora-scrollbar {
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: $radius-full;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+  }
+}
+
+// 文字渐变
+@mixin aurora-text-gradient {
+  background: $gradient-aurora;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// 发光边框
+@mixin aurora-glow-border {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: $gradient-aurora;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity $duration-fast $ease-out;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+// ============================================
+// 动画关键帧
+// ============================================
+
+@keyframes aurora-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes aurora-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes aurora-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes aurora-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes aurora-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes aurora-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(99, 102, 241, 0.5);
+  }
+}
+
+// ============================================
+// 工具类
+// ============================================
+
+.aurora-fade-in {
+  animation: aurora-fade-in $duration-normal $ease-out forwards;
+}
+
+.aurora-slide-in {
+  animation: aurora-slide-in $duration-normal $ease-out forwards;
+}
+
+.aurora-scale-in {
+  animation: aurora-scale-in $duration-normal $ease-out forwards;
+}
+
+.aurora-text-gradient {
+  @include aurora-text-gradient;
+}
+
+.aurora-glow {
+  animation: aurora-glow 2s ease-in-out infinite;
+}

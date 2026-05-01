@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地牢尖塔 - Roguelike 卡牌构筑</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/chat-panel.css">
+    <link rel="stylesheet" href="css/llm-config.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔️</text></svg>">
+</head>
+<body>
+    <div id="app">
+        <!-- 设备切换器 - 已移至设置页面 -->
+        <!-- <div class="device-switcher" id="device-switcher">
+            <button class="device-btn" data-device="mobile" title="手机模式"></button>
+            <button class="device-btn" data-device="tablet" title="平板模式"></button>
+            <button class="device-btn active" data-device="pc" title="PC模式"></button>
+        </div> -->
+
+        <!-- 加载界面 -->
+        <div id="loading-screen" class="screen active">
+            <div class="loader-container">
+                <div class="logo-icon">🏰</div>
+                <h1 class="game-title">地牢尖塔</h1>
+                <p class="game-subtitle">Roguelike 卡牌构筑</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="loading-progress"></div>
+                </div>
+                <p class="loading-text" id="loading-text">正在初始化...</p>
+            </div>
+        </div>
+
+        <!-- 主菜单 -->
+        <div id="main-menu" class="screen hidden">
+            <div class="menu-bg-effects">
+                <div class="floating-card c1">🗡️</div>
+                <div class="floating-card c2">🛡️</div>
+                <div class="floating-card c3">⚡</div>
+                <div class="floating-card c4">💀</div>
+            </div>
+            <div class="menu-container">
+                <div class="menu-header">
+                    <div class="logo-icon large">🏰</div>
+                    <h1 class="game-title">地牢尖塔</h1>
+                    <p class="game-subtitle">征服尖塔，成为传奇</p>
+                </div>
+                <div class="menu-buttons">
+                    <button class="btn-primary btn-glow" id="btn-start">
+                        <span class="btn-icon">⚔️</span> 开始冒险
+                    </button>
+                    <button class="btn-secondary" id="btn-continue" disabled>
+                        <span class="btn-icon">📜</span> 继续游戏
+                    </button>
+                    <button class="btn-secondary" id="btn-compendium">
+                        <span class="btn-icon">📖</span> 图鉴
+                    </button>
+                    <button class="btn-secondary" id="btn-options">
+                        <span class="btn-icon">⚙️</span> 设置
+                    </button>
+                    <button class="btn-secondary" id="btn-credits">
+                        <span class="btn-icon">👥</span> 制作人员
+                    </button>
+                </div>
+                <div class="menu-footer">
+                    <span>版本 1.0.0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 角色选择 -->
+        <div id="character-select" class="screen hidden">
+            <div class="screen-header">
+                <button class="btn-back" id="btn-back-from-char">← 返回</button>
+                <h2>选择你的角色</h2>
+                <div></div>
+            </div>
+            <div class="character-grid">
+                <div class="character-card" data-char="ironclad">
+                    <div class="char-icon">🛡️</div>
+                    <div class="char-name">铁甲战士</div>
+                    <div class="char-desc">力量型战士，擅长高伤害和自我治疗</div>
+                    <div class="char-stats">
+                        <span>❤️ 80</span>
+                        <span>⚡ 3</span>
+                    </div>
+                    <div class="char-starter">初始遗物: 燃烧之血</div>
+                </div>
+                <div class="character-card" data-char="silent">
+                    <div class="char-icon">🗡️</div>
+                    <div class="char-name">沉默猎手</div>
+                    <div class="char-desc">敏捷刺客，擅长毒素和连击</div>
+                    <div class="char-stats">
+                        <span>❤️ 70</span>
+                        <span>⚡ 3</span>
+                    </div>
+                    <div class="char-starter">初始遗物: 蛇环</div>
+                </div>
+                <div class="character-card" data-char="defect">
+                    <div class="char-icon">⚡</div>
+                    <div class="char-name">缺陷机器人</div>
+                    <div class="char-desc">机械法师，操控充能球释放能量</div>
+                    <div class="char-stats">
+                        <span>❤️ 75</span>
+                        <span>⚡ 3</span>
+                    </div>
+                    <div class="char-starter">初始遗物: 裂变电池</div>
+                </div>
+                <div class="character-card locked" data-char="watcher">
+                    <div class="char-icon">👁️</div>
+                    <div class="char-name">观察者</div>
+                    <div class="char-desc">神秘僧侣，切换姿态获得力量</div>
+                    <div class="char-stats">
+                        <span>❤️ 72</span>
+                        <span>⚡ 3</span>
+                    </div>
+                    <div class="char-locked">🔒 通关一次解锁</div>
+                </div>
+            </div>
+            <!-- 立绘选择 -->
+            <div class="portrait-section hidden" id="portrait-section">
+                <h3>🎨 选择立绘风格</h3>
+                <div class="portrait-grid" id="portrait-grid"></div>
+            </div>
+            <!-- 难度选择 -->
+            <div class="difficulty-selector">
+                <h3>选择难度</h3>
+                <div class="difficulty-options">
+                    <label class="difficulty-option">
+                        <input type="radio" name="difficulty" value="easy">
+                        <span class="diff-card">
+                            <span class="diff-icon">😊</span>
+                            <span class="diff-name">简单</span>
+                            <span class="diff-desc">适合新手</span>
+                        </span>
+                    </label>
+                    <label class="difficulty-option">
+                        <input type="radio" name="difficulty" value="normal" checked>
+                        <span class="diff-card selected">
+                            <span class="diff-icon">⚔️</span>
+                            <span class="diff-name">普通</span>
+                            <span class="diff-desc">标准体验</span>
+                        </span>
+                    </label>
+                    <label class="difficulty-option">
+                        <input type="radio" name="difficulty" value="hard">
+                        <span class="diff-card">
+                            <span class="diff-icon">💀</span>
+                            <span class="diff-name">困难</span>
+                            <span class="diff-desc">真正的挑战</span>
+                        </span>
+                    </label>
+                    <label class="difficulty-option">
+                        <input type="radio" name="difficulty" value="nightmare">
+                        <span class="diff-card">
+                            <span class="diff-icon">👹</span>
+                            <span class="diff-name">噩梦</span>
+                            <span class="diff-desc">地狱难度</span>
+                        </span>
+                    </label>
+                </div>
+            </div>
+            <button class="btn-primary btn-large" id="btn-start-run" disabled>开始征程</button>
+        </div>
+
+        <!-- 图鉴 -->
+        <div id="compendium" class="screen hidden">
+            <div class="screen-header">
+                <button class="btn-back" id="btn-back-from-comp">← 返回</button>
+                <h2>📖 图鉴</h2>
+                <div></div>
+            </div>
+            <div class="compendium-tabs">
+                <button class="tab-btn active" data-tab="cards">卡牌</button>
+                <button class="tab-btn" data-tab="relics">遗物</button>
+                <button class="tab-btn" data-tab="enemies">敌人</button>
+                <button class="tab-btn" data-tab="events">事件</button>
+            </div>
+            <div class="compendium-content">
+                <div class="comp-tab-content active" id="tab-cards">
+                    <div class="filter-bar">
+                        <select id="card-filter-char">
+                            <option value="all">全部角色</option>
+                            <option value="ironclad">铁甲战士</option>
+                            <option value="silent">沉默猎手</option>
+                            <option value="defect">缺陷机器人</option>
+                            <option value="colorless">无色</option>
+                        </select>
+                        <select id="card-filter-rarity">
+                            <option value="all">全部稀有度</option>
+                            <option value="basic">基础</option>
+                            <option value="common">普通</option>
+                            <option value="uncommon">罕见</option>
+                            <option value="rare">稀有</option>
+                        </select>
+                    </div>
+                    <div class="card-gallery" id="card-gallery"></div>
+                </div>
+                <div class="comp-tab-content" id="tab-relics">
+                    <div class="relic-gallery" id="relic-gallery"></div>
+                </div>
+                <div class="comp-tab-content" id="tab-enemies">
+                    <div class="enemy-gallery" id="enemy-gallery"></div>
+                </div>
+                <div class="comp-tab-content" id="tab-events">
+                    <div class="event-gallery" id="event-gallery"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置 -->
+        <div id="options-screen" class="screen hidden">
+            <div class="screen-header">
+                <button class="btn-back" id="btn-back-from-options">← 返回</button>
+                <h2>⚙️ 设置</h2>
+                <div></div>
+            </div>
+            <div class="options-container">
+                <div class="option-group">
+                    <h3>🔊 音频</h3>
+                    <div class="option-row">
+                        <label>主音量</label>
+                        <input type="range" min="0" max="100" value="80" id="vol-master">
+                        <span class="vol-value">80%</span>
+                    </div>
+                    <div class="option-row">
+                        <label>音乐</label>
+                        <input type="range" min="0" max="100" value="60" id="vol-music">
+                        <span class="vol-value">60%</span>
+                    </div>
+                    <div class="option-row">
+                        <label>音效</label>
+                        <input type="range" min="0" max="100" value="80" id="vol-sfx">
+                        <span class="vol-value">80%</span>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <h3>🎮 游戏</h3>
+                    <div class="option-row">
+                        <label>快速模式</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="opt-fast-mode">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="option-row">
+                        <label>显示伤害数字</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="opt-damage-numbers" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="option-row">
+                        <label>确认结束回合</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="opt-confirm-end">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="option-group">
+                    <h3>🖥️ 显示</h3>
+                    <div class="option-row">
+                        <label>屏幕抖动</label>
+                        <label class="toggle">
+                            <input type="checkbox" id="opt-screenshake" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="option-row">
+                        <label>设备模式</label>
+                        <select id="opt-device-mode" class="option-select">
+                            <option value="auto">自动检测</option>
+                            <option value="mobile">📱 手机</option>
+                            <option value="tablet">📱 平板</option>
+                            <option value="pc">🖥️ PC</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 制作人员 -->
+        <div id="credits-screen" class="screen hidden">
+            <div class="screen-header">
+                <button class="btn-back" id="btn-back-from-credits">← 返回</button>
+                <h2>👥 制作人员</h2>
+                <div></div>
+            </div>
+            <div class="credits-content">
+                <div class="credits-section">
+                    <h3>🎮 游戏设计</h3>
+                    <p>HyperInfinity Studio</p>
+                </div>
+                <div class="credits-section">
+                    <h3>💻 程序开发</h3>
+                    <p>AI Assistant & You</p>
+                </div>
+                <div class="credits-section">
+                    <h3>🎨 美术设计</h3>
+                    <p>Emoji Art Collection</p>
+                </div>
+                <div class="credits-section">
+                    <h3>🎵 音乐音效</h3>
+                    <p>Coming Soon...</p>
+                </div>
+                <div class="credits-section">
+                    <h3>💡 灵感来源</h3>
+                    <p>Slay the Spire by MegaCrit</p>
+                </div>
+                <div class="credits-thanks">
+                    <p>感谢你的游玩！</p>
+                    <p class="emoji-row">🏰 ⚔️ 🛡️ 💀 ⚡ 🎴</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 游戏视图 -->
+        <div id="game-view" class="screen hidden">
+            <div class="top-bar">
+                <div class="player-info">
+                    <div class="player-portrait" id="player-portrait">🛡️</div>
+                    <div class="player-stats">
+                        <span id="player-name">铁甲战士</span>
+                        <div class="hp-bar-container">
+                            <div class="hp-bar-bg">
+                                <div class="hp-bar-fill" id="player-hp-bar"></div>
+                            </div>
+                            <span class="hp-text"><span id="hp-current">80</span>/<span id="hp-max">80</span></span>
+                        </div>
+                    </div>
+                    <div class="gold-display">💰 <span id="gold-amount">99</span></div>
+                </div>
+                <div class="floor-info">
+                    <span class="act-name">第一幕</span>
+                    <span class="floor-num">第 <span id="floor-num">1</span> 层</span>
+                    <div class="exp-bar">
+                        <div class="exp-fill" id="exp-fill"></div>
+                        <span class="exp-text">Lv.<span id="player-level">1</span> (<span id="exp-current">0</span>/<span id="exp-max">100</span>)</span>
+                    </div>
+                </div>
+                <div class="top-right">
+                    <div class="relics-bar" id="relics-container">
+                        <div class="relic" title="燃烧之血: 战斗结束后恢复6点生命">🔥</div>
+                    </div>
+                    <button class="btn-icon-only" id="btn-shop" title="商店">🏪</button>
+                    <button class="btn-icon-only" id="btn-map" title="地图">�️</button>
+                    <button class="btn-icon-only" id="btn-deck" title="查看牌组">📚</button>
+                    <button class="btn-icon-only" id="btn-settings" title="设置">⚙️</button>
+                    <button class="btn-back" id="btn-back-menu">放弃</button>
+                </div>
+            </div>
+
+            <div id="scene-container" class="scene-container">
+                <!-- 移动端楼层信息 -->
+                <div class="floor-info-mobile">
+                    <span>第一幕 · 第 <span id="floor-num-mobile">1</span> 层</span>
+                    <span>Lv.<span id="player-level-mobile">1</span></span>
+                </div>
+                <div id="combat-scene" class="scene">
+                    <div class="combat-bg"></div>
+                    <div class="enemies-container" id="enemies-container"></div>
+                    <div class="player-area">
+                        <div class="player-avatar" id="player-avatar">
+                            <div class="player-sprite" id="player-sprite">🛡️</div>
+                            <div class="player-block" id="player-block-display">
+                                <span class="block-icon">🛡️</span>
+                                <span id="block-amount">0</span>
+                            </div>
+                            <div class="player-buffs" id="player-buffs"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bottom-bar">
+                <div class="left-panel">
+                    <div class="energy-orb">
+                        <div class="energy-glow"></div>
+                        <span id="energy-current">3</span>/<span id="energy-max">3</span>
+                    </div>
+                    <div class="pile draw-pile" id="draw-pile">
+                        <div class="pile-icon">📥</div>
+                        <span class="pile-count" id="draw-count">5</span>
+                        <span class="pile-label">抽牌堆</span>
+                    </div>
+                </div>
+                
+                <div class="hand-container" id="hand-container"></div>
+                
+                <div class="right-panel">
+                    <div class="pile discard-pile" id="discard-pile">
+                        <div class="pile-icon">📤</div>
+                        <span class="pile-count" id="discard-count">0</span>
+                        <span class="pile-label">弃牌堆</span>
+                    </div>
+                    <button class="btn-end-turn" id="btn-end-turn">
+                        <span class="btn-text">结束回合</span>
+                        <span class="btn-hotkey">[E]</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 瞄准箭头SVG - 曲线 -->
+            <svg id="aim-arrow" class="aim-arrow hidden">
+                <defs>
+                    <marker id="arrowhead" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+                        <polygon points="0 0, 12 4, 0 8" fill="#ef4444"/>
+                    </marker>
+                    <filter id="glow">
+                        <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                        <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+                <path id="aim-path" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrowhead)" filter="url(#glow)"/>
+            </svg>
+        </div>
+
+        <!-- 地图弹窗 -->
+        <div id="map-modal" class="modal hidden">
+            <div class="modal-content map-content">
+                <div class="modal-header">
+                    <h3>🗺️ 地牢地图</h3>
+                    <button class="btn-close" id="btn-close-map">✕</button>
+                </div>
+                <div class="map-container" id="map-container"></div>
+            </div>
+        </div>
+
+        <!-- 牌组弹窗 -->
+        <div id="deck-modal" class="modal hidden">
+            <div class="modal-content deck-content">
+                <div class="modal-header">
+                    <h3>📚 当前牌组</h3>
+                    <button class="btn-close" id="btn-close-deck">✕</button>
+                </div>
+                <div class="deck-cards" id="deck-cards"></div>
+            </div>
+        </div>
+
+        <!-- 奖励弹窗 -->
+        <div id="reward-modal" class="modal hidden">
+            <div class="modal-content reward-content">
+                <div class="modal-header">
+                    <h3>🎁 战斗奖励</h3>
+                </div>
+                <div class="reward-list" id="reward-list"></div>
+                <button class="btn-primary" id="btn-proceed">继续</button>
+            </div>
+        </div>
+
+        <!-- 卡牌选择弹窗 -->
+        <div id="card-reward-modal" class="modal hidden">
+            <div class="modal-content card-reward-content">
+                <div class="modal-header">
+                    <h3>选择一张卡牌加入牌组</h3>
+                </div>
+                <div class="card-choices" id="card-choices"></div>
+                <button class="btn-secondary" id="btn-skip-card">跳过</button>
+            </div>
+        </div>
+
+        <!-- 商店弹窗 -->
+        <div id="shop-modal" class="modal hidden">
+            <div class="modal-content shop-content">
+                <div class="modal-header">
+                    <h3>🏪 神秘商店</h3>
+                    <div class="shop-gold">💰 <span id="shop-gold">0</span></div>
+                    <button class="btn-close" id="btn-close-shop">✕</button>
+                </div>
+                <div class="shop-sections">
+                    <div class="shop-section">
+                        <h4>🎴 卡牌</h4>
+                        <div class="shop-items" id="shop-cards"></div>
+                    </div>
+                    <div class="shop-section">
+                        <h4>💎 遗物</h4>
+                        <div class="shop-items" id="shop-relics"></div>
+                    </div>
+                    <div class="shop-section">
+                        <h4>🧪 药水</h4>
+                        <div class="shop-items" id="shop-potions"></div>
+                    </div>
+                    <div class="shop-section">
+                        <h4>🔧 服务</h4>
+                        <div class="shop-items" id="shop-services"></div>
+                    </div>
+                </div>
+                <button class="btn-secondary" id="btn-leave-shop">离开商店</button>
+            </div>
+        </div>
+
+        <!-- 卡牌详情弹窗 -->
+        <div id="card-detail-modal" class="modal hidden">
+            <div class="modal-content card-detail-content">
+                <div class="card-detail-display" id="card-detail-display"></div>
+                <div class="card-lore" id="card-lore"></div>
+                <button class="btn-close" id="btn-close-card-detail">✕</button>
+            </div>
+        </div>
+
+        <!-- 聊天面板 -->
+        <div id="chat-panel" class="chat-panel collapsed">
+            <button class="chat-toggle-btn" id="chat-toggle-btn" title="打开聊天"></button>
+            <div class="chat-content">
+                <div class="chat-header">
+                    <h3>💬 NPC 对话</h3>
+                    <button class="close-btn" id="chat-close-btn">✕</button>
+                </div>
+                <div class="npc-selector" id="npc-selector">
+                    <!-- NPC 头像将由 JS 动态生成 -->
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="chat-empty-state">
+                        <div class="empty-icon">💬</div>
+                        <div class="empty-text">选择一个 NPC 开始对话</div>
+                        <div class="empty-hint">点击上方头像选择角色</div>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <div class="quick-replies" id="quick-replies">
+                        <button class="quick-reply-btn" data-msg="你好！">👋 你好</button>
+                        <button class="quick-reply-btn" data-msg="有什么任务吗？">📜 任务</button>
+                        <button class="quick-reply-btn" data-msg="能给我一些建议吗？">💡 建议</button>
+                    </div>
+                    <div class="chat-input-wrapper">
+                        <textarea class="chat-input" id="chat-input" placeholder="输入消息..." rows="1"></textarea>
+                        <button class="chat-send-btn" id="chat-send-btn" title="发送">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/game-data.js"></script>
+    <script src="js/components/LLMConfigManager.js"></script>
+    <script src="js/components/NPCManager.js"></script>
+    <script src="js/components/LLMConfigUI.js"></script>
+    <script src="js/components/ChatPanelComponent.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

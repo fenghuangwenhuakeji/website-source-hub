@@ -1,0 +1,3 @@
+ALTER TABLE users ADD COLUMN total_earnings DECIMAL(10, 2) DEFAULT 0 COMMENT '累计返现收益';
+ALTER TABLE users ADD COLUMN referral_code VARCHAR(20) UNIQUE;
+ALTER TABLE users ADD COLUMN referred_by VARCHAR(36);

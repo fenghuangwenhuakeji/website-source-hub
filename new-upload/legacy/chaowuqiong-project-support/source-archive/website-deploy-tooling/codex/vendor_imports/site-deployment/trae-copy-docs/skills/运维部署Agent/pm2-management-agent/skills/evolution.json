@@ -1,0 +1,14 @@
+{
+    "deprecatedPatterns":  [
+
+                           ],
+    "strengths":  [
+                      "ops",
+                      "deployment",
+                      "stability"
+                  ],
+    "upgradeQueue":  [
+
+                     ],
+    "version":  1
+}

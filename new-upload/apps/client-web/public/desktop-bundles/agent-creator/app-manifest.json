@@ -1,0 +1,8 @@
+{
+  "id": "agent-creator",
+  "title": "中短篇创作",
+  "description": "中短篇创作工作台：章节、人物、设定、正文与 AI 生成一体化写作中心。",
+  "entry": "index.html",
+  "runtime": "static-web",
+  "source": "正式版/中短篇/index.html"
+}

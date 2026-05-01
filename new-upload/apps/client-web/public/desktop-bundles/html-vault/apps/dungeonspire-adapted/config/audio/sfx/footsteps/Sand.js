@@ -1,0 +1,1 @@
+export default { file: 'fs_sand.wav', volume: 0.4, pitchVar: 0.1 };

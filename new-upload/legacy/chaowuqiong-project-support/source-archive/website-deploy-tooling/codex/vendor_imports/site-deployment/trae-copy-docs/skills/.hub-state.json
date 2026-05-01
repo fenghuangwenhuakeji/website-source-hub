@@ -1,0 +1,41 @@
+{
+  "session_id": "session_20260328",
+  "timestamp": "2026-03-28T09:45:00Z",
+  
+  "memory": {
+    "short_term": {
+      "user_name": null,
+      "current_intent": null,
+      "active_task": null,
+      "interaction_count": 0,
+      "last_topics": []
+    },
+    "working": {
+      "pending_agents": [],
+      "task_queue": [],
+      "recommendations": []
+    }
+  },
+  
+  "emotion": {
+    "current": {
+      "primary": "professional",
+      "secondary": "helpful",
+      "intensity": 0.85,
+      "indicator": "🎯"
+    },
+    "history": []
+  },
+  
+  "personality": {
+    "active_traits": ["proactive", "precise", "efficient"],
+    "communication_mode": "service_oriented",
+    "guidance_level": "strong"
+  },
+  
+  "context": {
+    "project_type": null,
+    "preferred_language": "zh-CN",
+    "task_complexity": "unknown"
+  }
+}

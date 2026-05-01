@@ -1,0 +1,639 @@
+/**
+ * Aurora Responsive Design - 极光响应式设计系统
+ * 适配各种屏幕尺寸的现代响应式布局
+ */
+
+@use './aurora-design-system-v2.scss' as aurora;
+
+// ============================================
+// 断点定义
+// ============================================
+$breakpoint-mobile: 480px;
+$breakpoint-tablet: 768px;
+$breakpoint-laptop: 1024px;
+$breakpoint-desktop: 1440px;
+$breakpoint-ultrawide: 1920px;
+
+// ============================================
+// 媒体查询 Mixin
+// ============================================
+
+// 移动端
+@mixin mobile {
+  @media (max-width: #{$breakpoint-mobile}) {
+    @content;
+  }
+}
+
+// 平板
+@mixin tablet {
+  @media (min-width: #{$breakpoint-mobile + 1}) and (max-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+// 平板及以下
+@mixin tablet-down {
+  @media (max-width: #{$breakpoint-tablet}) {
+    @content;
+  }
+}
+
+// 笔记本
+@mixin laptop {
+  @media (min-width: #{$breakpoint-tablet + 1}) and (max-width: #{$breakpoint-laptop}) {
+    @content;
+  }
+}
+
+// 笔记本及以下
+@mixin laptop-down {
+  @media (max-width: #{$breakpoint-laptop}) {
+    @content;
+  }
+}
+
+// 桌面
+@mixin desktop {
+  @media (min-width: #{$breakpoint-laptop + 1}) and (max-width: #{$breakpoint-desktop}) {
+    @content;
+  }
+}
+
+// 大屏桌面
+@mixin desktop-lg {
+  @media (min-width: #{$breakpoint-desktop + 1}) {
+    @content;
+  }
+}
+
+// 超宽屏
+@mixin ultrawide {
+  @media (min-width: #{$breakpoint-ultrawide}) {
+    @content;
+  }
+}
+
+// 平板及以上
+@mixin tablet-up {
+  @media (min-width: #{$breakpoint-mobile + 1}) {
+    @content;
+  }
+}
+
+// ============================================
+// 桌面容器响应式
+// ============================================
+
+.aurora-desktop {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+
+  // 移动端适配
+  @include mobile {
+    .aurora-menu-bar {
+      height: 40px;
+      padding: 0 aurora.$space-3;
+      
+      .aurora-menu-left,
+      .aurora-menu-right {
+        gap: aurora.$space-2;
+      }
+      
+      .aurora-menu-item {
+        padding: aurora.$space-1 aurora.$space-2;
+        font-size: 12px;
+      }
+      
+      .aurora-menu-icon {
+        width: 16px;
+        height: 16px;
+      }
+    }
+  }
+
+  // 平板适配
+  @include tablet {
+    .aurora-menu-bar {
+      height: 44px;
+    }
+  }
+}
+
+// ============================================
+// 窗口响应式
+// ============================================
+
+.aurora-window {
+  // 移动端：全屏窗口
+  @include mobile {
+    position: fixed !important;
+    top: 40px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 80px !important;
+    width: 100vw !important;
+    height: calc(100vh - 120px) !important;
+    border-radius: 0 !important;
+    
+    &.minimized {
+      transform: translateY(100vh) !important;
+    }
+    
+    .aurora-window-header {
+      padding: aurora.$space-2 aurora.$space-3;
+      
+      .aurora-window-title {
+        font-size: 13px;
+      }
+    }
+    
+    .aurora-window-content {
+      padding: aurora.$space-3;
+    }
+  }
+
+  // 平板：更大但有限制
+  @include tablet {
+    min-width: 320px;
+    min-height: 240px;
+    
+    &.maximized {
+      width: calc(100vw - 40px) !important;
+      height: calc(100vh - 120px) !important;
+      top: 44px !important;
+      left: 20px !important;
+    }
+  }
+
+  // 笔记本：标准尺寸
+  @include laptop {
+    min-width: 360px;
+    min-height: 280px;
+  }
+
+  // 大屏：更大尺寸
+  @include desktop-lg {
+    min-width: 400px;
+    min-height: 320px;
+  }
+}
+
+// ============================================
+// Dock 响应式
+// ============================================
+
+.aurora-dock {
+  // 移动端：固定在底部，全宽
+  @include mobile {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    height: 64px;
+    border-radius: aurora.$radius-xl aurora.$radius-xl 0 0;
+    padding: aurora.$space-2 aurora.$space-3;
+    
+    .aurora-dock-apps {
+      gap: aurora.$space-2;
+      justify-content: space-around;
+      width: 100%;
+    }
+    
+    .aurora-dock-item {
+      width: 48px;
+      height: 48px;
+      
+      .aurora-dock-icon {
+        width: 40px;
+        height: 40px;
+        
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+      
+      .aurora-dock-tooltip {
+        display: none;
+      }
+    }
+    
+    .aurora-dock-divider {
+      height: 32px;
+    }
+  }
+
+  // 平板
+  @include tablet {
+    height: 76px;
+    padding: aurora.$space-2 aurora.$space-4;
+    
+    .aurora-dock-item {
+      width: 56px;
+      height: 56px;
+      
+      .aurora-dock-icon {
+        width: 48px;
+        height: 48px;
+        
+        svg {
+          width: 22px;
+          height: 22px;
+        }
+      }
+    }
+  }
+
+  // 笔记本
+  @include laptop {
+    height: 84px;
+  }
+
+  // 大屏
+  @include desktop-lg {
+    height: 92px;
+    padding: aurora.$space-3 aurora.$space-6;
+    
+    .aurora-dock-apps {
+      gap: aurora.$space-4;
+    }
+    
+    .aurora-dock-item {
+      width: 68px;
+      height: 68px;
+      
+      .aurora-dock-icon {
+        width: 56px;
+        height: 56px;
+        
+        svg {
+          width: 26px;
+          height: 26px;
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// Agent Sidebar 响应式
+// ============================================
+
+.aurora-agent-sidebar {
+  // 移动端：全屏覆盖
+  @include mobile {
+    position: fixed;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 64px;
+    width: 100vw;
+    height: calc(100vh - 104px);
+    border-radius: 0;
+    
+    .aurora-sidebar-header {
+      padding: aurora.$space-3;
+      
+      .aurora-sidebar-title {
+        font-size: 14px;
+      }
+    }
+    
+    .aurora-sidebar-content {
+      padding: aurora.$space-3;
+    }
+    
+    .aurora-message {
+      max-width: 90%;
+      
+      .aurora-message-content {
+        padding: aurora.$space-2 aurora.$space-3;
+        font-size: 13px;
+      }
+    }
+    
+    .aurora-input-area {
+      padding: aurora.$space-3;
+    }
+  }
+
+  // 平板
+  @include tablet {
+    width: 320px;
+  }
+
+  // 笔记本
+  @include laptop {
+    width: 360px;
+  }
+
+  // 大屏
+  @include desktop-lg {
+    width: 420px;
+    
+    .aurora-sidebar-header {
+      padding: aurora.$space-5;
+    }
+    
+    .aurora-sidebar-content {
+      padding: aurora.$space-5;
+    }
+  }
+}
+
+// ============================================
+// Claw Code Panel 响应式
+// ============================================
+
+.aurora-clawcode-panel {
+  // 移动端
+  @include mobile {
+    .aurora-panel-header {
+      padding: aurora.$space-3;
+      flex-wrap: wrap;
+      gap: aurora.$space-2;
+      
+      .aurora-panel-title {
+        font-size: 14px;
+        width: 100%;
+      }
+      
+      .aurora-panel-actions {
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+    
+    .aurora-editor-container {
+      flex-direction: column;
+      
+      .aurora-editor-sidebar {
+        width: 100%;
+        height: 120px;
+        border-right: none;
+        border-bottom: 1px solid aurora.$border-subtle;
+      }
+    }
+    
+    .aurora-code-editor {
+      font-size: 12px;
+    }
+    
+    .aurora-output-console {
+      height: 150px;
+    }
+  }
+
+  // 平板
+  @include tablet {
+    .aurora-editor-container {
+      .aurora-editor-sidebar {
+        width: 180px;
+      }
+    }
+  }
+}
+
+// ============================================
+// 网格系统
+// ============================================
+
+.aurora-grid {
+  display: grid;
+  gap: aurora.$space-4;
+  
+  // 移动端：单列
+  @include mobile {
+    grid-template-columns: 1fr;
+    gap: aurora.$space-3;
+  }
+  
+  // 平板：双列
+  @include tablet {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  // 笔记本：三列
+  @include laptop {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  // 桌面：四列
+  @include desktop {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  
+  // 大屏：五列
+  @include desktop-lg {
+    grid-template-columns: repeat(5, 1fr);
+    gap: aurora.$space-5;
+  }
+}
+
+// ============================================
+// 弹性布局工具
+// ============================================
+
+.aurora-flex {
+  display: flex;
+  
+  // 移动端：垂直堆叠
+  @include mobile {
+    &.aurora-flex-responsive {
+      flex-direction: column;
+    }
+  }
+  
+  // 平板：水平排列
+  @include tablet-up {
+    &.aurora-flex-responsive {
+      flex-direction: row;
+    }
+  }
+}
+
+.aurora-flex-wrap {
+  flex-wrap: wrap;
+}
+
+.aurora-flex-nowrap {
+  flex-wrap: nowrap;
+}
+
+// ============================================
+// 隐藏/显示工具类
+// ============================================
+
+.aurora-hide-mobile {
+  @include mobile {
+    display: none !important;
+  }
+}
+
+.aurora-hide-tablet {
+  @include tablet {
+    display: none !important;
+  }
+}
+
+.aurora-hide-tablet-down {
+  @include tablet-down {
+    display: none !important;
+  }
+}
+
+.aurora-show-mobile {
+  display: none;
+  
+  @include mobile {
+    display: block !important;
+  }
+}
+
+.aurora-show-tablet {
+  display: none;
+  
+  @include tablet {
+    display: block !important;
+  }
+}
+
+// ============================================
+// 字体响应式
+// ============================================
+
+.aurora-text-responsive {
+  font-size: 14px;
+  
+  @include mobile {
+    font-size: 13px;
+  }
+  
+  @include tablet {
+    font-size: 14px;
+  }
+  
+  @include laptop {
+    font-size: 15px;
+  }
+  
+  @include desktop-lg {
+    font-size: 16px;
+  }
+}
+
+// ============================================
+// 间距响应式
+// ============================================
+
+.aurora-p-responsive {
+  padding: aurora.$space-4;
+  
+  @include mobile {
+    padding: aurora.$space-3;
+  }
+  
+  @include desktop-lg {
+    padding: aurora.$space-5;
+  }
+}
+
+.aurora-m-responsive {
+  margin: aurora.$space-4;
+  
+  @include mobile {
+    margin: aurora.$space-3;
+  }
+  
+  @include desktop-lg {
+    margin: aurora.$space-5;
+  }
+}
+
+// ============================================
+// 触摸优化
+// ============================================
+
+@media (hover: none) and (pointer: coarse) {
+  .aurora-dock-item {
+    .aurora-dock-tooltip {
+      display: none !important;
+    }
+  }
+  
+  .aurora-window {
+    .aurora-resize-handle {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  .aurora-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+// ============================================
+// 深色/浅色模式适配
+// ============================================
+
+@media (prefers-color-scheme: light) {
+  .aurora-adaptive {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f7;
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .aurora-adaptive {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #16161d;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.6);
+  }
+}
+
+// ============================================
+// 减少动画偏好
+// ============================================
+
+@media (prefers-reduced-motion: reduce) {
+  .aurora-window,
+  .aurora-dock-item,
+  .aurora-button,
+  .aurora-message {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .aurora-animated-bg {
+    animation: none !important;
+  }
+}
+
+// ============================================
+// 打印样式
+// ============================================
+
+@media print {
+  .aurora-menu-bar,
+  .aurora-dock,
+  .aurora-window-controls {
+    display: none !important;
+  }
+  
+  .aurora-window {
+    position: static !important;
+    width: 100% !important;
+    height: auto !important;
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+  }
+}

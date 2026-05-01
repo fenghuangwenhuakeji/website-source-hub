@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="超无穹桌面内容展柜，只保留当前指定的核心生产力、健康陪伴和旧版备份入口。"
+  />
+  <title>超无穹内容展柜</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="vault-shell">
+    <div class="vault-bg"></div>
+    <header class="hero-card panel">
+      <div class="hero-copy">
+        <p class="eyebrow">超无穹内容中枢</p>
+        <h1>超无穹内容展柜</h1>
+        <p class="hero-text">
+          这里现在只承接你指定的 <code>D:\HTML</code> 新入口：NEXUS OS、自动写作、健康工作台、星语心伴旧版备份和三个游戏互动项目。
+          旧的 25 个散乱入口已经从展柜清单移除。
+        </p>
+        <div class="hero-actions">
+          <button id="showAllButton" class="primary-button" type="button">查看全部项目</button>
+          <a
+            id="openSelectedButton"
+            class="ghost-button"
+            href="./apps/nexus-os-3/index.html"
+            target="_blank"
+            rel="noreferrer"
+          >
+            新窗口打开当前项目
+          </a>
+        </div>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </header>
+
+    <section class="workspace">
+      <aside class="panel sidebar">
+        <div class="sidebar-block">
+          <label class="search-label" for="searchInput">快速筛选</label>
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="搜索项目名、分类、标签"
+            autocomplete="off"
+          />
+        </div>
+        <div class="sidebar-block">
+          <p class="block-title">分类</p>
+          <div id="categoryFilters" class="filter-group"></div>
+        </div>
+        <div class="sidebar-block">
+          <p class="block-title">状态说明</p>
+          <ul class="hint-list">
+            <li><span class="dot ready"></span> 可直接接入：已经适合先放进桌面内容库。</li>
+            <li><span class="dot verify"></span> 待验证：已纳入入口，但建议再做专项测试。</li>
+          </ul>
+        </div>
+      </aside>
+
+      <main class="content-column">
+        <section class="panel list-panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Core Inventory</p>
+              <h2>项目清单</h2>
+            </div>
+            <p id="resultMeta" class="result-meta"></p>
+          </div>
+          <div id="projectGrid" class="project-grid"></div>
+        </section>
+      </main>
+
+      <aside class="panel preview-panel">
+        <div id="previewMeta" class="preview-meta"></div>
+        <div class="preview-actions">
+          <a id="launchLink" class="primary-button" href="./apps/nexus-os-3/index.html" target="_blank" rel="noreferrer">
+            全屏打开
+          </a>
+          <button id="copyLinkButton" class="ghost-button" type="button">复制相对路径</button>
+        </div>
+        <div class="preview-frame-wrap">
+          <iframe
+            id="previewFrame"
+            class="preview-frame"
+            title="超无穹内容预览"
+            loading="lazy"
+            src="./apps/nexus-os-3/index.html"
+          ></iframe>
+        </div>
+      </aside>
+    </section>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

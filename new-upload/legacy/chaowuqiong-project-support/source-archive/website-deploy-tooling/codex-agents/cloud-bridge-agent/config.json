@@ -1,0 +1,17 @@
+{
+  "name": "cloud-bridge-agent",
+  "version": "1.0.0",
+  "workspaceRoot": "D:\\网站部署",
+  "bridgeRoot": "D:\\网站部署\\cloud-bridge",
+  "server": {
+    "host": "115.190.158.182",
+    "user": "root",
+    "domain": "fhwhkj.top"
+  },
+  "focus": [
+    "ssh bridge",
+    "cloud deployment",
+    "pm2 and nginx verification",
+    "separate mysql rollout"
+  ]
+}

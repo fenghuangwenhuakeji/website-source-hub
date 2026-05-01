@@ -1,0 +1,1 @@
+export default { type: 'RestSite', icon: 'fire', chance: 0.1 };

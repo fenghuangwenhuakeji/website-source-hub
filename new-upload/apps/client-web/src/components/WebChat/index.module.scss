@@ -1,0 +1,980 @@
+@use '../../styles/cyberpunk.module.scss' as cyber;
+
+.webChat {
+  display: flex;
+  width: 100%;
+  min-height: 100dvh;
+  height: 100%;
+  background: radial-gradient(circle at 12% 18%, rgba(90, 212, 255, 0.12), transparent 45%),
+              radial-gradient(circle at 88% 80%, rgba(248, 209, 75, 0.14), transparent 40%),
+              cyber.$color-bg;
+  color: cyber.$color-text;
+  font-family: cyber.$font-family;
+  overflow: hidden;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  
+  // Scanline effect
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 100;
+  }
+}
+
+// Sidebar
+.sidebar {
+  width: 260px;
+  background: cyber.$color-surface;
+  border-right: 1px solid rgba(248, 209, 75, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.28);
+}
+
+.mobileBackdrop {
+  display: none;
+}
+
+.mobileHistoryBtn {
+  display: none;
+}
+
+.sidebarHeader {
+  padding: cyber.$spacing-lg;
+  background: linear-gradient(135deg, rgba(248, 209, 75, 0.95), rgba(90, 212, 255, 0.7));
+  color: #121214;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  
+  h2 {
+    font-size: cyber.$font-size-lg;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: skewX(cyber.$skew-angle);
+    margin: 0;
+  }
+}
+
+.newChatBtn {
+  @include cyber.cyber-button;
+  margin: cyber.$spacing-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: cyber.$spacing-sm;
+}
+
+.historyList {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-sm;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  padding: cyber.$spacing-sm cyber.$spacing-md;
+  margin-bottom: cyber.$spacing-xs;
+  background: cyber.$color-surface-elevated;
+  border: 1px solid rgba(248, 209, 75, 0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  
+  &:hover {
+    border-color: rgba(248, 209, 75, 0.35);
+    background: rgba(248, 209, 75, 0.14);
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.25);
+  }
+  
+  &.active {
+    border-left: 3px solid cyber.$color-accent;
+    background: rgba(248, 209, 75, 0.16);
+  }
+  
+  .historyTitle {
+    flex: 1;
+    font-size: cyber.$font-size-sm;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  
+  .historyActions {
+    display: flex;
+    gap: cyber.$spacing-xs;
+    opacity: 0;
+    transition: opacity cyber.$duration-fast;
+  }
+  
+  &:hover .historyActions {
+    opacity: 1;
+  }
+  
+  .actionBtn {
+    all: unset;
+    cursor: pointer;
+    padding: cyber.$spacing-xs;
+    color: cyber.$color-text-muted;
+    
+    &:hover {
+      color: cyber.$color-red;
+    }
+  }
+}
+
+.emptyHistory {
+  text-align: center;
+  padding: cyber.$spacing-xl;
+  color: cyber.$color-text-muted;
+  font-size: cyber.$font-size-sm;
+  transform: skewX(cyber.$skew-angle);
+}
+
+// Main Chat Area
+.chatArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: cyber.$color-bg;
+  position: relative;
+}
+
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: cyber.$spacing-md cyber.$spacing-lg;
+  background: cyber.$color-surface;
+  border-bottom: 1px solid rgba(248, 209, 75, 0.25);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  z-index: 10;
+  
+  .chatTitle {
+    font-size: cyber.$font-size-base;
+    font-weight: 700;
+    color: cyber.$color-accent;
+    transform: skewX(cyber.$skew-angle);
+    letter-spacing: 0.06em;
+  }
+  
+  .headerActions {
+    display: flex;
+    gap: cyber.$spacing-sm;
+    
+    button {
+      all: unset;
+      cursor: pointer;
+      padding: cyber.$spacing-xs cyber.$spacing-sm;
+      font-size: cyber.$font-size-xs;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: cyber.$color-text-secondary;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all cyber.$duration-fast;
+      
+      &:hover {
+        border-color: cyber.$color-accent;
+        color: cyber.$color-accent;
+      }
+    }
+  }
+}
+
+// Messages Container
+.messagesContainer {
+  flex: 1;
+  overflow-y: auto;
+  padding: cyber.$spacing-lg;
+  display: flex;
+  flex-direction: column;
+  gap: cyber.$spacing-lg;
+}
+
+.message {
+  display: flex;
+  gap: cyber.$spacing-md;
+  max-width: 80%;
+  
+  &.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+    
+    .messageContent {
+      background: linear-gradient(135deg, rgba(248, 209, 75, 0.95), rgba(90, 212, 255, 0.75));
+      color: #121214;
+      border-radius: 16px 16px 6px 16px;
+      clip-path: none;
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  &.assistant {
+    align-self: flex-start;
+    
+    .messageContent {
+      background: cyber.$color-surface;
+      border: 1px solid rgba(248, 209, 75, 0.2);
+      border-left: 3px solid cyber.$color-accent;
+      border-radius: 16px 16px 16px 6px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+.messageAvatar {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(31, 35, 50, 0.9), rgba(21, 24, 36, 0.95));
+  border: 1px solid rgba(248, 209, 75, 0.3);
+  color: cyber.$color-accent;
+  font-weight: 700;
+  font-size: cyber.$font-size-sm;
+  flex-shrink: 0;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+}
+
+.messageBody {
+  display: flex;
+  flex-direction: column;
+  gap: cyber.$spacing-xs;
+}
+
+.messageActions {
+  display: flex;
+  gap: cyber.$spacing-xs;
+  padding: 0 cyber.$spacing-md;
+  margin-top: cyber.$spacing-xs;
+
+  .actionBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: cyber.$spacing-xs cyber.$spacing-sm;
+    background: rgba(248, 209, 75, 0.12);
+    border: 1px solid rgba(248, 209, 75, 0.2);
+    color: rgba(248, 209, 75, 0.8);
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+
+    &:hover {
+      background: rgba(250, 234, 95, 0.2);
+      color: cyber.$color-accent;
+      border-color: cyber.$color-accent;
+    }
+  }
+}
+
+.messageContent {
+  padding: cyber.$spacing-md;
+  font-size: cyber.$font-size-base;
+  line-height: 1.8;
+  word-break: break-word;
+  white-space: pre-wrap;
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: cyber.$color-accent;
+    margin: cyber.$spacing-md 0 cyber.$spacing-sm;
+    font-weight: 700;
+    transform: skewX(cyber.$skew-angle);
+    
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+  
+  h1 { font-size: 1.5em; border-bottom: 1px solid rgba(250, 234, 95, 0.3); padding-bottom: cyber.$spacing-xs; }
+  h2 { font-size: 1.3em; }
+  h3 { font-size: 1.1em; }
+  
+  p {
+    margin: cyber.$spacing-sm 0;
+    
+    &:first-child { margin-top: 0; }
+    &:last-child { margin-bottom: 0; }
+  }
+  
+  strong {
+    color: cyber.$color-accent;
+    font-weight: 700;
+  }
+  
+  em {
+    color: rgba(250, 234, 95, 0.8);
+    font-style: italic;
+  }
+  
+  hr {
+    border: none;
+    border-top: 1px solid rgba(250, 234, 95, 0.3);
+    margin: cyber.$spacing-lg 0;
+  }
+  
+  pre {
+    background: #0a0a0f;
+    padding: 0;
+    border: 1px solid rgba(250, 234, 95, 0.3);
+    overflow: hidden;
+    margin: cyber.$spacing-md 0;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, cyber.$color-accent, transparent);
+    }
+    
+    code {
+      display: block;
+      padding: cyber.$spacing-md;
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      font-size: cyber.$font-size-sm;
+      line-height: 1.5;
+      overflow-x: auto;
+      color: #e0e0e0;
+    }
+  }
+  
+  code {
+    background: rgba(250, 234, 95, 0.1);
+    padding: 2px 8px;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 0.9em;
+    color: cyber.$color-accent;
+    border: 1px solid rgba(250, 234, 95, 0.2);
+  }
+}
+
+// Inline code
+.inlineCode {
+  background: rgba(250, 234, 95, 0.1);
+  padding: 2px 8px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  color: cyber.$color-accent;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+// Code block with header
+.codeBlock {
+  background: #0a0a0f;
+  border: 1px solid rgba(250, 234, 95, 0.3);
+  overflow: hidden;
+  margin: cyber.$spacing-md 0;
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, cyber.$color-accent, transparent);
+  }
+}
+
+.codeHeader {
+  background: rgba(250, 234, 95, 0.1);
+  padding: cyber.$spacing-xs cyber.$spacing-md;
+  font-size: cyber.$font-size-xs;
+  color: cyber.$color-accent;
+  border-bottom: 1px solid rgba(250, 234, 95, 0.2);
+  font-family: 'Consolas', monospace;
+}
+
+.preCode {
+  margin: 0;
+  padding: 0;
+  
+  code {
+    display: block;
+    padding: cyber.$spacing-md;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: cyber.$font-size-sm;
+    line-height: 1.5;
+    overflow-x: auto;
+    color: #e0e0e0;
+    background: transparent;
+    border: none;
+  }
+}
+
+// Links
+.link {
+  color: cyber.$color-cyan;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+  transition: all 0.2s;
+  
+  &:hover {
+    color: cyber.$color-accent;
+    border-bottom-color: cyber.$color-accent;
+  }
+}
+
+// Table
+.tableWrapper {
+  overflow-x: auto;
+  margin: cyber.$spacing-md 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: cyber.$font-size-sm;
+  
+  th, td {
+    padding: cyber.$spacing-sm cyber.$spacing-md;
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    text-align: left;
+  }
+  
+  th {
+    background: rgba(250, 234, 95, 0.1);
+    color: cyber.$color-accent;
+    font-weight: 700;
+  }
+  
+  tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+  }
+}
+
+// Lists
+.list {
+  margin: cyber.$spacing-sm 0;
+  padding-left: cyber.$spacing-xl;
+  
+  li {
+    margin: cyber.$spacing-xs 0;
+    
+    &::marker {
+      color: cyber.$color-accent;
+    }
+  }
+}
+
+// Blockquote
+.blockquote {
+  margin: cyber.$spacing-md 0;
+  padding: cyber.$spacing-sm cyber.$spacing-md;
+  border-left: 3px solid cyber.$color-accent;
+  background: rgba(250, 234, 95, 0.05);
+  color: rgba(255, 255, 255, 0.8);
+  font-style: italic;
+  
+  p {
+    margin: 0;
+  }
+}
+
+.messageTime {
+  font-size: cyber.$font-size-xs;
+  color: cyber.$color-text-muted;
+  margin-top: cyber.$spacing-xs;
+}
+
+// Thinking Indicator
+.thinking {
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  color: cyber.$color-accent;
+  font-size: cyber.$font-size-sm;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transform: skewX(cyber.$skew-angle);
+  
+  .dots {
+    display: flex;
+    gap: 4px;
+    
+    span {
+      width: 6px;
+      height: 6px;
+      background: cyber.$color-accent;
+      animation: blink 1.4s infinite;
+      
+      &:nth-child(2) { animation-delay: 0.2s; }
+      &:nth-child(3) { animation-delay: 0.4s; }
+    }
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+// Suggested Questions
+.suggestedQuestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: cyber.$spacing-sm;
+  padding: cyber.$spacing-md cyber.$spacing-lg;
+  border-top: 1px solid rgba(250, 234, 95, 0.1);
+  
+  .suggestedLabel {
+    width: 100%;
+    font-size: cyber.$font-size-xs;
+    color: cyber.$color-text-muted;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transform: skewX(cyber.$skew-angle);
+  }
+  
+  .questionBtn {
+    all: unset;
+    cursor: pointer;
+    padding: cyber.$spacing-xs cyber.$spacing-md;
+    font-size: cyber.$font-size-sm;
+    background: cyber.$color-surface-elevated;
+    border: 1px solid rgba(250, 234, 95, 0.2);
+    color: cyber.$color-text-secondary;
+    transition: all cyber.$duration-fast;
+    
+    &:hover {
+      border-color: cyber.$color-accent;
+      color: cyber.$color-accent;
+      background: cyber.$color-accent-dim;
+    }
+  }
+}
+
+// Input Area
+.inputArea {
+  padding: cyber.$spacing-md cyber.$spacing-lg;
+  background: cyber.$color-surface;
+  border-top: 1px solid rgba(250, 234, 95, 0.2);
+}
+
+.inputContainer {
+  display: flex;
+  gap: cyber.$spacing-md;
+  align-items: flex-end;
+}
+
+.textarea {
+  flex: 1;
+  @include cyber.cyber-input;
+  min-height: 60px;
+  max-height: 200px;
+  resize: vertical;
+}
+
+.sendBtn {
+  @include cyber.cyber-button;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+// Settings Modal
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: cyber.$color-surface;
+  border: 1px solid cyber.$color-accent;
+  box-shadow: 0 0 40px rgba(250, 234, 95, 0.2);
+  padding: cyber.$spacing-2xl;
+  min-width: 400px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  
+  h3 {
+    margin: 0 0 cyber.$spacing-lg;
+    color: cyber.$color-accent;
+    font-size: cyber.$font-size-xl;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transform: skewX(cyber.$skew-angle);
+  }
+}
+
+.formGroup {
+  margin-bottom: cyber.$spacing-md;
+  
+  label {
+    display: block;
+    margin-bottom: cyber.$spacing-xs;
+    color: cyber.$color-text-secondary;
+    font-size: cyber.$font-size-sm;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transform: skewX(cyber.$skew-angle);
+  }
+  
+  input,
+  select,
+  textarea {
+    @include cyber.cyber-input;
+    width: 100%;
+  }
+  
+  textarea {
+    min-height: 80px;
+    resize: vertical;
+  }
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: cyber.$spacing-sm;
+  margin-top: cyber.$spacing-xl;
+  
+  button {
+    &.saveBtn {
+      @include cyber.cyber-button;
+    }
+    
+    &.cancelBtn {
+      @include cyber.cyber-button-secondary;
+    }
+  }
+}
+
+// Test Connection Button
+.testBtn {
+  @include cyber.cyber-button-secondary;
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  width: 100%;
+  justify-content: center;
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.testResult {
+  display: flex;
+  align-items: center;
+  gap: cyber.$spacing-sm;
+  margin-top: cyber.$spacing-sm;
+  padding: cyber.$spacing-sm cyber.$spacing-md;
+  font-size: cyber.$font-size-sm;
+  
+  &.success {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid #22c55e;
+    color: #22c55e;
+  }
+  
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    color: #ef4444;
+  }
+}
+
+// Welcome Screen
+.welcomeScreen {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: cyber.$spacing-xl;
+  padding: cyber.$spacing-3xl;
+  text-align: center;
+  
+  .welcomeIcon {
+    font-size: 64px;
+    color: cyber.$color-accent;
+    filter: drop-shadow(0 0 20px rgba(250, 234, 95, 0.5));
+  }
+  
+  .welcomeTitle {
+    font-size: cyber.$font-size-2xl;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: cyber.$color-accent;
+    transform: skewX(cyber.$skew-angle);
+  }
+  
+  .welcomeText {
+    font-size: cyber.$font-size-base;
+    color: cyber.$color-text-secondary;
+    max-width: 400px;
+  }
+}
+
+// Loading
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  gap: cyber.$spacing-lg;
+  background: cyber.$color-bg;
+  color: cyber.$color-accent;
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(250, 234, 95, 0.2);
+    border-top-color: cyber.$color-accent;
+    animation: spin 0.8s linear infinite;
+    transform: skewX(-8deg);
+    box-shadow: 0 0 20px rgba(250, 234, 95, 0.3);
+  }
+
+  .loadingText {
+    font-size: cyber.$font-size-sm;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    animation: blink 1.2s ease-in-out infinite;
+    transform: skewX(cyber.$skew-angle);
+  }
+}
+
+// Streaming Cursor
+.streamingCursor {
+  display: inline-block;
+  color: cyber.$color-accent;
+  font-size: 1.2em;
+  animation: blink 0.8s ease-in-out infinite;
+  margin-left: 2px;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: skewX(-8deg) rotate(360deg);
+  }
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .historyActions {
+    opacity: 1;
+  }
+
+  .message {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 720px) {
+  .webChat {
+    flex-direction: column;
+    min-height: var(--mobile-viewport-height, 100dvh);
+    background:
+      radial-gradient(circle at 10% 12%, rgba(90, 212, 255, 0.12), transparent 42%),
+      radial-gradient(circle at 90% 82%, rgba(248, 209, 75, 0.14), transparent 38%),
+      cyber.$color-bg;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(86vw, 340px);
+    border-right: 1px solid rgba(250, 234, 95, 0.2);
+    border-bottom: none;
+    transform: translateX(-105%);
+    transition: transform 0.28s ease;
+    box-shadow: 24px 0 40px rgba(0, 0, 0, 0.32);
+    z-index: 40;
+  }
+
+  .sidebarMobileOpen {
+    transform: translateX(0);
+  }
+
+  .mobileBackdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    border: 0;
+    padding: 0;
+    background: rgba(6, 10, 18, 0.58);
+    z-index: 35;
+  }
+
+  .sidebarHeader {
+    padding: cyber.$spacing-md;
+  }
+
+  .historyList {
+    display: flex;
+    flex-direction: row;
+    gap: cyber.$spacing-sm;
+    overflow-x: auto;
+    padding-bottom: cyber.$spacing-sm;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .historyItem {
+    flex: 0 0 auto;
+    min-width: 180px;
+  }
+
+  .chatHeader {
+    flex-wrap: wrap;
+    gap: cyber.$spacing-sm;
+    padding: cyber.$spacing-sm cyber.$spacing-md;
+  }
+
+  .chatArea {
+    min-width: 0;
+  }
+
+  .mobileHistoryBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid rgba(90, 212, 255, 0.24);
+    background: rgba(255, 255, 255, 0.06);
+    color: cyber.$color-text;
+    border-radius: 999px;
+    padding: 8px 12px;
+    font-size: cyber.$font-size-sm;
+    font-weight: 600;
+  }
+
+  .messagesContainer {
+    padding: cyber.$spacing-md;
+    gap: cyber.$spacing-md;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .message {
+    max-width: 100%;
+  }
+
+  .messageAvatar {
+    width: 30px;
+    height: 30px;
+    font-size: cyber.$font-size-xs;
+  }
+
+  .messageContent {
+    font-size: cyber.$font-size-sm;
+  }
+
+  .inputArea {
+    padding: cyber.$spacing-sm cyber.$spacing-md;
+    padding-bottom: calc(cyber.$spacing-sm + env(safe-area-inset-bottom, 0));
+    background: linear-gradient(180deg, rgba(18, 18, 20, 0.12), rgba(18, 18, 20, 0.18));
+  }
+
+  .inputContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sendBtn {
+    width: 100%;
+    height: 42px;
+  }
+}
+
+@media (max-width: 480px) {
+  .webChat {
+    min-height: var(--mobile-viewport-height, 100dvh);
+  }
+
+  .chatArea {
+    min-width: 0;
+  }
+
+  .sidebarHeader h2 {
+    font-size: cyber.$font-size-base;
+  }
+
+  .historyItem {
+    min-width: 150px;
+    padding: cyber.$spacing-xs cyber.$spacing-sm;
+  }
+
+  .chatHeader .headerActions button {
+    padding: cyber.$spacing-xs;
+  }
+
+  .textarea {
+    min-height: 48px;
+  }
+}

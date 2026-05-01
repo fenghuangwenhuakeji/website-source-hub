@@ -1,0 +1,1 @@
+export default { id: 'book_sha', name: 'Tome of Shadows', effect: 'Learn a random Rogue card.' };

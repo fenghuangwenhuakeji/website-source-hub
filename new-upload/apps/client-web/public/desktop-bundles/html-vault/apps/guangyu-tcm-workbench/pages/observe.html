@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>观察台 - 光玉中医健康工作台</title>
+    <meta name="description" content="从寒热、睡眠、脾胃、大小便和舌象自述等入口整理线索。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .observe-main { padding-top: 0; padding-bottom: 120px; }
+        .observe-shell { display:grid; gap:20px; padding:0 16px 24px; }
+        .observe-grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:14px; }
+        .observe-card, .hero-card { display:grid; gap:14px; padding:20px; border-radius:28px; background:rgba(255,255,255,.84); border:1px solid rgba(255,255,255,.94); box-shadow: var(--ui-shadow-md); }
+        .observe-card h3, .hero-card h2 { font-size:22px; color: var(--ui-text); }
+        .observe-card p, .hero-card p { font-size:13px; line-height:1.85; color: var(--ui-text-soft); }
+        .observe-seed { min-height:42px; padding:0 16px; border-radius:16px; border:1px solid rgba(255,255,255,.92); background:rgba(255,255,255,.88); color: var(--ui-text); cursor:pointer; }
+        @media (max-width: 860px) { .observe-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="app-container">
+        <header class="page-header" style="padding:16px;">
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <div style="text-align:center;">
+                <h1 class="page-title">观察台</h1>
+                <p class="page-subtitle" style="margin-top:4px;">说不清时，先从可观察线索开始</p>
+            </div>
+            <a href="chat.html" class="back-btn"><i class="fas fa-comment-dots"></i></a>
+        </header>
+        <main class="content-section observe-main">
+            <div class="observe-shell">
+                <section class="hero-card">
+                    <h2>先把观察说清，比直接猜结论更稳。</h2>
+                    <p>这里不做诊断，只把寒热、睡眠、脾胃、大便、小便、情绪和舌象自述这些线索整理成可以带去 AI 解读页继续分析的话。</p>
+                    <div class="status-chip-row">
+                        <span class="status-chip local">观察入口</span>
+                        <span class="meta-chip"><strong>记录库</strong><span id="observeArchiveCount">0 份记录</span></span>
+                        <span class="meta-chip"><strong>边界</strong><span>非诊断</span></span>
+                    </div>
+                </section>
+
+                <section class="observe-grid">
+                    <article class="observe-card"><h3>寒热偏向</h3><p>更怕冷、手脚凉，还是口干烦热、夜里偏热？</p><button class="observe-seed" type="button" data-msg="我想先整理一下自己的寒热偏向，最近更明显的是怕冷手脚凉，还是口干烦热。">带去 AI 解读</button></article>
+                    <article class="observe-card"><h3>睡眠线索</h3><p>入睡困难、夜醒、多梦，还是醒来以后不恢复？</p><button class="observe-seed" type="button" data-msg="我想先整理睡眠线索，帮我看看入睡、夜醒和醒后恢复感之间有没有关系。">带去 AI 解读</button></article>
+                    <article class="observe-card"><h3>脾胃与食后反应</h3><p>饭后困胀、反酸、没胃口，还是饿得很乱？</p><button class="observe-seed" type="button" data-msg="我想先整理脾胃线索，最近更明显的是饭后困胀、反酸，还是食欲和饭点都乱了。">带去 AI 解读</button></article>
+                    <article class="observe-card"><h3>大小便线索</h3><p>大便偏稀、黏、干、排不尽，小便颜色和频次有没有变化？</p><button class="observe-seed" type="button" data-msg="我想先从大便和小便的变化看线索，帮我整理一下这些观察点。">带去 AI 解读</button></article>
+                    <article class="observe-card"><h3>情绪与身体</h3><p>情绪上来时，是胸口堵、叹气、胃口差，还是睡不稳？</p><button class="observe-seed" type="button" data-msg="我想先整理情绪和身体的联动，最近最明显的是胸闷、叹气、睡不稳还是胃口变差。">带去 AI 解读</button></article>
+                    <article class="observe-card"><h3>舌象自述</h3><p>如果你观察过舌头，可以只描述颜色、胖瘦、齿痕、苔厚薄和苔色。</p><button class="observe-seed" type="button" data-msg="我想先做舌象自述整理，你可以引导我按颜色、胖瘦、齿痕和舌苔来描述。">带去 AI 解读</button></article>
+                </section>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="test.html" class="nav-item"><i class="fas fa-clipboard-list"></i><span>评估</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI解读</span></a>
+            <a href="observe.html" class="nav-item active"><i class="fas fa-eye"></i><span>观察</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-folder-open"></i><span>档案</span></a>
+        </nav>
+    </div>
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-observe.js"></script>
+</body>
+</html>

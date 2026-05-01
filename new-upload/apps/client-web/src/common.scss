@@ -1,0 +1,194 @@
+:root {
+  --ui-font: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --ui-font-alt: "PingFang SC", "Noto Serif SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+  --ui-font-mono: "JetBrains Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+  --ui-radius-1: 12px;
+  --ui-radius-2: 18px;
+  --ui-radius-3: 28px;
+  --ui-glow: 0 20px 56px rgba(124, 58, 237, 0.22);
+  --app-shell-solid: #070b16;
+  --app-shell-background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.26), transparent 30%),
+    radial-gradient(circle at top right, rgba(34, 211, 238, 0.18), transparent 28%),
+    radial-gradient(circle at bottom left, rgba(244, 114, 182, 0.14), transparent 26%),
+    linear-gradient(180deg, #050814 0%, #0b1220 58%, #111a2d 100%);
+  --app-shell-text: #e6eefc;
+  --app-shell-text-secondary: rgba(226, 232, 240, 0.84);
+  --app-shell-text-tertiary: rgba(203, 213, 225, 0.72);
+  --app-shell-text-muted: rgba(148, 163, 184, 0.82);
+  --app-shell-surface: rgba(8, 13, 24, 0.72);
+  --app-shell-surface-strong: rgba(9, 15, 26, 0.84);
+  --app-shell-surface-elevated: rgba(12, 18, 32, 0.92);
+  --app-shell-surface-soft: rgba(255, 255, 255, 0.05);
+  --app-shell-muted: rgba(226, 232, 240, 0.68);
+  --app-shell-border: rgba(148, 163, 184, 0.16);
+  --app-shell-border-strong: rgba(148, 163, 184, 0.24);
+  --app-shell-accent: #7c3aed;
+  --app-shell-accent-2: #22d3ee;
+  --app-shell-accent-3: #f472b6;
+  --app-shell-shadow: 0 20px 56px rgba(2, 6, 23, 0.3);
+  --app-shell-shadow-strong: 0 26px 72px rgba(2, 6, 23, 0.36);
+  --app-shell-glow: rgba(124, 58, 237, 0.22);
+  --app-shell-glow-2: rgba(34, 211, 238, 0.16);
+  --app-shell-success: #34d399;
+  --app-shell-warning: #fbbf24;
+  --app-shell-danger: #fb7185;
+  --ant-colorText: #e6eefc;
+  --ant-colorTextSecondary: rgba(226, 232, 240, 0.84);
+  --ant-colorTextTertiary: rgba(203, 213, 225, 0.72);
+  --ant-colorTextDescription: rgba(226, 232, 240, 0.74);
+  --ant-colorTextHeading: #f8fafc;
+  --ant-colorIcon: #cbd5e1;
+  --ant-colorIconHover: #f8fafc;
+  --ant-colorBorder: rgba(148, 163, 184, 0.16);
+  --ant-colorBorderSecondary: rgba(148, 163, 184, 0.12);
+  --ant-colorBgContainer: rgba(8, 13, 24, 0.78);
+  --ant-colorBgElevated: rgba(12, 18, 32, 0.94);
+  --ant-colorPrimary: #7c3aed;
+  --ant-colorPrimaryHover: #22d3ee;
+  --ant-colorInfo: #22d3ee;
+  --ant-colorSuccess: #34d399;
+  --ant-colorWarning: #fbbf24;
+  --ant-colorError: #fb7185;
+}
+
+html[data-fenghuang-theme='dark'],
+body[data-fenghuang-theme='dark'] {
+  --app-shell-solid: #050814;
+  --app-shell-background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.30), transparent 28%),
+    radial-gradient(circle at right top, rgba(34, 211, 238, 0.20), transparent 26%),
+    radial-gradient(circle at bottom right, rgba(244, 114, 182, 0.16), transparent 24%),
+    linear-gradient(180deg, #030611 0%, #0a1020 58%, #111827 100%);
+  --app-shell-text: #f4f7ff;
+  --app-shell-text-secondary: rgba(226, 232, 240, 0.88);
+  --app-shell-text-tertiary: rgba(203, 213, 225, 0.74);
+  --app-shell-text-muted: rgba(148, 163, 184, 0.86);
+  --app-shell-surface: rgba(8, 13, 24, 0.78);
+  --app-shell-surface-strong: rgba(9, 15, 26, 0.9);
+  --app-shell-surface-elevated: rgba(12, 18, 32, 0.96);
+  --app-shell-surface-soft: rgba(255, 255, 255, 0.06);
+  --app-shell-muted: rgba(226, 232, 240, 0.74);
+  --app-shell-border: rgba(148, 163, 184, 0.18);
+  --app-shell-border-strong: rgba(148, 163, 184, 0.28);
+  --app-shell-shadow: 0 24px 64px rgba(2, 6, 23, 0.34);
+  --app-shell-shadow-strong: 0 30px 84px rgba(2, 6, 23, 0.4);
+  --app-shell-glow: rgba(124, 58, 237, 0.28);
+  --app-shell-glow-2: rgba(34, 211, 238, 0.2);
+  --ant-colorText: #f4f7ff;
+  --ant-colorTextSecondary: rgba(226, 232, 240, 0.88);
+  --ant-colorTextTertiary: rgba(203, 213, 225, 0.74);
+  --ant-colorTextDescription: rgba(226, 232, 240, 0.82);
+  --ant-colorTextHeading: #f8fafc;
+  --ant-colorIcon: #cbd5e1;
+  --ant-colorIconHover: #f8fafc;
+  --ant-colorBorder: rgba(148, 163, 184, 0.18);
+  --ant-colorBorderSecondary: rgba(148, 163, 184, 0.14);
+  --ant-colorBgContainer: rgba(8, 13, 24, 0.84);
+  --ant-colorBgElevated: rgba(12, 18, 32, 0.96);
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--app-shell-solid);
+}
+
+html {
+  background: var(--app-shell-background);
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+}
+
+body {
+  background: var(--app-shell-background);
+  color: var(--app-shell-text);
+  font-family: var(--ui-font);
+  overflow-x: hidden;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 70% 30%, rgba(255, 255, 255, 0.08) 0 1px, transparent 1.5px),
+    radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.07) 0 1px, transparent 1.5px);
+  background-size: 220px 220px, 280px 280px, 340px 340px;
+  opacity: 0.6;
+  mix-blend-mode: screen;
+}
+
+body::after {
+  background:
+    radial-gradient(circle at top left, var(--app-shell-glow), transparent 30%),
+    radial-gradient(circle at bottom right, var(--app-shell-glow-2), transparent 28%);
+  filter: blur(12px);
+}
+
+#root {
+  background: transparent;
+  isolation: isolate;
+  position: relative;
+  z-index: 1;
+}
+
+html.route-scroll-page,
+body.route-scroll-page,
+#root.route-scroll-page {
+  height: auto !important;
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: scroll !important;
+  scroll-behavior: smooth;
+}
+
+body.route-scroll-page {
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(124, 58, 237, 0.46) rgba(148, 163, 184, 0.08);
+}
+
+body.route-scroll-page::-webkit-scrollbar {
+  width: 12px;
+}
+
+body.route-scroll-page::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+body.route-scroll-page::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.6), rgba(34, 211, 238, 0.52));
+  background-clip: padding-box;
+}
+
+.glass-panel,
+.phoenix-glass {
+  background: var(--app-shell-surface);
+  border: 1px solid var(--app-shell-border);
+  box-shadow: var(--app-shell-shadow);
+  backdrop-filter: blur(20px);
+}
+
+.phoenix-gradient-text {
+  background: linear-gradient(135deg, #f8fafc 0%, var(--app-shell-accent) 48%, var(--app-shell-accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

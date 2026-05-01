@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>第四种融合思路</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">第四种融合</p>
+        <h1>小说、剧本、分镜、情绪的融合中台</h1>
+        <p>这页不再空着，而是专门用来把创作来源、改编方向、角色关系和镜头推进拼成一套融合方案。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">融合流程</span>
+        <span class="pill">改编桥接</span>
+        <span class="pill">镜头推进</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>融合输入</h2><p>说明来源内容、想保留的部分和要突出的表达方式。</p></div></div>
+        <form id="workspace-form" class="form-grid">
+          <label class="field"><span>原始内容</span><input name="source" placeholder="例如：复仇小说第一卷"></label>
+          <label class="field"><span>想改成什么</span><input name="target" placeholder="例如：12 集漫剧"></label>
+          <label class="field"><span>人物主矛盾</span><input name="conflict" placeholder="例如：亲手复仇还是保住妹妹"></label>
+          <label class="field"><span>视觉关键词</span><input name="visual" placeholder="例如：霓虹、湿雨、狭窄长巷"></label>
+          <label class="field"><span>补充说明</span><textarea name="notes" placeholder="这里写你绝对不能删掉的桥段或情绪。"></textarea></label>
+        </form>
+        <div class="button-row">
+          <button id="generate-button" class="primary-btn" type="button">生成融合方案</button>
+          <button id="reset-button" class="ghost-btn" type="button">清空草稿</button>
+        </div>
+      </div></section>
+
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>融合结果</h2><p id="result-summary">把叙事、改编和镜头语言接成一套能继续执行的方案。</p></div><span id="status-text" class="pill">等待生成</span></div>
+        <div id="result-grid" class="result-grid"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initGeneratorPage({
+        storageKey: 'fh-fenghuang-fourth-idea',
+        summary: '把叙事、改编和镜头语言接成一套能继续执行的方案。',
+        generate(data) {
+          return [
+            { title: '叙事层', bullets: [`从《${data.source || '原始内容'}》里只保留最强主线：${data.conflict || '核心冲突'}`, `改编目标锁定为：${data.target || '新的表现形式'}`, '每一集或每一幕只承载一个推进目标，不让信息淹没情绪。'] },
+            { title: '人物层', bullets: ['主角负责拉动主线，副角色负责制造代价和情绪反差。', `把“${data.notes || '不能删掉的桥段'}”放在人物关系最尖锐的位置。`, '所有人物转折都必须和主矛盾产生新的冲撞。'] },
+            { title: '镜头层', bullets: [`画面气质围绕：${data.visual || '高反差的视觉意象'}`, '镜头推进遵循“远景定局势，中景推关系，近景杀情绪”。', '高潮段落至少安排一次视觉重复，让观众感受到主题闭环。'] },
+            { title: '落地动作', bullets: ['先写剧本摘要，再拆场景，再拆分镜，不要反过来。', '每完成一轮改编，就重新检查主线是否还在发力。', '如果后续需要继续细化，可以把这里直接作为制作说明。'] },
+          ];
+        },
+      });
+    });
+  </script>
+</body>
+</html>

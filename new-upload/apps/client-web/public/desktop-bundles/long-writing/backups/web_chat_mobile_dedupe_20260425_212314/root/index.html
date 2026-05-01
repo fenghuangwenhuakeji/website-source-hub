@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#050505">
+    <title>AI 写作中心 - 创世旗舰版 (Genesis Archon Ultimate)</title>
+    <link href="assets/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="css/mobile.css?v=mobile-content-v11" rel="stylesheet">
+    <script src="assets/js/marked.min.js"></script>
+    <script src="assets/js/echarts.min.js"></script>
+    <script src="assets/js/jszip.min.js"></script>
+    <script src="assets/js/epub.min.js"></script>
+    <script src="assets/js/pdf.min.js"></script>
+    <script src="assets/js/vis-network.min.js"></script>
+    <script src="assets/js/3d-force-graph.min.js"></script>
+    <!-- Tailwind CSS (Local) -->
+    <script src="assets/js/tailwindcss.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                accent: '#ffd700',
+                                dim: '#888888',
+                                main: '#f2f2f2',
+                                panel: 'rgba(18, 18, 20, 0.7)',
+                                border: 'rgba(255, 255, 255, 0.08)'
+                            },
+                            fontFamily: {
+                                mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                            },
+                            animation: {
+                                'fade-in': 'fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                                'spin-slow': 'spin 3s linear infinite',
+                            },
+                            keyframes: {
+                                fadeIn: {
+                                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</head>
+<body>
+
+<div id="toast-area" style="z-index: 9999;"></div>
+
+<!-- Mobile Header -->
+<div class="mobile-header" id="mobile-header">
+    <button class="mobile-hamburger" id="mobile-hamburger" onclick="App.toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="mobile-title" id="mobile-title" onclick="App.nav('home')">创世中心</div>
+    <button class="mobile-home-btn" onclick="App.nav('home')">
+        <i class="fa-solid fa-dragon"></i>
+    </button>
+</div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="App.closeMobileMenu()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-item active" onclick="App.nav('home')" title="首页"><i class="fa-solid fa-dragon text-accent"></i><span>创世中心</span></div>
+    <div class="sidebar-divider"></div>
+    
+    <!-- Core Writing Pipeline -->
+    <div class="sidebar-item" onclick="App.nav('project_manager')" title="项目管理"><i class="fa-solid fa-layer-group text-accent"></i><span>项目管理</span></div>
+    <div class="sidebar-item" onclick="App.nav('phoenix')" title="凤凰创作流"><i class="fa-solid fa-fire-flame-curved"></i><span>凤凰创作流</span></div>
+    <div class="sidebar-item" onclick="App.nav('writer')" title="长篇执笔"><i class="fa-solid fa-feather-pointed"></i><span>长篇执笔 (旗舰)</span></div>
+    <div class="sidebar-item" onclick="App.nav('world_engine')" title="世界引擎"><i class="fa-solid fa-atom"></i><span>世界引擎</span></div>
+    <div class="sidebar-item" onclick="App.nav('fusion_book')" title="融合拆书"><i class="fa-solid fa-book-open-reader"></i><span>融合拆书</span></div>
+    <div class="sidebar-item" onclick="App.nav('fusion_workbench')" title="拆书工作台"><i class="fa-solid fa-table-columns"></i><span>拆书工作台</span></div>
+    <div class="sidebar-item" onclick="App.nav('creative_studio')" title="创意工坊"><i class="fa-solid fa-wand-magic-sparkles"></i><span>创意工坊</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+    <!-- 万能工坊 & 工具中心 -->
+    <div class="sidebar-item" onclick="App.nav('workshop')" title="万能工坊"><i class="fa-solid fa-hammer"></i><span>万能工坊</span></div>
+    <div class="sidebar-item" onclick="App.nav('tools_center')" title="工具中心"><i class="fa-solid fa-toolbox"></i><span>工具中心</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+    <!-- Context System -->
+    <div class="sidebar-item" onclick="App.nav('rag_context')" title="RAG上下文"><i class="fa-solid fa-magnifying-glass-chart"></i><span>RAG 上下文</span></div>
+    <div class="sidebar-item" onclick="App.nav('memory_system')" title="三层记忆"><i class="fa-solid fa-brain"></i><span>三层记忆</span></div>
+
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Simulation & Specialized -->
+    
+    <div class="sidebar-item" onclick="App.nav('reader_center')" title="阅读中心"><i class="fa-solid fa-book-open"></i><span>阅读中心</span></div>
+    <div class="sidebar-item" onclick="App.nav('web_chat')" title="网页对话"><i class="fa-solid fa-comments"></i><span>网页对话</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+
+    <div style="flex:1"></div>
+    <!-- 本地同步状态指示器 -->
+    <div id="local-sync-indicator" class="items-center gap-1 px-3 py-1.5 cursor-pointer hover:bg-white/5 rounded-lg mx-1" style="display:none" onclick="App.nav('settings');setTimeout(()=>Modules.settings.switchTab('data'),100)" title="本地同步状态"></div>
+    <div class="sidebar-item" onclick="App.nav('settings')" title="设置"><i class="fa-solid fa-gear"></i><span>系统设置</span></div>
+    <div class="sidebar-item" onclick="App.toggleSidebar()" title="折叠/展开" id="sidebar-toggle-btn"><i class="fa-solid fa-angles-left" id="sidebar-toggle-icon"></i><span>收起导航</span></div>
+</div>
+
+<!-- Main Viewport -->
+<div class="viewport" id="viewport">
+    <!-- Dynamic Content -->
+</div>
+
+<!-- Core Scripts -->
+<script src="assets/js/core/db.js"></script>
+<script src="assets/js/core/utils.js"></script>
+<script src="assets/js/core/ui.js"></script>
+<script src="assets/js/core/ai.js"></script>
+<script src="assets/js/core/ai_multimodal.js"></script>
+<script src="assets/js/modules/theme_engine.js"></script>
+
+<!-- Genesis Core — 项目中枢 (必须在 base 之前) -->
+<script src="assets/js/modules/genesis_core.js"></script>
+<script src="assets/js/modules_split/core_path_hub.js"></script>
+
+<!-- Modules -->
+<script src="assets/js/modules/base.js"></script>
+
+<!-- Project Manager -->
+<script src="assets/js/modules_split/project_manager/project_manager.js"></script>
+
+<!-- Writer (Split) -->
+<script src="assets/js/modules_split/writer/writer_core.js"></script>
+<script src="assets/js/modules_split/writer/writer_tree.js"></script>
+<script src="assets/js/modules_split/writer/writer_rag.js"></script>
+<script src="assets/js/modules_split/writer/writer_ai.js"></script>
+<script src="assets/js/modules_split/writer/writer_batch.js"></script>
+<script src="assets/js/modules_split/writer/writer_panel.js"></script>
+<script src="assets/js/modules_split/writer/writer_review.js"></script>
+<script src="assets/js/modules_split/writer/writer_consistency.js"></script>
+<script src="assets/js/modules_split/writer/writer_rhythm.js"></script>
+
+<!-- Phoenix (Split) -->
+<script src="assets/js/modules_split/phoenix/phoenix_core.js"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_step1.js"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_step2.js"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_ai.js"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_finish.js"></script>
+
+<!-- World Engine (Split) -->
+<script src="assets/js/modules_split/world/world_core.js"></script>
+<script src="assets/js/modules_split/world/world_dashboard.js"></script>
+<script src="assets/js/modules_split/world/world_graph.js"></script>
+<script src="assets/js/modules_split/world/world_chapters.js"></script>
+<script src="assets/js/modules_split/world/world_import.js"></script>
+<script src="assets/js/modules_split/world/world_novel_import.js"></script>
+<script src="assets/js/modules_split/world/world_pipeline.js"></script>
+
+<!-- Fusion Book (Split) -->
+<script src="assets/js/modules_split/fusion_book/fusion_book_core.js"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_extract.js"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_pipeline.js"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_consistency.js"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_export.js"></script>
+
+<!-- Library / Reader Center (Split) -->
+<script src="assets/js/modules_split/library/library_core.js"></script>
+<script src="assets/js/modules_split/library/library_reader.js"></script>
+<script src="assets/js/modules_split/library/library_chat.js"></script>
+
+<!-- RAG (Split) -->
+<script src="assets/js/modules_split/rag/rag_core.js"></script>
+<script src="assets/js/modules_split/rag/rag_advanced.js"></script>
+
+<!-- Tools Center (Split) -->
+<script src="assets/js/modules_split/tools_center/tools_center_core.js"></script>
+<script src="assets/js/modules_split/tools_center/tools_center_workflow.js"></script>
+
+<!-- Web Chat (Split) -->
+<script src="assets/js/modules_split/web_chat/web_chat_core.js?v=webchat-master-sync-hotfix-v2"></script>
+<script src="assets/js/modules_split/web_chat/web_chat_ai.js"></script>
+
+<!-- Creative Studio (Split) -->
+<script src="assets/js/modules_split/creative/creative_core.js"></script>
+<script src="assets/js/modules_split/creative/creative_inspiration.js"></script>
+<script src="assets/js/modules_split/creative/creative_short.js"></script>
+<script src="assets/js/modules_split/creative/creative_brainstorm.js"></script>
+<script src="assets/js/modules_split/creative/creative_deai.js"></script>
+<script src="assets/js/modules_split/creative/creative_generators.js"></script>
+<script src="assets/js/modules_split/creative/creative_deconstruct.js"></script>
+<script src="assets/js/modules_split/creative/creative_storyboard.js"></script>
+<script src="assets/js/modules_split/creative/creative_comic.js"></script>
+<script src="assets/js/modules_split/creative/creative_visual.js"></script>
+<script src="assets/js/modules_split/creative/creative_video.js"></script>
+<script src="assets/js/modules_split/creative/creative_drama.js"></script>
+<script src="assets/js/modules_split/creative/creative_lookbook.js"></script>
+<script src="assets/js/modules_split/creative/creative_platform.js"></script>
+<script src="assets/js/modules_split/creative/creative_trends.js"></script>
+
+<!-- Toolbox (Split) -->
+<script src="assets/js/modules_split/toolbox/toolbox_core.js"></script>
+<script src="assets/js/modules_split/toolbox/toolbox_fusion.js"></script>
+<script src="assets/js/modules_split/toolbox/toolbox_tools.js"></script>
+
+<!-- Settings (Split) -->
+<script src="assets/js/modules_split/settings/settings_core.js"></script>
+<script src="assets/js/modules_split/settings/settings_theme.js"></script>
+<script src="assets/js/modules_split/settings/settings_typography.js"></script>
+<script src="assets/js/modules_split/settings/settings_api_pool.js?v=api-master-sync-hotfix-v2"></script>
+<script src="assets/js/modules_split/settings/settings_creative.js"></script>
+<script src="assets/js/modules_split/settings/settings_api.js"></script>
+<script src="assets/js/modules_split/settings/settings_data.js"></script>
+
+<!-- Memory (Split) -->
+<script src="assets/js/modules_split/memory/memory_core.js"></script>
+<script src="assets/js/modules_split/memory/memory_working.js"></script>
+<script src="assets/js/modules_split/memory/memory_longterm.js"></script>
+
+<!-- Fusion Workbench (Split) -->
+<script src="assets/js/modules_split/fusion_workbench/fwb_core.js"></script>
+<script src="assets/js/modules_split/fusion_workbench/fwb_tabs.js"></script>
+<script src="assets/js/modules_split/fusion_workbench/fwb_actions.js"></script>
+
+<!-- Unsplit Modules -->
+<script src="assets/js/modules/rag_ui.js"></script>
+<script src="assets/js/modules/memory_ui.js"></script>
+<script src="assets/js/modules/mobile_engine.js?v=mobile-content-v1"></script>
+
+<!-- App Entry -->
+<script src="assets/js/core/app.js?v=mobile-content-v1"></script>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+    "deprecatedPatterns":  [
+
+                           ],
+    "strengths":  [
+                      "database",
+                      "integrity",
+                      "migration"
+                  ],
+    "upgradeQueue":  [
+
+                     ],
+    "version":  1
+}

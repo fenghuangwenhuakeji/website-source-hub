@@ -1,0 +1,43 @@
+:root {
+    /* 核心色板 - 暗色模式默认 */
+    --color-bg: #050505;
+    --color-panel: rgba(18, 18, 20, 0.95);
+    --color-border: rgba(255, 255, 255, 0.08);
+    --color-main: #f2f2f2;
+    --color-dim: #888888;
+    --color-accent: #ffd700;
+    --color-danger: #ff4444;
+    --color-success: #00cc88;
+
+    /* 布局尺寸 */
+    --header-height: 50px;
+    --sidebar-width: 280px;
+    --mobile-nav-height: 60px;
+    
+    /* 动画 */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 移动端特定变量 */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 100%;
+    }
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

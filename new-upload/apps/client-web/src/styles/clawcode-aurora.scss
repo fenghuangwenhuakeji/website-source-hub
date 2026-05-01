@@ -1,0 +1,1473 @@
+// ==================== Claw Code Aurora 极光设计系统 ====================
+// 现代化的 Claw Code 面板样式
+
+@use './aurora-design-system.scss' as aurora;
+
+// ==================== Claw Code 主面板 ====================
+
+.clawCodePanel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  background: aurora.$bg-dark;
+  border-left: 1px solid aurora.$border-subtle;
+}
+
+// 面板头部
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-4;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  .headerLeft {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-3;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+      filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.5));
+    }
+
+    span {
+      font-size: 15px;
+      font-weight: 700;
+      color: aurora.$text-primary;
+      letter-spacing: -0.3px;
+    }
+
+    .versionBadge {
+      padding: 2px 8px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+      border-radius: aurora.$radius-full;
+      font-size: 10px;
+      color: aurora.$aurora-primary-light;
+      font-weight: 600;
+    }
+  }
+
+  .headerActions {
+    display: flex;
+    gap: aurora.$space-2;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: aurora.$radius-lg;
+      color: aurora.$text-tertiary;
+      cursor: pointer;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+
+      &:hover {
+        background: rgba(99, 102, 241, 0.15);
+        border-color: rgba(99, 102, 241, 0.3);
+        color: aurora.$aurora-primary-light;
+        transform: translateY(-1px);
+      }
+
+      svg {
+        width: 14px;
+        height: 14px;
+      }
+    }
+  }
+}
+
+// 视图标签页
+.viewTabs {
+  display: flex;
+  gap: aurora.$space-1;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid aurora.$border-subtle;
+  overflow-x: auto;
+  @include aurora.aurora-scrollbar;
+}
+
+.viewTab {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+  padding: aurora.$space-2 aurora.$space-3;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: aurora.$radius-lg;
+  color: aurora.$text-tertiary;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: aurora.$text-secondary;
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.3);
+    color: aurora.$aurora-primary-light;
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .tabBadge {
+    padding: 2px 6px;
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: aurora.$radius-full;
+    font-size: 10px;
+    color: aurora.$aurora-primary-light;
+    font-weight: 600;
+  }
+
+  .runtimeIndicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: aurora.$text-tertiary;
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: aurora.$text-tertiary;
+      border-radius: 50%;
+    }
+
+    &.running {
+      color: #4ade80;
+
+      .dot {
+        background: #4ade80;
+        box-shadow: 0 0 8px #4ade80;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+    }
+  }
+}
+
+// 视图内容
+.viewContent {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+// ==================== 运行时视图 ====================
+
+.clawCodeRuntime {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+// 系统面板
+.systemPanelEnhanced {
+  background: aurora.$bg-elevated;
+  border: 1px solid aurora.$border-subtle;
+  border-radius: aurora.$radius-xl;
+  overflow: hidden;
+  margin: aurora.$space-3;
+  box-shadow: aurora.$shadow-xl;
+
+  &.collapsed {
+    .systemPanelContentEnhanced {
+      display: none;
+    }
+  }
+}
+
+.systemPanelHeaderEnhanced {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-4;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  &:hover {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.12) 0%, transparent 100%);
+  }
+
+  svg {
+    color: aurora.$aurora-primary-light;
+  }
+
+  span {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+  }
+
+  .badge {
+    padding: 2px 8px;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: aurora.$radius-full;
+    font-size: 10px;
+    color: aurora.$aurora-primary-light;
+  }
+}
+
+.systemPanelContentEnhanced {
+  padding: aurora.$space-4;
+}
+
+.systemStatsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: aurora.$space-3;
+  margin-bottom: aurora.$space-4;
+}
+
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: aurora.$space-3;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-lg;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  }
+
+  .statIcon {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: aurora.$text-tertiary;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    svg {
+      width: 12px;
+      height: 12px;
+      color: aurora.$aurora-primary-light;
+    }
+  }
+
+  .statValue {
+    font-size: 20px;
+    font-weight: 700;
+    color: aurora.$aurora-primary-light;
+  }
+
+  .statDetail {
+    font-size: 10px;
+    color: aurora.$text-tertiary;
+  }
+}
+
+.systemConfigEnhanced {
+  display: flex;
+  flex-wrap: wrap;
+  gap: aurora.$space-3;
+  padding-top: aurora.$space-4;
+  border-top: 1px solid aurora.$border-subtle;
+}
+
+.configToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: aurora.$radius-full;
+  font-size: 11px;
+  color: aurora.$text-secondary;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.25);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: aurora.$aurora-primary-light;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+    }
+  }
+
+  input[type="checkbox"] {
+    display: none;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: aurora.$text-tertiary;
+  }
+}
+
+// 运行时头部
+.runtimeHeaderEnhanced {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-4;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+}
+
+.statusBarEnhanced {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-6;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid aurora.$border-subtle;
+  font-size: 11px;
+}
+
+.statusItemEnhanced {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: aurora.$text-secondary;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: aurora.$aurora-primary-light;
+  }
+
+  &.processing {
+    color: #4ade80;
+
+    svg {
+      color: #4ade80;
+      animation: spin 1s linear infinite;
+    }
+  }
+}
+
+// 输入区域
+.inputSectionEnhanced {
+  display: flex;
+  flex-direction: column;
+  padding: aurora.$space-4;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(99, 102, 241, 0.03) 100%);
+  border-top: 1px solid aurora.$border-subtle;
+  border-bottom: 1px solid aurora.$border-subtle;
+}
+
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-3;
+}
+
+.inputTextareaEnhanced {
+  width: 100%;
+  min-height: 80px;
+  max-height: 200px;
+  padding: aurora.$space-4;
+  background: aurora.$bg-elevated;
+  border: 1px solid aurora.$border-subtle;
+  border-radius: aurora.$radius-lg;
+  color: aurora.$text-primary;
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:focus {
+    outline: none;
+    border-color: rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1), 0 0 20px rgba(99, 102, 241, 0.1);
+  }
+
+  &::placeholder {
+    color: aurora.$text-tertiary;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.inputToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.inputHintEnhanced {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: aurora.$text-tertiary;
+
+  kbd {
+    padding: 2px 6px;
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: aurora.$radius-sm;
+    font-family: inherit;
+    font-size: 10px;
+    color: aurora.$aurora-primary-light;
+  }
+}
+
+.inputActionsEnhanced {
+  display: flex;
+  gap: aurora.$space-3;
+}
+
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: aurora.$radius-lg;
+  color: aurora.$text-primary;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(139, 92, 246, 0.2) 100%);
+    border-color: rgba(99, 102, 241, 0.4);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.primary {
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.25) 100%);
+    border-color: rgba(99, 102, 241, 0.45);
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.45) 0%, rgba(139, 92, 246, 0.35) 100%);
+      border-color: rgba(99, 102, 241, 0.55);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+    }
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+// 路由匹配区域
+.matchesSectionEnhanced {
+  padding: aurora.$space-4;
+  background: rgba(99, 102, 241, 0.03);
+  border-bottom: 1px solid aurora.$border-subtle;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(99, 102, 241, 0.05);
+  border-bottom: 1px solid aurora.$border-subtle;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+  }
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+    }
+  }
+
+  svg {
+    color: aurora.$text-tertiary;
+  }
+}
+
+.matchesListEnhanced {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  padding: aurora.$space-3;
+  max-height: 200px;
+  overflow-y: auto;
+  @include aurora.aurora-scrollbar;
+}
+
+.matchItemEnhanced {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-lg;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateX(4px);
+  }
+
+  &.highConfidence {
+    border-left: 3px solid #4ade80;
+  }
+
+  .matchKind {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: aurora.$radius-md;
+    color: aurora.$aurora-primary-light;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+
+  .matchName {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: aurora.$text-primary;
+  }
+
+  .matchConfidence {
+    padding: 2px 6px;
+    border-radius: aurora.$radius-sm;
+    font-size: 10px;
+    font-weight: 600;
+
+    &.high {
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+    }
+
+    &.medium {
+      background: rgba(99, 102, 241, 0.15);
+      color: aurora.$aurora-primary-light;
+    }
+
+    &.low {
+      background: rgba(255, 255, 255, 0.05);
+      color: aurora.$text-tertiary;
+    }
+  }
+
+  .matchScore {
+    font-size: 11px;
+    color: aurora.$text-tertiary;
+    font-weight: 600;
+  }
+
+  .matchSource {
+    font-size: 10px;
+    color: aurora.$text-tertiary;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+// 输出区域
+.outputSectionEnhanced {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.outputHeaderEnhanced {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(99, 102, 241, 0.05);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+    }
+
+    .count {
+      padding: 2px 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border-radius: aurora.$radius-full;
+      font-size: 10px;
+      color: aurora.$aurora-primary-light;
+      margin-left: aurora.$space-2;
+    }
+  }
+}
+
+.outputActions {
+  display: flex;
+  gap: aurora.$space-2;
+
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: aurora.$radius-md;
+    color: aurora.$text-tertiary;
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
+      color: aurora.$aurora-primary-light;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.outputContentEnhanced {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  @include aurora.aurora-scrollbar;
+}
+
+.emptyOutputEnhanced {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  padding: aurora.$space-10;
+
+  svg {
+    color: aurora.$text-tertiary;
+    opacity: 0.5;
+    margin-bottom: aurora.$space-4;
+  }
+
+  p {
+    font-size: 16px;
+    color: aurora.$text-primary;
+    margin: 0 0 aurora.$space-2 0;
+  }
+
+  span {
+    font-size: 13px;
+    color: aurora.$text-secondary;
+  }
+}
+
+.outputLineEnhanced {
+  display: flex;
+  gap: aurora.$space-3;
+  padding: aurora.$space-2 aurora.$space-3;
+  font-size: 12px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+  animation: message-enter 0.2s aurora.$ease-out;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.03);
+  }
+
+  &.error {
+    background: rgba(251, 113, 133, 0.08);
+    border-left: 3px solid #fb7185;
+  }
+
+  &.warning {
+    background: rgba(250, 204, 21, 0.08);
+    border-left: 3px solid #facc15;
+  }
+
+  &.success {
+    background: rgba(74, 222, 128, 0.08);
+    border-left: 3px solid #4ade80;
+  }
+
+  &.info {
+    background: rgba(34, 211, 238, 0.05);
+    border-left: 3px solid #22d3ee;
+  }
+
+  &.user {
+    background: rgba(34, 211, 238, 0.08);
+    border-left: 3px solid #22d3ee;
+  }
+
+  &.llm {
+    background: rgba(99, 102, 241, 0.08);
+    border-left: 3px solid aurora.$aurora-primary;
+  }
+}
+
+.outputTimestampEnhanced {
+  color: aurora.$text-tertiary;
+  flex-shrink: 0;
+  font-size: 10px;
+}
+
+.outputTypeEnhanced {
+  color: aurora.$aurora-primary-light;
+  flex-shrink: 0;
+  min-width: 50px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &[data-type="error"] {
+    color: #fb7185;
+  }
+
+  &[data-type="warning"] {
+    color: #facc15;
+  }
+
+  &[data-type="info"] {
+    color: #22d3ee;
+  }
+
+  &[data-type="success"] {
+    color: #4ade80;
+  }
+
+  &[data-type="user"] {
+    color: #22d3ee;
+  }
+
+  &[data-type="llm"] {
+    color: aurora.$aurora-primary-light;
+  }
+}
+
+.outputTextEnhanced {
+  color: aurora.$text-primary;
+  word-break: break-word;
+  flex: 1;
+  line-height: 1.5;
+}
+
+// 权限拒绝区域
+.denialsSection {
+  padding: aurora.$space-4;
+  background: rgba(251, 113, 133, 0.05);
+  border-top: 1px solid rgba(251, 113, 133, 0.2);
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    margin: 0 0 aurora.$space-3 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fb7185;
+
+    svg {
+      color: #fb7185;
+    }
+  }
+}
+
+.denialItem {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-2;
+  padding: aurora.$space-2 aurora.$space-3;
+  background: rgba(251, 113, 133, 0.08);
+  border: 1px solid rgba(251, 113, 133, 0.15);
+  border-radius: aurora.$radius-md;
+  font-size: 12px;
+  color: aurora.$text-secondary;
+  margin-bottom: aurora.$space-2;
+
+  svg {
+    color: #fb7185;
+  }
+
+  strong {
+    color: #fb7185;
+  }
+}
+
+// ==================== 命令视图 ====================
+
+.clawCodeCommands,
+.clawCodeTools {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.viewToolbar {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-4;
+  background: rgba(99, 102, 241, 0.03);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  .searchBar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    padding: aurora.$space-2 aurora.$space-3;
+    background: aurora.$bg-elevated;
+    border: 1px solid aurora.$border-subtle;
+    border-radius: aurora.$radius-lg;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+
+    &:focus-within {
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    svg {
+      color: aurora.$text-tertiary;
+    }
+
+    input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: aurora.$text-primary;
+      font-size: 13px;
+      outline: none;
+
+      &::placeholder {
+        color: aurora.$text-tertiary;
+      }
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: none;
+      color: aurora.$text-tertiary;
+      cursor: pointer;
+      transition: color aurora.$duration-fast aurora.$ease-out;
+
+      &:hover {
+        color: #fb7185;
+      }
+    }
+  }
+
+  .count {
+    font-size: 12px;
+    color: aurora.$text-tertiary;
+    font-weight: 500;
+  }
+}
+
+.categoryFilter {
+  display: flex;
+  gap: aurora.$space-2;
+  padding: aurora.$space-3 aurora.$space-4;
+  overflow-x: auto;
+  border-bottom: 1px solid aurora.$border-subtle;
+  @include aurora.aurora-scrollbar;
+
+  &::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+.filterBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: aurora.$radius-md;
+  font-size: 11px;
+  color: aurora.$text-secondary;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+  white-space: nowrap;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.25);
+    color: aurora.$text-primary;
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: rgba(99, 102, 241, 0.35);
+    color: aurora.$aurora-primary-light;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.moduleList {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  @include aurora.aurora-scrollbar;
+}
+
+.moduleItem {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  padding: aurora.$space-4;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-xl;
+  margin-bottom: aurora.$space-3;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateX(4px);
+  }
+
+  &.dangerous {
+    border-color: rgba(251, 113, 133, 0.3);
+    background: rgba(251, 113, 133, 0.05);
+
+    &:hover {
+      border-color: rgba(251, 113, 133, 0.4);
+      background: rgba(251, 113, 133, 0.08);
+    }
+  }
+
+  .moduleHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .moduleName {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    font-size: 14px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+    }
+
+    .dangerIcon {
+      color: #fb7185;
+    }
+  }
+
+  .moduleStatus {
+    font-size: 12px;
+
+    &.mirrored {
+      color: #4ade80;
+    }
+
+    &.implemented {
+      color: aurora.$aurora-primary-light;
+    }
+
+    &.planned {
+      color: aurora.$text-tertiary;
+    }
+  }
+
+  .moduleSource {
+    font-size: 11px;
+    color: aurora.$text-tertiary;
+  }
+
+  .moduleDesc {
+    font-size: 12px;
+    color: aurora.$text-secondary;
+    line-height: 1.5;
+  }
+
+  .moduleActions {
+    display: flex;
+    gap: aurora.$space-2;
+    margin-top: aurora.$space-2;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 12px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: aurora.$radius-md;
+      font-size: 11px;
+      color: aurora.$aurora-primary-light;
+      cursor: pointer;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+
+      &:hover {
+        background: rgba(99, 102, 241, 0.2);
+        border-color: rgba(99, 102, 241, 0.35);
+      }
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+  }
+}
+
+// ==================== 会话视图 ====================
+
+.clawCodeSessions {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sessionStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: aurora.$space-3;
+  padding: aurora.$space-4;
+  background: rgba(99, 102, 241, 0.03);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  .statCard {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-3;
+    padding: aurora.$space-4;
+    background: rgba(99, 102, 241, 0.05);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: aurora.$radius-xl;
+
+    svg {
+      color: aurora.$aurora-primary-light;
+    }
+
+    .statInfo {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .statValue {
+      font-size: 18px;
+      font-weight: 700;
+      color: aurora.$aurora-primary-light;
+    }
+
+    .statLabel {
+      font-size: 11px;
+      color: aurora.$text-tertiary;
+    }
+  }
+}
+
+.sessionToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: aurora.$space-3 aurora.$space-4;
+  background: rgba(99, 102, 241, 0.03);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    padding: 6px 12px;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: aurora.$radius-md;
+    font-size: 12px;
+    color: aurora.$text-secondary;
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.25);
+      color: aurora.$text-primary;
+    }
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+  }
+}
+
+.sessionList {
+  flex: 1;
+  overflow-y: auto;
+  padding: aurora.$space-3;
+  @include aurora.aurora-scrollbar;
+}
+
+.sessionItem {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+  padding: aurora.$space-4;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-xl;
+  margin-bottom: aurora.$space-3;
+  cursor: pointer;
+  transition: all aurora.$duration-fast aurora.$ease-out;
+
+  &:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+  }
+
+  &.active {
+    background: rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
+  }
+
+  .sessionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .sessionId {
+    font-size: 13px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+  }
+
+  .sessionTime {
+    font-size: 11px;
+    color: aurora.$text-tertiary;
+  }
+
+  .sessionMeta {
+    display: flex;
+    gap: aurora.$space-4;
+    font-size: 12px;
+    color: aurora.$text-secondary;
+
+    span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      svg {
+        width: 12px;
+        height: 12px;
+        color: aurora.$aurora-primary-light;
+      }
+    }
+  }
+
+  .sessionActions {
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      background: transparent;
+      border: none;
+      border-radius: aurora.$radius-md;
+      color: aurora.$text-tertiary;
+      cursor: pointer;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+
+      &:hover {
+        background: rgba(251, 113, 133, 0.15);
+        color: #fb7185;
+      }
+    }
+  }
+}
+
+// ==================== 分析视图 ====================
+
+.clawCodeAnalytics {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.analyticsHeader {
+  display: flex;
+  align-items: center;
+  gap: aurora.$space-3;
+  padding: aurora.$space-4;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.08) 0%, transparent 100%);
+  border-bottom: 1px solid aurora.$border-subtle;
+
+  svg {
+    color: aurora.$aurora-primary-light;
+  }
+
+  h3 {
+    flex: 1;
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: aurora.$text-primary;
+  }
+
+  .versionTag {
+    padding: 4px 10px;
+    background: rgba(99, 102, 241, 0.15);
+    border-radius: aurora.$radius-full;
+    font-size: 11px;
+    color: aurora.$aurora-primary-light;
+    font-weight: 500;
+  }
+}
+
+.analyticsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: aurora.$space-4;
+  padding: aurora.$space-4;
+  overflow-y: auto;
+  @include aurora.aurora-scrollbar;
+}
+
+.analyticsCard {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-4;
+  padding: aurora.$space-5;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid rgba(99, 102, 241, 0.1);
+  border-radius: aurora.$radius-xl;
+
+  h4 {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: aurora.$aurora-primary-light;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+
+.analyticsData {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-2;
+}
+
+.dataRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: aurora.$space-2 0;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.05);
+  font-size: 13px;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  span:first-child {
+    color: aurora.$text-secondary;
+  }
+}
+
+.dataValue {
+  font-weight: 600;
+  color: aurora.$aurora-primary-light;
+
+  &.danger {
+    color: #fb7185;
+  }
+
+  &.success {
+    color: #4ade80;
+  }
+
+  &.processing {
+    color: #facc15;
+  }
+}
+
+.categoryBreakdown {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: aurora.$space-2;
+  padding-top: aurora.$space-3;
+  border-top: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.breakdownRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+
+  span:first-child {
+    color: aurora.$text-tertiary;
+  }
+
+  span:last-child {
+    color: aurora.$text-secondary;
+    font-weight: 500;
+  }
+}
+
+.performanceMetrics {
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-3;
+  padding-top: aurora.$space-3;
+  border-top: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+.metricBar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  span {
+    font-size: 11px;
+    color: aurora.$text-tertiary;
+  }
+}
+
+.progressBar {
+  height: 6px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, aurora.$aurora-primary 0%, aurora.$aurora-primary-light 100%);
+  border-radius: 3px;
+  transition: width 0.3s aurora.$ease-out;
+}
+
+// ==================== 动画 ====================
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+// ==================== 响应式 ====================
+
+@media (max-width: 768px) {
+  .systemStatsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sessionStats {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,1 @@
+export default { id: 'scroll_map', name: 'Scroll of Mapping', effect: 'Reveal the entire map.' };

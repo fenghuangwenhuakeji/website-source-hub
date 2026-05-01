@@ -1,0 +1,1 @@
+export default { id: 'scroll_greed', name: 'Scroll of Greed', effect: 'Gain 100 Gold.' };

@@ -1,0 +1,186 @@
+/* 
+=================================================================================================
+  DungeonSpire - Animations
+  Version: 1.0.0
+  Description: Keyframe animations and transition classes for visual feedback.
+=================================================================================================
+*/
+
+/* -----------------------------------------------------------------------------------------
+   Global Keyframes
+   ----------------------------------------------------------------------------------------- */
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+    0% { transform: translate(1px, 1px) rotate(0deg); }
+    10% { transform: translate(-1px, -2px) rotate(-1deg); }
+    20% { transform: translate(-3px, 0px) rotate(1deg); }
+    30% { transform: translate(3px, 2px) rotate(0deg); }
+    40% { transform: translate(1px, -1px) rotate(1deg); }
+    50% { transform: translate(-1px, 2px) rotate(-1deg); }
+    60% { transform: translate(-3px, 1px) rotate(0deg); }
+    70% { transform: translate(3px, 1px) rotate(-1deg); }
+    80% { transform: translate(-1px, -1px) rotate(1deg); }
+    90% { transform: translate(1px, 2px) rotate(0deg); }
+    100% { transform: translate(1px, -2px) rotate(-1deg); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); }
+    100% { box-shadow: 0 0 5px rgba(255, 255, 255, 0.2); }
+}
+
+@keyframes cardDraw {
+    from {
+        transform: translate(-200px, 200px) scale(0.5) rotate(-45deg);
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes damagePop {
+    0% { transform: scale(0.5); opacity: 0; }
+    20% { transform: scale(1.5); opacity: 1; }
+    100% { transform: scale(1) translateY(-50px); opacity: 0; }
+}
+
+/* -----------------------------------------------------------------------------------------
+   Utility Animation Classes
+   ----------------------------------------------------------------------------------------- */
+
+.anim-fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+}
+
+.anim-pulse {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.anim-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.anim-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+.anim-glow {
+    animation: glow 2s infinite alternate;
+}
+
+/* -----------------------------------------------------------------------------------------
+   Card Animations
+   ----------------------------------------------------------------------------------------- */
+.card-enter {
+    animation: cardDraw 0.4s ease-out forwards;
+}
+
+.card-discard {
+    transition: all 0.5s ease-in;
+    transform: translate(200px, 100px) rotate(45deg) scale(0.5) !important;
+    opacity: 0 !important;
+}
+
+.card-exhaust {
+    transition: all 0.8s ease-in;
+    transform: scale(0.1) rotate(720deg) !important;
+    opacity: 0 !important;
+    filter: grayscale(100%) brightness(200%);
+}
+
+/* -----------------------------------------------------------------------------------------
+   Combat Feedback
+   ----------------------------------------------------------------------------------------- */
+.damage-number {
+    position: absolute;
+    font-family: var(--font-header);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff4d4d;
+    text-shadow: 2px 2px 0px #000;
+    pointer-events: none;
+    z-index: var(--z-index-overlay);
+    animation: damagePop 1s ease-out forwards;
+}
+
+.heal-number {
+    position: absolute;
+    font-family: var(--font-header);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4dff4d;
+    text-shadow: 2px 2px 0px #000;
+    pointer-events: none;
+    z-index: var(--z-index-overlay);
+    animation: damagePop 1s ease-out forwards;
+}
+
+.block-number {
+    position: absolute;
+    font-family: var(--font-header);
+    font-size: 2rem;
+    font-weight: bold;
+    color: #4da6ff;
+    text-shadow: 2px 2px 0px #000;
+    pointer-events: none;
+    z-index: var(--z-index-overlay);
+    animation: damagePop 1s ease-out forwards;
+}
+
+/* -----------------------------------------------------------------------------------------
+   Screen Transitions
+   ----------------------------------------------------------------------------------------- */
+.screen-transition-enter {
+    opacity: 0;
+    transform: scale(0.95);
+}
+
+.screen-transition-enter-active {
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.screen-transition-exit {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.screen-transition-exit-active {
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 300ms, transform 300ms;
+}
+
+
+/* Floating message animation */
+@keyframes fadeOut {
+    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    70% { opacity: 1; transform: translate(-50%, -60%) scale(1.1); }
+    100% { opacity: 0; transform: translate(-50%, -70%) scale(0.9); }
+}

@@ -1,0 +1,1 @@
+export default { file: 'fs_stone.wav', volume: 0.5, pitchVar: 0.1 };

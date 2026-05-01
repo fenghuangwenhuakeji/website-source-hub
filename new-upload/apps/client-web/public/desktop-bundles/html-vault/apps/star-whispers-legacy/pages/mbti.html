@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI 画像补充 - 星语心伴</title>
+    <meta name="description" content="把 MBTI 当作补充画像语言，用更具体的关系、压力和行动线索帮助你看自己。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .mbti-main {
+            padding-top: 0;
+            padding-bottom: 120px;
+        }
+
+        .mbti-shell {
+            display: grid;
+            gap: 22px;
+            padding: 0 16px 24px;
+        }
+
+        .hero-grid,
+        .dimension-grid,
+        .insight-grid,
+        .type-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .hero-grid {
+            grid-template-columns: minmax(0, 1.12fr) minmax(320px, 0.88fr);
+        }
+
+        .dimension-grid,
+        .insight-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .type-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .hero-card,
+        .dimension-card,
+        .insight-card,
+        .picker-card,
+        .profile-card {
+            display: grid;
+            gap: 14px;
+            padding: 20px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(255, 255, 255, 0.94);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .hero-card h2,
+        .profile-card h2 {
+            font-size: 28px;
+            color: var(--ui-text);
+        }
+
+        .hero-card p,
+        .dimension-card p,
+        .insight-card p,
+        .picker-card p,
+        .profile-card p {
+            font-size: 13px;
+            line-height: 1.85;
+            color: var(--ui-text-soft);
+        }
+
+        .hero-mark,
+        .dimension-mark,
+        .profile-mark {
+            width: 52px;
+            height: 52px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--ui-text);
+        }
+
+        .hero-mark .svg-icon,
+        .dimension-mark .svg-icon,
+        .profile-mark .svg-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .type-button {
+            min-height: 54px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.94);
+            background: rgba(255, 250, 247, 0.96);
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .type-button:hover,
+        .type-button.is-active {
+            transform: translateY(-1px);
+            border-color: rgba(255, 143, 123, 0.34);
+            background: rgba(255, 244, 238, 0.98);
+        }
+
+        .meta-row,
+        .action-row,
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .pill {
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(255, 249, 244, 0.95);
+            color: #9a5b50;
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .profile-code {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--ui-text);
+        }
+
+        .profile-name {
+            font-size: 18px;
+            color: #b45a4f;
+        }
+
+        .insight-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .insight-item {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 249, 244, 0.96);
+        }
+
+        .insight-item strong {
+            display: block;
+            font-size: 14px;
+            color: var(--ui-text);
+            margin-bottom: 4px;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-head h2 {
+            font-size: 24px;
+            color: var(--ui-text);
+        }
+
+        @media (max-width: 1040px) {
+            .hero-grid,
+            .dimension-grid,
+            .insight-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .type-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="page-header" style="padding: 16px;">
+            <a href="../index.html" class="back-btn" aria-label="返回首页">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="text-align: center;">
+                <h1 class="page-title">MBTI 画像补充</h1>
+                <p class="page-subtitle" style="margin-top: 4px;">更具体，不拿来贴死标签</p>
+            </div>
+            <a href="test.html" class="back-btn" aria-label="去测评">
+                <i class="fas fa-clipboard-list"></i>
+            </a>
+        </header>
+
+        <main class="content-section mbti-main">
+            <div class="mbti-shell">
+                <section class="hero-grid" data-reveal>
+                    <article class="hero-card">
+                        <div class="hero-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="7"></circle>
+                                <circle cx="12" cy="12" r="2.4"></circle>
+                            </svg>
+                        </div>
+                        <h2>把 MBTI 当作“理解语言”，不是“命运结论”。</h2>
+                        <p>这页做的是补充画像，不是假装更神秘的第二套人格系统。你可以先选一个最像自己的类型，看看它在关系、压力和行动节奏里的具体表现，再把结果直接发给 AI 继续聊。</p>
+                        <div class="meta-row">
+                            <span class="pill">补充画像</span>
+                            <span class="pill">可存本地档案</span>
+                            <span class="pill">可直接发给聊天</span>
+                        </div>
+                        <div class="action-row">
+                            <a class="btn btn-primary" href="test.html">先做状态测评</a>
+                            <a class="btn btn-secondary" href="#portrait">直接选类型</a>
+                        </div>
+                    </article>
+
+                    <aside class="hero-card">
+                        <div class="insight-list">
+                            <div class="insight-item">
+                                <strong>少一点模糊感</strong>
+                                <p>这里不会只说“你很敏感”或“你很理性”，而是尽量落到具体场景里。</p>
+                            </div>
+                            <div class="insight-item">
+                                <strong>看压力下的变化</strong>
+                                <p>真正有用的不是平时像谁，而是一紧绷就会回到什么自动模式。</p>
+                            </div>
+                            <div class="insight-item">
+                                <strong>更适合带去聊天</strong>
+                                <p>结果会转成一段 AI 能直接理解的档案，不用你再从头组织一遍。</p>
+                            </div>
+                        </div>
+                    </aside>
+                </section>
+
+                <section class="dimension-grid" data-reveal>
+                    <article class="dimension-card">
+                        <div class="dimension-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 4.5v15"></path>
+                                <path d="M4.5 12h15"></path>
+                            </svg>
+                        </div>
+                        <h3>外向 / 内向</h3>
+                        <p>重点不是“爱不爱社交”，而是你靠什么回电。有人在人群里回血，有人必须先退回来安静一下。</p>
+                    </article>
+                    <article class="dimension-card">
+                        <div class="dimension-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="7"></circle>
+                                <path d="M12 8.5v7"></path>
+                                <path d="M8.5 12H15"></path>
+                            </svg>
+                        </div>
+                        <h3>感觉 / 直觉</h3>
+                        <p>重点不是谁更聪明，而是你更容易先抓住事实细节，还是先看到模式和可能性。</p>
+                    </article>
+                    <article class="dimension-card">
+                        <div class="dimension-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 20c-4.5-2.4-7-5.5-7-9.2 0-2.2 1.7-4.3 4.1-4.3 1.3 0 2.5.6 3.2 1.7.7-1.1 1.9-1.7 3.2-1.7 2.4 0 4.1 2.1 4.1 4.3 0 3.7-2.5 6.8-7 9.2Z"></path>
+                            </svg>
+                        </div>
+                        <h3>思考 / 情感</h3>
+                        <p>重点不是“讲不讲感情”，而是你在做决定时更先看结构、公平、逻辑，还是更先看关系、价值和人的感受。</p>
+                    </article>
+                    <article class="dimension-card">
+                        <div class="dimension-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M7 7.5h10"></path>
+                                <path d="M7 12h6"></path>
+                                <path d="M7 16.5h10"></path>
+                            </svg>
+                        </div>
+                        <h3>判断 / 感知</h3>
+                        <p>重点不是谁更自律，而是你更靠明确结构稳定下来，还是靠弹性空间保持流动感。</p>
+                    </article>
+                </section>
+
+                <section class="picker-card" data-reveal id="portrait">
+                    <div class="section-head">
+                        <h2>选择一个更像自己的类型</h2>
+                        <div class="pill-row">
+                            <span class="pill">不知道也没关系，先选一个最像的</span>
+                        </div>
+                    </div>
+                    <div class="type-grid" id="typeGrid"></div>
+                </section>
+
+                <section class="profile-card" data-reveal>
+                    <div class="profile-mark" aria-hidden="true">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <path d="M12 3.5 14 10l6.5 2-6.5 2L12 20.5 10 14l-6.5-2L10 10 12 3.5Z"></path>
+                        </svg>
+                    </div>
+                    <div class="profile-code" id="profileCode">INFP</div>
+                    <div class="profile-name" id="profileName">温柔理想派</div>
+                    <p id="profileSummary">你通常会先感受人与事的温度，再决定要不要靠近。最强的并不是“懂道理”，而是能在混乱里守住自己看重的东西。</p>
+
+                    <div class="insight-grid">
+                        <article class="insight-card">
+                            <h3>关系里</h3>
+                            <p id="profileRelationship"></p>
+                        </article>
+                        <article class="insight-card">
+                            <h3>压力下</h3>
+                            <p id="profileStress"></p>
+                        </article>
+                        <article class="insight-card">
+                            <h3>容易忽略</h3>
+                            <p id="profileBlindSpot"></p>
+                        </article>
+                        <article class="insight-card">
+                            <h3>更适合的支持</h3>
+                            <p id="profileSupport"></p>
+                        </article>
+                    </div>
+
+                    <div class="insight-list" id="profileActions"></div>
+
+                    <div class="action-row">
+                        <button class="btn btn-primary" id="saveProfileBtn">存入档案</button>
+                        <button class="btn btn-secondary" id="sendProfileBtn">发给 AI 聊聊</button>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="test.html" class="nav-item active">
+                <i class="fas fa-clipboard-list"></i>
+                <span>测评</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>聊天</span>
+            </a>
+            <a href="horoscope.html" class="nav-item">
+                <i class="fas fa-stars"></i>
+                <span>运势</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-mbti.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,1 @@
+export default { id: 'scroll_know', name: 'Scroll of Knowledge', effect: 'Gain 100 Experience.' };

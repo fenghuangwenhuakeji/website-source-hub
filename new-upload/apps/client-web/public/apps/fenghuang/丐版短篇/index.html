@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>短篇写作</title>
+  <link rel="stylesheet" href="../expansion-shared.css">
+  <script src="../expansion-utils.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">短篇写作</p>
+        <h1>丐版短篇</h1>
+        <p>这是重新补回的短篇工作页，重点是主题、冲突、高潮和情绪收束，让你能先跑出能写的结构。</p>
+      </div>
+      <div class="hero-meta">
+        <span class="pill">三幕结构</span>
+        <span class="pill">短篇节奏</span>
+        <span class="pill">可直接写</span>
+      </div>
+    </header>
+
+    <main class="workspace-grid">
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>输入区</h2><p>把故事种子先压缩成核心要素。</p></div></div>
+        <form id="workspace-form" class="form-grid">
+          <label class="field"><span>主题</span><input name="theme" placeholder="例如：复仇、错过、赎罪"></label>
+          <label class="field"><span>主角</span><input name="hero" placeholder="例如：被误解的替身演员"></label>
+          <label class="field"><span>冲突</span><input name="conflict" placeholder="例如：必须在一晚内顶替明星拍完遗作"></label>
+          <div class="inline-grid">
+            <label class="field"><span>目标字数</span><input name="length" value="6000"></label>
+            <label class="field"><span>结尾情绪</span><input name="endingMood" placeholder="例如：微苦回甘"></label>
+          </div>
+          <label class="field"><span>补充设定</span><textarea name="notes" placeholder="补充人物关系、场景气质、你想要的文风。"></textarea></label>
+        </form>
+        <div class="button-row">
+          <button id="generate-button" class="primary-btn" type="button">生成短篇骨架</button>
+          <button id="reset-button" class="ghost-btn" type="button">清空草稿</button>
+        </div>
+      </div></section>
+
+      <section class="panel"><div class="panel-body">
+        <div class="panel-header"><div><h2>结果区</h2><p id="result-summary">围绕一个主冲突，快速生成可落笔的短篇框架。</p></div><span id="status-text" class="pill">等待生成</span></div>
+        <div id="result-grid" class="result-grid"></div>
+      </div></section>
+    </main>
+  </div>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      window.FHExpansion.initGeneratorPage({
+        storageKey: 'fh-fenghuang-short-story',
+        summary: '围绕一个主冲突，快速生成可落笔的短篇框架。',
+        generate(data) {
+          const theme = data.theme || '未命名主题';
+          const hero = data.hero || '主角';
+          const conflict = data.conflict || '核心冲突';
+          const mood = data.endingMood || '有余味的收束';
+          return [
+            { title: '故事种子', bullets: [`主题核心：${theme}`, `主角定位：${hero}`, `矛盾引爆点：${conflict}`, `目标篇幅：约 ${data.length || '6000'} 字`] },
+            { title: '三幕推进', bullets: [`开场：用一个能直接代表 ${hero} 处境的场面切入，把 ${conflict} 埋进去。`, `中段：让主角连续两次做出错误选择，迫使主题 ${theme} 真正落地。`, `终局：把人物代价和结果放在同一场戏里，让结尾停在 ${mood}。`] },
+            { title: '关键场景', bullets: ['第一场：主角日常被打破。', '第二场：第一次反击或逃避。', '第三场：真相揭开或关系倒转。', '第四场：做出最终决定。'] },
+            { title: '落笔提醒', paragraphs: [`先把“${data.notes || '你最想写的那个画面'}”写成第一版，再反过来补结构，比先追求完美更容易推进。`, '短篇不要铺太多支线，把最强的冲突和最痛的代价留给同一个人物。'] },
+          ];
+        },
+      });
+    });
+  </script>
+</body>
+</html>

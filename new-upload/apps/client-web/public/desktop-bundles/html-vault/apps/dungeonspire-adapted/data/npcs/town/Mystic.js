@@ -1,0 +1,1 @@
+export default { id: 'npc_mystic', name: 'Elara', role: 'Identifier', dialogue: 'The spirits speak to me.' };

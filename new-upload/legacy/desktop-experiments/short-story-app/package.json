@@ -1,0 +1,16 @@
+{
+  "name": "chaowuqiong-short-story",
+  "productName": "短篇拆书版",
+  "version": "1.0.0",
+  "description": "超无穹短篇拆书版 - 桌面客户端",
+  "main": "electron/main.js",
+  "author": "超无穹团队",
+  "license": "MIT",
+  "scripts": {
+    "electron:start": "electron .",
+    "electron:build": "electron-builder --config electron-builder.json --win"
+  },
+  "devDependencies": {
+    "electron-builder": "^26.8.1"
+  }
+}

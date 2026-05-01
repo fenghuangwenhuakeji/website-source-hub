@@ -1,0 +1,5 @@
+export const NETWORK_ERRORS = {
+    TIMEOUT: 'ERR_NET_001',
+    DISCONNECTED: 'ERR_NET_002',
+    PACKET_LOSS: 'ERR_NET_003'
+};

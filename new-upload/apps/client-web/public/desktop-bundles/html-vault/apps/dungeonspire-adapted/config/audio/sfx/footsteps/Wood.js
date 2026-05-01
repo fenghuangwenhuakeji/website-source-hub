@@ -1,0 +1,1 @@
+export default { file: 'fs_wood.wav', volume: 0.6, pitchVar: 0.1 };

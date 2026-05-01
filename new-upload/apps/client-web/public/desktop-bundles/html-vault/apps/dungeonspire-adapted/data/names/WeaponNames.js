@@ -1,0 +1,1 @@
+export default ['Slayer', 'Breaker', 'Cleaver', 'Crusher', 'Piercer'];

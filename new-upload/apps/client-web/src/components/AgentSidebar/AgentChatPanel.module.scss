@@ -1,0 +1,1028 @@
+@use '../../styles/cyberpunk.module.scss' as cyber;
+
+.panelRoot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  color: #4a1f17;
+  background:
+    radial-gradient(circle at top left, rgba(255, 199, 164, 0.26), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 233, 214, 0.22), transparent 30%),
+    linear-gradient(180deg, rgba(255, 251, 246, 0.98), rgba(255, 244, 236, 0.96));
+  border-radius: 28px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 247, 240, 0.54));
+}
+
+.kicker {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b45309;
+}
+
+.panelHeader h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.summaryRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.settingsButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 38, 38, 0.12);
+  background: rgba(255, 255, 255, 0.86);
+  color: #4a1f17;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.settingsButton:hover {
+  border-color: rgba(255, 165, 110, 0.4);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.12);
+}
+
+.summaryCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 116px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(220, 38, 38, 0.08);
+}
+
+.summaryCard strong,
+.summaryCard span {
+  display: block;
+}
+
+.summaryCard strong {
+  font-size: 18px;
+}
+
+.summaryCard span {
+  font-size: 12px;
+  color: rgba(120, 53, 15, 0.7);
+}
+
+.tabBar {
+  display: flex;
+  gap: 10px;
+  padding: 14px 22px 0;
+  flex-wrap: wrap;
+}
+
+.tabButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.74);
+  color: rgba(120, 53, 15, 0.82);
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.tabButton:hover,
+.tabButtonActive {
+  color: #4a1f17;
+  border-color: rgba(255, 165, 110, 0.4);
+  background: linear-gradient(135deg, rgba(255, 248, 243, 1), rgba(255, 228, 210, 0.96));
+  box-shadow: 0 14px 32px rgba(220, 38, 38, 0.12);
+}
+
+.contentArea {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 22px 22px;
+}
+
+.chatView,
+.managementView,
+.importView {
+  height: 100%;
+  min-height: 0;
+}
+
+.chatView {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 16px;
+}
+
+.chatSidebar,
+.chatStage,
+.editorCard,
+.importCard,
+.managementCard {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 247, 240, 0.8)),
+    radial-gradient(circle at top right, rgba(255, 166, 112, 0.1), transparent 30%);
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 18px 48px rgba(220, 38, 38, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.chatSidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px;
+  min-height: 0;
+  overflow: auto;
+}
+
+.sideSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.sectionHeader > span,
+.sectionHeader > button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sectionHeader button,
+.cardActions button,
+.conversationCard,
+.inlineDanger,
+.formActions button,
+.primaryButton {
+  font: inherit;
+}
+
+.sectionHeader button,
+.cardActions button,
+.formActions button,
+.primaryButton {
+  border: 0;
+  cursor: pointer;
+  color: #7c2d12;
+}
+
+.sectionHeader button {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.agentHero {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 14px;
+  padding: 16px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, color-mix(in srgb, var(--agent-color) 28%, transparent), rgba(255, 255, 255, 0.04));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.agentHeroIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--agent-color) 65%, rgba(255, 255, 255, 0.08));
+  font-weight: 700;
+}
+
+.agentHero h3,
+.stageHeader h3 {
+  margin: 0 0 6px;
+}
+
+.agentHero p,
+.managementCard p,
+.importCard p,
+.emptyCard,
+.emptyStage p,
+.infoBlock p {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(120, 53, 15, 0.78);
+}
+
+.conversationList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conversationCard {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(220, 38, 38, 0.06);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.conversationCard:hover,
+.conversationCardActive {
+  border-color: rgba(255, 165, 110, 0.36);
+  background: linear-gradient(135deg, rgba(255, 157, 102, 0.14), rgba(91, 140, 255, 0.12));
+}
+
+.conversationTitleRow,
+.conversationFooter,
+.managementCardHeader,
+.metricsRow,
+.composerActions,
+.messageMeta,
+.cardActions,
+.inlineFields,
+.tagRow,
+.toolList {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.conversationTitleRow {
+  align-items: flex-start;
+}
+
+.conversationTitleRow strong,
+.managementCard strong,
+.skillTitle strong {
+  display: block;
+}
+
+.conversationTitleRow span,
+.conversationFooter span,
+.metricsRow span,
+.messageMeta span,
+.skillTitle small,
+.agentMini small {
+  font-size: 12px;
+  color: rgba(120, 53, 15, 0.62);
+}
+
+.conversationCard p {
+  margin: 8px 0 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(120, 53, 15, 0.84);
+}
+
+.inlineDanger {
+  color: #ff8f86 !important;
+  cursor: pointer;
+}
+
+.chatStage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  padding: 18px;
+}
+
+.stageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.08);
+}
+
+.tagRow {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.softTag,
+.toolChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: rgba(120, 53, 15, 0.82);
+  font-size: 12px;
+}
+
+.messageList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  padding: 18px 0;
+  overflow: auto;
+}
+
+.messageCard {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(78%, 680px);
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.messageCard.user {
+  margin-left: auto;
+  background: linear-gradient(145deg, rgba(255, 226, 214, 0.96), rgba(255, 244, 236, 0.92));
+}
+
+.messageCard.assistant {
+  margin-right: auto;
+}
+
+.messageCard.system {
+  max-width: 100%;
+  background: rgba(255, 196, 0, 0.08);
+  border-color: rgba(255, 196, 0, 0.18);
+}
+
+.messageBody {
+  white-space: pre-wrap;
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+.pendingBubble,
+.emptyStage,
+.emptyCard,
+.infoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px dashed rgba(220, 38, 38, 0.12);
+}
+
+.pendingBubble {
+  flex-direction: row;
+  align-items: center;
+}
+
+.composer {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(220, 38, 38, 0.08);
+}
+
+.composer textarea,
+.formStack textarea,
+.formStack input,
+.formStack select,
+.importCard textarea,
+.importCard input {
+  width: 100%;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #4a1f17;
+  padding: 14px 16px;
+  outline: none;
+  resize: vertical;
+}
+
+.composer textarea:focus,
+.formStack textarea:focus,
+.formStack input:focus,
+.formStack select:focus,
+.importCard textarea:focus,
+.importCard input:focus {
+  border-color: rgba(91, 140, 255, 0.36);
+  box-shadow: 0 0 0 3px rgba(91, 140, 255, 0.12);
+}
+
+.composerActions {
+  align-items: center;
+}
+
+.composerActions span {
+  color: rgba(120, 53, 15, 0.62);
+  font-size: 12px;
+}
+
+.primaryButton,
+.dangerButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 14px;
+}
+
+.primaryButton {
+  color: #4a1f17;
+  background: linear-gradient(135deg, #ffd8c3, #ffece0);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.12);
+}
+
+.dangerButton {
+  background: rgba(255, 91, 91, 0.14);
+}
+
+.managementGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+  gap: 16px;
+  height: 100%;
+  min-height: 0;
+}
+
+.managementColumn,
+.editorColumn {
+  min-height: 0;
+}
+
+.managementColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.managementCard,
+.editorCard,
+.importCard {
+  padding: 18px;
+}
+
+.managementCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.managementCardActive {
+  border-color: rgba(91, 140, 255, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(91, 140, 255, 0.26);
+}
+
+.agentMini,
+.skillTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agentMini span:first-child {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--agent-color) 70%, rgba(255, 255, 255, 0.06));
+}
+
+.editorCard,
+.importCard {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.formStack label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(244, 246, 255, 0.74);
+}
+
+.codeField {
+  min-height: 280px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.infoList {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(244, 246, 255, 0.7);
+  line-height: 1.7;
+}
+
+.importView {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  padding: 20px;
+}
+
+.modalContent {
+  width: 480px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow: auto;
+  padding: 24px;
+  background: cyber.$color-surface;
+  border: 2px solid cyber.$color-accent;
+  box-shadow: 0 0 40px rgba(250, 234, 95, 0.3);
+}
+
+.modalTitle {
+  margin: 0 0 16px;
+  font-size: 18px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: cyber.$color-accent;
+  transform: skewX(cyber.$skew-angle);
+  text-shadow: 0 0 5px rgba(250, 234, 95, 0.5), 0 0 10px rgba(250, 234, 95, 0.3);
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.modalContent .formStack label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: cyber.$color-text-muted;
+  transform: skewX(cyber.$skew-angle);
+}
+
+.modalContent .formStack input,
+.modalContent .formStack select,
+.modalContent .formStack textarea {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  color: cyber.$color-text;
+  font-size: 13px;
+  font-family: inherit;
+
+  &:focus {
+    outline: none;
+    border-color: cyber.$color-accent;
+    box-shadow: 0 0 10px rgba(250, 234, 95, 0.2);
+  }
+}
+
+.modalContent .formStack textarea {
+  height: auto;
+  padding: 12px;
+  resize: vertical;
+  font-family: var(--ui-font-mono);
+}
+
+.modalContent .formStack input[type="range"] {
+  height: 4px;
+  padding: 0;
+  background: rgba(250, 234, 95, 0.2);
+  border: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: cyber.$color-accent;
+    cursor: pointer;
+    box-shadow: 0 0 5px rgba(250, 234, 95, 0.3), 0 0 10px rgba(250, 234, 95, 0.2);
+  }
+}
+
+.modalContent .primaryButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 36px;
+  padding: 0 16px;
+  background: cyber.$color-accent;
+  border: none;
+  color: #121214;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all cyber.$duration-fast;
+  transform: skewX(cyber.$skew-angle);
+
+  &:hover:not(:disabled) {
+    background: #fff;
+    box-shadow: 0 0 16px rgba(250, 234, 95, 0.4);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 16px;
+  border-radius: 0;
+  border: 1px solid rgba(250, 234, 95, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  color: cyber.$color-text;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transform: skewX(cyber.$skew-angle);
+  cursor: pointer;
+}
+
+.testResult {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 0;
+  font-size: 12px;
+  border: 1px solid transparent;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.testResult.success {
+  color: #15803d;
+  border-color: rgba(22, 163, 74, 0.2);
+  background: rgba(22, 163, 74, 0.08);
+}
+
+.testResult.error {
+  color: #b91c1c;
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1080px) {
+  .panelHeader,
+  .chatView,
+  .managementGrid,
+  .importView {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .panelHeader {
+    align-items: stretch;
+  }
+
+  .summaryRow {
+    justify-content: flex-start;
+  }
+
+  .headerActions {
+    align-items: flex-start;
+  }
+
+  .chatView,
+  .managementGrid,
+  .importView {
+    display: flex;
+  }
+
+  .messageCard {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 720px) {
+  .panelHeader {
+    gap: 12px;
+  }
+
+  .settingsButton {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tabBar {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .tabButton {
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+    padding: 0 12px;
+  }
+
+  .headerActions {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .summaryRow {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .messageCard {
+    padding: 14px;
+  }
+
+  .modalContent {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100vh;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .panelHeader {
+    padding: 12px 14px;
+  }
+
+  .tabBar {
+    grid-template-columns: 1fr 1fr;
+    padding: 12px 14px 0;
+  }
+
+  .summaryCard {
+    min-width: 0;
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  .headerTitle {
+    font-size: 16px;
+  }
+
+  .headerSubtitle {
+    font-size: 12px;
+  }
+
+  .summaryRow {
+    justify-content: space-between;
+  }
+
+  .modalTitle {
+    font-size: 16px;
+  }
+}
+
+/* Unified deep-space skin for embedded agent chat surfaces */
+.panelRoot {
+  color: #e2e8f0;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.12), transparent 30%),
+    linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+}
+
+.panelHeader {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(7, 12, 20, 0.92), rgba(11, 18, 32, 0.72));
+}
+
+.kicker {
+  color: #7dd3fc;
+}
+
+.panelHeader h2,
+.agentHero h3,
+.stageHeader h3,
+.managementCard strong,
+.skillTitle strong,
+.conversationTitleRow strong {
+  color: #f8fafc;
+}
+
+.settingsButton,
+.summaryCard,
+.tabButton,
+.sectionHeader button,
+.chatSidebar,
+.chatStage,
+.editorCard,
+.importCard,
+.managementCard,
+.conversationCard,
+.messageCard,
+.pendingBubble,
+.emptyStage,
+.emptyCard,
+.infoBlock,
+.composer textarea,
+.formStack textarea,
+.formStack input,
+.formStack select,
+.importCard textarea,
+.importCard input {
+  border-color: rgba(148, 163, 184, 0.14);
+}
+
+.settingsButton,
+.summaryCard,
+.tabButton,
+.sectionHeader button {
+  background: rgba(7, 12, 20, 0.86);
+  color: #e2e8f0;
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.12),
+    0 12px 28px rgba(2, 6, 23, 0.18);
+}
+
+.tabButton:hover,
+.tabButtonActive,
+.conversationCard:hover,
+.conversationCardActive,
+.managementCardActive {
+  color: #f8fafc;
+  border-color: rgba(34, 211, 238, 0.34);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(34, 211, 238, 0.12));
+  box-shadow: 0 16px 30px rgba(124, 58, 237, 0.16);
+}
+
+.chatSidebar,
+.chatStage,
+.editorCard,
+.importCard,
+.managementCard {
+  background:
+    linear-gradient(180deg, rgba(7, 12, 20, 0.9), rgba(11, 18, 32, 0.84)),
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 30%);
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.24);
+}
+
+.agentHero,
+.messageCard.user {
+  background: linear-gradient(145deg, rgba(124, 58, 237, 0.18), rgba(34, 211, 238, 0.12));
+  border-color: rgba(148, 163, 184, 0.12);
+}
+
+.messageCard.assistant,
+.pendingBubble,
+.emptyStage,
+.emptyCard,
+.infoBlock,
+.conversationCard {
+  background: rgba(7, 12, 20, 0.78);
+}
+
+.messageCard.system {
+  background: rgba(8, 47, 73, 0.34);
+  border-color: rgba(34, 211, 238, 0.22);
+}
+
+.agentHero p,
+.managementCard p,
+.importCard p,
+.emptyCard,
+.emptyStage p,
+.infoBlock p,
+.conversationCard p,
+.composerActions span,
+.conversationTitleRow span,
+.conversationFooter span,
+.metricsRow span,
+.messageMeta span,
+.skillTitle small,
+.agentMini small {
+  color: rgba(203, 213, 225, 0.74);
+}
+
+.softTag,
+.toolChip {
+  background: rgba(255, 255, 255, 0.06);
+  color: #dbeafe;
+}
+
+.composer textarea,
+.formStack textarea,
+.formStack input,
+.formStack select,
+.importCard textarea,
+.importCard input {
+  background: rgba(8, 13, 24, 0.82);
+  color: #e2e8f0;
+}
+
+.composer textarea:focus,
+.formStack textarea:focus,
+.formStack input:focus,
+.formStack select:focus,
+.importCard textarea:focus,
+.importCard input:focus {
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.primaryButton {
+  color: #f8fafc;
+  background: linear-gradient(135deg, #7c3aed, #22d3ee);
+  box-shadow: 0 14px 28px rgba(124, 58, 237, 0.18);
+}
+
+.dangerButton {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.32);
+}

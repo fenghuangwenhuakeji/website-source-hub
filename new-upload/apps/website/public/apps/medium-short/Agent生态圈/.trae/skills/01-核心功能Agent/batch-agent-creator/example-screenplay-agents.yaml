@@ -1,0 +1,246 @@
+# 剧本Agent家族批量配置
+# 使用方式: 将此配置提供给 batch-agent-creator 即可批量生成17个剧本相关Agent
+
+batch_name: 剧本创作Agent家族
+output_dir: .trae/skills
+description: 专为剧本创作设计的17个专业Agent，覆盖格式、结构、角色、对话等各个方面
+
+# 全局变量
+variables:
+  author: AI Assistant
+  version: v1.0.0
+  category: 剧本创作
+
+# Agent列表
+agents:
+  # ========== 高优先级 ==========
+  - name: screenplay-format-agent
+    type: skill
+    title: 专业剧本格式专家
+    description: 提供好莱坞标准剧本格式化、场景标题规范、角色对话格式、转场效果等专业剧本格式服务
+    core_concept: 让每一份剧本都符合行业标准，让专业从格式开始
+    features:
+      - 场景标题格式化
+      - 动作描述格式化
+      - 角色对话格式化
+      - 括号提示语格式化
+      - 转场效果格式化
+      - 剧本元素自动识别
+      - 格式检查与纠错
+    priority: high
+
+  - name: character-arc-agent
+    type: skill
+    title: 角色弧线设计专家
+    description: 设计角色成长轨迹、转变弧线、内心变化，让角色立体生动
+    core_concept: 让每个角色都有动人的成长故事和转变弧线
+    features:
+      - 角色现状分析
+      - 成长目标设定
+      - 转变节点设计
+      - 内心冲突规划
+      - 弧线完整性检查
+    priority: high
+
+  - name: dialogue-polish-agent
+    type: skill
+    title: 对话润色专家
+    description: 提升对话质量，去AI化，让对话更自然、更有张力、更符合角色性格
+    core_concept: 让每一句对话都充满生命力和角色个性
+    features:
+      - 口语化转换
+      - 去AI化处理
+      - 角色语音差异化
+      - 潜台词添加
+      - 节奏感优化
+    priority: high
+
+  - name: scene-transition-agent
+    type: skill
+    title: 场景转换设计专家
+    description: 设计流畅的场景过渡、转场效果、时空转换，让剧本节奏更顺畅
+    core_concept: 让场景转换如行云流水，自然而不突兀
+    features:
+      - 切至转场设计
+      - 叠化转场设计
+      - 匹配剪辑设计
+      - 时空转换处理
+      - 情绪连贯性保持
+    priority: high
+
+  - name: subtext-agent
+    type: skill
+    title: 潜台词设计专家
+    description: 设计对话背后的深层含义、暗示、言外之意，增加剧本深度
+    core_concept: 让台词有弦外之音，让观众品味无穷
+    features:
+      - 潜台词识别
+      - 暗示设计
+      - 双重含义构建
+      - 情感暗流设计
+      - 隐喻符号运用
+    priority: high
+
+  # ========== 中优先级 ==========
+  - name: pacing-agent
+    type: skill
+    title: 剧本节奏控制专家
+    description: 控制剧本叙事节奏、张力起伏、情绪曲线，让观众始终保持投入
+    core_concept: 让剧本节奏如音乐般有起有伏，扣人心弦
+    features:
+      - 节奏分析
+      - 张力曲线设计
+      - 情绪起伏规划
+      - 快慢节奏交替
+      - 高潮低谷布局
+    priority: medium
+
+  - name: genre-agent
+    type: skill
+    title: 类型片剧本专家
+    description: 针对不同类型片（动作、爱情、悬疑、科幻等）提供专业套路和风格设计
+    core_concept: 掌握类型片精髓，让剧本符合类型期待又有创新突破
+    features:
+      - 类型套路分析
+      - 类型元素设计
+      - 观众期待管理
+      - 类型创新融合
+      - 类型规范检查
+    priority: medium
+
+  - name: three-act-agent
+    type: skill
+    title: 三幕式结构专家
+    description: 运用经典三幕式结构规划剧本，设置情节点、转折点、高潮
+    core_concept: 经典结构，现代演绎，让故事结构稳固而有力
+    features:
+      - 第一幕铺垫设计
+      - 第二幕对抗构建
+      - 第三幕解决规划
+      - 情节点设置
+      - 转折点设计
+    priority: medium
+
+  - name: hero-journey-agent
+    type: skill
+    title: 英雄之旅叙事专家
+    description: 运用坎贝尔英雄之旅框架设计史诗级故事结构
+    core_concept: 让主角经历完整的英雄之旅，创造史诗般的叙事体验
+    features:
+      - 平凡世界设定
+      - 冒险召唤设计
+      - 试炼之路规划
+      - 深渊体验构建
+      - 终极考验设计
+    priority: medium
+
+  - name: conflict-agent
+    type: skill
+    title: 冲突设计专家
+    description: 设计戏剧冲突、人物对抗、内外矛盾，推动剧情发展
+    core_concept: 冲突是戏剧的灵魂，让冲突推动故事前进
+    features:
+      - 人物冲突设计
+      - 内心冲突构建
+      - 环境冲突设置
+      - 冲突升级规划
+      - 冲突解决设计
+    priority: medium
+
+  # ========== 低优先级 ==========
+  - name: tv-series-agent
+    type: skill
+    title: 电视剧本专家
+    description: 针对电视剧特点设计分集结构、季弧、人物关系网
+    core_concept: 长篇叙事的艺术，让每一集都精彩，每一季都完整
+    features:
+      - 分集结构设计
+      - 季弧规划
+      - 人物关系网构建
+      - 悬念钩子设计
+      - 连续剧节奏控制
+    priority: low
+
+  - name: short-film-agent
+    type: skill
+    title: 短片剧本专家
+    description: 针对短片特点设计紧凑结构、单一主题、精炼表达
+    core_concept: 短而精悍，在有限时间内讲好一个故事
+    features:
+      - 短片结构优化
+      - 单一主题聚焦
+      - 开场即入戏
+      - 精炼对话设计
+      - 有力结尾构建
+    priority: low
+
+  - name: web-series-agent
+    type: skill
+    title: 网络剧剧本专家
+    description: 针对网络剧特点设计碎片化叙事、互动元素、年轻化表达
+    core_concept: 网络时代的叙事艺术，抓住观众的碎片注意力
+    features:
+      - 碎片化叙事设计
+      - 互动元素融入
+      - 年轻化语言风格
+      - 单集完整性
+      - 系列连贯性
+    priority: low
+
+  - name: documentary-agent
+    type: skill
+    title: 纪录片脚本专家
+    description: 设计纪录片叙事结构、采访问题、旁白文案、真实事件编排
+    core_concept: 真实的力量，让事实说话，让故事动人
+    features:
+      - 纪录片结构规划
+      - 采访问题设计
+      - 旁白文案撰写
+      - 真实素材编排
+      - 叙事视角选择
+    priority: low
+
+  - name: commercial-agent
+    type: skill
+    title: 广告脚本专家
+    description: 设计广告创意脚本、产品卖点、情感共鸣、行动号召
+    core_concept: 在30秒内打动人心，让产品成为故事的主角
+    features:
+      - 创意概念设计
+      - 产品卖点融入
+      - 情感共鸣构建
+      - 行动号召设计
+      - 时长精准控制
+    priority: low
+
+  - name: stage-play-agent
+    type: skill
+    title: 舞台剧剧本专家
+    description: 针对舞台剧特点设计场景限制、对白为主、舞台指示
+    core_concept: 舞台的魔力，让有限的空间创造无限的可能
+    features:
+      - 舞台场景设计
+      - 对白主导结构
+      - 舞台指示撰写
+      - 幕场划分规划
+      - 现场感营造
+    priority: low
+
+  - name: radio-drama-agent
+    type: skill
+    title: 广播剧剧本专家
+    description: 针对广播剧特点设计声音叙事、音效指示、旁白运用
+    core_concept: 声音的画布，让听众在想象中看见故事
+    features:
+      - 声音叙事设计
+      - 音效指示撰写
+      - 旁白运用技巧
+      - 角色声音差异化
+      - 听觉场景构建
+    priority: low
+
+# 后处理操作
+post_process:
+  - 生成Agent家族索引
+  - 创建快速启动指南
+  - 生成依赖关系图

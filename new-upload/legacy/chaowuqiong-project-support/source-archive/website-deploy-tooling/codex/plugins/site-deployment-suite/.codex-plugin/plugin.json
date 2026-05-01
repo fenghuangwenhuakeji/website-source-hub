@@ -1,0 +1,41 @@
+{
+  "name": "site-deployment-suite",
+  "version": "0.1.0",
+  "description": "Codex bridge for the D:\\网站部署 imported agent, skill, MCP, and AI tool collections.",
+  "author": {
+    "name": "Local Conversion",
+    "email": "local@example.invalid",
+    "url": "https://example.invalid/site-deployment-suite"
+  },
+  "homepage": "https://example.invalid/site-deployment-suite",
+  "repository": "https://example.invalid/site-deployment-suite",
+  "license": "Proprietary",
+  "keywords": [
+    "codex",
+    "site-deployment",
+    "trae",
+    "agent",
+    "mcp",
+    "llm"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Site Deployment Suite",
+    "shortDescription": "Use the imported 网站部署 agent, skill, MCP, and AI tool catalogs inside Codex",
+    "longDescription": "This local plugin bridges the imported Trae skill trees, Agent+Agent generated libraries, 超无穹 CodeEditor MCP source, and llm-proxy source into a Codex-usable catalog with routing skills and search scripts.",
+    "developerName": "Local Conversion",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://example.invalid/site-deployment-suite",
+    "privacyPolicyURL": "https://example.invalid/site-deployment-suite/privacy",
+    "termsOfServiceURL": "https://example.invalid/site-deployment-suite/terms",
+    "defaultPrompt": "Find the right imported 网站部署 skill, source file, or MCP module and adapt it for this Codex task",
+    "brandColor": "#1f4d3d",
+    "screenshots": []
+  }
+}

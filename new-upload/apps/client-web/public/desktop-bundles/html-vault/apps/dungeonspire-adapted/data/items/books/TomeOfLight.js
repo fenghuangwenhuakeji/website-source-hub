@@ -1,0 +1,1 @@
+export default { id: 'book_lgt', name: 'Tome of Light', effect: 'Learn a random Paladin card.' };

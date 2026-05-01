@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创世纪引擎 V76.0 - 完美形态</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Roboto+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script src="js/lib/showdown.min.js"></script>
+    <script src="js/lib/echarts.min.js"></script>
+    <script src="js/lib/mermaid.min.js"></script>
+
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <aside id="main-nav">
+            <div class="logo">
+                <i class="fas fa-atom fa-spin"></i>
+                <h1>创世纪引擎</h1>
+                <span>V76.0</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-target="pipeline-panel"><i class="fas fa-project-diagram"></i> 创作流水线</a></li>
+                    <li><a href="#" class="nav-link" data-target="writing-desk-panel"><i class="fas fa-feather-alt"></i> 执笔写作台</a></li>
+                    
+                    <li><a href="#" class="nav-link" data-target="deconstruction-panel"><i class="fas fa-search-plus"></i> 拆解室</a></li>
+                    <li><a href="#" class="nav-link" data-target="writing-area-panel"><i class="fas fa-magic"></i> 写作区</a></li>
+                    <li><a href="#" class="nav-link" data-target="card-library-panel"><i class="fas fa-layer-group"></i> 卡牌库</a></li>
+                    
+                    <li><a href="#" class="nav-link" data-target="toolbox-panel"><i class="fas fa-toolbox"></i> 辅助工具箱</a></li>
+                    <li><a href="#" class="nav-link" data-target="project-manager-panel"><i class="fas fa-folder-open"></i> 项目管理</a></li>
+                </ul>
+            </nav>
+            
+            <div class="nav-footer">
+                <a href="#" id="system-settings-btn" class="nav-link" title="系统设置"><i class="fas fa-cog"></i> 系统设置</a>
+            </div>
+
+            <div class="theme-switcher">
+                <button class="theme-btn" data-theme="dark" title="暗色主题"><i class="fas fa-moon"></i></button>
+                <button class="theme-btn" data-theme="light" title="亮色主题"><i class="fas fa-sun"></i></button>
+                <button class="theme-btn active" data-theme="cyberpunk" title="赛博朋克主题"><i class="fas fa-bolt"></i></button>
+            </div>
+        </aside>
+
+        <main id="main-content">
+             <div id="pipeline-panel" class="tab-content active"></div>
+            <div id="writing-desk-panel" class="tab-content"></div>
+            <div id="deconstruction-panel" class="tab-content"></div>
+            <div id="writing-area-panel" class="tab-content"></div>
+            <div id="card-library-panel" class="tab-content"></div>
+            <div id="toolbox-panel" class="tab-content"></div>
+            <div id="project-manager-panel" class="tab-content"></div>
+        </main>
+    </div>
+
+    <div id="notification-container"></div>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p id="loading-text">处理中...</p>
+    </div>
+
+    <div id="modal-container">
+        <div id="api-settings-modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span id="close-api-modal-btn" class="close-btn" title="关闭">&times;</span>
+                <h2><i class="fas fa-key"></i> API 设置</h2>
+                <p class="text-muted">您的API密钥将仅保存在您的浏览器本地，不会上传到任何服务器。</p>
+                <div class="form-group">
+                    <label for="api-provider">选择API服务商</label>
+                    <select id="api-provider">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="claude">Anthropic Claude</option>
+                        <option value="openai">OpenAI</option>
+                        <option value="deepseek">DeepSeek</option>
+                        <option value="siliconflow">硅基流动</option>
+                        <option value="ollama">Ollama (本地)</option>
+                        <option value="custom">自定义 (OpenAI 兼容)</option>
+                    </select>
+                </div>
+                <div class="form-group hidden" id="api-gemini-model-group"><label for="api-gemini-model">选择 Gemini 模型</label><select id="api-gemini-model"><option value="gemini-1.5-flash-latest">gemini-1.5-flash</option><option value="gemini-1.5-pro-latest">gemini-1.5-pro</option></select></div>
+                <div class="form-group hidden" id="api-claude-model-group"><label for="api-claude-model">选择 Claude 模型</label><select id="api-claude-model"><option value="claude-3-opus-20240229">Claude 3 Opus</option><option value="claude-3-sonnet-20240229" selected>Claude 3 Sonnet</option><option value="claude-3-haiku-20240307">Claude 3 Haiku</option></select></div>
+                <div class="form-group hidden" id="api-deepseek-model-group"><label for="api-deepseek-model">选择 DeepSeek 模型</label><select id="api-deepseek-model"><option value="deepseek-chat">deepseek-chat</option><option value="deepseek-coder">deepseek-coder</option></select></div>
+                <div class="form-group" id="api-key-group"><label for="api-key">API Key</label><input type="password" id="api-key" placeholder="在此处粘贴您的 API Key"></div>
+                <div class="form-group hidden" id="api-base-url-group"><label for="api-base-url">API Base URL</label><input type="text" id="api-base-url" placeholder="例如: http://localhost:11434"></div>
+                <div class="form-group hidden" id="api-model-name-group"><label for="api-model-name">模型名称</label><input type="text" id="api-model-name" placeholder="例如: llama3:latest"></div>
+                <button id="save-api-key-btn" class="action-btn" style="width: 100%; margin-top: 1rem;">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="card-selection-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-layer-group"></i> 选择用于润色的卡牌</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div id="card-selection-body" class="modal-body">
+                 <ul id="card-selection-list" class="card-selection-list"></ul>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-card-selection-btn" class="action-btn">确认选择</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/core/01_state-manager.js"></script>
+    <script src="js/core/02_utils.js"></script>
+    <script src="js/core/03_api-interface.js"></script>
+    <script src="js/core/04_user-profile.js"></script>
+    <script src="js/core/05_project-manager.js"></script>
+    <script src="js/core/06_layout-manager.js"></script>
+    
+    <script src="js/data/data-prompts.js"></script>
+    <script src="js/data/data-knowledge-base.js"></script>
+    <script src="js/data/data-ui-templates.js"></script>
+    
+    <script src="js/modules/module-pipeline.js"></script>
+    <script src="js/modules/module-writing-desk.js"></script>
+    <script src="js/modules/module-deconstruction.js"></script>
+    <script src="js/modules/module-writing-area.js"></script>
+    <script src="js/modules/module-card-library.js"></script>
+    <script src="js/modules/module-toolbox.js"></script>
+    
+    <script src="js/modules/module-ai-total-review.js"></script>
+    <script src="js/modules/module-dialogue-analyzer.js"></script>
+    <script src="js/modules/module-emotion-curve.js"></script>
+    <script src="js/modules/module-grammar-analyzer.js"></script>
+    <script src="js/modules/module-intro-generator.js"></script>
+    <script src="js/modules/module-logic-checker.js"></script>
+    <script src="js/modules/module-scene-planner.js"></script>
+    <script src="js/modules/module-structure-analyzer.js"></script>
+    <script src="js/modules/module-style-deconstruction.js"></script>
+    <script src="js/modules/module-style-migration.js"></script>
+    <script src="js/modules/module-style-replication.js"></script>
+    <script src="js/modules/module-tag-generator.js"></script>
+    <script src="js/modules/module-theme-tracker.js"></script>
+    <script src="js/modules/module-timeline-editor.js"></script>
+    <script src="js/modules/module-worldview-architect.js"></script>
+    <script src="js/modules/module-writing-enhancer.js"></script>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>

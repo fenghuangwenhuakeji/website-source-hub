@@ -1,0 +1,1 @@
+export default { id: 'scroll_spd', name: 'Scroll of Speed', effect: 'Gain +2 Speed for this floor.' };

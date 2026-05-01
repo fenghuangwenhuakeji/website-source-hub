@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI酒馆 RPG - TypeScript版</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/animate.css@4.1.1/animate.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@6.5.1/css/all.min.css">
+    
+    <script>
+        function enterGame() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'flex';
+        }
+        function openSettings() {
+            document.getElementById('main-menu').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'flex';
+            setTimeout(function() {
+                if (window.switchView) {
+                    window.switchView('settings');
+                }
+            }, 100);
+        }
+        function switchView(viewName) {
+            if (window._realSwitchView) {
+                window._realSwitchView(viewName);
+            } else {
+                console.log('等待游戏加载...');
+                setTimeout(function() { switchView(viewName); }, 100);
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            
+            --bg-dark: #0f0f1a;
+            --bg-darker: #070710;
+            --bg-card: rgba(15, 15, 26, 0.8);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --bg-glass-hover: rgba(255, 255, 255, 0.1);
+            
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --glow-primary: rgba(99, 102, 241, 0.5);
+            --glow-secondary: rgba(236, 72, 153, 0.5);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        #particles-js {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        #main-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            background: var(--bg-darker);
+        }
+        
+        .menu-content {
+            text-align: center;
+            z-index: 10;
+        }
+        
+        .menu-logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .menu-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 60px var(--glow-primary);
+        }
+        
+        .menu-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 3rem;
+        }
+        
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 10px 40px var(--glow-primary);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 50px var(--glow-primary);
+        }
+        
+        .btn-secondary {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--bg-glass-hover);
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+        
+        #game-interface {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .game-container {
+            display: grid;
+            grid-template-columns: 220px 1fr 240px;
+            grid-template-areas:
+                "top-bar top-bar top-bar"
+                "sidebar main-content right-panel";
+            grid-template-rows: var(--header-height) 1fr;
+            min-height: 100vh;
+            height: 100vh;
+            gap: 0;
+            width: 100vw;
+            max-width: 100vw;
+        }
+        
+        .top-bar {
+            grid-area: top-bar;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            z-index: 100;
+        }
+        
+        .game-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .game-title h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .game-title .version {
+            padding: 0.25rem 0.75rem;
+            background: var(--bg-glass);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .time-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--bg-glass);
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+        }
+        
+        .time-display i {
+            color: var(--accent);
+        }
+        
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-color);
+            padding: 1.5rem 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: calc(100vh - var(--header-height));
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .nav-section {
+            margin-bottom: 2rem;
+        }
+        
+        .nav-title {
+            padding: 0.5rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        
+        .nav-item {
+            padding: 0.875rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: all var(--transition-normal);
+            position: relative;
+            color: var(--text-secondary);
+        }
+        
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1rem;
+        }
+        
+        .nav-item:hover {
+            background: var(--bg-glass);
+            color: var(--text-primary);
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), transparent);
+            color: var(--primary-light);
+            border-left: 3px solid var(--primary);
+        }
+        
+        .nav-item.active i {
+            color: var(--primary-light);
+        }
+        
+        .main-content {
+            grid-area: main-content;
+            background: transparent;
+            padding: 1rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: calc(100vh - var(--header-height));
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .main-content .panel {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content .view {
+            height: 100%;
+        }
+        
+        .right-panel {
+            grid-area: right-panel;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border-color);
+            padding: 1rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: calc(100vh - var(--header-height));
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .right-panel .panel {
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        
+        .right-panel .panel:last-child {
+            margin-top: auto;
+        }
+        
+        .panel {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-normal);
+        }
+        
+        .panel:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .panel-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .panel-title i {
+            color: var(--primary-light);
+        }
+        
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .character-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            box-shadow: 0 8px 24px var(--glow-primary);
+        }
+        
+        .character-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .character-level {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .stat-bar {
+            margin-bottom: 0.75rem;
+        }
+        
+        .stat-bar-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width var(--transition-slow);
+            position: relative;
+        }
+        
+        .stat-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .stat-bar-fill.hp { background: linear-gradient(90deg, #ef4444, #f87171); }
+        
+        .stat-bar-fill.mp { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        
+        .stat-bar-fill.exp { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+        
+        .stat-bar-fill.stamina { background: linear-gradient(90deg, #10b981, #34d399); }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0.75rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+        }
+        
+        .stat-item span:first-child {
+            color: var(--text-secondary);
+        }
+        
+        .view {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .view.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .card {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 40px rgba(99, 102, 241, 0.2);
+        }
+        
+        .card:hover::before {
+            opacity: 1;
+        }
+        
+        .feature-card {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+        
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .feature-card:hover::after {
+            left: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary-light);
+            box-shadow: 
+                0 20px 60px rgba(99, 102, 241, 0.3),
+                0 0 40px rgba(99, 102, 241, 0.1);
+        }
+        
+        .feature-card .card-icon {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .feature-card .card-icon svg {
+            filter: drop-shadow(0 0 10px currentColor);
+            transition: all var(--transition-normal);
+        }
+        
+        .feature-card:hover .card-icon svg {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        
+        .card-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+            pointer-events: none;
+        }
+        
+        .feature-card:hover .card-glow {
+            opacity: 1;
+        }
+        
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.8rem;
+        }
+        
+        .rarity-common { border-left: 3px solid #9ca3af; }
+        
+        .rarity-uncommon { border-left: 3px solid #22c55e; }
+        
+        .rarity-rare { border-left: 3px solid #3b82f6; }
+        
+        .rarity-epic { border-left: 3px solid #a855f7; }
+        
+        .rarity-legendary { border-left: 3px solid #f59e0b; }
+        
+        .quest-item {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+        
+        .quest-item:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--primary);
+        }
+        
+        .quest-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quest-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .quest-reward {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .quest-reward span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        
+        .quest-reward i {
+            color: var(--accent);
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .notification {
+            position: fixed;
+            top: calc(var(--header-height) + 1rem);
+            right: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+        
+        .notification.success { 
+            background: rgba(16, 185, 129, 0.9);
+            border-color: var(--success);
+        }
+        
+        .notification.error { 
+            background: rgba(239, 68, 68, 0.9);
+            border-color: var(--danger);
+        }
+        
+        .notification.warning { 
+            background: rgba(245, 158, 11, 0.9);
+            border-color: var(--warning);
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .loading-spinner {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 1400px) {
+            .game-container {
+                grid-template-columns: 200px 1fr 220px;
+            }
+        }
+        
+        @media (max-width: 1200px) {
+            .game-container {
+                grid-template-columns: 180px 1fr 200px;
+            }
+            .right-panel {
+                padding: 0.75rem;
+                gap: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            .game-container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar, .right-panel {
+                display: none;
+            }
+            .main-content {
+                height: auto;
+            }
+        }
+        
+        .typing-text {
+            display: inline-block;
+        }
+        
+        .typed-cursor {
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .glow-text {
+            text-shadow: 0 0 10px var(--glow-primary), 0 0 20px var(--glow-primary), 0 0 30px var(--glow-primary);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+  <script type="module" crossorigin src="./assets/index-aXN6nZkD.js"></script>
+  <link rel="modulepreload" crossorigin href="./assets/core-DTdAas1V.js">
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <symbol id="icon-character" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+            <path d="M12 11v2M9 14l3 3 3-3" stroke-linecap="round"/>
+        </symbol>
+        
+        <symbol id="icon-combat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14.5 17.5L3 6V3h3l11.5 11.5M13 19l6-6M16 16l4 4"/>
+            <circle cx="19" cy="5" r="2.5" fill="currentColor"/>
+            <path d="M3 21l18-18" stroke-width="2.5" stroke-linecap="round"/>
+        </symbol>
+        
+        <symbol id="icon-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+            <line x1="9" y1="3" x2="9" y2="18"/>
+            <line x1="15" y1="6" x2="15" y2="21"/>
+            <circle cx="12" cy="12" r="2" fill="#f59e0b"/>
+            <path d="M12 10v-2M12 14v2M10 12h-2M14 12h2" stroke="#f59e0b" stroke-width="1.5"/>
+        </symbol>
+        
+        <symbol id="icon-tavern" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 21h18M5 21V7l7-4 7 4v14"/>
+            <path d="M9 21v-6h6v6"/>
+            <circle cx="9" cy="9" r="1" fill="currentColor"/>
+            <circle cx="15" cy="9" r="1" fill="currentColor"/>
+            <path d="M9 13h6"/>
+        </symbol>
+        
+        <symbol id="icon-ai" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="4" width="18" height="16" rx="2"/>
+            <circle cx="8" cy="10" r="1.5" fill="#6366f1"/>
+            <circle cx="16" cy="10" r="1.5" fill="#6366f1"/>
+            <path d="M9 15c1 1 5 1 6 0" stroke-linecap="round"/>
+            <circle cx="12" cy="10" r="3" stroke="#f59e0b" stroke-dasharray="2 1"/>
+        </symbol>
+        
+        <symbol id="icon-cards" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="4" y="2" width="14" height="20" rx="2" transform="rotate(-5 11 12)"/>
+            <rect x="6" y="4" width="14" height="20" rx="2" transform="rotate(5 13 14)"/>
+            <path d="M9 9l3 3-3 3"/>
+            <path d="M12 9l3 3-3 3" stroke="#ec4899"/>
+        </symbol>
+        
+        <symbol id="icon-skills" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </symbol>
+        
+        <symbol id="icon-upgrade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 19V5"/>
+            <path d="M5 12l7-7 7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"/>
+            <circle cx="12" cy="12" r="10" stroke-dasharray="4 2"/>
+            <circle cx="12" cy="12" r="3" fill="#10b981"/>
+        </symbol>
+        
+        <symbol id="icon-story" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            <path d="M8 7h8M8 11h8M8 15h4"/>
+            <circle cx="16" cy="15" r="2" fill="#3b82f6"/>
+        </symbol>
+        
+        <symbol id="icon-inventory" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </symbol>
+        
+        <symbol id="icon-quest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <circle cx="12" cy="14" r="4" stroke="#10b981"/>
+            <path d="M10 14l1.5 1.5 3-3" stroke="#10b981"/>
+        </symbol>
+        
+        <symbol id="icon-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </symbol>
+        
+        <symbol id="icon-hp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" fill="#ef4444" opacity="0.3"/>
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </symbol>
+        
+        <symbol id="icon-mp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" fill="#3b82f6" opacity="0.3"/>
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+        </symbol>
+        
+        <symbol id="icon-exp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#f59e0b" opacity="0.3"/>
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </symbol>
+        
+        <symbol id="icon-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="12" cy="12" r="6" fill="#f59e0b" opacity="0.3"/>
+            <path d="M12 6v12M15 9.5a3 3 0 1 0 0 5M9 9.5a3 3 0 1 1 0 5"/>
+        </symbol>
+        
+        <symbol id="icon-diamond" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 22 9 12 22 2 9"/>
+            <polygon points="12 2 17 9 12 22 7 9" fill="#3b82f6" opacity="0.3"/>
+            <line x1="2" y1="9" x2="22" y2="9"/>
+        </symbol>
+        
+        <symbol id="icon-def" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#3b82f6" opacity="0.2"/>
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+        </symbol>
+    </svg>
+    
+    <div class="gradient-bg"></div>
+    <div id="particles-js"></div>
+    
+    <div id="main-menu">
+        <div class="menu-content animate__animated animate__fadeIn">
+            <div class="menu-logo">
+                <svg class="icon-large" style="width: 80px; height: 80px; color: var(--primary-light);">
+                    <use href="#icon-combat"/>
+                </svg>
+            </div>
+            <h1 class="menu-title">AI酒馆 RPG</h1>
+            <p class="menu-subtitle">
+                <span id="typed-text"></span>
+            </p>
+            <div class="menu-buttons">
+                <button class="btn btn-primary animate__animated animate__fadeInUp" onclick="enterGame()">
+                    <i class="fas fa-play"></i> 开始游戏
+                </button>
+                <button class="btn btn-secondary animate__animated animate__fadeInUp animate__delay-1s" onclick="openSettings()">
+                    <i class="fas fa-cog"></i> API设置
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-interface" class="game-container">
+        <div class="top-bar" style="padding: 0.25rem 1rem; background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(236, 72, 153, 0.1)); border-bottom: 1px solid var(--border-color);">
+        </div>
+
+        <div class="sidebar">
+            <div class="nav-section">
+                <div class="nav-title">核心系统</div>
+                <div class="nav-item active" onclick="switchView('game')">
+                    <i class="fas fa-home"></i>
+                    <span>游戏大厅</span>
+                </div>
+                <div class="nav-item" onclick="switchView('chat')">
+                    <i class="fas fa-comments"></i>
+                    <span>对话系统</span>
+                </div>
+                <div class="nav-item" onclick="switchView('map')">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <span>地图探索</span>
+                </div>
+                <div class="nav-item" onclick="switchView('combat')">
+                    <i class="fas fa-shield-halved"></i>
+                    <span>战斗系统</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">AI创作中心</div>
+                <div class="nav-item" onclick="switchView('image')">
+                    <i class="fas fa-image"></i>
+                    <span>图片生成</span>
+                </div>
+                <div class="nav-item" onclick="switchView('video')">
+                    <i class="fas fa-video"></i>
+                    <span>视频生成</span>
+                </div>
+                <div class="nav-item" onclick="switchView('audio')">
+                    <i class="fas fa-music"></i>
+                    <span>音频生成</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">角色系统</div>
+                <div class="nav-item" onclick="switchView('character')">
+                    <i class="fas fa-user"></i>
+                    <span>角色面板</span>
+                </div>
+                <div class="nav-item" onclick="switchView('skills')">
+                    <i class="fas fa-star"></i>
+                    <span>技能树</span>
+                </div>
+                <div class="nav-item" onclick="switchView('upgrade')">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>升级系统</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">游戏内容</div>
+                <div class="nav-item" onclick="switchView('story')">
+                    <i class="fas fa-book"></i>
+                    <span>剧情系统</span>
+                </div>
+                <div class="nav-item" onclick="switchView('cards')">
+                    <i class="fas fa-layer-group"></i>
+                    <span>卡牌系统</span>
+                </div>
+                <div class="nav-item" onclick="switchView('inventory')">
+                    <i class="fas fa-box"></i>
+                    <span>背包系统</span>
+                </div>
+                <div class="nav-item" onclick="switchView('quest')">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>任务系统</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">系统设置</div>
+                <div class="nav-item" onclick="switchView('settings')">
+                    <i class="fas fa-cog"></i>
+                    <span>API卡池</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div id="view-game" class="view active">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 1.5rem; height: 100%; overflow-y: auto;">
+                    <!-- Logo区域 -->
+                    <div style="text-align: center; margin-bottom: 1.5rem; margin-top: 1rem;">
+                        <div style="font-size: 4rem; margin-bottom: 0.5rem; animation: float 3s ease-in-out infinite;">🍺</div>
+                        <h1 style="font-size: 2.2rem; margin: 0; background: linear-gradient(90deg, var(--primary-light), var(--secondary), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% auto; animation: gradient 3s ease infinite;">AI酒馆</h1>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 0.3rem;">沉浸式AI驱动的RPG冒险世界</p>
+                    </div>
+                    
+                    <!-- 游戏介绍卡片 -->
+                    <div style="max-width: 500px; width: 100%; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.05)); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 16px; padding: 1.25rem; margin-bottom: 1.5rem; backdrop-filter: blur(10px);">
+                        <h3 style="color: var(--primary-light); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 1rem;">
+                            <i class="fas fa-scroll" style="color: var(--accent);"></i> 游戏介绍
+                        </h3>
+                        <p style="color: var(--text-secondary); line-height: 1.6; margin: 0; font-size: 0.85rem;">
+                            在AI酒馆中，你将扮演一名冒险者，通过对话系统与AI互动，探索各种剧情，经历战斗、交易、探索等丰富的游戏体验...
+                        </p>
+                    </div>
+
+                    <!-- 开始按钮 -->
+                    <button class="btn btn-primary" style="font-size: 1.1rem; padding: 0.875rem 3rem; border-radius: 50px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border: none; box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4); transition: all 0.3s ease;" onmouseover="this.style.transform='translateY(-2px) scale(1.03)'; this.style.boxShadow='0 12px 35px rgba(99, 102, 241, 0.5)'" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 25px rgba(99, 102, 241, 0.4)'" onclick="switchView('story-select')">
+                        <i class="fas fa-play" style="margin-right: 0.5rem;"></i> 开始冒险
+                    </button>
+                    
+                    <!-- 统计数据 -->
+                    <div style="margin-top: 2rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="text-align: center; padding: 0.75rem 1.5rem; background: rgba(99, 102, 241, 0.1); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2);">
+                            <div style="font-size: 1.75rem; font-weight: bold; color: var(--primary);">3+</div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">剧情剧本</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem 1.5rem; background: rgba(236, 72, 153, 0.1); border-radius: 12px; border: 1px solid rgba(236, 72, 153, 0.2);">
+                            <div style="font-size: 1.75rem; font-weight: bold; color: var(--secondary);">10+</div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">角色选择</div>
+                        </div>
+                        <div style="text-align: center; padding: 0.75rem 1.5rem; background: rgba(245, 158, 11, 0.1); border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <div style="font-size: 1.75rem; font-weight: bold; color: var(--accent);">∞</div>
+                            <div style="color: var(--text-secondary); font-size: 0.75rem;">AI剧情</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-story-select" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-book-open"></i>
+                        <span>选择剧情</span>
+                        <button class="btn btn-secondary" style="margin-left: auto; padding: 4px 12px;" onclick="switchView('game')">
+                            <i class="fas fa-arrow-left"></i> 返回
+                        </button>
+                    </div>
+                    <div id="story-list" style="padding: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem;">
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-character-select" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-users"></i>
+                        <span>选择角色</span>
+                        <button class="btn btn-secondary" style="margin-left: auto; padding: 4px 12px;" onclick="switchView('story-select')">
+                            <i class="fas fa-arrow-left"></i> 返回
+                        </button>
+                    </div>
+                    <div id="character-list" style="padding: 1.5rem;">
+                        <div id="selected-story-info" style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
+                        </div>
+                        <div id="character-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-map" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-map"></i>
+                        <span>地图探索</span>
+                    </div>
+                    <div id="map-display"></div>
+                </div>
+            </div>
+
+            <div id="view-tavern" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-mug-saucer"></i>
+                        <span>酒馆</span>
+                    </div>
+                    <div id="tavern-display"></div>
+                </div>
+            </div>
+
+            <div id="view-combat" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-shield-halved"></i>
+                        <span>战斗系统</span>
+                    </div>
+                    <div id="combat-display"></div>
+                </div>
+            </div>
+
+            <div id="view-character" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-user"></i>
+                        <span>角色面板</span>
+                    </div>
+                    <div id="character-display"></div>
+                </div>
+            </div>
+
+            <div id="view-skills" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-star"></i>
+                        <span>技能树</span>
+                    </div>
+                    <div id="skills-display"></div>
+                </div>
+            </div>
+
+            <div id="view-upgrade" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>升级系统</span>
+                    </div>
+                    <div id="upgrade-display"></div>
+                </div>
+            </div>
+
+            <div id="view-story" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-book"></i>
+                        <span>剧情系统</span>
+                    </div>
+                    <div id="story-display"></div>
+                </div>
+            </div>
+
+            <div id="view-cards" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-layer-group"></i>
+                        <span>卡牌系统</span>
+                    </div>
+                    <div id="cards-display"></div>
+                </div>
+            </div>
+
+            <div id="view-inventory" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-box"></i>
+                        <span>背包系统</span>
+                    </div>
+                    <div id="inventory-display"></div>
+                </div>
+            </div>
+
+            <div id="view-quest" class="view">
+                <div class="panel">
+                    <div class="panel-title">
+                        <i class="fas fa-clipboard-list"></i>
+                        <span>任务系统</span>
+                    </div>
+                    <div id="quest-display"></div>
+                </div>
+            </div>
+
+            <div id="view-chat" class="view">
+                <div class="chat-wrapper" style="height: 100%; display: flex; flex-direction: column; overflow: hidden;">
+                    <div class="panel-title" style="padding: 1rem; border-bottom: 1px solid var(--border-color); flex-shrink: 0; background: var(--bg-card);">
+                        <i class="fas fa-comments"></i>
+                        <span>AI对话系统</span>
+                        <div style="margin-left: auto; display: flex; gap: 0.5rem;">
+                            <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="createNewChatSession()" title="新对话">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="toggleChatHistory()" title="历史记录">
+                                <i class="fas fa-history"></i>
+                            </button>
+                            <button class="btn btn-secondary" style="padding: 4px 12px; font-size: 12px;" onclick="clearCurrentChat()" title="清空对话">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="chat-history-sidebar" style="display: none; position: absolute; left: 0; top: 50px; bottom: 120px; width: 250px; background: var(--bg-darker); border-right: 1px solid var(--border-color); z-index: 10; overflow-y: auto;">
+                        <div style="padding: 0.75rem; border-bottom: 1px solid var(--border-color); font-size: 12px; color: var(--text-secondary);">
+                            <i class="fas fa-clock"></i> 历史对话
+                        </div>
+                        <div id="chat-history-list"></div>
+                    </div>
+                    
+                    <div id="chat-messages" style="flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; min-height: 0;"></div>
+                    
+                    <div id="chat-typing-indicator" style="display: none; padding: 0.5rem 1rem; color: var(--text-secondary); font-size: 12px; background: var(--bg-card); border-top: 1px solid var(--border-color);">
+                        <i class="fas fa-spinner fa-spin"></i> AI正在思考中...
+                    </div>
+                    
+                    <div class="chat-input-wrapper" style="padding: 1rem; border-top: 1px solid var(--border-color); background: var(--bg-card); flex-shrink: 0;">
+                        <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                                <textarea id="chat-input" placeholder="输入消息... (Shift+Enter换行，Enter发送)" style="width: 100%; min-height: 40px; max-height: 120px; resize: none; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm); outline: none; font-size: 14px; line-height: 1.4;" onkeydown="handleChatKeydown(event)"></textarea>
+                            </div>
+                            <button class="btn btn-primary" onclick="sendChatMessage()" style="height: 40px; padding: 0 1rem;">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 11px; color: var(--text-secondary);">
+                            <span id="chat-model-info">未选择模型</span>
+                            <span id="chat-token-info"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-image" class="view">
+                <div class="panel" style="height: 100%; display: flex; flex-direction: column;">
+                    <div class="panel-title">
+                        <i class="fas fa-image"></i>
+                        <span>AI图片生成</span>
+                    </div>
+                    <div id="image-container" style="flex: 1; display: flex; gap: 1rem; overflow: hidden;">
+                        <div style="width: 300px; display: flex; flex-direction: column; gap: 1rem; padding: 1rem; background: var(--bg-card); border-radius: var(--radius-md);">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">提示词</label>
+                                <textarea id="image-prompt" rows="4" placeholder="描述你想生成的图片..." style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm); resize: none;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">尺寸</label>
+                                <select id="image-size" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm);">
+                                    <option value="1024x1024">1024×1024 (方形)</option>
+                                    <option value="1792x1024">1792×1024 (横屏)</option>
+                                    <option value="1024x1792">1024×1792 (竖屏)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">质量</label>
+                                <select id="image-quality" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm);">
+                                    <option value="standard">标准</option>
+                                    <option value="hd">高清</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateImage()" style="width: 100%;">
+                                <i class="fas fa-wand-magic-sparkles"></i> 生成图片
+                            </button>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                            <div id="image-result" style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg-darker); border-radius: var(--radius-md); overflow: hidden;">
+                                <div style="text-align: center; color: var(--text-muted);">
+                                    <i class="fas fa-image" style="font-size: 48px; margin-bottom: 1rem;"></i>
+                                    <p>生成的图片将显示在这里</p>
+                                </div>
+                            </div>
+                            <div id="image-history" style="height: 100px; display: flex; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; background: var(--bg-card); border-radius: var(--radius-sm); margin-top: 0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-video" class="view">
+                <div class="panel" style="height: 100%; display: flex; flex-direction: column;">
+                    <div class="panel-title">
+                        <i class="fas fa-video"></i>
+                        <span>AI视频生成</span>
+                    </div>
+                    <div id="video-container" style="flex: 1; display: flex; gap: 1rem; overflow: hidden;">
+                        <div style="width: 300px; display: flex; flex-direction: column; gap: 1rem; padding: 1rem; background: var(--bg-card); border-radius: var(--radius-md);">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">提示词</label>
+                                <textarea id="video-prompt" rows="4" placeholder="描述你想生成的视频内容..." style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm); resize: none;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">时长</label>
+                                <select id="video-duration" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm);">
+                                    <option value="4">4秒</option>
+                                    <option value="6">6秒</option>
+                                    <option value="8">8秒</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">比例</label>
+                                <select id="video-ratio" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm);">
+                                    <option value="16:9">16:9 横屏</option>
+                                    <option value="9:16">9:16 竖屏</option>
+                                    <option value="1:1">1:1 方形</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateVideo()" style="width: 100%;">
+                                <i class="fas fa-film"></i> 生成视频
+                            </button>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                            <div id="video-result" style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg-darker); border-radius: var(--radius-md); overflow: hidden;">
+                                <div style="text-align: center; color: var(--text-muted);">
+                                    <i class="fas fa-video" style="font-size: 48px; margin-bottom: 1rem;"></i>
+                                    <p>生成的视频将显示在这里</p>
+                                </div>
+                            </div>
+                            <div id="video-history" style="height: 100px; display: flex; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; background: var(--bg-card); border-radius: var(--radius-sm); margin-top: 0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-audio" class="view">
+                <div class="panel" style="height: 100%; display: flex; flex-direction: column;">
+                    <div class="panel-title">
+                        <i class="fas fa-music"></i>
+                        <span>AI音频生成</span>
+                    </div>
+                    <div id="audio-container" style="flex: 1; display: flex; gap: 1rem; overflow: hidden;">
+                        <div style="width: 300px; display: flex; flex-direction: column; gap: 1rem; padding: 1rem; background: var(--bg-card); border-radius: var(--radius-md);">
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">文本内容</label>
+                                <textarea id="audio-text" rows="6" placeholder="输入要转换为语音的文本..." style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm); resize: none;"></textarea>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">声音</label>
+                                <select id="audio-voice" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm);">
+                                    <option value="alloy">Alloy (中性)</option>
+                                    <option value="echo">Echo (男声)</option>
+                                    <option value="nova">Nova (女声)</option>
+                                    <option value="shimmer">Shimmer (女声)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary);">语速</label>
+                                <input type="range" id="audio-speed" min="0.5" max="2" step="0.25" value="1" style="width: 100%;">
+                                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted);">
+                                    <span>慢</span>
+                                    <span id="audio-speed-value">1.0x</span>
+                                    <span>快</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" onclick="generateAudio()" style="width: 100%;">
+                                <i class="fas fa-volume-high"></i> 生成音频
+                            </button>
+                            <button class="btn btn-secondary" onclick="stopAudio()" style="width: 100%;">
+                                <i class="fas fa-stop"></i> 停止播放
+                            </button>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+                            <div id="audio-result" style="flex: 1; display: flex; align-items: center; justify-content: center; background: var(--bg-darker); border-radius: var(--radius-md); overflow: hidden;">
+                                <div style="text-align: center; color: var(--text-muted);">
+                                    <i class="fas fa-music" style="font-size: 48px; margin-bottom: 1rem;"></i>
+                                    <p>生成的音频将显示在这里</p>
+                                </div>
+                            </div>
+                            <div id="audio-history" style="height: 100px; display: flex; gap: 0.5rem; padding: 0.5rem; overflow-x: auto; background: var(--bg-card); border-radius: var(--radius-sm); margin-top: 0.5rem;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-settings" class="view">
+                <div class="panel" style="height: 100%; overflow-y: auto;">
+                    <div class="panel-title">
+                        <i class="fas fa-database"></i>
+                        <span>API卡池管理</span>
+                        <button class="btn btn-primary" style="margin-left: auto; padding: 4px 12px; font-size: 12px;" onclick="showAddAPIModal()">
+                            <i class="fas fa-plus"></i> 添加API
+                        </button>
+                    </div>
+                    <div id="api-pool-container" style="padding: 1rem;">
+                        <div id="api-pool-list" style="display: grid; gap: 1rem;">
+                            <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <p>暂无API配置</p>
+                                <p style="font-size: 12px;">点击右上角"添加API"按钮开始配置</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <!-- 角色信息面板 -->
+            <div class="panel" id="character-panel">
+                <div class="panel-title">
+                    <i class="fas fa-user-shield"></i>
+                    <span>角色信息</span>
+                </div>
+                <div id="player-info">
+                    <div style="text-align: center; padding: 2rem 1rem; color: var(--text-secondary);">
+                        <i class="fas fa-user-circle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                        <p>请先创建角色</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 基础属性面板 -->
+            <div class="panel" id="attributes-panel">
+                <div class="panel-title">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>基础属性</span>
+                </div>
+                <div id="player-attributes">
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">力量</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--danger);">--</div>
+                        </div>
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">敏捷</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--info);">--</div>
+                        </div>
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">智力</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--accent);">--</div>
+                        </div>
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">体质</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--success);">--</div>
+                        </div>
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">幸运</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--secondary);">--</div>
+                        </div>
+                        <div class="attr-box">
+                            <div style="font-size: 10px; color: var(--text-muted);">魅力</div>
+                            <div style="font-size: 16px; font-weight: 600; color: var(--primary);">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 战斗属性面板 -->
+            <div class="panel" id="combat-panel">
+                <div class="panel-title">
+                    <i class="fas fa-fist-raised"></i>
+                    <span>战斗属性</span>
+                </div>
+                <div id="player-combat">
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;">
+                        <div style="background: rgba(239, 68, 68, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted);">攻击力</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--danger);">--</div>
+                        </div>
+                        <div style="background: rgba(59, 130, 246, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted);">防御力</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--info);">--</div>
+                        </div>
+                        <div style="background: rgba(245, 158, 11, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted);">速度</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--accent);">--</div>
+                        </div>
+                        <div style="background: rgba(168, 85, 247, 0.1); padding: 10px; border-radius: 8px; text-align: center;">
+                            <div style="font-size: 10px; color: var(--text-muted);">暴击率</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--purple);">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快捷操作面板 -->
+            <div class="panel">
+                <div class="panel-title">
+                    <i class="fas fa-bolt"></i>
+                    <span>快捷操作</span>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <button class="btn btn-secondary" onclick="switchView('character')">
+                        <i class="fas fa-user"></i> 角色详情
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchView('inventory')">
+                        <i class="fas fa-box"></i> 打开背包
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchView('quest')">
+                        <i class="fas fa-clipboard-list"></i> 查看任务
+                    </button>
+                    <button class="btn btn-secondary" onclick="switchView('skills')">
+                        <i class="fas fa-star"></i> 技能树
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API配置模态框 - 放在游戏界面之外 -->
+    <div id="api-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: var(--radius-md); width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border-color);">
+            <div style="padding: 1rem; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="margin: 0; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-plus-circle" style="color: var(--primary);"></i>
+                    <span id="modal-title">添加API配置</span>
+                </h3>
+                <button onclick="closeAPIModal()" style="background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 1.5rem;">&times;</button>
+            </div>
+            <div style="padding: 1rem;">
+                <input type="hidden" id="edit-api-id">
+                
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 14px;">
+                        <i class="fas fa-tag"></i> 配置名称
+                    </label>
+                    <input type="text" id="api-name" placeholder="例如：我的OpenAI" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm);">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 14px;">
+                        <i class="fas fa-server"></i> 预设提供商
+                    </label>
+                    <select id="api-preset" onchange="applyPreset()" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm);">
+                        <option value="">-- 选择预设或手动输入 --</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 14px;">
+                        <i class="fas fa-link"></i> API端点 (URL)
+                    </label>
+                    <input type="text" id="api-endpoint" placeholder="https://api.openai.com/v1/chat/completions" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm);">
+                </div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 14px;">
+                        <i class="fas fa-key"></i> API密钥 (Key)
+                    </label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="password" id="api-key" placeholder="sk-..." style="flex: 1; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.75rem; border-radius: var(--radius-sm);">
+                        <button class="btn btn-secondary" onclick="toggleKeyVisibility()" title="显示/隐藏密钥">
+                            <i class="fas fa-eye" id="key-visibility-icon"></i>
+                        </button>
+                    </div>
+                    <div style="margin-top: 0.5rem; padding: 0.75rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: var(--radius-sm); font-size: 12px; color: var(--info);">
+                        <i class="fas fa-info-circle"></i> 
+                        <span>API密钥用于验证您的身份，请妥善保管，不要泄露给他人。</span>
+                    </div>
+                    <div style="margin-top: 0.5rem;">
+                        <label style="display: block; margin-bottom: 0.25rem; color: var(--text-secondary); font-size: 12px;">
+                            <i class="fas fa-robot"></i> 默认模型 (可选)
+                        </label>
+                        <input type="text" id="api-default-model" placeholder="如: gpt-4, deepseek-chat" style="width: 100%; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm); font-size: 13px;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <input type="checkbox" id="api-openai-compatible" checked style="width: 18px; height: 18px;">
+                    <label for="api-openai-compatible" style="color: var(--text-secondary); font-size: 14px; cursor: pointer;">
+                        <i class="fas fa-plug"></i> OpenAI兼容模式
+                    </label>
+                </div>
+
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="autoFetchModels()" style="flex: 1;">
+                        <i class="fas fa-cloud-download-alt"></i> 自动获取模型
+                    </button>
+                    <button class="btn btn-secondary" onclick="testAPIConnection()" style="flex: 1;">
+                        <i class="fas fa-vial"></i> 测试连接
+                    </button>
+                </div>
+
+                <div id="connection-test-result" style="display: none; margin-bottom: 1rem; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 14px;"></div>
+
+                <div style="margin-bottom: 1rem;">
+                    <label style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 14px;">
+                        <i class="fas fa-cubes"></i> 模型列表
+                    </label>
+                    <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <input type="text" id="quick-model-name" placeholder="模型名称 (如: GPT-4)" style="flex: 1; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm); font-size: 13px;">
+                        <input type="text" id="quick-model-id" placeholder="模型ID (如: gpt-4)" style="flex: 1; background: var(--bg-darker); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.5rem; border-radius: var(--radius-sm); font-size: 13px;">
+                        <button class="btn btn-secondary" style="padding: 0.5rem 0.75rem;" onclick="quickAddModel()">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div id="model-list" style="display: grid; gap: 0.5rem; max-height: 200px; overflow-y: auto; padding: 0.5rem; background: var(--bg-darker); border-radius: var(--radius-sm);">
+                        <div style="text-align: center; padding: 1rem; color: var(--text-secondary); font-size: 12px;">
+                            输入模型名称和ID后点击 + 添加，或点击"自动获取模型"
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-secondary" onclick="closeAPIModal()" style="flex: 1;">取消</button>
+                    <button class="btn btn-primary" onclick="saveAPIConfig()" style="flex: 1;">
+                        <i class="fas fa-save"></i> 保存配置
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof window.Typed !== 'undefined') {
+                new window.Typed('#typed-text', {
+                    strings: [
+                        'TypeScript + Vite 版本 3.0',
+                        '探索无限可能的冒险世界',
+                        'AI驱动的动态剧情生成',
+                        '回合制战斗与卡牌系统'
+                    ],
+                    typeSpeed: 50,
+                    backSpeed: 30,
+                    backDelay: 2000,
+                    loop: true
+                });
+            }
+            
+            if (typeof window.VanillaTilt !== 'undefined') {
+                window.VanillaTilt.init(document.querySelectorAll('.card'), {
+                    max: 15,
+                    speed: 400,
+                    glare: true,
+                    'max-glare': 0.2
+                });
+            }
+        });
+    </script>
+</body>
+</html>

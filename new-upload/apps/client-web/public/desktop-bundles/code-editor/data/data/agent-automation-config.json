@@ -1,0 +1,265 @@
+{
+  "version": "3.0.0",
+  "description": "CodeEditor IDE Agent自动化配置",
+  
+  "autoExecution": {
+    "enabled": true,
+    "maxConcurrent": 10,
+    "retryAttempts": 3,
+    "retryDelay": 5000,
+    "timeout": 300000,
+    "logRetention": 1000,
+    "healthCheckInterval": 60000
+  },
+
+  "schedules": [
+    {
+      "id": "daily-health-check",
+      "agentId": "health-check-agent",
+      "cron": "0 9 * * *",
+      "enabled": true,
+      "description": "每日健康检查"
+    },
+    {
+      "id": "hourly-backup",
+      "agentId": "auto-backup-agent",
+      "cron": "0 * * * *",
+      "enabled": true,
+      "description": "每小时自动备份"
+    },
+    {
+      "id": "weekly-report",
+      "agentId": "auto-report-agent",
+      "cron": "0 18 * * 5",
+      "enabled": true,
+      "description": "每周工作报告"
+    },
+    {
+      "id": "daily-cleanup",
+      "agentId": "auto-cleanup-agent",
+      "cron": "0 2 * * *",
+      "enabled": true,
+      "description": "每日清理临时文件"
+    }
+  ],
+
+  "workflows": [
+    {
+      "id": "bug-fix-flow",
+      "name": "Bug修复流程",
+      "description": "自动化的Bug诊断和修复流程",
+      "steps": [
+        { "id": "detect", "agentId": "debug-agent", "timeout": 60000 },
+        { "id": "analyze", "agentId": "error-analysis-agent", "timeout": 60000 },
+        { "id": "fix", "agentId": "auto-fix-agent", "timeout": 120000 },
+        { "id": "verify", "agentId": "test-agent", "timeout": 60000 }
+      ]
+    },
+    {
+      "id": "performance-optimize",
+      "name": "性能优化流程",
+      "description": "自动化的性能分析和优化流程",
+      "steps": [
+        { "id": "profile", "agentId": "profiler-agent", "timeout": 120000 },
+        { "id": "analyze", "agentId": "performance-analysis-agent", "timeout": 60000 },
+        { "id": "optimize", "agentId": "optimization-agent", "timeout": 180000 },
+        { "id": "verify", "agentId": "benchmark-agent", "timeout": 120000 }
+      ]
+    },
+    {
+      "id": "full-dev-cycle",
+      "name": "完整开发周期",
+      "description": "从需求到部署的完整开发流程",
+      "steps": [
+        { "id": "analyze", "agentId": "requirement-agent", "timeout": 60000 },
+        { "id": "design", "agentId": "design-agent", "timeout": 120000 },
+        { "id": "implement", "agentId": "code-gen-agent", "timeout": 300000 },
+        { "id": "test", "agentId": "test-agent", "timeout": 180000 },
+        { "id": "review", "agentId": "code-review-agent", "timeout": 60000 },
+        { "id": "deploy", "agentId": "deploy-agent", "timeout": 120000 }
+      ]
+    },
+    {
+      "id": "game-dev-flow",
+      "name": "游戏开发流程",
+      "description": "游戏功能开发完整流程",
+      "steps": [
+        { "id": "design", "agentId": "game-design-agent", "timeout": 120000 },
+        { "id": "implement", "agentId": "unity-core-agent", "timeout": 300000 },
+        { "id": "test", "agentId": "game-testing-agent", "timeout": 180000 },
+        { "id": "optimize", "agentId": "game-performance-agent", "timeout": 120000 }
+      ]
+    },
+    {
+      "id": "auto-upgrade-flow",
+      "name": "自动升级流程",
+      "description": "系统和依赖自动升级流程",
+      "steps": [
+        { "id": "check", "agentId": "version-check-agent", "timeout": 60000 },
+        { "id": "backup", "agentId": "auto-backup-agent", "timeout": 120000 },
+        { "id": "upgrade", "agentId": "auto-update-agent", "timeout": 300000 },
+        { "id": "verify", "agentId": "test-agent", "timeout": 180000 }
+      ]
+    }
+  ],
+
+  "triggers": {
+    "onFileOpen": {
+      "enabled": true,
+      "suggestAgents": true,
+      "maxSuggestions": 5
+    },
+    "onCodeSelect": {
+      "enabled": true,
+      "suggestAgents": true,
+      "maxSuggestions": 3
+    },
+    "onError": {
+      "enabled": true,
+      "autoDebug": true,
+      "agentId": "debug-agent"
+    },
+    "onSave": {
+      "enabled": true,
+      "autoFormat": true,
+      "autoLint": true
+    }
+  },
+
+  "categories": {
+    "priority": {
+      "core": 100,
+      "debug": 90,
+      "automation": 85,
+      "game-dev": 80,
+      "ai-ml": 75,
+      "programming": 70,
+      "frontend": 65,
+      "backend": 65,
+      "devops": 60,
+      "testing": 55,
+      "security": 50,
+      "documentation": 45
+    },
+    "autoTrigger": {
+      "debug-agent": true,
+      "code-review-agent": true,
+      "auto-fix-agent": true,
+      "auto-backup-agent": true,
+      "health-check-agent": true
+    }
+  },
+
+  "integrations": {
+    "editor": {
+      "enabled": true,
+      "showSuggestions": true,
+      "showQuickActions": true
+    },
+    "terminal": {
+      "enabled": true,
+      "autoExecute": true,
+      "commandHistory": true
+    },
+    "fileExplorer": {
+      "enabled": true,
+      "contextMenu": true,
+      "dragAndDrop": true
+    },
+    "debugger": {
+      "enabled": true,
+      "autoDebug": true,
+      "errorAnalysis": true
+    }
+  },
+
+  "monitoring": {
+    "enabled": true,
+    "logLevel": "info",
+    "metricsRetention": 7,
+    "alertThreshold": {
+      "errorRate": 0.3,
+      "avgDuration": 60000,
+      "queueLength": 50
+    }
+  },
+
+  "gameDev": {
+    "engines": {
+      "unity": {
+        "enabled": true,
+        "defaultAgent": "unity-core-agent",
+        "agents": [
+          "unity-core-agent",
+          "shader-dev-agent",
+          "game-ai-agent",
+          "game-animation-agent"
+        ]
+      },
+      "unreal": {
+        "enabled": true,
+        "defaultAgent": "unreal-core-agent",
+        "agents": [
+          "unreal-core-agent",
+          "blueprint-agent",
+          "unreal-cpp-agent"
+        ]
+      },
+      "godot": {
+        "enabled": true,
+        "defaultAgent": "godot-core-agent",
+        "agents": [
+          "godot-core-agent",
+          "gdscript-agent",
+          "godot-scene-agent"
+        ]
+      }
+    },
+    "features": {
+      "shader": "shader-dev-agent",
+      "physics": "game-physics-agent",
+      "ai": "game-ai-agent",
+      "animation": "game-animation-agent",
+      "audio": "game-audio-agent",
+      "network": "game-network-agent",
+      "ui": "game-ui-agent"
+    }
+  },
+
+  "automation": {
+    "upgrade": {
+      "enabled": true,
+      "checkInterval": 86400000,
+      "agents": [
+        "version-check-agent",
+        "auto-update-agent",
+        "dependency-update-agent"
+      ]
+    },
+    "execute": {
+      "enabled": true,
+      "maxConcurrent": 5,
+      "agents": [
+        "auto-build-agent",
+        "auto-test-agent",
+        "auto-deploy-agent"
+      ]
+    },
+    "schedule": {
+      "enabled": true,
+      "agents": [
+        "task-scheduler-agent",
+        "resource-scheduler-agent",
+        "cron-job-agent"
+      ]
+    },
+    "monitor": {
+      "enabled": true,
+      "agents": [
+        "health-check-agent",
+        "performance-monitor-agent",
+        "error-monitor-agent"
+      ]
+    }
+  }
+}

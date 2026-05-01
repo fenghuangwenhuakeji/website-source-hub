@@ -1,0 +1,53 @@
+﻿{
+    "generated_at":  "2026-04-08T16:57:15.0101056+08:00",
+    "workspace_root":  "D:\\网站部署",
+    "codex_home":  "D:\\网站部署\\codex",
+    "summary":  {
+                    "imported_skill_mounts":  2,
+                    "vendor_reference_mounts":  2
+                },
+    "imports":  [
+                    {
+                        "name":  "trae-main",
+                        "source":  "D:\\网站部署\\.trae\\skills",
+                        "mounted_to":  "D:\\网站部署\\codex\\skills\\site-deployment-imports\\trae-main",
+                        "kind":  "codex-skills",
+                        "stats":  {
+                                      "direct_skill_dirs":  176,
+                                      "recursive_skill_dirs":  5260
+                                  }
+                    },
+                    {
+                        "name":  "agent-plus-agent",
+                        "source":  "D:\\网站部署\\Agent+Agent制造机\\Agent阵法\\.trae\\skills",
+                        "mounted_to":  "D:\\网站部署\\codex\\skills\\site-deployment-imports\\agent-plus-agent",
+                        "kind":  "codex-skills",
+                        "stats":  {
+                                      "direct_skill_dirs":  81,
+                                      "recursive_skill_dirs":  5024
+                                  }
+                    },
+                    {
+                        "name":  "trae-copy-docs",
+                        "source":  "D:\\网站部署\\trae复制",
+                        "mounted_to":  "D:\\网站部署\\codex\\vendor_imports\\site-deployment\\trae-copy-docs",
+                        "kind":  "reference-project",
+                        "file_count":  43
+                    },
+                    {
+                        "name":  "codeeditor-mcp-source",
+                        "source":  "D:\\网站部署\\超无穹项目\\chaowuqiong-project\\apps\\desktop\\待打包\\CodeEditor\\mcp",
+                        "mounted_to":  "D:\\网站部署\\codex\\vendor_imports\\site-deployment\\codeeditor-mcp-source",
+                        "kind":  "mcp-source",
+                        "file_count":  7
+                    }
+                ],
+    "direct_sources":  {
+                           "llm_proxy":  "D:\\网站部署\\llm-proxy.js"
+                       },
+    "notes":  [
+                  "The Trae skill trees are mounted into Codex via junctions so Codex can discover SKILL.md files without copying the original libraries.",
+                  "Reference-only projects are mounted under vendor_imports for Codex to read when adaptation work is needed.",
+                  "The CodeEditor MCP source is preserved as source code; it is not auto-started as a live MCP server by this script."
+              ]
+}

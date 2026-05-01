@@ -1,0 +1,232 @@
+/* ===== 记忆系统视图 ===== */
+
+#view-memory {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    padding: 16px;
+    gap: 12px;
+}
+#view-memory.active { display: flex; }
+
+/* 仪表盘 */
+.mem-dashboard {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.mem-dash-card {
+    flex: 1;
+    min-width: 140px;
+    background: var(--bg-medium);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+}
+.mem-dash-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+}
+.mem-dash-working::before { background: linear-gradient(90deg, #f0c040, #fb923c); }
+.mem-dash-session::before { background: linear-gradient(90deg, #58a6ff, #39d2c0); }
+.mem-dash-persistent::before { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
+.mem-dash-rag::before { background: linear-gradient(90deg, #34d399, #10b981); }
+.mem-dash-kg::before { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+
+.mem-dash-icon { font-size: 20px; margin-bottom: 6px; }
+.mem-dash-value { font-size: 22px; font-weight: 800; color: var(--text-primary); line-height: 1; }
+.mem-dash-label { font-size: 10px; color: var(--text-tertiary); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+.mem-dash-bar { height: 3px; background: rgba(255,255,255,0.06); border-radius: 2px; margin-top: 10px; overflow: hidden; }
+.mem-dash-bar-fill { height: 100%; border-radius: 2px; transition: width 0.5s ease; }
+.mem-dash-working .mem-dash-bar-fill { background: linear-gradient(90deg, #f0c040, #fb923c); }
+.mem-dash-session .mem-dash-bar-fill { background: linear-gradient(90deg, #58a6ff, #39d2c0); }
+.mem-dash-persistent .mem-dash-bar-fill { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
+.mem-dash-rag .mem-dash-bar-fill { background: linear-gradient(90deg, #34d399, #10b981); }
+.mem-dash-kg .mem-dash-bar-fill { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+
+/* 工具栏 */
+.mem-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.mem-toolbar-left { flex: 1; min-width: 200px; }
+.mem-toolbar-right { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.mem-search {
+    width: 100%;
+    max-width: 360px;
+    font-size: 12px;
+    padding: 6px 10px;
+}
+.mem-filter {
+    font-size: 11px;
+    padding: 4px 6px;
+    min-width: 100px;
+}
+.mem-btn-danger {
+    color: var(--error) !important;
+    border-color: rgba(248,113,113,0.3) !important;
+}
+.mem-btn-danger:hover { background: rgba(248,113,113,0.15) !important; }
+
+/* 标签页 */
+.mem-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--bg-medium);
+    border-radius: 8px;
+    padding: 3px;
+    flex-shrink: 0;
+}
+.mem-tab {
+    flex: 1;
+    text-align: center;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+}
+.mem-tab:hover { color: var(--text-secondary); background: rgba(255,255,255,0.04); }
+.mem-tab.active { color: var(--text-primary); background: var(--bg-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+/* 内容区 */
+.mem-content {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg-medium);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+    min-height: 0;
+}
+
+/* 记忆项卡片 */
+.mem-item {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+    transition: all 0.15s;
+    position: relative;
+}
+.mem-item:hover { border-color: rgba(255,255,255,0.12); transform: translateY(-1px); }
+.mem-item-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.mem-item-type {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.mem-item-type.writing { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.mem-item-type.instruction { background: rgba(96,165,250,0.15); color: #60a5fa; }
+.mem-item-type.result { background: rgba(52,211,153,0.15); color: #34d399; }
+.mem-item-type.code { background: rgba(167,139,250,0.15); color: #a78bfa; }
+.mem-item-type.error { background: rgba(248,113,113,0.15); color: #f87171; }
+.mem-item-type.conversation { background: rgba(255,255,255,0.08); color: var(--text-tertiary); }
+.mem-item-source {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-tertiary);
+}
+.mem-item-priority {
+    font-size: 9px;
+    margin-left: auto;
+}
+.mem-item-priority.critical { color: #f43f5e; }
+.mem-item-priority.high { color: #f59e0b; }
+.mem-item-priority.medium { color: var(--text-tertiary); }
+.mem-item-priority.low { color: var(--text-tertiary); opacity: 0.5; }
+.mem-item-time {
+    font-size: 9px;
+    color: var(--text-tertiary);
+    opacity: 0.5;
+}
+.mem-item-content {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    white-space: pre-wrap;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+}
+.mem-item-content.expanded { max-height: none; }
+.mem-item-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 6px;
+}
+.mem-item-tag {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 6px;
+    background: rgba(139,92,246,0.1);
+    color: #8b5cf6;
+}
+.mem-item-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.mem-item:hover .mem-item-actions { opacity: 1; }
+.mem-item-btn {
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.mem-item-btn:hover { background: rgba(255,255,255,0.08); color: var(--text-primary); }
+.mem-item-btn.danger:hover { background: rgba(248,113,113,0.15); color: #f87171; }
+
+/* 空状态 */
+.mem-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-tertiary);
+    font-size: 13px;
+}
+.mem-empty-icon { font-size: 36px; margin-bottom: 10px; }
+
+/* 知识图谱网格 */
+.mem-kg-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+}
+
+/* 移动端 */
+@media screen and (max-width: 900px) {
+    .mem-dashboard { flex-direction: column; }
+    .mem-dash-card { min-width: auto; }
+    .mem-tabs { overflow-x: auto; }
+    .mem-tab { font-size: 11px; padding: 6px 8px; }
+    .mem-toolbar { flex-direction: column; }
+    .mem-toolbar-right { width: 100%; justify-content: flex-start; }
+}

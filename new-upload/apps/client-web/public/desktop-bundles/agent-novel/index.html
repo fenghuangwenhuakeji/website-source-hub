@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="智能体写小说工作台：角色、章节、任务编排和正文生成一体化创作空间。" />
+    <title>智能体写小说</title>
+    <link rel="stylesheet" href="./mobile-overrides.css" />
+    <style>
+/* Generated from src/public/styles.css */
+:root {
+  --bg: #f4f7fb;
+  --panel: rgba(255, 255, 255, 0.96);
+  --panel-soft: rgba(20, 118, 255, 0.05);
+  --line: rgba(18, 46, 86, 0.1);
+  --line-strong: rgba(20, 118, 255, 0.24);
+  --text: #17212f;
+  --text-soft: #5a6878;
+  --text-dim: #7c8897;
+  --accent: #1677ff;
+  --accent-soft: rgba(22, 119, 255, 0.1);
+  --teal: #0e9a86;
+  --gold: #c58a12;
+  --danger: #d24c4c;
+  --shadow: 0 18px 46px rgba(18, 36, 63, 0.1);
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at top left, rgba(22, 119, 255, 0.08), transparent 24rem),
+    linear-gradient(180deg, #f7f9fc 0%, #eef3f9 100%);
+  color: var(--text);
+  font-family: "Segoe UI Variable Display", "Microsoft YaHei UI", "PingFang SC", sans-serif;
+  overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.page-shell {
+  width: min(1500px, calc(100vw - 20px));
+  height: 100dvh;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 10px 0 18px;
+  overflow: auto;
+}
+
+.studio-shell {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr) 360px;
+  gap: 14px;
+  height: 100%;
+  min-height: 0;
+}
+
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.status-inline,
+.field span,
+.recent-run-time,
+.meta-pill,
+.chat-meta,
+.pulse-label,
+.insight-label,
+.node-pill,
+.micro-note {
+  color: var(--text-dim);
+  font-size: 0.76rem;
+}
+
+.session-rail,
+.center-stage,
+.control-rail {
+  min-height: 0;
+}
+
+.session-rail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.session-scroll {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  overflow: visible;
+  padding-right: 0;
+}
+
+.rail-top,
+.rail-head,
+.stage-bar-row,
+.stage-bar-actions,
+.chat-panel-head,
+.chat-actions,
+.session-actions,
+.result-head,
+.control-head,
+.flow-node-head,
+.insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.rail-top h1 {
+  margin: 8px 0 0;
+  font-size: 1.45rem;
+  line-height: 1.1;
+}
+
+.conversation-list,
+.chat-stream,
+.workflowTimeline,
+.workflow-timeline,
+.control-scroll,
+.terminal-surface,
+.final-output {
+  min-height: 0;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.conversation-list {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  max-height: none;
+  overflow: visible;
+}
+
+.recent-run-button {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--text);
+  padding: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.recent-run-button:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+}
+
+.recent-run-button.is-active {
+  border-color: rgba(22, 119, 255, 0.34);
+  background: rgba(22, 119, 255, 0.06);
+}
+
+.recent-run-title {
+  font-weight: 800;
+}
+
+.recent-run-button p,
+.recent-run-button small {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.session-section,
+.control-section {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.session-section > summary,
+.control-section > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  padding: 12px 14px;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.session-section > summary::-webkit-details-marker,
+.control-section > summary::-webkit-details-marker {
+  display: none;
+}
+
+.session-section > summary::after,
+.control-section > summary::after {
+  content: "\5c55\5f00";
+  color: var(--text-dim);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.session-section[open] > summary,
+.control-section[open] > summary {
+  border-bottom: 1px solid var(--line);
+  background: var(--panel-soft);
+}
+
+.session-section[open] > summary::after,
+.control-section[open] > summary::after {
+  content: "\6536\8d77";
+}
+
+.session-section-body,
+.control-section-body {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  min-height: 0;
+  max-height: min(30vh, 320px);
+  overflow: auto;
+}
+
+.session-tools-body,
+.api-grid,
+.chat-compose,
+.selection-summary,
+.workspace-pulse,
+.workflow-timeline,
+.insight-panel,
+.control-scroll,
+.control-block,
+.selector-grid,
+.task-process-panel {
+  display: grid;
+  gap: 10px;
+}
+
+.task-process-panel {
+  max-height: none;
+  overflow: visible;
+}
+
+.api-grid {
+  grid-template-columns: 1fr;
+}
+
+.field {
+  display: grid;
+  gap: 6px;
+}
+
+.field input,
+.field select,
+.chat-compose textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--text);
+  padding: 11px 12px;
+  outline: none;
+}
+
+.field input:focus,
+.field select:focus,
+.chat-compose textarea:focus {
+  border-color: rgba(22, 119, 255, 0.34);
+  box-shadow: 0 0 0 4px rgba(22, 119, 255, 0.08);
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--text);
+  padding: 0 14px;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.button:hover {
+  border-color: var(--line-strong);
+}
+
+.button-primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--accent), #4e93ff);
+  color: #fff;
+}
+
+.button-secondary {
+  background: rgba(14, 154, 134, 0.1);
+  color: #0e6f61;
+}
+
+.button-ghost {
+  background: rgba(255, 255, 255, 0.86);
+}
+
+.button-danger {
+  background: rgba(210, 76, 76, 0.08);
+  border-color: rgba(210, 76, 76, 0.16);
+  color: var(--danger);
+}
+
+.button.is-active {
+  background: var(--accent-soft);
+  border-color: rgba(22, 119, 255, 0.34);
+}
+
+.center-stage {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  min-height: 0;
+}
+
+.stage-bar {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.stage-bar-main strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.05rem;
+}
+
+.stage-bar-meta,
+.stage-bar-controls {
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.stage-bar-meta {
+  display: none;
+}
+
+.meta-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  padding: 8px 12px;
+}
+
+.meta-pill strong {
+  color: var(--text);
+  font-size: 0.82rem;
+}
+
+.meta-pill-wide {
+  flex: 1;
+}
+
+.compact-field {
+  width: 180px;
+}
+
+.mode-pills,
+.workflow-preview,
+.chat-suggestions,
+.insight-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mode-pill,
+.workflow-chip,
+.agent-badge,
+.node-pill {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--text-soft);
+  padding: 7px 12px;
+  font-size: 0.8rem;
+}
+
+.mode-pill {
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.mode-pill.is-active {
+  background: var(--accent-soft);
+  border-color: rgba(22, 119, 255, 0.34);
+  color: var(--accent);
+}
+
+.session-mini-card {
+  flex: 1;
+  min-width: 220px;
+  border: 1px dashed rgba(22, 119, 255, 0.28);
+  border-radius: var(--radius-md);
+  background: rgba(22, 119, 255, 0.04);
+  padding: 10px 12px;
+  color: var(--text-soft);
+}
+
+.chat-panel {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+  gap: 10px;
+  padding: 14px 16px;
+  overflow: auto;
+}
+
+.chat-stream {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  max-height: 72px;
+  padding-right: 4px;
+  overscroll-behavior: contain;
+}
+
+.chat-message {
+  display: grid;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+.chat-message[data-kind='user'] {
+  background: rgba(22, 119, 255, 0.05);
+}
+
+.chat-message[data-kind='system'] {
+  background: rgba(197, 138, 18, 0.08);
+}
+
+.chat-role {
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.chat-message-body {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.55;
+}
+
+.chat-suggestions:empty {
+  display: none;
+}
+
+.suggestion-button {
+  flex: 1 1 180px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.suggestion-button small {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-dim);
+}
+
+.rail-suggestions .suggestion-button {
+  flex: 1 1 auto;
+}
+
+.task-process-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 12px 14px;
+}
+
+.task-process-card strong {
+  display: block;
+}
+
+.task-process-card p {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.task-process-card small {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+
+.chat-compose {
+  position: sticky;
+  bottom: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.96) 18%, rgba(255, 255, 255, 0.96) 100%);
+  padding-top: 10px;
+}
+
+.result-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--panel-soft);
+  padding: 10px 12px;
+}
+
+.stream-debug-panel {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 8px 10px;
+}
+
+.stream-debug-panel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.stream-debug-panel > summary::-webkit-details-marker {
+  display: none;
+}
+
+.stream-debug-output {
+  margin: 8px 0 0;
+  min-height: 42px;
+  max-height: 84px;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: #0f1722;
+  color: #d9e7f7;
+  padding: 6px 8px;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.66rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.result-panel[data-has-content='false'] .final-output {
+  min-height: 220px;
+  height: 220px;
+  max-height: 220px;
+  background: rgba(20, 118, 255, 0.04);
+  color: var(--text-dim);
+}
+
+.result-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.selection-summary,
+.workspace-pulse,
+.insight-panel {
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+}
+
+.summary-chip,
+.pulse-card,
+.insight-card,
+.flow-node {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 12px 14px;
+}
+
+.summary-chip span,
+.pulse-label,
+.insight-label {
+  display: block;
+  color: var(--text-dim);
+  font-size: 0.76rem;
+}
+
+.summary-chip strong,
+.pulse-card strong,
+.insight-card strong {
+  display: block;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.pulse-copy,
+.insight-copy,
+.flow-node p {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.pulse-tone {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 0.72rem;
+  color: var(--text-dim);
+}
+
+.pulse-tone::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--text-dim);
+}
+
+.pulse-tone[data-tone='accent']::before {
+  background: var(--accent);
+}
+
+.pulse-tone[data-tone='teal']::before {
+  background: var(--teal);
+}
+
+.pulse-tone[data-tone='gold']::before {
+  background: var(--gold);
+}
+
+.pulse-tone[data-tone='danger']::before {
+  background: var(--danger);
+}
+
+.control-rail {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.control-scroll {
+  align-content: start;
+  overflow: visible;
+  padding-right: 0;
+}
+
+.control-title {
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.control-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.control-summary {
+  width: 100%;
+}
+
+.workflow-timeline {
+  align-content: start;
+}
+
+.selector-search {
+  margin-top: 2px;
+}
+
+.selector-grid {
+  max-height: none;
+  overflow: visible;
+  align-content: start;
+}
+
+.selector-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.selector-card:hover {
+  transform: translateY(-1px);
+  border-color: var(--line-strong);
+}
+
+.selector-card.is-selected {
+  border-color: rgba(22, 119, 255, 0.34);
+  background: rgba(22, 119, 255, 0.06);
+}
+
+.selector-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.selector-name {
+  font-weight: 800;
+}
+
+.selector-role {
+  color: var(--text-dim);
+  font-size: 0.76rem;
+}
+
+.selector-summary {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.selector-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.terminal-surface,
+.final-output {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #14212d;
+  color: #edf5ff;
+  padding: 10px 12px;
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow: auto;
+}
+
+.terminal-surface {
+  min-height: 220px;
+}
+
+.final-output {
+  min-height: 320px;
+  height: clamp(320px, 56vh, 720px);
+  max-height: 720px;
+}
+
+.empty-state {
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-md);
+  background: var(--panel-soft);
+  color: var(--text-dim);
+  padding: 14px;
+}
+
+.legacy-hidden {
+  display: none !important;
+}
+
+.inline-status,
+.domain-auto-hint {
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.inline-status {
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-md);
+  background: var(--panel-soft);
+  padding: 10px 12px;
+}
+
+.inline-status[data-tone='success'] {
+  color: #0e6f61;
+  border-color: rgba(14, 154, 134, 0.24);
+  background: rgba(14, 154, 134, 0.08);
+}
+
+.inline-status[data-tone='danger'] {
+  color: var(--danger);
+  border-color: rgba(210, 76, 76, 0.2);
+  background: rgba(210, 76, 76, 0.06);
+}
+
+.conversation-list,
+.session-scroll,
+.chat-stream,
+.control-scroll,
+.session-section-body,
+.control-section-body,
+.selector-grid,
+.task-process-panel,
+.terminal-surface,
+.final-output {
+  scrollbar-width: thin;
+}
+
+.conversation-list::-webkit-scrollbar,
+.session-scroll::-webkit-scrollbar,
+.chat-stream::-webkit-scrollbar,
+.control-scroll::-webkit-scrollbar,
+.session-section-body::-webkit-scrollbar,
+.control-section-body::-webkit-scrollbar,
+.selector-grid::-webkit-scrollbar,
+.task-process-panel::-webkit-scrollbar,
+.terminal-surface::-webkit-scrollbar,
+.final-output::-webkit-scrollbar {
+  width: 10px;
+}
+
+.conversation-list::-webkit-scrollbar-thumb,
+.session-scroll::-webkit-scrollbar-thumb,
+.chat-stream::-webkit-scrollbar-thumb,
+.control-scroll::-webkit-scrollbar-thumb,
+.session-section-body::-webkit-scrollbar-thumb,
+.control-section-body::-webkit-scrollbar-thumb,
+.selector-grid::-webkit-scrollbar-thumb,
+.task-process-panel::-webkit-scrollbar-thumb,
+.terminal-surface::-webkit-scrollbar-thumb,
+.final-output::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(90, 104, 120, 0.28);
+  background-clip: padding-box;
+}
+
+.runtime-observer {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  padding: 14px;
+  box-shadow: var(--shadow);
+}
+
+.runtime-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+}
+
+.runtime-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: #fff;
+  padding: 12px;
+}
+
+.page-shell[data-left-collapsed='true'] .studio-shell {
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+.page-shell[data-left-collapsed='true'] .session-rail {
+  display: none;
+}
+
+.page-shell[data-right-collapsed='true'] .studio-shell {
+  grid-template-columns: 280px minmax(0, 1fr);
+}
+
+.page-shell[data-right-collapsed='true'] .control-rail {
+  display: none;
+}
+
+.page-shell[data-zen='true'] .studio-shell {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.page-shell[data-zen='true'] .session-rail,
+.page-shell[data-zen='true'] .control-rail {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(23, 33, 47, 0.14);
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (max-width: 1200px) {
+  .studio-shell {
+    grid-template-columns: 260px minmax(0, 1fr) 320px;
+  }
+}
+
+@media (max-width: 980px) {
+  body {
+    overflow: auto;
+  }
+
+  .page-shell {
+    height: auto;
+    overflow: visible;
+  }
+
+  .studio-shell {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+  }
+
+  .session-rail,
+  .control-rail {
+    display: none;
+  }
+
+  .page-shell[data-left-collapsed='false'] .session-rail,
+  .page-shell[data-right-collapsed='false'] .control-rail {
+    display: grid;
+  }
+}
+
+@media (max-width: 720px) {
+  .page-shell {
+    width: calc(100vw - 10px);
+    padding-bottom: 10px;
+  }
+
+  .stage-bar-row,
+  .stage-bar-controls,
+  .chat-actions,
+  .result-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .compact-field,
+  .session-mini-card,
+  .button,
+  .suggestion-button {
+    width: 100%;
+  }
+
+  .meta-strip {
+    flex-direction: column;
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <div id="pageShell" class="page-shell">
+      <main class="studio-shell">
+        <aside class="session-rail panel">
+          <div class="rail-top">
+            <div>
+              <p class="eyebrow">&#20250;&#35805;</p>
+              <h1>&#23545;&#35805;&#21015;&#34920;</h1>
+            </div>
+            <button id="newSessionButton" class="button button-primary" type="button">&#26032;&#24314;&#20250;&#35805;</button>
+          </div>
+
+          <div class="session-scroll">
+            <details class="session-section" open>
+              <summary>&#23545;&#35805;&#21015;&#34920;</summary>
+              <div class="session-section-body">
+                <div class="rail-head">
+                  <strong>&#26368;&#36817;&#20250;&#35805;</strong>
+                  <span id="sessionStatus" class="status-inline">&#26410;&#32465;&#23450;</span>
+                </div>
+                <div id="recentRuns" class="conversation-list">&#36824;&#27809;&#26377;&#20250;&#35805;</div>
+              </div>
+            </details>
+
+            <details class="session-section" open>
+              <summary>&#20219;&#21153;</summary>
+              <div class="session-section-body">
+                <div id="taskProcessPanel" class="task-process-panel"></div>
+                <div id="chatSuggestions" class="chat-suggestions rail-suggestions"></div>
+              </div>
+            </details>
+
+            <details class="session-section">
+              <summary>&#36830;&#25509;&#19982;&#35774;&#32622;</summary>
+              <form class="session-section-body session-tools-body" onsubmit="return false" novalidate>
+                <label class="field">
+                  <span>&#20250;&#35805; ID</span>
+                  <input id="sessionIdInput" type="text" placeholder="&#20363;&#22914;&#65306;session-xxxx" autocomplete="off" />
+                </label>
+
+                <div class="session-actions">
+                  <button id="loadSessionButton" class="button button-secondary" type="button">&#36733;&#20837;</button>
+                  <button id="copySessionButton" class="button button-ghost" type="button">&#22797;&#21046;</button>
+                </div>
+
+                <button id="clearHistoryButton" class="button button-danger" type="button">&#28165;&#31354;&#21382;&#21490;&#20250;&#35805;</button>
+
+                <div class="api-grid">
+                  <label class="field">
+                    <span>&#25509;&#21475;&#22320;&#22336;</span>
+                    <input id="baseUrlInput" type="text" placeholder="https://api.openai.com/v1" />
+                  </label>
+
+                  <label class="field">
+                    <span>&#27169;&#22411;</span>
+                    <input id="modelInput" type="text" placeholder="&#20363;&#22914;&#65306;gpt-5.4" />
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>&#25509;&#21475;&#23494;&#38053;</span>
+                    <input
+                      id="apiKeyInput"
+                      type="password"
+                      placeholder="&#21482;&#20445;&#23384;&#22312;&#26412;&#22320;&#65292;&#21487;&#35206;&#30422;&#29615;&#22659;&#37197;&#32622;&#12290;"
+                      autocomplete="off"
+                    />
+                  </label>
+
+                  <label class="field">
+                    <span>&#35843;&#29992;&#26041;&#24335;</span>
+                    <select id="apiStyleInput">
+                      <option value="responses">响应接口</option>
+                      <option value="chat-completions">聊天补全接口</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>&#28201;&#24230;</span>
+                    <input id="temperatureInput" type="number" min="0" max="2" step="0.1" value="0.4" />
+                  </label>
+                </div>
+
+                <div class="session-actions">
+                  <button id="saveRuntimeButton" class="button button-secondary" type="button">&#20445;&#23384;&#35774;&#32622;</button>
+                  <button id="testLlmButton" class="button button-primary" type="button">&#27979;&#35797;&#25509;&#21475;</button>
+                </div>
+
+                <div id="testLlmResult" class="inline-status">
+                  &#21487;&#30452;&#25509;&#21457;&#36865;&#8220;&#20320;&#22909;&#8221;&#27979;&#35797;&#24403;&#21069;&#36830;&#25509;&#12290;
+                </div>
+              </form>
+            </details>
+          </div>
+        </aside>
+
+        <section class="center-stage">
+          <header class="stage-bar panel">
+            <div class="stage-bar-row">
+              <div class="stage-bar-main">
+                <p class="eyebrow">便携式编排</p>
+                <strong>&#25191;&#34892;&#23545;&#35805;</strong>
+              </div>
+              <div class="stage-bar-actions">
+                <button id="toggleLeftRailButton" class="button button-ghost" type="button">&#20250;&#35805;</button>
+                <button id="toggleRightRailButton" class="button button-ghost" type="button">&#25511;&#21046;</button>
+                <button id="toggleZenButton" class="button button-ghost" type="button">&#19987;&#27880;</button>
+              </div>
+            </div>
+
+            <div class="stage-bar-row stage-bar-meta">
+              <div class="meta-strip">
+                <span class="meta-pill">&#29366;&#24577; <strong id="runtimeStatus">&#21152;&#36733;&#20013;</strong></span>
+                <span class="meta-pill">&#19978;&#19979;&#25991; <strong id="promptMeta">0 &#23383;</strong></span>
+                <span class="meta-pill meta-pill-wide">&#26368;&#36817;&#36816;&#34892; <strong id="runMeta">&#31561;&#24453;&#36816;&#34892;</strong></span>
+              </div>
+            </div>
+
+            <div class="stage-bar-row stage-bar-controls">
+              <label class="field compact-field">
+                <span>&#39046;&#22495;</span>
+                <select id="domainSelect"></select>
+              </label>
+              <div id="modePills" class="mode-pills"></div>
+              <div id="chatSessionCard" class="session-mini-card">&#31561;&#24453;&#20849;&#20139;&#20250;&#35805;</div>
+            </div>
+
+            <div id="domainAutoHint" class="micro-note domain-auto-hint"></div>
+          </header>
+
+          <section class="chat-panel panel">
+            <div class="chat-panel-head">
+              <div>
+                <p class="eyebrow">&#36755;&#20986;</p>
+                <strong>&#26368;&#32456;&#36755;&#20986;</strong>
+              </div>
+            </div>
+
+            <div id="chatStream" class="chat-stream">
+              &#36873;&#25321;&#19968;&#20010;&#20250;&#35805;&#65292;&#25110;&#32773;&#30452;&#25509;&#36755;&#20837;&#30446;&#26631;&#12290;
+            </div>
+
+            <section class="result-panel" data-has-content="false">
+              <div class="result-head">
+                <strong>&#25191;&#34892;&#32467;&#26524;</strong>
+                <button id="copyOutputButton" class="button button-ghost" type="button">&#22797;&#21046;&#32467;&#26524;</button>
+              </div>
+              <pre id="finalOutput" class="final-output"></pre>
+            </section>
+
+            <details id="streamDebugPanel" class="stream-debug-panel">
+              <summary>
+                <span>&#27969;&#24335;&#35843;&#35797;</span>
+                <span id="streamDebugMeta" class="micro-note">&#31561;&#24453;&#36816;&#34892;</span>
+              </summary>
+              <pre id="streamDebugOutput" class="stream-debug-output">&#31561;&#24453;&#27969;&#24335;&#20107;&#20214;...</pre>
+            </details>
+
+            <div class="chat-compose">
+              <textarea
+                id="chatInput"
+                rows="4"
+                placeholder="&#30452;&#25509;&#35828;&#20320;&#35201;&#20570;&#20160;&#20040;&#12290;&#27604;&#22914;&#65306;&#32487;&#32493;&#36825;&#20010;&#20250;&#35805;&#65292;&#24182;&#34917;&#19968;&#36718;&#39564;&#35777;&#12290;"
+              ></textarea>
+
+              <div class="chat-actions">
+                <button id="stopRunButton" class="button button-danger" type="button" disabled>&#20572;&#27490;&#20219;&#21153;</button>
+                <button id="chatSendButton" class="button button-secondary" type="button">&#21152;&#20837;&#20219;&#21153;</button>
+                <button id="chatRunButton" class="button button-primary" type="button">&#21152;&#20837;&#24182;&#36816;&#34892;</button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <aside class="control-rail panel">
+          <div class="control-head">
+            <div>
+              <p class="eyebrow">&#25511;&#21046;</p>
+              <strong>&#35843;&#24230;&#38754;&#26495;</strong>
+            </div>
+          </div>
+
+          <div class="control-scroll">
+            <details class="control-section" open>
+              <summary class="control-summary">
+                <span class="control-title">&#26234;&#33021;&#20307;&#36873;&#25321;</span>
+                <span id="agentSelectorHint" class="micro-note"></span>
+              </summary>
+              <div class="control-section-body">
+                <label id="visibleAgentSearchField" class="field selector-search">
+                  <span>&#20851;&#38190;&#35789;&#26816;&#32034;</span>
+                  <input id="visibleAgentSearchInput" type="text" placeholder="搜索智能体 / 角色 / 标签" autocomplete="off" />
+                </label>
+
+                <div id="visibleAgentDeck" class="selector-grid"></div>
+              </div>
+            </details>
+
+            <details class="control-section" open>
+              <summary class="control-summary">
+                <span class="control-title">&#24403;&#21069;&#35843;&#24230;</span>
+              </summary>
+              <div class="control-section-body">
+                <div id="selectionSummary" class="selection-summary"></div>
+                <div id="workflowPreview" class="workflow-preview"></div>
+                <div id="workspacePulse" class="workspace-pulse"></div>
+              </div>
+            </details>
+
+            <details class="control-section" open>
+              <summary class="control-summary">
+                <span class="control-title">&#25191;&#34892;&#27969;&#31243;</span>
+              </summary>
+              <div class="control-section-body">
+                <div id="workflowTimeline" class="workflow-timeline"></div>
+              </div>
+            </details>
+
+            <details class="control-section">
+              <summary class="control-summary">
+                <span class="control-title">&#24037;&#20855;&#19982;&#21629;&#20196;</span>
+              </summary>
+              <div class="control-section-body">
+                <div id="insightPanel" class="insight-panel"></div>
+                <pre id="terminalSurface" class="terminal-surface"></pre>
+              </div>
+            </details>
+          </div>
+        </aside>
+      </main>
+
+      <section class="legacy-hidden" aria-hidden="true">
+        <select id="modeSelect">
+          <option value="single">&#21333;&#20307;</option>
+          <option value="compose">&#32452;&#21512;</option>
+          <option value="harness" selected>&#32534;&#25490;</option>
+        </select>
+        <div id="agentFilterPills"></div>
+        <span id="fusionMeta">&#31561;&#24453;&#20998;&#26512;</span>
+        <div id="fusionSources"></div>
+        <div id="fusionRecipes"></div>
+        <input id="agentSearchInput" type="text" />
+        <div id="agentDeck"></div>
+        <div id="domainHint"></div>
+        <div id="exampleList"></div>
+        <textarea id="promptInput" rows="8"></textarea>
+        <button id="runButton" type="button">&#30452;&#25509;&#36816;&#34892;</button>
+        <button id="specButton" type="button">生成规格说明</button>
+        <div id="workbenchTabs" role="tablist" aria-label="&#20027;&#24037;&#20316;&#21306;&#26631;&#31614;">
+          <button data-workbench-view="task" type="button">&#36755;&#20837;</button>
+          <button data-workbench-view="spec" type="button">规格</button>
+          <button data-workbench-view="workflow" type="button">&#38142;&#36335;</button>
+          <button data-workbench-view="output" type="button">&#32467;&#26524;</button>
+        </div>
+        <div id="specRounds"></div>
+      </section>
+
+      <script src="./app-lite.js"></script>
+      <script src="./runtime-panel.js"></script>
+      <script src="./encoding-fix.js"></script>
+      <script src="./chinese-ui.js"></script>
+    </div>
+  </body>
+</html>
+

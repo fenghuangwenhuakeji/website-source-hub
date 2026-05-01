@@ -1,0 +1,14 @@
+{
+    "parentAgent":  "app-__character-system-orchestrator",
+    "pets":  [
+
+             ],
+    "petLifecycle":  [
+                         "seed",
+                         "train",
+                         "assist",
+                         "graduate",
+                         "hibernate",
+                         "retire"
+                     ]
+}

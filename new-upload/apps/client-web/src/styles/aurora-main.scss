@@ -1,0 +1,868 @@
+/**
+ * Aurora Main Styles - 极光主样式 v2.0
+ * 全面升级桌面UI样式
+ */
+
+@use './aurora-design-system-v2.scss' as aurora;
+@use './clawcode-aurora.scss' as clawcode;
+@use './aurora-window-dock.scss' as windowDock;
+@use './aurora-responsive.scss' as responsive;
+
+// ============================================
+// 全局基础样式
+// ============================================
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--app-shell-background);
+  color: var(--app-shell-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// ============================================
+// 桌面背景效果
+// ============================================
+
+.desktop-background {
+  position: fixed;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 20% 20%, rgba(124, 58, 237, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 80%, rgba(34, 211, 238, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(244, 114, 182, 0.06) 0%, transparent 70%),
+    var(--app-shell-solid);
+  z-index: -1;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+  }
+}
+
+// ============================================
+// 菜单栏样式 - 极光风格
+// ============================================
+
+.menuBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 aurora.$space-4;
+  @include aurora.aurora-glass-light;
+  background: rgba(7, 12, 20, 0.82);
+  z-index: 10000;
+  border-bottom: 1px solid var(--app-shell-border);
+  
+  .menuLeft {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-4;
+  }
+  
+  .menuRight {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-4;
+  }
+  
+  .menuItem {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-2;
+    padding: aurora.$space-1 aurora.$space-2;
+    font-size: 13px;
+    color: var(--app-shell-text-secondary);
+    border-radius: aurora.$radius-md;
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--app-shell-text);
+    }
+    
+    &.active {
+      background: rgba(99, 102, 241, 0.2);
+      color: var(--app-shell-accent-2);
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+  
+  .appleLogo {
+    width: 18px;
+    height: 18px;
+    color: var(--app-shell-text);
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    
+    &:hover {
+      color: var(--app-shell-accent-2);
+      transform: scale(1.1);
+    }
+  }
+  
+  .menuTime {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--app-shell-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ============================================
+// Dock 样式 - 极光风格
+// ============================================
+
+.dock {
+  position: fixed;
+  bottom: aurora.$space-4;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  gap: aurora.$space-2;
+  padding: aurora.$space-3 aurora.$space-4;
+  @include aurora.aurora-glass-floating;
+  border-radius: aurora.$radius-2xl;
+  z-index: 9999;
+  
+  .dockItem {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: aurora.$space-1;
+    cursor: pointer;
+    transition: all aurora.$duration-normal aurora.$ease-spring;
+    
+    .dockIcon {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: aurora.$radius-lg;
+      transition: all aurora.$duration-normal aurora.$ease-spring;
+      position: relative;
+      overflow: hidden;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+        border-radius: inherit;
+      }
+      
+      svg {
+        width: 28px;
+        height: 28px;
+        color: white;
+        z-index: 1;
+      }
+      
+      &:hover {
+        transform: translateY(-8px) scale(1.15);
+        box-shadow: aurora.$shadow-glow-md;
+      }
+    }
+    
+    .dockLabel {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      padding: aurora.$space-1 aurora.$space-3;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: aurora.$radius-md;
+      font-size: 11px;
+      font-weight: 500;
+      color: aurora.$text-primary;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+    }
+    
+    &:hover .dockLabel {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+    
+    .dockIndicator {
+      width: 4px;
+      height: 4px;
+      background: aurora.$aurora-primary-light;
+      border-radius: 50%;
+      box-shadow: 0 0 8px aurora.$aurora-primary-light;
+      
+      &.running {
+        background: #4ade80;
+        box-shadow: 0 0 8px #4ade80;
+      }
+    }
+  }
+}
+
+// ============================================
+// 窗口样式 - 极光风格
+// ============================================
+
+.window {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  @include aurora.aurora-glass-dark;
+  border-radius: aurora.$radius-xl;
+  overflow: hidden;
+  transition: box-shadow aurora.$duration-normal aurora.$ease-out, transform aurora.$duration-normal aurora.$ease-out;
+  animation: window-enter aurora.$duration-slow aurora.$ease-out;
+  
+  &.active {
+    box-shadow: 
+      aurora.$shadow-2xl,
+      0 0 0 1px rgba(99, 102, 241, 0.2),
+      aurora.$shadow-glow-lg;
+    
+    .windowHeader {
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+    }
+  }
+  
+  &.minimized {
+    opacity: 0;
+    transform: scale(0.8) translateY(100px);
+    pointer-events: none;
+  }
+  
+  .windowHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: aurora.$space-3 aurora.$space-4;
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+    border-bottom: 1px solid aurora.$border-subtle;
+    cursor: grab;
+    user-select: none;
+    
+    &:active {
+      cursor: grabbing;
+    }
+    
+    .windowControls {
+      display: flex;
+      align-items: center;
+      gap: aurora.$space-2;
+      
+      .windowBtn {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        transition: all aurora.$duration-fast aurora.$ease-out;
+        position: relative;
+        
+        &::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, transparent 100%);
+        }
+        
+        &.close {
+          background: #ff5f57;
+          
+          &:hover {
+            background: #ff3b30;
+            box-shadow: 0 0 8px rgba(255, 95, 87, 0.5);
+          }
+        }
+        
+        &.minimize {
+          background: #febc2e;
+          
+          &:hover {
+            background: #ffa500;
+            box-shadow: 0 0 8px rgba(254, 188, 46, 0.5);
+          }
+        }
+        
+        &.maximize {
+          background: #28c840;
+          
+          &:hover {
+            background: #00c853;
+            box-shadow: 0 0 8px rgba(40, 200, 64, 0.5);
+          }
+        }
+      }
+    }
+    
+    .windowTitle {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 13px;
+      font-weight: 600;
+      color: aurora.$text-primary;
+      display: flex;
+      align-items: center;
+      gap: aurora.$space-2;
+      
+      svg {
+        width: 16px;
+        height: 16px;
+        color: aurora.$aurora-primary-light;
+      }
+    }
+    
+    .windowActions {
+      display: flex;
+      align-items: center;
+      gap: aurora.$space-2;
+      
+      button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 28px;
+        height: 28px;
+        background: transparent;
+        border: none;
+        border-radius: aurora.$radius-md;
+        color: aurora.$text-tertiary;
+        cursor: pointer;
+        transition: all aurora.$duration-fast aurora.$ease-out;
+        
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+          color: aurora.$text-primary;
+        }
+        
+        svg {
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+  
+  .windowContent {
+    flex: 1;
+    overflow: auto;
+    @include aurora.aurora-scrollbar;
+  }
+}
+
+// ============================================
+// 桌面图标样式
+// ============================================
+
+.desktopIcons {
+  position: fixed;
+  top: 60px;
+  left: aurora.$space-4;
+  display: flex;
+  flex-direction: column;
+  gap: aurora.$space-4;
+  z-index: 100;
+  
+  .desktopIcon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: aurora.$space-2;
+    padding: aurora.$space-3;
+    border-radius: aurora.$radius-lg;
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      
+      .iconWrapper {
+        transform: scale(1.1);
+      }
+    }
+    
+    &.selected {
+      background: rgba(99, 102, 241, 0.2);
+      
+      .iconLabel {
+        background: rgba(99, 102, 241, 0.8);
+        color: white;
+      }
+    }
+    
+    .iconWrapper {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: aurora.$radius-xl;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+      position: relative;
+      overflow: hidden;
+      
+      &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      }
+      
+      svg {
+        width: 32px;
+        height: 32px;
+        color: white;
+        z-index: 1;
+      }
+    }
+    
+    .iconLabel {
+      padding: aurora.$space-1 aurora.$space-2;
+      border-radius: aurora.$radius-md;
+      font-size: 12px;
+      font-weight: 500;
+      color: aurora.$text-primary;
+      text-align: center;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      transition: all aurora.$duration-fast aurora.$ease-out;
+    }
+  }
+}
+
+// ============================================
+// 控制中心样式
+// ============================================
+
+.controlCenter {
+  position: fixed;
+  top: 48px;
+  right: aurora.$space-4;
+  width: 320px;
+  padding: aurora.$space-4;
+  @include aurora.aurora-glass-floating;
+  border-radius: aurora.$radius-xl;
+  z-index: 10001;
+  animation: aurora-scale-in aurora.$duration-normal aurora.$ease-out;
+  
+  .controlSection {
+    margin-bottom: aurora.$space-4;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    .controlTitle {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: aurora.$text-tertiary;
+      margin-bottom: aurora.$space-3;
+    }
+    
+    .controlGrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: aurora.$space-3;
+    }
+    
+    .controlItem {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: aurora.$space-2;
+      padding: aurora.$space-4;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: aurora.$radius-lg;
+      cursor: pointer;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      &.active {
+        background: rgba(99, 102, 241, 0.3);
+        
+        svg {
+          color: aurora.$aurora-primary-light;
+        }
+      }
+      
+      svg {
+        width: 24px;
+        height: 24px;
+        color: aurora.$text-secondary;
+      }
+      
+      span {
+        font-size: 11px;
+        color: aurora.$text-secondary;
+      }
+    }
+  }
+  
+  .sliderControl {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-3;
+    padding: aurora.$space-3;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: aurora.$radius-lg;
+    
+    svg {
+      width: 20px;
+      height: 20px;
+      color: aurora.$text-secondary;
+      flex-shrink: 0;
+    }
+    
+    input[type="range"] {
+      flex: 1;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      outline: none;
+      -webkit-appearance: none;
+      
+      &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: aurora.$aurora-primary;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: all aurora.$duration-fast aurora.$ease-out;
+        
+        &:hover {
+          transform: scale(1.2);
+          box-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+        }
+      }
+    }
+  }
+}
+
+// ============================================
+// 通知样式
+// ============================================
+
+.notification {
+  position: fixed;
+  top: 60px;
+  right: aurora.$space-4;
+  max-width: 360px;
+  padding: aurora.$space-4;
+  @include aurora.aurora-glass-floating;
+  border-radius: aurora.$radius-xl;
+  z-index: 10002;
+  animation: aurora-slide-in aurora.$duration-normal aurora.$ease-out;
+  
+  .notificationHeader {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-3;
+    margin-bottom: aurora.$space-3;
+    
+    .notificationIcon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(99, 102, 241, 0.2);
+      border-radius: aurora.$radius-lg;
+      
+      svg {
+        width: 20px;
+        height: 20px;
+        color: aurora.$aurora-primary-light;
+      }
+    }
+    
+    .notificationTitle {
+      flex: 1;
+      
+      h4 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: aurora.$text-primary;
+      }
+      
+      span {
+        font-size: 11px;
+        color: aurora.$text-tertiary;
+      }
+    }
+    
+    .notificationClose {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: transparent;
+      border: none;
+      border-radius: aurora.$radius-md;
+      color: aurora.$text-tertiary;
+      cursor: pointer;
+      transition: all aurora.$duration-fast aurora.$ease-out;
+      
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: aurora.$text-primary;
+      }
+    }
+  }
+  
+  .notificationContent {
+    font-size: 13px;
+    color: aurora.$text-secondary;
+    line-height: 1.5;
+  }
+}
+
+// ============================================
+// 上下文菜单样式
+// ============================================
+
+.contextMenu {
+  position: fixed;
+  min-width: 200px;
+  padding: aurora.$space-2;
+  @include aurora.aurora-glass-floating;
+  border-radius: aurora.$radius-lg;
+  z-index: 10003;
+  animation: aurora-scale-in aurora.$duration-fast aurora.$ease-out;
+  
+  .menuItem {
+    display: flex;
+    align-items: center;
+    gap: aurora.$space-3;
+    padding: aurora.$space-2 aurora.$space-3;
+    font-size: 13px;
+    color: aurora.$text-secondary;
+    border-radius: aurora.$radius-md;
+    cursor: pointer;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    
+    &:hover {
+      background: rgba(99, 102, 241, 0.2);
+      color: aurora.$text-primary;
+    }
+    
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      
+      &:hover {
+        background: transparent;
+      }
+    }
+    
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .shortcut {
+      margin-left: auto;
+      font-size: 11px;
+      color: aurora.$text-muted;
+    }
+  }
+  
+  .menuDivider {
+    height: 1px;
+    margin: aurora.$space-2 0;
+    background: aurora.$border-subtle;
+  }
+}
+
+// ============================================
+// 加载动画
+// ============================================
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(99, 102, 241, 0.2);
+    border-top-color: aurora.$aurora-primary;
+    border-radius: 50%;
+    animation: aurora-spin 0.8s linear infinite;
+  }
+}
+
+// ============================================
+// 工具提示
+// ============================================
+
+.tooltip {
+  position: relative;
+  
+  &::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: aurora.$space-1 aurora.$space-3;
+    background: rgba(0, 0, 0, 0.9);
+    border-radius: aurora.$radius-md;
+    font-size: 11px;
+    font-weight: 500;
+    color: aurora.$text-primary;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all aurora.$duration-fast aurora.$ease-out;
+    z-index: 10004;
+  }
+  
+  &:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+  }
+}
+
+// ============================================
+// 响应式布局
+// ============================================
+
+@media (max-width: 768px) {
+  .menuBar {
+    height: 44px;
+    padding: 0 aurora.$space-3;
+    
+    .menuItem {
+      font-size: 12px;
+      
+      span {
+        display: none;
+      }
+    }
+  }
+  
+  .dock {
+    bottom: aurora.$space-2;
+    padding: aurora.$space-2 aurora.$space-3;
+    
+    .dockItem {
+      .dockIcon {
+        width: 44px;
+        height: 44px;
+        
+        svg {
+          width: 22px;
+          height: 22px;
+        }
+        
+        &:hover {
+          transform: translateY(-4px) scale(1.1);
+        }
+      }
+    }
+  }
+  
+  .window {
+    border-radius: aurora.$radius-lg;
+    
+    .windowHeader {
+      padding: aurora.$space-2 aurora.$space-3;
+      
+      .windowTitle {
+        font-size: 12px;
+      }
+    }
+  }
+  
+  .controlCenter {
+    width: calc(100vw - aurora.$space-6);
+    right: aurora.$space-3;
+  }
+  
+  .desktopIcons {
+    top: 56px;
+    left: aurora.$space-2;
+    gap: aurora.$space-2;
+    
+    .desktopIcon {
+      padding: aurora.$space-2;
+      
+      .iconWrapper {
+        width: 48px;
+        height: 48px;
+        
+        svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      
+      .iconLabel {
+        font-size: 10px;
+      }
+    }
+  }
+}
+
+// ============================================
+// 暗色/亮色模式切换
+// ============================================
+
+[data-theme="light"] {
+  .menuBar,
+  .dock,
+  .window,
+  .controlCenter,
+  .notification,
+  .contextMenu {
+    background: rgba(255, 255, 255, 0.85);
+    color: #1a1a1a;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .menuItem,
+  .windowTitle,
+  .iconLabel {
+    color: #1a1a1a;
+  }
+}

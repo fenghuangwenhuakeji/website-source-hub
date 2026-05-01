@@ -1,0 +1,14 @@
+{
+    "parentAgent":  "app-__character-relationship-agent",
+    "pets":  [
+
+             ],
+    "petLifecycle":  [
+                         "seed",
+                         "train",
+                         "assist",
+                         "graduate",
+                         "hibernate",
+                         "retire"
+                     ]
+}

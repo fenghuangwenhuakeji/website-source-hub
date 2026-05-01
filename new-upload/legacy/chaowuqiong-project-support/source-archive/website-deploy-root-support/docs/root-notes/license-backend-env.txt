@@ -1,0 +1,8 @@
+PORT=3001
+NODE_ENV=production
+DB_HOST=localhost
+DB_USER=rootadmin
+DB_PASSWORD=gong134135
+DB_NAME=chaowuqiong_db
+JWT_SECRET=chaowuqiong_secret_key_2024_production
+FRONTEND_URL=http://115.190.158.182

@@ -1,0 +1,164 @@
+import express from 'express';
+import cors from 'cors';
+import compression from 'compression';
+import dayjs from 'dayjs';
+import { config } from './config/index.js';
+import { initializeDatabase, isDatabaseConnected } from './config/database.js';
+import { initializeRedis } from './config/redis.js';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { authRateLimiter, apiRateLimiter } from './middleware/rateLimiter.js';
+
+import authRouter from './routes/auth.js';
+import userRouter from './routes/user.js';
+import rechargeRouter from './routes/recharge.js';
+import paymentRouter from './routes/payment.js';
+import electionRouter from './routes/election.js';
+import novelsRouter from './routes/novels.js';
+import vipRouter from './routes/vip.js';
+import ordersRouter from './routes/orders.js';
+import pointsRouter from './routes/points.js';
+import referralRouter from './routes/referral.js';
+import durationRouter from './routes/duration.js';
+import adminRouter from './routes/admin.js';
+import sessionDataRouter from './routes/sessionData.js';
+import modsRouter from './routes/mods.js';
+import llmConfigRouter from './routes/llmConfig.js';
+import charactersRouter from './routes/characters.js';
+import llmProxyRouter from './routes/llmProxy.js';
+import smsAuthRouter from './routes/smsAuth.js';
+import wechatAuthRouter from './routes/wechatAuth.js';
+
+const app = express();
+
+app.use(compression());
+
+const defaultCorsOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:5174',
+];
+const corsOrigins = new Set(
+  (process.env.CORS_ORIGIN || defaultCorsOrigins.join(','))
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || corsOrigins.has(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS origin not allowed: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+app.use(express.json({
+  limit: '10mb',
+  verify: (req, _res, buf) => {
+    (req as any).rawBody = buf.toString('utf8');
+  },
+}));
+app.use(express.urlencoded({
+  extended: true,
+  limit: '10mb',
+  verify: (req, _res, buf) => {
+    (req as any).rawBody = buf.toString('utf8');
+  },
+}));
+
+app.use((req, _res, next) => {
+  console.log(`[${dayjs().format('YYYY-MM-DD HH:mm:ss')}] ${req.method} ${req.path}`);
+  next();
+});
+
+app.use('/api/auth', authRateLimiter, authRouter);
+app.use('/api/user', apiRateLimiter, userRouter);
+app.use('/api/recharge', apiRateLimiter, rechargeRouter);
+app.use('/api/payment', paymentRouter);
+app.use('/api/election', apiRateLimiter, electionRouter);
+app.use('/api/novels', apiRateLimiter, novelsRouter);
+app.use('/api/vip', apiRateLimiter, vipRouter);
+app.use('/api/orders', apiRateLimiter, ordersRouter);
+app.use('/api/points', apiRateLimiter, pointsRouter);
+app.use('/api/referral', apiRateLimiter, referralRouter);
+app.use('/api/duration', apiRateLimiter, durationRouter);
+app.use('/api', apiRateLimiter, adminRouter);
+app.use('/api/session-data', apiRateLimiter, sessionDataRouter);
+app.use('/api/mods', apiRateLimiter, modsRouter);
+app.use('/api/llm-config', apiRateLimiter, llmConfigRouter);
+app.use('/api/characters', apiRateLimiter, charactersRouter);
+app.use('/api/llm-proxy', apiRateLimiter, llmProxyRouter);
+app.use('/api/sms', authRateLimiter, smsAuthRouter);
+app.use('/api/wechat', wechatAuthRouter);
+
+app.get('/health', (_req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    uptime: process.uptime(),
+    version: '1.0.0',
+    database: isDatabaseConnected() ? 'connected' : 'disconnected',
+    redis: 'connected',
+  });
+});
+
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    message: '超无穹API服务运行�?,
+    version: '1.0.0',
+    docs: '/api',
+  });
+});
+
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+async function startServer() {
+  const dbConnected = await initializeDatabase();
+  if (dbConnected) {
+    console.log('数据库初始化成功');
+  } else {
+    console.log('⚠️ 数据库未连接，后端将以演示模式运�?);
+  }
+
+  try {
+    await initializeRedis();
+    console.log('Redis初始化成�?);
+  } catch (redisErr) {
+    console.warn('Redis连接失败，将使用内存缓存');
+  }
+
+  app.listen(config.port, '0.0.0.0', () => {
+    console.log(`\n========================================`);
+    console.log(`  超无穹后端服务已启动`);
+    console.log(`  端口: ${config.port}`);
+    console.log(`  环境: ${config.nodeEnv}`);
+    console.log(`  时间: ${dayjs().format('YYYY-MM-DD HH:mm:ss')}`);
+    console.log(`========================================\n`);
+    console.log(`数据�? ${dbConnected ? '�?已连�? : '�?未连�?(演示模式)'}`);
+    console.log(`微信支付配置: ${config.wechat.appId ? '已配�? : '未配�?}`);
+    console.log(`支付宝配�? ${config.alipay.appId ? '已配�? : '未配�?}`);
+  });
+}
+
+process.on('unhandledRejection', (reason) => {
+  console.error('未处理的Promise拒绝:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('未捕获的异常:', error);
+  process.exit(1);
+});
+
+startServer();
+
+export default app;

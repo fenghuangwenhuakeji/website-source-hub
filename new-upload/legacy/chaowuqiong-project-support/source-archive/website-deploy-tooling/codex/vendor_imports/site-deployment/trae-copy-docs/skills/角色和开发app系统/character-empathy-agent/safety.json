@@ -1,0 +1,11 @@
+{
+    "memoryIsolation":  "per-agent",
+    "archiveBeforeRetire":  true,
+    "selfDestructPolicy":  "retire-and-archive",
+    "approvalRequiredFor":  [
+                                "delete",
+                                "mass-overwrite",
+                                "external publish"
+                            ],
+    "destructiveActions":  "manual-review-required"
+}

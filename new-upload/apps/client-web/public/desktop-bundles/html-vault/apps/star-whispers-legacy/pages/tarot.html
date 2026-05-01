@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>温和反思 - 星语心伴</title>
+    <meta name="description" content="把卡牌语言保留为反思工具，帮助你整理情绪、关系和下一步。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .reflection-main {
+            padding-top: 0;
+            padding-bottom: 120px;
+        }
+
+        .reflection-shell {
+            display: grid;
+            gap: 22px;
+            padding: 0 16px 24px;
+        }
+
+        .choice-grid,
+        .reflection-cards,
+        .score-tools {
+            display: grid;
+            gap: 12px;
+        }
+
+        .choice-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .choice-btn {
+            display: grid;
+            gap: 4px;
+            padding: 14px 16px;
+            border: 1px solid rgba(255, 235, 225, 0.96);
+            border-radius: 20px;
+            background: rgba(255, 248, 243, 0.96);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .choice-btn strong,
+        .reflection-card strong {
+            color: var(--ui-text);
+        }
+
+        .choice-btn span,
+        .reflection-card p,
+        .result-copy p,
+        .helper-copy,
+        .reflection-list li {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--ui-text-soft);
+        }
+
+        .choice-btn.is-active {
+            border-color: rgba(255, 143, 123, 0.4);
+            background: rgba(255, 242, 236, 0.98);
+            box-shadow: var(--ui-shadow-sm);
+        }
+
+        .input-note {
+            width: 100%;
+            min-height: 120px;
+            padding: 16px;
+            border: 1px solid rgba(255, 235, 225, 0.96);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.9);
+            resize: vertical;
+            font: inherit;
+            color: var(--ui-text);
+        }
+
+        .reflection-cards {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .reflection-card {
+            display: grid;
+            gap: 10px;
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .reflection-card h3,
+        .result-copy strong {
+            font-size: 18px;
+            color: var(--ui-text);
+            margin: 0;
+        }
+
+        .reflection-card-index {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #b45a4f;
+            background: rgba(255, 143, 123, 0.12);
+        }
+
+        .reflection-insight {
+            display: grid;
+            gap: 4px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 248, 243, 0.96);
+        }
+
+        .reflection-insight span {
+            font-size: 11px;
+            color: var(--ui-text-muted);
+        }
+
+        .reflection-result.hidden {
+            display: none;
+        }
+
+        .reflection-list {
+            display: grid;
+            gap: 8px;
+            padding-left: 18px;
+        }
+
+        .score-tools {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        @media (max-width: 960px) {
+            .reflection-cards,
+            .score-tools {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .choice-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="page-header" style="padding: 16px;">
+            <a href="../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="text-align: center;">
+                <h1 class="page-title">温和反思</h1>
+                <p class="page-subtitle" style="margin-top: 4px;">把符号当问题，不把它当命令</p>
+            </div>
+            <a href="horoscope.html" class="back-btn" title="看星座">
+                <i class="fas fa-stars"></i>
+            </a>
+        </header>
+
+        <main class="content-section reflection-main">
+            <div class="reflection-shell">
+                <section class="assistant-spotlight" data-reveal>
+                    <div class="spotlight-content">
+                        <span class="spotlight-kicker">
+                            <i class="fas fa-hat-wizard"></i>
+                            反思入口
+                        </span>
+                        <h2 class="spotlight-title">这里保留卡牌语言，但不做命运判断。</h2>
+                        <p class="spotlight-copy">你可以把它理解成一组温和的提问器，帮你整理情绪、关系、身体信号和下一步。完成后也可以直接带去聊天页继续说。</p>
+                        <div class="page-tools" style="margin-top: 16px;">
+                            <a class="journey-button secondary" href="horoscope.html">看今日运势</a>
+                            <a class="journey-button secondary" href="chat.html">直接去聊天</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="support-grid" data-reveal>
+                    <article class="support-card">
+                        <div class="support-top">
+                            <div class="support-glyph" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M12 3.5 14 10l6.5 2-6.5 2L12 20.5 10 14l-6.5-2L10 10 12 3.5Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="support-title">先选反思角度</h3>
+                        </div>
+                        <p class="helper-copy">选一个当下最贴近的入口就够了。</p>
+                        <div class="choice-grid" id="focusGrid"></div>
+                    </article>
+
+                    <article class="support-card">
+                        <div class="support-top">
+                            <div class="support-glyph" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M7 7.5h10"></path>
+                                    <path d="M7 12h10"></path>
+                                    <path d="M7 16.5h10"></path>
+                                </svg>
+                            </div>
+                            <h3 class="support-title">再选展开方式</h3>
+                        </div>
+                        <p class="helper-copy">一张更轻，三张更适合把问题摊开。</p>
+                        <div class="choice-grid" id="spreadGrid"></div>
+                    </article>
+
+                    <article class="support-card">
+                        <div class="support-top">
+                            <div class="support-glyph" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M5 12h14"></path>
+                                    <path d="M12 5v14"></path>
+                                </svg>
+                            </div>
+                            <h3 class="support-title">可选补一句</h3>
+                        </div>
+                        <p class="helper-copy">比如：最近那段关系让我反复拉扯，或者我最近胸口一直发紧。</p>
+                        <textarea class="input-note" id="reflectionInput" placeholder="不写也可以，系统会照常给你一轮反思卡。"></textarea>
+                        <div class="page-tools">
+                            <button class="journey-button primary" id="generateReflectionBtn" type="button">生成这一轮</button>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="assistant-spotlight reflection-result hidden" id="reflectionResultSection" data-reveal>
+                    <div class="spotlight-content">
+                        <span class="spotlight-kicker">
+                            <i class="fas fa-lightbulb-on"></i>
+                            这一轮结果
+                        </span>
+                        <h2 class="spotlight-title">先看见，再决定怎么往下走。</h2>
+                        <p class="spotlight-copy" id="reflectionSummary">生成后会在这里看到本轮的反思摘要。</p>
+                    </div>
+                </section>
+
+                <section class="reflection-cards" id="reflectionCards" data-reveal></section>
+
+                <section class="score-tools" data-reveal>
+                    <article class="support-card result-copy">
+                        <strong>下一步动作</strong>
+                        <p id="reflectionAction">生成后会给你一个更轻、更能落地的小动作。</p>
+                    </article>
+
+                    <article class="support-card">
+                        <strong>适合继续写下来的问题</strong>
+                        <ul class="reflection-list" id="reflectionQuestions">
+                            <li>生成后会出现 2 到 3 个适合继续反思的问题。</li>
+                        </ul>
+                    </article>
+                </section>
+
+                <section class="score-tools" data-reveal>
+                    <article class="support-card">
+                        <strong>存入档案</strong>
+                        <p class="helper-copy">这轮反思可以和测评、画像一起进入档案，在聊天页随时调取。</p>
+                        <div class="page-tools">
+                            <button class="journey-button secondary" id="saveReflectionBtn" type="button">存入档案</button>
+                        </div>
+                    </article>
+
+                    <article class="support-card">
+                        <strong>带去聊天</strong>
+                        <p class="helper-copy">一键把这轮结果塞进聊天页，当作这次对话的上下文。</p>
+                        <div class="page-tools">
+                            <button class="journey-button primary" id="sendReflectionBtn" type="button">发给 AI 继续聊</button>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="test.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>测评</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>聊天</span>
+            </a>
+            <a href="horoscope.html" class="nav-item active">
+                <i class="fas fa-stars"></i>
+                <span>运势</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-reflection.js"></script>
+</body>
+</html>
+

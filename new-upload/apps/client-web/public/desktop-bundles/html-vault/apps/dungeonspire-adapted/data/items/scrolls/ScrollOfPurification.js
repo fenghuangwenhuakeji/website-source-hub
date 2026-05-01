@@ -1,0 +1,1 @@
+export default { id: 'scroll_pure', name: 'Scroll of Purification', effect: 'Remove all Curses from your deck.' };

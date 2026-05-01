@@ -1,0 +1,111 @@
+/* 凤凰流大纲样式 */
+
+/* 步骤条导航 */
+.phoenix-steps {
+    display: flex;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    gap: 10px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.phoenix-steps::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.step-item {
+    flex: 0 0 auto;
+    padding: 8px 16px;
+    background: var(--bg-tertiary);
+    border-radius: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.step-item.active {
+    background: var(--accent-dim);
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    font-weight: 600;
+}
+
+/* 布局容器 */
+.phoenix-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.phoenix-card {
+    background: var(--bg-tertiary);
+    padding: 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    transition: transform var(--transition-fast);
+}
+
+.phoenix-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.phoenix-card h3 {
+    color: var(--text-primary);
+    font-size: 1rem;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.phoenix-card h3 i {
+    color: var(--accent-color);
+    opacity: 0.7;
+}
+
+/* 增强型输入框 */
+.input-group {
+    margin-bottom: 15px;
+}
+
+.input-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.input-area {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    min-height: 100px;
+    resize: vertical;
+    font-family: inherit;
+    transition: border-color var(--transition-fast);
+}
+
+.input-area:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-dim);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .phoenix-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .phoenix-card {
+        padding: 15px;
+    }
+}

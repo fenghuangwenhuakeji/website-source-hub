@@ -1,0 +1,206 @@
+:root{
+  --sr-asset-shadow-xl: 0 28px 64px rgba(0,0,0,0.42);
+  --sr-asset-shadow-lg: 0 22px 48px rgba(0,0,0,0.34);
+  --sr-asset-shadow-md: 0 14px 28px rgba(0,0,0,0.22);
+  --sr-asset-border-soft: rgba(255,255,255,0.10);
+  --sr-asset-border-strong: rgba(255,255,255,0.16);
+  --sr-asset-sheen: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.00) 24%);
+  --sr-asset-panel-bg: linear-gradient(180deg, rgba(15,23,42,0.84), rgba(2,6,23,0.94));
+}
+
+/* Shared polish for the emitted menu asset-binding hooks. */
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.srMenuAssetHost){
+  overflow:hidden;
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.srMenuAssetLayer){
+  transition:
+    opacity 180ms ease,
+    transform 220ms ease,
+    filter 220ms ease;
+  will-change: opacity, transform;
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.menuHero.srMenuAssetHost .srMenuAssetLayer--hero){
+  transform: scale(1.015);
+  filter: saturate(1.05) contrast(1.04);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.menuPage.srMenuAssetHost[data-sr-page-art="1"]){
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.04),
+    var(--sr-asset-shadow-md);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.menuPage.srMenuAssetHost[data-sr-page-art="1"] .srMenuAssetLayer--page){
+  filter: saturate(1.04) contrast(1.02);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.characterCard[data-card-art]){
+  min-height:260px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.characterCard[data-card-art] .characterBackdrop[data-sr-slot-art]){
+  opacity:1;
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.characterCard[data-card-art] .characterGlyph){
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.characterCard[data-card-art] .characterSignature){
+  background: rgba(6,10,16,0.46);
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: var(--sr-asset-shadow-md);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.saveFocusCard.srMenuAssetHost[data-sr-card-art="1"], .codexCard.srMenuAssetHost[data-sr-card-art="1"]){
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.05),
+    var(--sr-asset-shadow-md);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.saveFocusCard.srMenuAssetHost[data-sr-card-art="1"] .srMenuAssetLayer, .codexCard.srMenuAssetHost[data-sr-card-art="1"] .srMenuAssetLayer){
+  filter: saturate(1.05) contrast(1.03);
+}
+
+#panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.menuHeroPanel.srMenuAssetHost .srMenuAssetLayer){
+  opacity:0.18;
+}
+
+/* Shared utility shell for any future asset thumbnails the bindings expose. */
+.srAssetThumb{
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid var(--sr-asset-border-soft);
+  background:
+    var(--sr-asset-sheen),
+    var(--sr-asset-panel-bg);
+  box-shadow: var(--sr-asset-shadow-md);
+}
+
+.srAssetThumb::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), transparent 24%),
+    var(--sr-asset-image, none);
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:cover;
+}
+
+.srAssetThumb--square{
+  width:72px;
+  height:72px;
+}
+
+.srAssetThumb--wide{
+  min-height:124px;
+}
+
+.srAssetThumb--card{
+  min-height:154px;
+}
+
+.srAssetThumb > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Shared polish for emitted UI icon binding hooks. */
+:where(.sr-ui-icon-host){
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
+:where(.pauseEquipSlot.sr-ui-icon-host:hover){
+  box-shadow: 0 12px 24px rgba(2,6,23,0.20);
+}
+
+:where(.sr-ui-ghost){
+  mix-blend-mode: screen;
+}
+
+#branchGrid .sr-ui-chip,
+#pauseEquipDetail .sr-ui-chip,
+#pauseEquipDetail .sr-ui-equip-hero-art{
+  position:relative;
+  background:
+    var(--sr-asset-sheen),
+    linear-gradient(180deg, rgba(30,41,59,0.84), rgba(15,23,42,0.90));
+  border:1px solid var(--sr-asset-border-soft);
+  box-shadow: var(--sr-asset-shadow-md);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#branchGrid .sr-ui-chip::after,
+#pauseEquipDetail .sr-ui-chip::after,
+#pauseEquipDetail .sr-ui-equip-hero-art::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  border-radius:inherit;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.10);
+}
+
+#pauseEquipDetail .sr-ui-equip-hero-art{
+  box-shadow: var(--sr-asset-shadow-lg);
+}
+
+/* Shared polish for emitted roguelike binding hooks. */
+body .rogueDraftWrap.sr-asset-bindings-ready{
+  box-shadow: var(--sr-asset-shadow-xl);
+}
+
+body .rogueDraftCard.sr-asset-bound{
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+body .rogueDraftCard.sr-asset-bound .srRogueCardArtShell{
+  overflow:hidden;
+  isolation:isolate;
+}
+
+body .rogueDraftCard.sr-asset-bound .srRogueCardArt{
+  transform: scale(1.02);
+  transition: transform 220ms ease, filter 220ms ease;
+}
+
+body .rogueDraftCard.sr-asset-bound:hover .srRogueCardArt{
+  transform: scale(1.06);
+  filter: saturate(1.08) contrast(1.04);
+}
+
+body .rogueDraftCard.sr-asset-bound .srRogueCardArtHint{
+  box-shadow: 0 10px 20px rgba(2,6,23,0.26);
+}
+
+@media (prefers-reduced-motion: reduce){
+  #panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.srMenuAssetLayer),
+  :where(.sr-ui-icon-host),
+  body .rogueDraftCard.sr-asset-bound,
+  body .rogueDraftCard.sr-asset-bound .srRogueCardArt{
+    transition:none;
+  }
+
+  #panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.menuHero.srMenuAssetHost .srMenuAssetLayer--hero),
+  #panel.srMenuShell[data-sr-asset-bindings="ready"] :where(.characterCard[data-card-art] .characterBackdrop[data-sr-slot-art]),
+  body .rogueDraftCard.sr-asset-bound .srRogueCardArt{
+    transform:none;
+  }
+}

@@ -1,0 +1,552 @@
+.frameShell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100dvh;
+  height: 100%;
+  color: #e2e8f0;
+  background-color: #050814;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.2), transparent 28%),
+    radial-gradient(circle at top right, rgba(34, 211, 238, 0.12), transparent 24%),
+    linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+  isolation: isolate;
+}
+
+.staticImmersiveShell {
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 100%;
+  background: #080b0c;
+}
+
+.metaBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(7, 12, 20, 0.78);
+  color: rgba(226, 232, 240, 0.72);
+  font-size: 12px;
+}
+
+.metaList {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.metaPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.frameBody {
+  min-height: 0;
+  display: grid;
+  overflow: hidden;
+  position: relative;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+}
+
+.frameViewport {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+  position: relative;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y pinch-zoom;
+}
+
+.frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #050814;
+}
+
+.frameScaled {
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+}
+
+.frameViewport iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  touch-action: pan-y pinch-zoom;
+  min-height: 100%;
+  border-radius: inherit;
+  background-color: #050814;
+  color-scheme: dark;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding: 32px;
+  text-align: center;
+  color: #e2e8f0;
+}
+
+.emptyCard {
+  width: min(560px, 100%);
+  display: grid;
+  gap: 14px;
+  justify-items: center;
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(7, 12, 20, 0.9), rgba(11, 18, 32, 0.94));
+  box-shadow: 0 18px 36px rgba(2, 6, 23, 0.22);
+}
+
+.emptyBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.16);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.emptyCard strong {
+  font-size: 22px;
+  color: #f8fafc;
+}
+
+.emptyCard p {
+  margin: 0;
+  color: rgba(203, 213, 225, 0.8);
+  line-height: 1.65;
+}
+
+.emptyMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 12px;
+  color: rgba(203, 213, 225, 0.72);
+  font-size: 12px;
+}
+
+.emptyActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.emptyButton {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background: rgba(7, 12, 20, 0.9);
+  color: #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(2, 6, 23, 0.22);
+}
+
+.emptyNote {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.emptyNoteSuccess {
+  border: 1px solid rgba(34, 197, 94, 0.18);
+  background: rgba(6, 78, 59, 0.28);
+  color: #86efac;
+}
+
+.emptyNoteError {
+  border: 1px solid rgba(239, 68, 68, 0.18);
+  background: rgba(127, 29, 29, 0.28);
+  color: #fca5a5;
+}
+
+.nativeFrameShell {
+  background: linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+}
+
+.nativeMetaBar {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(7, 12, 20, 0.82);
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.nativeMetaPill {
+  background: rgba(124, 58, 237, 0.16);
+  color: #dbeafe;
+}
+
+.nativeMetaInfo {
+  color: rgba(203, 213, 225, 0.76);
+}
+
+.nativeShell {
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  min-height: 100%;
+  color: #e2e8f0;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.18), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.12), transparent 34%);
+}
+
+.nativeCard {
+  width: min(860px, 100%);
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(7, 12, 20, 0.9) 0%, rgba(11, 18, 32, 0.94) 100%);
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.22);
+}
+
+.nativeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.nativeHeader > div {
+  display: grid;
+  gap: 6px;
+}
+
+.nativeHeader strong {
+  font-size: 24px;
+  color: #f8fafc;
+}
+
+.nativeHeader span,
+.nativeNote {
+  color: rgba(203, 213, 225, 0.78);
+  line-height: 1.6;
+}
+
+.nativeBadge {
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(124, 58, 237, 0.16);
+  color: #dbeafe;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.nativeList,
+.nativeNotes {
+  display: grid;
+  gap: 10px;
+}
+
+.nativeRow,
+.nativeNote {
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.nativeRow {
+  display: grid;
+  gap: 6px;
+}
+
+.nativeRow span {
+  color: rgba(120, 53, 15, 0.7);
+  font-size: 12px;
+}
+
+.nativeRow code,
+.nativeNote {
+  color: #4a1d11;
+  overflow-wrap: anywhere;
+}
+
+.nativeActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.nativeButton,
+.nativeLink {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid rgba(220, 38, 38, 0.1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  color: #631714;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(127, 29, 29, 0.08);
+}
+
+.nativeButton:disabled,
+.nativeLink:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.nativeStatusSuccess {
+  border-color: rgba(34, 197, 94, 0.2);
+  background: rgba(220, 252, 231, 0.78);
+  color: #166534;
+}
+
+.nativeStatusError {
+  border-color: rgba(239, 68, 68, 0.18);
+  background: rgba(254, 242, 242, 0.88);
+  color: #991b1b;
+}
+
+.routeStatusReady {
+  background: rgba(220, 252, 231, 0.88);
+  color: #166534;
+}
+
+.routeStatusChecking {
+  background: rgba(219, 234, 254, 0.88);
+  color: #1d4ed8;
+}
+
+.routeStatusError {
+  background: rgba(254, 242, 242, 0.94);
+  color: #991b1b;
+}
+
+.spinIcon {
+  animation: frameSpin 0.9s linear infinite;
+}
+
+@keyframes frameSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .frameShell {
+    grid-template-rows: minmax(0, 1fr);
+    min-height: 100%;
+    height: 100%;
+    border-radius: 0;
+    overflow: hidden;
+    background: #fffaf6;
+    box-shadow: none;
+  }
+
+  .metaBar {
+    display: none;
+  }
+
+  .frame {
+    border-radius: 0;
+    min-height: 100%;
+    border: 0;
+    box-shadow: none;
+    display: block;
+  }
+
+  .frameBody {
+    min-height: 100%;
+    height: 100%;
+    padding: 0;
+    background: #fffaf6;
+  }
+
+  .frameViewport {
+    height: 100%;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+    padding-bottom: 0;
+    background: #fffaf6;
+  }
+
+  .frameScaled {
+    width: calc(100% / var(--frame-scale, 1));
+    height: calc(100% / var(--frame-scale, 1));
+    transform: scale(var(--frame-scale, 1));
+    transform-origin: top left;
+  }
+
+  .nativeShell {
+    padding: 14px;
+  }
+
+  .nativeCard {
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 16px 28px rgba(127, 29, 29, 0.1);
+  }
+
+  .nativeHeader {
+    flex-direction: column;
+  }
+
+  .nativeHeader strong {
+    font-size: 20px;
+  }
+
+  .nativeActions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .nativeButton,
+  .nativeLink {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .frameShell {
+    min-height: var(--mobile-viewport-height, 100dvh);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .metaBar {
+    display: none;
+  }
+
+  .frameBody {
+    min-height: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
+  .frameViewport {
+    height: 100%;
+    border-radius: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .frameViewport iframe {
+    background-color: #fffaf6;
+  }
+
+  .nativeCard {
+    padding: 14px;
+  }
+
+  .nativeHeader strong {
+    font-size: 18px;
+  }
+
+  .nativeRow,
+  .nativeNote {
+    padding: 10px 12px;
+  }
+}
+
+.nativeRow,
+.nativeNote {
+  border-color: rgba(148, 163, 184, 0.14);
+  background: rgba(8, 13, 24, 0.82);
+}
+
+.nativeRow span {
+  color: rgba(203, 213, 225, 0.7);
+}
+
+.nativeRow code,
+.nativeNote {
+  color: #e2e8f0;
+}
+
+.nativeButton,
+.nativeLink {
+  border-color: rgba(148, 163, 184, 0.14);
+  background: rgba(7, 12, 20, 0.88);
+  color: #f8fafc;
+  box-shadow: 0 10px 22px rgba(2, 6, 23, 0.18);
+}
+
+.nativeStatusSuccess {
+  background: rgba(6, 78, 59, 0.3);
+  color: #86efac;
+}
+
+.nativeStatusError {
+  background: rgba(127, 29, 29, 0.3);
+  color: #fca5a5;
+}
+
+.frameViewport iframe,
+.frame,
+.frameViewport,
+.frameBody {
+  background-color: #050814;
+}
+
+@media (max-width: 768px) {
+  .frameShell[data-mobile-focus='core'] {
+    grid-template-rows: minmax(0, 1fr);
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    background: #f5f7fb;
+  }
+
+  .frameShell[data-mobile-focus='core'] .frameBody,
+  .frameShell[data-mobile-focus='core'] .frameViewport,
+  .frameShell[data-mobile-focus='core'] .frame,
+  .frameShell[data-mobile-focus='core'] iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  .frameShell[data-mobile-focus='core'] .frameBody {
+    padding: 0;
+    background: #f5f7fb;
+  }
+
+  .frameShell[data-app-id='codeEditor'] .frameViewport iframe {
+    background-color: #05070d;
+  }
+
+  .frameShell[data-app-id='webChat'] .frameViewport iframe,
+  .frameShell[data-app-id='ai-agent'] .frameViewport iframe,
+  .frameShell[data-app-id='long-writing'] .frameViewport iframe {
+    background-color: #f6f8fb;
+  }
+}

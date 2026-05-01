@@ -1,0 +1,924 @@
+# 网页开发与服务器建设Agent家族配置
+batch_name: 网页开发Agent家族
+output_dir: .trae/skills
+version: "1.0.0"
+created_date: "2026-03-18"
+
+# ==================== 前端开发 Agents ====================
+frontend_agents:
+  - name: react-agent
+    type: skill
+    title: React开发专家
+    description: 提供React、React Hooks、状态管理、性能优化等完整解决方案
+    core_concept: 让React开发更高效、更规范、更易维护
+    features:
+      - React组件设计
+      - Hooks最佳实践
+      - Redux/Zustand状态管理
+      - 性能优化技巧
+      - React 18新特性
+      - Next.js全栈开发
+    priority: high
+    tags: ["frontend", "react", "javascript", "typescript"]
+
+  - name: vue-agent
+    type: skill
+    title: Vue.js开发专家
+    description: 提供Vue 3、Composition API、Pinia、Nuxt.js等完整解决方案
+    core_concept: 让Vue开发更简洁、更强大、更优雅
+    features:
+      - Vue 3组合式API
+      - Pinia状态管理
+      - Nuxt.js服务端渲染
+      - Vue性能优化
+      - 组件库开发
+      - Vue生态工具链
+    priority: high
+    tags: ["frontend", "vue", "javascript", "typescript"]
+
+  - name: angular-agent
+    type: skill
+    title: Angular开发专家
+    description: 提供Angular框架、RxJS、依赖注入、企业级应用开发方案
+    core_concept: 构建可维护的企业级前端应用
+    features:
+      - Angular架构设计
+      - RxJS响应式编程
+      - 依赖注入系统
+      - Angular Material UI
+      - 单元测试与e2e测试
+      - Angular性能优化
+    priority: medium
+    tags: ["frontend", "angular", "typescript", "enterprise"]
+
+  - name: svelte-agent
+    type: skill
+    title: Svelte开发专家
+    description: 提供Svelte、SvelteKit、无虚拟DOM高性能开发方案
+    core_concept: 编译时优化，运行时零开销
+    features:
+      - Svelte组件开发
+      - SvelteKit全栈框架
+      - 响应式声明
+      - 动画与过渡效果
+      - 服务端渲染SSR
+      - 静态站点生成SSG
+    priority: medium
+    tags: ["frontend", "svelte", "javascript", "performance"]
+
+  - name: html-css-agent
+    type: skill
+    title: HTML/CSS专家
+    description: 提供语义化HTML、现代CSS、响应式设计、动画效果解决方案
+    core_concept: 构建语义化、可访问、响应式的现代网页
+    features:
+      - HTML5语义化标签
+      - CSS3现代特性
+      - Flexbox与Grid布局
+      - 响应式设计
+      - CSS动画与过渡
+      - CSS架构与BEM
+    priority: high
+    tags: ["frontend", "html", "css", "responsive"]
+
+  - name: typescript-agent
+    type: skill
+    title: TypeScript专家
+    description: 提供类型系统、泛型、装饰器、大型项目架构解决方案
+    core_concept: 用类型安全提升代码质量和开发效率
+    features:
+      - TypeScript类型系统
+      - 泛型与高级类型
+      - 装饰器与元数据
+      - 类型声明文件
+      - 编译配置优化
+      - 大型项目架构
+    priority: high
+    tags: ["frontend", "typescript", "javascript", "type-system"]
+
+  - name: webpack-agent
+    type: skill
+    title: Webpack构建专家
+    description: 提供Webpack配置、Loader、Plugin、性能优化解决方案
+    core_concept: 打造高效的前端构建流程
+    features:
+      - Webpack配置优化
+      - Loader开发
+      - Plugin开发
+      - 代码分割与懒加载
+      - 构建性能优化
+      - 多环境配置管理
+    priority: medium
+    tags: ["frontend", "webpack", "build-tool", "bundler"]
+
+  - name: vite-agent
+    type: skill
+    title: Vite构建专家
+    description: 提供Vite配置、插件开发、快速开发服务器解决方案
+    core_concept: 下一代前端开发与构建工具
+    features:
+      - Vite配置与优化
+      - 插件开发与使用
+      - 热更新HMR
+      - 生产构建优化
+      - SSR支持
+      - 库模式开发
+    priority: high
+    tags: ["frontend", "vite", "build-tool", "fast"]
+
+  - name: tailwind-agent
+    type: skill
+    title: Tailwind CSS专家
+    description: 提供Tailwind CSS、自定义配置、组件设计解决方案
+    core_concept: 实用优先的CSS框架，快速构建现代界面
+    features:
+      - Tailwind配置定制
+      - 实用类最佳实践
+      - 自定义插件开发
+      - 暗黑模式支持
+      - 响应式设计
+      - 与框架集成
+    priority: high
+    tags: ["frontend", "tailwind", "css", "ui"]
+
+  - name: frontend-testing-agent
+    type: skill
+    title: 前端测试专家
+    description: 提供单元测试、集成测试、e2e测试、测试策略解决方案
+    core_concept: 构建可靠的前端测试体系
+    features:
+      - Jest单元测试
+      - React Testing Library
+      - Cypress e2e测试
+      - Playwright自动化测试
+      - 测试覆盖率分析
+      - TDD/BDD实践
+    priority: medium
+    tags: ["frontend", "testing", "jest", "cypress"]
+
+  - name: pwa-agent
+    type: skill
+    title: PWA开发专家
+    description: 提供渐进式Web应用、Service Worker、离线缓存解决方案
+    core_concept: 让Web应用拥有原生应用体验
+    features:
+      - Service Worker开发
+      - 离线缓存策略
+      - Web App Manifest
+      - 推送通知
+      - 后台同步
+      - 安装与更新
+    priority: medium
+    tags: ["frontend", "pwa", "offline", "mobile"]
+
+  - name: web-performance-agent
+    type: skill
+    title: Web性能优化专家
+    description: 提供性能分析、优化策略、Core Web Vitals优化解决方案
+    core_concept: 打造极致的Web性能体验
+    features:
+      - 性能指标分析
+      - 资源加载优化
+      - 代码分割与懒加载
+      - 缓存策略
+      - Core Web Vitals优化
+      - 性能监控
+    priority: high
+    tags: ["frontend", "performance", "optimization", "web-vitals"]
+
+  - name: web-accessibility-agent
+    type: skill
+    title: Web可访问性专家
+    description: 提供WCAG标准、ARIA、键盘导航、屏幕阅读器支持解决方案
+    core_concept: 让Web对所有人可访问
+    features:
+      - WCAG 2.1标准
+      - ARIA属性使用
+      - 键盘导航优化
+      - 屏幕阅读器支持
+      - 可访问性测试
+      - 语义化HTML
+    priority: medium
+    tags: ["frontend", "accessibility", "a11y", "wcag"]
+
+  - name: micro-frontend-agent
+    type: skill
+    title: 微前端架构专家
+    description: 提供微前端架构、模块联邦、应用集成解决方案
+    core_concept: 构建可扩展的大型前端架构
+    features:
+      - 微前端架构设计
+      - Module Federation
+      - Single-SPA
+      - Qiankun集成
+      - 应用间通信
+      - 独立部署
+    priority: medium
+    tags: ["frontend", "micro-frontend", "architecture", "scale"]
+
+  - name: web-security-agent
+    type: skill
+    title: Web安全专家
+    description: 提供XSS、CSRF、CSP、安全头、内容安全解决方案
+    core_concept: 构建安全可靠的Web应用
+    features:
+      - XSS防护
+      - CSRF防护
+      - CSP策略配置
+      - 安全头设置
+      - HTTPS最佳实践
+      - 安全审计
+    priority: high
+    tags: ["frontend", "security", "xss", "csrf"]
+
+# ==================== 后端开发 Agents ====================
+backend_agents:
+  - name: nodejs-agent
+    type: skill
+    title: Node.js开发专家
+    description: 提供Node.js、Express、Koa、NestJS等服务器端开发解决方案
+    core_concept: 用JavaScript构建高性能服务端应用
+    features:
+      - Node.js核心模块
+      - Express框架开发
+      - Koa异步流程
+      - NestJS企业级框架
+      - 异步编程模式
+      - 性能优化
+    priority: high
+    tags: ["backend", "nodejs", "javascript", "server"]
+
+  - name: python-backend-agent
+    type: skill
+    title: Python后端专家
+    description: 提供Django、Flask、FastAPI、异步框架开发解决方案
+    core_concept: 用Python快速构建强大的后端服务
+    features:
+      - Django全栈开发
+      - Flask轻量级应用
+      - FastAPI现代框架
+      - 异步编程asyncio
+      - ORM与数据库
+      - API设计与文档
+    priority: high
+    tags: ["backend", "python", "django", "fastapi"]
+
+  - name: java-backend-agent
+    type: skill
+    title: Java后端专家
+    description: 提供Spring Boot、Spring Cloud、微服务开发解决方案
+    core_concept: 构建企业级Java后端系统
+    features:
+      - Spring Boot开发
+      - Spring Cloud微服务
+      - Spring Security安全
+      - JPA/Hibernate ORM
+      - Maven/Gradle构建
+      - 性能调优
+    priority: high
+    tags: ["backend", "java", "spring", "enterprise"]
+
+  - name: go-backend-agent
+    type: skill
+    title: Go后端专家
+    description: 提供Gin、Echo、Go标准库、高并发开发解决方案
+    core_concept: 用Go构建高性能、高并发的后端服务
+    features:
+      - Go标准库使用
+      - Gin Web框架
+      - Echo框架开发
+      - Goroutine并发
+      - gRPC服务
+      - 性能优化
+    priority: high
+    tags: ["backend", "go", "golang", "concurrent"]
+
+  - name: rust-backend-agent
+    type: skill
+    title: Rust后端专家
+    description: 提供Actix-web、Axum、Tokio、内存安全开发解决方案
+    core_concept: 用Rust构建安全高性能的后端系统
+    features:
+      - Actix-web框架
+      - Axum现代框架
+      - Tokio异步运行时
+      - 内存安全管理
+      - WebAssembly集成
+      - 性能优化
+    priority: medium
+    tags: ["backend", "rust", "actix", "safe"]
+
+  - name: php-backend-agent
+    type: skill
+    title: PHP后端专家
+    description: 提供Laravel、Symfony、现代PHP开发解决方案
+    core_concept: 用现代PHP构建稳健的后端应用
+    features:
+      - Laravel框架开发
+      - Symfony组件
+      - Composer包管理
+      - Eloquent ORM
+      - 队列与任务调度
+      - 测试与部署
+    priority: medium
+    tags: ["backend", "php", "laravel", "web"]
+
+  - name: ruby-backend-agent
+    type: skill
+    title: Ruby后端专家
+    description: 提供Ruby on Rails、Sinatra、快速开发解决方案
+    core_concept: 用Ruby的优雅语法快速构建应用
+    features:
+      - Rails框架开发
+      - Sinatra轻量应用
+      - ActiveRecord
+      - RSpec测试
+      - 性能优化
+      - 部署与运维
+    priority: medium
+    tags: ["backend", "ruby", "rails", "rapid"]
+
+  - name: graphql-agent
+    type: skill
+    title: GraphQL专家
+    description: 提供GraphQL API设计、Apollo、类型系统解决方案
+    core_concept: 构建灵活强大的API查询语言
+    features:
+      - GraphQL Schema设计
+      - Apollo Server/Client
+      - 类型系统定义
+      - 查询优化
+      - 订阅与实时数据
+      - 与REST对比
+    priority: high
+    tags: ["backend", "graphql", "api", "query"]
+
+  - name: rest-api-agent
+    type: skill
+    title: REST API专家
+    description: 提供RESTful设计、API版本控制、文档生成解决方案
+    core_concept: 设计优雅的RESTful API接口
+    features:
+      - RESTful设计原则
+      - API版本控制
+      - OpenAPI/Swagger文档
+      - 认证与授权
+      - 限流与缓存
+      - 错误处理
+    priority: high
+    tags: ["backend", "rest", "api", "http"]
+
+  - name: websocket-agent
+    type: skill
+    title: WebSocket专家
+    description: 提供实时通信、Socket.io、WebSocket协议解决方案
+    core_concept: 构建实时双向通信应用
+    features:
+      - WebSocket协议
+      - Socket.io开发
+      - 实时消息推送
+      - 房间与命名空间
+      - 连接管理
+      - 性能优化
+    priority: medium
+    tags: ["backend", "websocket", "realtime", "socket.io"]
+
+  - name: message-queue-agent
+    type: skill
+    title: 消息队列专家
+    description: 提供RabbitMQ、Kafka、Redis队列、异步处理解决方案
+    core_concept: 用消息队列解耦系统、处理异步任务
+    features:
+      - RabbitMQ消息队列
+      - Kafka流处理
+      - Redis队列
+      - 消息模式设计
+      - 可靠性保证
+      - 监控与运维
+    priority: medium
+    tags: ["backend", "queue", "rabbitmq", "kafka"]
+
+  - name: database-design-agent
+    type: skill
+    title: 数据库设计专家
+    description: 提供关系型数据库、NoSQL、数据建模、优化解决方案
+    core_concept: 设计高效可扩展的数据库架构
+    features:
+      - 关系型数据库设计
+      - NoSQL数据库选型
+      - 数据建模
+      - 索引优化
+      - 分库分表
+      - 读写分离
+    priority: high
+    tags: ["backend", "database", "sql", "nosql"]
+
+  - name: orm-agent
+    type: skill
+    title: ORM专家
+    description: 提供Prisma、TypeORM、Sequelize、数据访问层解决方案
+    core_concept: 用ORM简化数据库操作
+    features:
+      - Prisma ORM
+      - TypeORM开发
+      - Sequelize使用
+      - 模型关系定义
+      - 迁移管理
+      - 查询优化
+    priority: medium
+    tags: ["backend", "orm", "database", "prisma"]
+
+  - name: caching-agent
+    type: skill
+    title: 缓存策略专家
+    description: 提供Redis、Memcached、CDN、缓存策略解决方案
+    core_concept: 用缓存提升系统性能
+    features:
+      - Redis缓存
+      - Memcached使用
+      - CDN配置
+      - 缓存策略设计
+      - 缓存穿透/雪崩防护
+      - 多级缓存架构
+    priority: high
+    tags: ["backend", "cache", "redis", "performance"]
+
+  - name: authentication-agent
+    type: skill
+    title: 认证授权专家
+    description: 提供JWT、OAuth2、SSO、权限管理解决方案
+    core_concept: 构建安全的认证授权体系
+    features:
+      - JWT认证
+      - OAuth2流程
+      - OpenID Connect
+      - 单点登录SSO
+      - RBAC权限模型
+      - 多因素认证
+    priority: high
+    tags: ["backend", "auth", "jwt", "oauth"]
+
+  - name: api-gateway-agent
+    type: skill
+    title: API网关专家
+    description: 提供Kong、Nginx、Envoy、流量管理解决方案
+    core_concept: 统一管理API入口，提供网关服务
+    features:
+      - Kong网关配置
+      - Nginx反向代理
+      - Envoy服务网格
+      - 路由与负载均衡
+      - 限流熔断
+      - 认证与日志
+    priority: medium
+    tags: ["backend", "gateway", "kong", "nginx"]
+
+# ==================== 服务器与运维 Agents ====================
+server_agents:
+  - name: docker-agent
+    type: skill
+    title: Docker容器专家
+    description: 提供Docker容器化、镜像优化、多阶段构建解决方案
+    core_concept: 用Docker实现应用容器化部署
+    features:
+      - Dockerfile编写
+      - 镜像优化
+      - 多阶段构建
+      - Docker Compose
+      - 容器网络
+      - 数据卷管理
+    priority: high
+    tags: ["devops", "docker", "container", "deployment"]
+
+  - name: kubernetes-agent
+    type: skill
+    title: Kubernetes专家
+    description: 提供K8s集群管理、Pod调度、服务网格解决方案
+    core_concept: 用Kubernetes编排容器化应用
+    features:
+      - K8s资源对象
+      - Pod调度策略
+      - Service与Ingress
+      - ConfigMap/Secret
+      - Helm包管理
+      - 集群运维
+    priority: high
+    tags: ["devops", "kubernetes", "k8s", "orchestration"]
+
+  - name: nginx-agent
+    type: skill
+    title: Nginx服务器专家
+    description: 提供Nginx配置、负载均衡、反向代理、性能优化解决方案
+    core_concept: 用Nginx构建高性能Web服务器
+    features:
+      - Nginx配置优化
+      - 反向代理设置
+      - 负载均衡策略
+      - SSL/TLS配置
+      - 缓存配置
+      - 安全防护
+    priority: high
+    tags: ["devops", "nginx", "server", "proxy"]
+
+  - name: apache-agent
+    type: skill
+    title: Apache服务器专家
+    description: 提供Apache配置、虚拟主机、模块开发解决方案
+    core_concept: 配置稳定可靠的Apache服务器
+    features:
+      - Apache配置
+      - 虚拟主机设置
+      - 模块管理
+      - .htaccess配置
+      - 性能调优
+      - 安全配置
+    priority: medium
+    tags: ["devops", "apache", "server", "httpd"]
+
+  - name: cdn-agent
+    type: skill
+    title: CDN加速专家
+    description: 提供CDN配置、边缘缓存、全球加速解决方案
+    core_concept: 用CDN加速全球内容分发
+    features:
+      - CDN服务商选择
+      - 缓存策略配置
+      - 边缘计算
+      - 安全防护
+      - 性能监控
+      - 成本优化
+    priority: medium
+    tags: ["devops", "cdn", "performance", "global"]
+
+  - name: ssl-tls-agent
+    type: skill
+    title: SSL/TLS安全专家
+    description: 提供HTTPS配置、证书管理、TLS优化解决方案
+    core_concept: 构建安全的HTTPS通信
+    features:
+      - SSL证书申请
+      - HTTPS配置
+      - TLS版本优化
+      - 证书自动续期
+      - HSTS配置
+      - 安全扫描
+    priority: high
+    tags: ["devops", "ssl", "tls", "security"]
+
+  - name: ci-cd-agent
+    type: skill
+    title: CI/CD流水线专家
+    description: 提供GitHub Actions、GitLab CI、Jenkins自动化部署解决方案
+    core_concept: 构建自动化的持续集成与部署流程
+    features:
+      - GitHub Actions
+      - GitLab CI/CD
+      - Jenkins流水线
+      - 自动化测试
+      - 自动化部署
+      - 回滚策略
+    priority: high
+    tags: ["devops", "ci-cd", "automation", "pipeline"]
+
+  - name: monitoring-agent
+    type: skill
+    title: 监控告警专家
+    description: 提供Prometheus、Grafana、ELK、应用监控解决方案
+    core_concept: 构建全方位的系统监控体系
+    features:
+      - Prometheus监控
+      - Grafana可视化
+      - ELK日志分析
+      - APM应用监控
+      - 告警配置
+      - 链路追踪
+    priority: high
+    tags: ["devops", "monitoring", "prometheus", "observability"]
+
+  - name: logging-agent
+    type: skill
+    title: 日志管理专家
+    description: 提供日志收集、分析、归档、ELK Stack解决方案
+    core_concept: 构建完整的日志管理体系
+    features:
+      - 日志收集方案
+      - ELK Stack配置
+      - 日志结构化
+      - 日志分析
+      - 日志归档
+      - 日志安全
+    priority: medium
+    tags: ["devops", "logging", "elk", "analysis"]
+
+  - name: backup-agent
+    type: skill
+    title: 备份恢复专家
+    description: 提供数据备份、灾难恢复、容灾方案解决方案
+    core_concept: 构建可靠的备份与恢复体系
+    features:
+      - 备份策略设计
+      - 自动化备份
+      - 增量/全量备份
+      - 灾难恢复
+      - 容灾架构
+      - 备份验证
+    priority: high
+    tags: ["devops", "backup", "recovery", "disaster"]
+
+  - name: cloud-aws-agent
+    type: skill
+    title: AWS云服务专家
+    description: 提供AWS EC2、S3、Lambda、RDS等云服务解决方案
+    core_concept: 用AWS云服务构建可扩展的基础设施
+    features:
+      - EC2计算服务
+      - S3存储服务
+      - Lambda无服务器
+      - RDS数据库
+      - CloudFront CDN
+      - IAM权限管理
+    priority: high
+    tags: ["cloud", "aws", "infrastructure", "serverless"]
+
+  - name: cloud-azure-agent
+    type: skill
+    title: Azure云服务专家
+    description: 提供Azure VM、App Service、Azure Functions解决方案
+    core_concept: 用Azure构建企业级云应用
+    features:
+      - Azure虚拟机
+      - App Service
+      - Azure Functions
+      - Azure SQL
+      - Azure Storage
+      - Azure DevOps
+    priority: medium
+    tags: ["cloud", "azure", "microsoft", "enterprise"]
+
+  - name: cloud-gcp-agent
+    type: skill
+    title: GCP云服务专家
+    description: 提供Google Cloud Compute、Cloud Run、BigQuery解决方案
+    core_concept: 用Google Cloud构建数据驱动应用
+    features:
+      - Compute Engine
+      - Cloud Run
+      - Cloud Functions
+      - Cloud SQL
+      - BigQuery
+      - Cloud Storage
+    priority: medium
+    tags: ["cloud", "gcp", "google", "data"]
+
+  - name: terraform-agent
+    type: skill
+    title: Terraform基础设施专家
+    description: 提供IaC、Terraform配置、多云管理解决方案
+    core_concept: 用代码管理基础设施
+    features:
+      - Terraform配置
+      - 状态管理
+      - 模块开发
+      - 多云部署
+      - 工作区管理
+      - CI/CD集成
+    priority: high
+    tags: ["devops", "terraform", "iac", "infrastructure"]
+
+  - name: ansible-agent
+    type: skill
+    title: Ansible自动化专家
+    description: 提供Ansible Playbook、配置管理、自动化运维解决方案
+    core_concept: 用Ansible实现自动化运维
+    features:
+      - Playbook编写
+      - 角色与集合
+      - 配置管理
+      - 应用部署
+      - 任务编排
+      - 动态清单
+    priority: medium
+    tags: ["devops", "ansible", "automation", "configuration"]
+
+  - name: linux-admin-agent
+    type: skill
+    title: Linux系统管理专家
+    description: 提供Linux系统配置、Shell脚本、性能调优解决方案
+    core_concept: 精通Linux系统管理与优化
+    features:
+      - 系统安装配置
+      - Shell脚本开发
+      - 用户权限管理
+      - 性能监控调优
+      - 服务管理
+      - 安全加固
+    priority: high
+    tags: ["devops", "linux", "system", "admin"]
+
+  - name: database-admin-agent
+    type: skill
+    title: 数据库管理专家
+    description: 提供MySQL、PostgreSQL、MongoDB运维管理解决方案
+    core_concept: 构建高可用、高性能的数据库系统
+    features:
+      - MySQL管理
+      - PostgreSQL管理
+      - MongoDB管理
+      - 备份恢复
+      - 性能优化
+      - 高可用架构
+    priority: high
+    tags: ["devops", "database", "mysql", "postgres"]
+
+  - name: security-hardening-agent
+    type: skill
+    title: 安全加固专家
+    description: 提供服务器安全、防火墙、入侵检测、漏洞修复解决方案
+    core_concept: 构建安全的服务器环境
+    features:
+      - 系统安全加固
+      - 防火墙配置
+      - 入侵检测
+      - 漏洞扫描
+      - 安全审计
+      - 合规检查
+    priority: high
+    tags: ["devops", "security", "hardening", "protection"]
+
+  - name: load-balancer-agent
+    type: skill
+    title: 负载均衡专家
+    description: 提供LVS、HAProxy、Nginx负载均衡、高可用解决方案
+    core_concept: 构建高可用的负载均衡架构
+    features:
+      - LVS负载均衡
+      - HAProxy配置
+      - Nginx负载均衡
+      - 健康检查
+      - 会话保持
+      - 高可用架构
+    priority: medium
+    tags: ["devops", "load-balancer", "ha", "scale"]
+
+  - name: serverless-agent
+    type: skill
+    title: Serverless架构专家
+    description: 提供函数计算、事件驱动、无服务器架构解决方案
+    core_concept: 用Serverless构建弹性应用
+    features:
+      - 函数计算开发
+      - 事件驱动架构
+      - 冷启动优化
+      - 成本优化
+      - 监控调试
+      - 与传统架构对比
+    priority: medium
+    tags: ["cloud", "serverless", "faas", "lambda"]
+
+# ==================== 全栈与工具 Agents ====================
+fullstack_agents:
+  - name: fullstack-nextjs-agent
+    type: skill
+    title: Next.js全栈专家
+    description: 提供Next.js全栈开发、SSR、API Routes、部署解决方案
+    core_concept: 用Next.js构建现代全栈应用
+    features:
+      - Next.js App Router
+      - 服务端渲染SSR
+      - API Routes开发
+      - 数据获取策略
+      - 部署优化
+      - 性能调优
+    priority: high
+    tags: ["fullstack", "nextjs", "react", "ssr"]
+
+  - name: fullstack-nuxt-agent
+    type: skill
+    title: Nuxt.js全栈专家
+    description: 提供Nuxt.js全栈开发、SSR、Nitro、部署解决方案
+    core_concept: 用Nuxt.js构建Vue全栈应用
+    features:
+      - Nuxt 3开发
+      - 服务端渲染
+      - Nitro引擎
+      - 服务器API
+      - 部署配置
+      - 模块开发
+    priority: medium
+    tags: ["fullstack", "nuxt", "vue", "ssr"]
+
+  - name: database-mysql-agent
+    type: skill
+    title: MySQL专家
+    description: 提供MySQL设计、优化、主从复制、集群解决方案
+    core_concept: 构建高性能MySQL数据库系统
+    features:
+      - MySQL架构设计
+      - SQL优化
+      - 索引优化
+      - 主从复制
+      - 分库分表
+      - 高可用架构
+    priority: high
+    tags: ["database", "mysql", "sql", "rdbms"]
+
+  - name: database-postgres-agent
+    type: skill
+    title: PostgreSQL专家
+    description: 提供PostgreSQL高级特性、性能优化、扩展开发解决方案
+    core_concept: 用PostgreSQL构建企业级数据库
+    features:
+      - PostgreSQL特性
+      - 高级SQL
+      - 性能优化
+      - 分区表
+      - 扩展开发
+      - 高可用配置
+    priority: high
+    tags: ["database", "postgresql", "postgres", "advanced"]
+
+  - name: database-mongodb-agent
+    type: skill
+    title: MongoDB专家
+    description: 提供MongoDB设计、聚合管道、分片集群解决方案
+    core_concept: 用MongoDB构建灵活的文档数据库
+    features:
+      - MongoDB设计
+      - CRUD操作
+      - 聚合管道
+      - 索引优化
+      - 复制集
+      - 分片集群
+    priority: medium
+    tags: ["database", "mongodb", "nosql", "document"]
+
+  - name: database-redis-agent
+    type: skill
+    title: Redis专家
+    description: 提供Redis数据结构、持久化、集群、应用场景解决方案
+    core_concept: 用Redis构建高性能数据存储
+    features:
+      - Redis数据结构
+      - 持久化机制
+      - 主从复制
+      - 哨兵模式
+      - 集群模式
+      - 应用场景
+    priority: high
+    tags: ["database", "redis", "cache", "nosql"]
+
+  - name: git-agent
+    type: skill
+    title: Git版本控制专家
+    description: 提供Git工作流、分支策略、高级操作解决方案
+    core_concept: 用Git高效管理代码版本
+    features:
+      - Git工作流
+      - 分支策略
+      - 高级操作
+      - 冲突解决
+      - 历史重写
+      - 团队协作
+    priority: high
+    tags: ["tool", "git", "version-control", "collaboration"]
+
+  - name: npm-package-agent
+    type: skill
+    title: NPM包开发专家
+    description: 提供NPM包开发、发布、monorepo管理解决方案
+    core_concept: 开发和发布高质量的NPM包
+    features:
+      - 包结构设计
+      - 构建配置
+      - 版本管理
+      - Monorepo
+      - 文档生成
+      - 发布流程
+    priority: medium
+    tags: ["tool", "npm", "package", "library"]
+
+# ==================== 配置元数据 ====================
+metadata:
+  total_agents: 60
+  categories:
+    - name: frontend
+      count: 15
+      description: 前端开发相关Agent
+    - name: backend
+      count: 16
+      description: 后端开发相关Agent
+    - name: devops
+      count: 20
+      description: 运维与服务器相关Agent
+    - name: fullstack
+      count: 4
+      description: 全栈开发相关Agent
+    - name: database
+      count: 4
+      description: 数据库相关Agent
+    - name: tool
+      count: 2
+      description: 开发工具相关Agent
+    - name: cloud
+      count: 5
+      description: 云服务相关Agent

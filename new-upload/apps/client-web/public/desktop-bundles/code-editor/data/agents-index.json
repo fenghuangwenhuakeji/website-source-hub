@@ -1,0 +1,387 @@
+{
+  "version": "2.0.0",
+  "lastUpdated": "2026-03-30",
+  "totalAgents": 850,
+  "categories": [
+    {
+      "id": "first-principles",
+      "name": "第一性原理Agent",
+      "icon": "🔬",
+      "description": "基于第一性原理思维的Agent，从本质出发解决问题",
+      "agents": [
+        { "id": "first-principles-agent", "name": "第一性原理Agent", "description": "从问题本质出发，拒绝惯例和模板", "icon": "🧠", "tags": ["思维", "本质", "创新"] },
+        { "id": "mathematics-agent", "name": "数学思维Agent", "description": "运用数学公理、定理和证明方法进行严谨的定量分析", "icon": "📐", "tags": ["数学", "定量", "严谨"] },
+        { "id": "physics-agent", "name": "物理学思维Agent", "description": "基于客观物理定律和物质规律进行思考", "icon": "⚛️", "tags": ["物理", "规律", "客观"] },
+        { "id": "philosophy-agent", "name": "哲学思维Agent", "description": "运用逻辑学、认识论、形而上学等哲学工具进行深度思考", "icon": "🤔", "tags": ["哲学", "逻辑", "深度"] },
+        { "id": "linguistics-agent", "name": "语言学思维Agent", "description": "基于语言学、音义学、语用学、语义学进行语言结构与含义分析", "icon": "🗣️", "tags": ["语言", "语义", "分析"] },
+        { "id": "game-theory-agent", "name": "博弈论Agent", "description": "运用博弈论、策略互动与纳什均衡分析竞争与合作决策问题", "icon": "🎲", "tags": ["博弈", "策略", "决策"] },
+        { "id": "information-theory-agent", "name": "信息论Agent", "description": "运用香农信息论、信源编码、信道编码理论进行信息度量与传输优化", "icon": "📡", "tags": ["信息", "编码", "传输"] },
+        { "id": "systems-theory-agent", "name": "系统论Agent", "description": "运用系统论、控制理论与复杂系统分析理解整体性、反馈与涌现", "icon": "🌐", "tags": ["系统", "控制", "复杂"] },
+        { "id": "dissipative-structure-agent", "name": "耗散结构Agent", "description": "运用耗散结构理论、协同学分析自组织、开放系统演化与复杂性涌现", "icon": "🌀", "tags": ["耗散", "自组织", "演化"] },
+        { "id": "organization-optimization-agent", "name": "组织优化Agent", "description": "运用组织理论、层级设计与激励相容分析优化组织结构与治理", "icon": "🏢", "tags": ["组织", "优化", "治理"] },
+        { "id": "operations-research-agent", "name": "运筹学Agent", "description": "运用运筹学理论与算法进行资源优化、决策分析与数学建模", "icon": "📊", "tags": ["运筹", "优化", "建模"] },
+        { "id": "convex-optimization-agent", "name": "凸优化Agent", "description": "运用凸分析、最优化理论与算法解决约束与非约束优化问题", "icon": "📈", "tags": ["凸优化", "算法", "约束"] },
+        { "id": "topology-agent", "name": "拓扑结构Agent", "description": "运用拓扑学理论分析空间结构、连续性、连通性与紧致性", "icon": "🕸️", "tags": ["拓扑", "空间", "结构"] },
+        { "id": "differential-equations-agent", "name": "微分方程Agent", "description": "运用常微分方程、偏微分方程理论进行动态系统建模与分析", "icon": "∂", "tags": ["微分方程", "动态", "建模"] },
+        { "id": "markov-agent", "name": "马尔科夫Agent", "description": "运用马尔可夫链、马尔可夫决策过程理论进行随机过程与序列决策分析", "icon": "⛓️", "tags": ["马尔科夫", "随机", "决策"] },
+        { "id": "fibonacci-agent", "name": "斐波那契Agent", "description": "运用斐波那契数列理论与黄金分割分析递归结构与优化问题", "icon": "🌀", "tags": ["斐波那契", "黄金分割", "递归"] },
+        { "id": "bayesian-statistics-agent", "name": "贝叶斯统计Agent", "description": "运用贝叶斯推理、概率编程与先验/后验分析进行统计推断", "icon": "🎲", "tags": ["贝叶斯", "统计", "概率"] },
+        { "id": "statistical-causal-model-agent", "name": "统计因果概率模型Agent", "description": "运用因果推断、因果图模型与反事实推理进行因果关系分析", "icon": "🔗", "tags": ["因果", "推断", "模型"] }
+      ]
+    },
+    {
+      "id": "ai-ml",
+      "name": "AI/ML Agent",
+      "icon": "🤖",
+      "description": "人工智能与机器学习领域的专业Agent",
+      "agents": [
+        { "id": "machine-learning-agent", "name": "机器学习Agent", "description": "运用统计学习理论、ML算法与第一性原理进行数据驱动的预测建模", "icon": "🧠", "tags": ["机器学习", "预测", "建模"] },
+        { "id": "deep-learning-agent", "name": "深度学习Agent", "description": "基于神经网络原理、激活函数与第一性原理进行深度学习建模与分析", "icon": "🧬", "tags": ["深度学习", "神经网络", "建模"] },
+        { "id": "reinforcement-learning-agent", "name": "强化学习Agent", "description": "基于MDP、策略优化与第一性原理进行序贯决策问题建模与分析", "icon": "🎯", "tags": ["强化学习", "MDP", "决策"] },
+        { "id": "cnn-agent", "name": "CNN Agent", "description": "运用卷积神经网络原理、局部感受野与参数共享进行图像处理建模", "icon": "🖼️", "tags": ["CNN", "图像", "卷积"] },
+        { "id": "rnn-agent", "name": "RNN Agent", "description": "运用循环神经网络原理与时序数据建模进行序列学习", "icon": "🔄", "tags": ["RNN", "时序", "序列"] },
+        { "id": "lstm-agent", "name": "LSTM Agent", "description": "运用长短期记忆网络原理与门控机制进行长期依赖学习", "icon": "🧠", "tags": ["LSTM", "记忆", "依赖"] },
+        { "id": "transformer-agent", "name": "Transformer Agent", "description": "运用自注意力机制与位置编码进行序列建模与跨模态理解", "icon": "⚡", "tags": ["Transformer", "注意力", "序列"] },
+        { "id": "gnn-agent", "name": "GNN Agent", "description": "运用图神经网络原理、消息传递与图结构建模进行非欧几里得数据分析", "icon": "🕸️", "tags": ["GNN", "图网络", "消息传递"] },
+        { "id": "nlp-agent", "name": "NLP Agent", "description": "运用自然语言处理理论与序列建模进行人类语言的计算理解", "icon": "💬", "tags": ["NLP", "语言", "理解"] },
+        { "id": "cv-agent", "name": "CV Agent", "description": "运用计算机视觉理论与卷积神经网络进行图像和视频的视觉理解", "icon": "👁️", "tags": ["CV", "视觉", "图像"] },
+        { "id": "multimodal-model-agent", "name": "Multimodal Model Agent", "description": "运用多模态融合理论与跨模态对齐进行异构数据联合建模", "icon": "🔄", "tags": ["多模态", "融合", "对齐"] },
+        { "id": "moe-agent", "name": "MoE Agent", "description": "运用混合专家系统与稀疏激活机制进行计算效率优化", "icon": "👥", "tags": ["MoE", "专家系统", "稀疏"] },
+        { "id": "world-model-agent", "name": "World Model Agent", "description": "运用世界模型理论与隐空间预测进行物理因果建模", "icon": "🌍", "tags": ["世界模型", "预测", "因果"] },
+        { "id": "stable-diffusion-agent", "name": "Stable Diffusion Agent", "description": "运用扩散概率模型与潜空间采样进行条件图像生成", "icon": "🎨", "tags": ["扩散模型", "图像生成", "采样"] },
+        { "id": "grid-search-agent", "name": "Grid Search Agent", "description": "运用网格搜索与超参数空间离散化进行系统化超参数优化", "icon": "🔍", "tags": ["网格搜索", "超参数", "优化"] }
+      ]
+    },
+    {
+      "id": "core",
+      "name": "核心功能Agent",
+      "icon": "⚙️",
+      "description": "IDE核心功能Agent，提供调试、规划、规格定义等基础能力",
+      "agents": [
+        { "id": "debug-agent", "name": "调试专家", "description": "智能调试助手，自动诊断和修复问题", "icon": "🐛", "tags": ["调试", "诊断", "修复"] },
+        { "id": "spec-agent", "name": "规格定义专家", "description": "将模糊需求转化为详细的可执行规格文档", "icon": "📋", "tags": ["规格", "需求", "文档"] },
+        { "id": "plan-agent", "name": "项目规划专家", "description": "帮助团队创建全面的项目计划", "icon": "📅", "tags": ["规划", "WBS", "调度"] },
+        { "id": "meta-agent", "name": "元Agent", "description": "管理和协调其他Agent", "icon": "🎭", "tags": ["元", "协调", "管理"] },
+        { "id": "autopilot-agent", "name": "自动驾驶Agent", "description": "全自主智能执行引擎，自动完成所有工作", "icon": "🚗", "tags": ["自动", "执行", "智能"] },
+        { "id": "agent-generator", "name": "Agent生成器", "description": "将任何概念、工具、流程转化为结构化Agent", "icon": "✨", "tags": ["生成", "创建", "Agent"] },
+        { "id": "batch-agent-creator", "name": "批量Agent生成器", "description": "一键批量创建多个Agent", "icon": "🚀", "tags": ["批量", "创建", "生成"] },
+        { "id": "language-selector-agent", "name": "语言选择Agent", "description": "智能编程语言选择助手", "icon": "🌐", "tags": ["语言", "选择", "推荐"] }
+      ]
+    },
+    {
+      "id": "programming",
+      "name": "编程语言Agent",
+      "icon": "💻",
+      "description": "各种编程语言的专业Agent",
+      "agents": [
+        { "id": "python-agent", "name": "Python Agent", "description": "Python开发专家，数据科学、AI、Web开发", "icon": "🐍", "tags": ["Python", "数据科学", "AI"] },
+        { "id": "javascript-agent", "name": "JavaScript Agent", "description": "JavaScript开发专家，前端与Node.js", "icon": "📜", "tags": ["JavaScript", "前端", "Node"] },
+        { "id": "typescript-agent", "name": "TypeScript Agent", "description": "TypeScript开发专家，类型安全开发", "icon": "📘", "tags": ["TypeScript", "类型", "安全"] },
+        { "id": "rust-agent", "name": "Rust Agent", "description": "Rust开发专家，系统编程与性能优化", "icon": "🦀", "tags": ["Rust", "系统", "性能"] },
+        { "id": "go-agent", "name": "Go Agent", "description": "Go开发专家，云原生与微服务", "icon": "🐹", "tags": ["Go", "云原生", "微服务"] },
+        { "id": "java-agent", "name": "Java Agent", "description": "Java开发专家，企业级应用开发", "icon": "☕", "tags": ["Java", "企业", "Spring"] },
+        { "id": "kotlin-agent", "name": "Kotlin Agent", "description": "Kotlin开发专家，Android与现代JVM", "icon": "🅺", "tags": ["Kotlin", "Android", "JVM"] },
+        { "id": "csharp-agent", "name": "C# Agent", "description": "C#开发专家，.NET生态与游戏开发", "icon": "🔷", "tags": ["C#", ".NET", "游戏"] },
+        { "id": "cpp-agent", "name": "C++ Agent", "description": "C++开发专家，高性能与系统编程", "icon": "⚡", "tags": ["C++", "高性能", "系统"] },
+        { "id": "c-agent", "name": "C Agent", "description": "C语言开发专家，嵌入式与系统编程", "icon": "🔧", "tags": ["C", "嵌入式", "系统"] }
+      ]
+    },
+    {
+      "id": "frontend",
+      "name": "前端框架Agent",
+      "icon": "🎨",
+      "description": "前端开发框架的专业Agent",
+      "agents": [
+        { "id": "react-agent", "name": "React Agent", "description": "React开发专家，组件化与Hooks", "icon": "⚛️", "tags": ["React", "组件", "Hooks"] },
+        { "id": "vue3-agent", "name": "Vue3 Agent", "description": "Vue3开发专家，组合式API与响应式", "icon": "🟢", "tags": ["Vue3", "组合式", "响应式"] },
+        { "id": "flutter-agent", "name": "Flutter Agent", "description": "Flutter开发专家，跨平台移动应用", "icon": "🦋", "tags": ["Flutter", "跨平台", "移动"] }
+      ]
+    },
+    {
+      "id": "game-dev",
+      "name": "游戏开发Agent",
+      "icon": "🎮",
+      "description": "游戏开发领域的专业Agent",
+      "agents": [
+        { "id": "unity-agent", "name": "Unity Agent", "description": "Unity开发专家，2D/3D游戏开发", "icon": "🎮", "tags": ["Unity", "游戏", "3D"] },
+        { "id": "unreal-agent", "name": "Unreal Agent", "description": "Unreal Engine开发专家，AAA级游戏", "icon": "🎬", "tags": ["Unreal", "AAA", "引擎"] },
+        { "id": "godot-gdscript-agent", "name": "Godot GDScript Agent", "description": "Godot GDScript开发专家", "icon": "🤖", "tags": ["Godot", "GDScript", "开源"] },
+        { "id": "godot-csharp-agent", "name": "Godot C# Agent", "description": "Godot C#开发专家", "icon": "🔷", "tags": ["Godot", "C#", "游戏"] },
+        { "id": "godot-scene-agent", "name": "Godot场景Agent", "description": "Godot场景构建专家", "icon": "🎭", "tags": ["Godot", "场景", "构建"] },
+        { "id": "godot-asset-agent", "name": "Godot资源Agent", "description": "Godot资源生成专家", "icon": "📦", "tags": ["Godot", "资源", "生成"] },
+        { "id": "godot-asset-script-agent", "name": "Godot程序化资源Agent", "description": "Godot程序化资源生成专家", "icon": "⚙️", "tags": ["Godot", "程序化", "资源"] },
+        { "id": "game-design-agent", "name": "游戏设计Agent", "description": "游戏机制与平衡设计专家", "icon": "🎲", "tags": ["设计", "机制", "平衡"] },
+        { "id": "level-design-agent", "name": "关卡设计Agent", "description": "关卡设计与空间设计专家", "icon": "🏗️", "tags": ["关卡", "空间", "设计"] },
+        { "id": "quest-design-agent", "name": "任务设计Agent", "description": "任务系统与叙事设计专家", "icon": "📜", "tags": ["任务", "叙事", "设计"] },
+        { "id": "game-ai-agent", "name": "游戏AI Agent", "description": "游戏人工智能专家", "icon": "🧠", "tags": ["AI", "行为树", "寻路"] },
+        { "id": "multiplayer-agent", "name": "多人游戏Agent", "description": "多人游戏网络与同步专家", "icon": "🌐", "tags": ["多人", "网络", "同步"] },
+        { "id": "game-server-agent", "name": "游戏服务器Agent", "description": "游戏后端架构专家", "icon": "🖥️", "tags": ["服务器", "后端", "架构"] },
+        { "id": "game-audio-agent", "name": "游戏音频Agent", "description": "游戏音效与音乐设计专家", "icon": "🎵", "tags": ["音频", "音效", "音乐"] },
+        { "id": "sound-design-agent", "name": "音效设计Agent", "description": "专业音效设计专家", "icon": "🔊", "tags": ["音效", "设计", "专业"] },
+        { "id": "vfx-agent", "name": "VFX Agent", "description": "视觉特效专家", "icon": "✨", "tags": ["VFX", "特效", "视觉"] },
+        { "id": "shader-agent", "name": "Shader Agent", "description": "着色器开发专家", "icon": "🎨", "tags": ["Shader", "着色器", "GPU"] },
+        { "id": "game-performance-agent", "name": "游戏性能Agent", "description": "游戏性能优化专家", "icon": "⚡", "tags": ["性能", "优化", "FPS"] },
+        { "id": "game-testing-agent", "name": "游戏测试Agent", "description": "游戏测试与QA专家", "icon": "🧪", "tags": ["测试", "QA", "质量保证"] },
+        { "id": "game-localization-agent", "name": "游戏本地化Agent", "description": "游戏多语言本地化专家", "icon": "🌍", "tags": ["本地化", "翻译", "多语言"] }
+      ]
+    },
+    {
+      "id": "game-art",
+      "name": "游戏美术Agent",
+      "icon": "🎨",
+      "description": "游戏美术与资源创作Agent",
+      "agents": [
+        { "id": "character-design-agent", "name": "角色设计Agent", "description": "角色创建与视觉设计专家", "icon": "👤", "tags": ["角色", "设计", "视觉"] },
+        { "id": "worldbuilding-agent", "name": "世界观Agent", "description": "游戏世界构建专家", "icon": "🌍", "tags": ["世界观", "构建", "设定"] },
+        { "id": "nanobanana-grid-agent", "name": "NanoBanana网格Agent", "description": "AI艺术网格提示生成专家", "icon": "🎨", "tags": ["NanoBanana", "网格", "AI艺术"] },
+        { "id": "nanobanana-asset-agent", "name": "NanoBanana资源Agent", "description": "AI艺术资源生成专家", "icon": "🖼️", "tags": ["NanoBanana", "资源", "AI艺术"] }
+      ]
+    },
+    {
+      "id": "content-creation",
+      "name": "内容创作Agent",
+      "icon": "✍️",
+      "description": "小说、剧本等内容创作Agent",
+      "agents": [
+        { "id": "brainstorm-agent", "name": "头脑风暴Agent", "description": "网文标题与概念生成专家", "icon": "💡", "tags": ["头脑风暴", "标题", "概念"] },
+        { "id": "outline-agent", "name": "细纲规划Agent", "description": "小说细纲生成专家", "icon": "📖", "tags": ["细纲", "规划", "小说"] },
+        { "id": "narrative-engine-agent", "name": "叙事引擎Agent", "description": "短篇小说写作系统", "icon": "📚", "tags": ["叙事", "写作", "小说"] },
+        { "id": "polish-agent", "name": "润色Agent", "description": "小说文本润色系统", "icon": "✨", "tags": ["润色", "去AI化", "文学"] },
+        { "id": "character-arc-agent", "name": "角色弧线Agent", "description": "角色成长轨迹设计专家", "icon": "📈", "tags": ["角色", "弧线", "成长"] },
+        { "id": "character-relationship-agent", "name": "角色关系Agent", "description": "角色关系网络专家", "icon": "🕸️", "tags": ["关系", "网络", "角色"] },
+        { "id": "character-emotion-agent", "name": "角色情感Agent", "description": "角色情感系统专家", "icon": "💝", "tags": ["情感", "系统", "角色"] },
+        { "id": "conflict-agent", "name": "冲突设计Agent", "description": "戏剧冲突设计专家", "icon": "⚔️", "tags": ["冲突", "戏剧", "设计"] },
+        { "id": "dialogue-writer-agent", "name": "对话写作Agent", "description": "对话写作专家", "icon": "💬", "tags": ["对话", "写作", "交流"] },
+        { "id": "dialogue-polish-agent", "name": "对话润色Agent", "description": "对话质量提升专家", "icon": "🎭", "tags": ["对话", "润色", "质量"] },
+        { "id": "three-act-agent", "name": "三幕式结构Agent", "description": "经典三幕式剧本结构专家", "icon": "🎬", "tags": ["三幕式", "结构", "剧本"] },
+        { "id": "hero-journey-agent", "name": "英雄之旅Agent", "description": "坎贝尔英雄之旅框架专家", "icon": "🦸", "tags": ["英雄之旅", "叙事", "框架"] },
+        { "id": "genre-agent", "name": "类型片Agent", "description": "类型片剧本专家", "icon": "🎭", "tags": ["类型片", "剧本", "风格"] },
+        { "id": "pacing-agent", "name": "节奏控制Agent", "description": "剧本节奏控制专家", "icon": "⏱️", "tags": ["节奏", "控制", "剧本"] },
+        { "id": "scene-transition-agent", "name": "场景转换Agent", "description": "场景过渡设计专家", "icon": "🔄", "tags": ["场景", "过渡", "转换"] },
+        { "id": "subtext-agent", "name": "潜台词Agent", "description": "潜台词设计专家", "icon": "💭", "tags": ["潜台词", "暗示", "深度"] },
+        { "id": "screenplay-format-agent", "name": "剧本格式Agent", "description": "专业剧本格式专家", "icon": "📄", "tags": ["格式", "剧本", "标准"] },
+        { "id": "storyboard-agent", "name": "分镜Agent", "description": "电影分镜生成专家", "icon": "🎬", "tags": ["分镜", "电影", "视觉"] },
+        { "id": "tv-series-agent", "name": "电视剧Agent", "description": "电视剧本专家", "icon": "📺", "tags": ["电视剧", "剧本", "分集"] },
+        { "id": "web-series-agent", "name": "网络剧Agent", "description": "网络剧剧本专家", "icon": "🌐", "tags": ["网络剧", "剧本", "互动"] },
+        { "id": "short-film-agent", "name": "短片Agent", "description": "短片剧本专家", "icon": "🎞️", "tags": ["短片", "剧本", "紧凑"] },
+        { "id": "documentary-agent", "name": "纪录片Agent", "description": "纪录片脚本专家", "icon": "📹", "tags": ["纪录片", "脚本", "真实"] },
+        { "id": "commercial-agent", "name": "广告Agent", "description": "广告脚本专家", "icon": "📢", "tags": ["广告", "脚本", "创意"] },
+        { "id": "stage-play-agent", "name": "舞台剧Agent", "description": "舞台剧剧本专家", "icon": "🎭", "tags": ["舞台剧", "剧本", "场景"] },
+        { "id": "radio-drama-agent", "name": "广播剧Agent", "description": "广播剧剧本专家", "icon": "📻", "tags": ["广播剧", "声音", "叙事"] },
+        { "id": "comic-creator-agent", "name": "漫画创作Agent", "description": "AI漫画创作系统", "icon": "💬", "tags": ["漫画", "创作", "AI"] },
+        { "id": "animation-creator-agent", "name": "动画创作Agent", "description": "AI动画创作系统", "icon": "🎬", "tags": ["动画", "创作", "AI"] },
+        { "id": "script-creator-agent", "name": "脚本创作Agent", "description": "AI脚本创作系统", "icon": "📜", "tags": ["脚本", "创作", "AI"] }
+      ]
+    },
+    {
+      "id": "ai-creation",
+      "name": "AI创作Agent",
+      "icon": "🎨",
+      "description": "AI艺术创作与音乐生成Agent",
+      "agents": [
+        { "id": "suno-music-agent", "name": "Suno音乐Agent", "description": "Suno AI音乐生成专家", "icon": "🎵", "tags": ["Suno", "音乐", "AI"] }
+      ]
+    },
+    {
+      "id": "chaowuqiong",
+      "name": "超无穹项目Agent",
+      "icon": "🌟",
+      "description": "超无穹项目专用Agent",
+      "agents": [
+        { "id": "chaowuqiong-auth-agent", "name": "认证系统Agent", "description": "用户认证、授权、会话管理", "icon": "🔐", "tags": ["认证", "授权", "安全"] },
+        { "id": "chaowuqiong-payment-agent", "name": "支付系统Agent", "description": "支付宝、微信支付集成", "icon": "💳", "tags": ["支付", "微信", "支付宝"] },
+        { "id": "chaowuqiong-vip-agent", "name": "会员系统Agent", "description": "会员时长管理与VIP特权", "icon": "👑", "tags": ["会员", "VIP", "特权"] },
+        { "id": "chaowuqiong-points-agent", "name": "积分系统Agent", "description": "积分管理与兑换", "icon": "🪙", "tags": ["积分", "兑换", "奖励"] },
+        { "id": "chaowuqiong-order-agent", "name": "订单系统Agent", "description": "订单管理与状态流转", "icon": "📦", "tags": ["订单", "状态", "流转"] },
+        { "id": "chaowuqiong-recharge-agent", "name": "充值套餐Agent", "description": "充值套餐配置管理", "icon": "💎", "tags": ["充值", "套餐", "配置"] },
+        { "id": "chaowuqiong-referral-agent", "name": "邀请系统Agent", "description": "邀请系统与拉新奖励", "icon": "🤝", "tags": ["邀请", "推荐", "拉新"] },
+        { "id": "chaowuqiong-gacha-agent", "name": "抽卡系统Agent", "description": "抽卡系统与卡池管理", "icon": "🎲", "tags": ["抽卡", "卡池", "概率"] },
+        { "id": "chaowuqiong-novel-agent", "name": "小说管理Agent", "description": "小说管理与章节发布", "icon": "📚", "tags": ["小说", "管理", "发布"] },
+        { "id": "chaowuqiong-novelwriter-agent", "name": "小说写作Agent", "description": "小说写作与大纲生成", "icon": "✍️", "tags": ["写作", "大纲", "生成"] },
+        { "id": "chaowuqiong-character-agent", "name": "角色系统Agent", "description": "角色系统与情感管理", "icon": "👤", "tags": ["角色", "系统", "情感"] },
+        { "id": "chaowuqiong-memory-agent", "name": "记忆系统Agent", "description": "记忆系统与上下文管理", "icon": "🧠", "tags": ["记忆", "上下文", "管理"] },
+        { "id": "chaowuqiong-admin-agent", "name": "后台管理Agent", "description": "后台管理与数据统计", "icon": "🖥️", "tags": ["后台", "管理", "统计"] },
+        { "id": "chaowuqiong-database-agent", "name": "数据库Agent", "description": "MySQL数据库设计与优化", "icon": "🗄️", "tags": ["数据库", "MySQL", "优化"] },
+        { "id": "chaowuqiong-frontend-agent", "name": "前端开发Agent", "description": "React前端开发与组件设计", "icon": "🎨", "tags": ["前端", "React", "组件"] },
+        { "id": "chaowuqiong-backend-agent", "name": "后端开发Agent", "description": "Node.js后端开发与API设计", "icon": "⚙️", "tags": ["后端", "Node", "API"] },
+        { "id": "chaowuqiong-llm-agent", "name": "LLM集成Agent", "description": "AI模型集成与智能对话", "icon": "🤖", "tags": ["LLM", "AI", "对话"] },
+        { "id": "chaowuqiong-llmproxy-agent", "name": "LLM代理Agent", "description": "LLM代理与多模型路由", "icon": "🔄", "tags": ["代理", "路由", "多模型"] },
+        { "id": "chaowuqiong-agentengine-agent", "name": "Agent引擎Agent", "description": "Agent对话引擎与工具调用", "icon": "⚡", "tags": ["引擎", "对话", "工具"] },
+        { "id": "chaowuqiong-codeeditor-agent", "name": "代码编辑器Agent", "description": "代码编辑器与AI辅助编程", "icon": "📝", "tags": ["编辑器", "代码", "AI"] },
+        { "id": "chaowuqiong-duration-agent", "name": "时长计算Agent", "description": "时长计算与会员到期处理", "icon": "⏱️", "tags": ["时长", "计算", "到期"] },
+        { "id": "chaowuqiong-mobile-agent", "name": "移动端Agent", "description": "响应式设计与移动端优化", "icon": "📱", "tags": ["移动", "响应式", "优化"] },
+        { "id": "chaowuqiong-electron-agent", "name": "Electron Agent", "description": "Electron打包与桌面应用", "icon": "💻", "tags": ["Electron", "桌面", "打包"] },
+        { "id": "chaowuqiong-deploy-agent", "name": "部署Agent", "description": "服务器部署与Nginx配置", "icon": "🚀", "tags": ["部署", "服务器", "Nginx"] }
+      ]
+    },
+    {
+      "id": "wuxia",
+      "name": "武侠/修仙引擎Agent",
+      "icon": "⚔️",
+      "description": "武侠与修仙题材专用引擎Agent",
+      "agents": [
+        { "id": "wuxia-engine-agent", "name": "武侠引擎Agent", "description": "武侠题材游戏与小说引擎", "icon": "🗡️", "tags": ["武侠", "引擎", "游戏"] },
+        { "id": "xiuxian-engine-agent", "name": "修仙引擎Agent", "description": "修仙题材游戏与小说引擎", "icon": "☯️", "tags": ["修仙", "引擎", "修真"] },
+        { "id": "phoenix-engine-agent", "name": "凤凰引擎Agent", "description": "凤凰引擎（重生机制）", "icon": "🔥", "tags": ["凤凰", "重生", "引擎"] },
+        { "id": "galgame-engine-agent", "name": "Galgame引擎Agent", "description": "Galgame视觉小说引擎", "icon": "💕", "tags": ["Galgame", "视觉小说", "引擎"] },
+        { "id": "memory-engine-agent", "name": "记忆引擎Agent", "description": "三层记忆系统（工作/会话/持久）", "icon": "🧠", "tags": ["记忆", "系统", "三层"] }
+      ]
+    },
+    {
+      "id": "devops",
+      "name": "运维部署Agent",
+      "icon": "🔧",
+      "description": "服务器部署与运维管理Agent",
+      "agents": [
+        { "id": "deployment-agent", "name": "部署Agent", "description": "应用部署自动化专家", "icon": "🚀", "tags": ["部署", "自动化", "CI/CD"] },
+        { "id": "cloud-server-agent", "name": "云服务器Agent", "description": "火山引擎/阿里云/腾讯云管理", "icon": "☁️", "tags": ["云服务器", "管理", "配置"] },
+        { "id": "nginx-admin-agent", "name": "Nginx管理Agent", "description": "Nginx配置与优化专家", "icon": "🌐", "tags": ["Nginx", "配置", "优化"] },
+        { "id": "aliyun-deployment-agent", "name": "阿里云部署Agent", "description": "阿里云部署专家", "icon": "🇦", "tags": ["阿里云", "部署", "云"] },
+        { "id": "pm2-management-agent", "name": "PM2管理Agent", "description": "PM2进程管理专家", "icon": "⚙️", "tags": ["PM2", "进程", "管理"] },
+        { "id": "database-admin-agent", "name": "数据库管理Agent", "description": "MySQL数据库管理专家", "icon": "🗄️", "tags": ["数据库", "管理", "MySQL"] },
+        { "id": "server-management", "name": "服务器管理Agent", "description": "服务器管理与部署专家", "icon": "🖥️", "tags": ["服务器", "管理", "部署"] },
+        { "id": "turbo-monorepo-agent", "name": "Turbo Monorepo Agent", "description": "Turbo monorepo专家", "icon": "⚡", "tags": ["Turbo", "Monorepo", "构建"] }
+      ]
+    },
+    {
+      "id": "document",
+      "name": "文档生成Agent",
+      "icon": "📄",
+      "description": "各种格式文档生成Agent",
+      "agents": [
+        { "id": "html-document-agent", "name": "HTML文档Agent", "description": "生成美观的HTML单页文档", "icon": "🌐", "tags": ["HTML", "文档", "响应式"] },
+        { "id": "markdown-document-agent", "name": "Markdown文档Agent", "description": "生成标准Markdown文档", "icon": "📝", "tags": ["Markdown", "文档", "GFM"] },
+        { "id": "pdf-document-agent", "name": "PDF文档Agent", "description": "生成高质量PDF文档", "icon": "📕", "tags": ["PDF", "文档", "中文"] },
+        { "id": "word-document-agent", "name": "Word文档Agent", "description": "生成标准Word文档", "icon": "📘", "tags": ["Word", "文档", "样式"] },
+        { "id": "excel-document-agent", "name": "Excel文档Agent", "description": "生成专业Excel表格", "icon": "📗", "tags": ["Excel", "表格", "公式"] },
+        { "id": "ppt-document-agent", "name": "PPT文档Agent", "description": "生成专业PPT演示文稿", "icon": "📊", "tags": ["PPT", "演示", "图表"] },
+        { "id": "csv-data-agent", "name": "CSV数据Agent", "description": "生成CSV数据文件", "icon": "📋", "tags": ["CSV", "数据", "导出"] },
+        { "id": "json-config-agent", "name": "JSON配置Agent", "description": "生成标准JSON配置文件", "icon": "⚙️", "tags": ["JSON", "配置", "Schema"] },
+        { "id": "yaml-config-agent", "name": "YAML配置Agent", "description": "生成YAML配置文件", "icon": "📜", "tags": ["YAML", "配置", "多文档"] },
+        { "id": "sql-database-agent", "name": "SQL数据库Agent", "description": "生成MySQL/SQLite建表脚本", "icon": "🗄️", "tags": ["SQL", "数据库", "DDL"] },
+        { "id": "flowchart-agent", "name": "流程图Agent", "description": "生成Graphviz DOT格式流程图", "icon": "🔄", "tags": ["流程图", "Graphviz", "DOT"] },
+        { "id": "mindmap-agent", "name": "思维导图Agent", "description": "生成FreeMind/XMind格式思维导图", "icon": "🧠", "tags": ["思维导图", "XMind", "FreeMind"] }
+      ]
+    },
+    {
+      "id": "quant",
+      "name": "量化金融Agent",
+      "icon": "📈",
+      "description": "量化交易与金融分析Agent",
+      "agents": [
+        { "id": "data-acquisition-agent", "name": "数据获取Agent", "description": "金融市场数据获取专家", "icon": "📊", "tags": ["数据", "市场", "API"] },
+        { "id": "data-processing-agent", "name": "数据处理Agent", "description": "金融数据处理与特征工程", "icon": "⚙️", "tags": ["处理", "特征", "清洗"] },
+        { "id": "technical-analysis-agent", "name": "技术分析Agent", "description": "图表模式与技术指标分析", "icon": "📉", "tags": ["技术", "指标", "图表"] },
+        { "id": "strategy-development-agent", "name": "策略开发Agent", "description": "量化交易策略开发", "icon": "🎯", "tags": ["策略", "交易", "Alpha"] },
+        { "id": "backtesting-agent", "name": "回测Agent", "description": "策略回测与历史模拟", "icon": "🔄", "tags": ["回测", "模拟", "验证"] },
+        { "id": "ml-trading-agent", "name": "ML交易Agent", "description": "机器学习交易模型", "icon": "🤖", "tags": ["ML", "预测", "模型"] },
+        { "id": "risk-management-agent", "name": "风险管理Agent", "description": "风险分析与投资组合管理", "icon": "⚠️", "tags": ["风险", "VaR", "组合"] }
+      ]
+    },
+    {
+      "id": "business",
+      "name": "商业应用Agent",
+      "icon": "💼",
+      "description": "商业应用与合规Agent",
+      "agents": [
+        { "id": "equity-distribution-agent", "name": "股权分配Agent", "description": "股权架构设计与分配", "icon": "📊", "tags": ["股权", "分配", "架构"] },
+        { "id": "business-compliance-agent", "name": "商业合规Agent", "description": "商业合规与法律事务", "icon": "⚖️", "tags": ["合规", "法律", "商业"] },
+        { "id": "payment-integration-agent", "name": "支付集成Agent", "description": "支付系统集成专家", "icon": "💳", "tags": ["支付", "集成", "API"] },
+        { "id": "electron-commercial-agent", "name": "Electron商业Agent", "description": "Electron商业化应用", "icon": "💻", "tags": ["Electron", "商业", "应用"] }
+      ]
+    },
+    {
+      "id": "rag",
+      "name": "RAG与知识Agent",
+      "icon": "🧠",
+      "description": "RAG检索与知识图谱Agent",
+      "agents": [
+        { "id": "rag-system-agent", "name": "RAG系统Agent", "description": "RAG检索增强生成", "icon": "🔍", "tags": ["RAG", "检索", "增强"] },
+        { "id": "knowledge-graph-agent", "name": "知识图谱Agent", "description": "知识图谱与实体关系抽取", "icon": "🕸️", "tags": ["知识图谱", "实体", "关系"] }
+      ]
+    },
+    {
+      "id": "fenghuang",
+      "name": "凤凰全栈Agent",
+      "icon": "🐦",
+      "description": "凤凰全栈开发Agent",
+      "agents": [
+        { "id": "fenghuang-fullstack-agent", "name": "凤凰全栈Agent", "description": "全栈开发专家", "icon": "🔥", "tags": ["全栈", "开发", "专家"] }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "id": "code-generation",
+      "name": "代码生成",
+      "icon": "⚡",
+      "description": "智能代码生成和补全",
+      "category": "编程",
+      "tags": ["code", "generation", "completion"]
+    },
+    {
+      "id": "debug",
+      "name": "调试",
+      "icon": "🐛",
+      "description": "智能调试助手，自动诊断和修复问题",
+      "category": "编程",
+      "tags": ["debug", "fix", "diagnose"]
+    },
+    {
+      "id": "code-review",
+      "name": "代码审查",
+      "icon": "👁️",
+      "description": "代码质量检查和优化建议",
+      "category": "编程",
+      "tags": ["review", "quality", "optimization"]
+    },
+    {
+      "id": "search",
+      "name": "搜索",
+      "icon": "🔍",
+      "description": "代码搜索和导航",
+      "category": "编程",
+      "tags": ["search", "navigation", "find"]
+    },
+    {
+      "id": "testing",
+      "name": "测试",
+      "icon": "🧪",
+      "description": "测试生成和执行",
+      "category": "编程",
+      "tags": ["test", "testing", "coverage"]
+    },
+    {
+      "id": "refactor",
+      "name": "重构",
+      "icon": "🔄",
+      "description": "代码重构和优化",
+      "category": "编程",
+      "tags": ["refactor", "optimization", "clean"]
+    },
+    {
+      "id": "agent-creation",
+      "name": "Agent生成",
+      "icon": "✨",
+      "description": "将任何概念、工具、流程转化为结构化Agent",
+      "category": "元能力",
+      "tags": ["generator", "meta", "creation"]
+    },
+    {
+      "id": "autopilot",
+      "name": "自动驾驶",
+      "icon": "🚗",
+      "description": "全自主智能执行引擎，自动完成所有工作",
+      "category": "元能力",
+      "tags": ["automation", "execution", "auto"]
+    },
+    {
+      "id": "meta",
+      "name": "元Agent",
+      "icon": "🎭",
+      "description": "管理和协调其他Agent",
+      "category": "元能力",
+      "tags": ["orchestration", "management", "meta"]
+    }
+  ]
+}

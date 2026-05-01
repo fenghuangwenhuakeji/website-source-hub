@@ -1,0 +1,525 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>可信测评档案 - 星语心伴</title>
+    <meta name="description" content="把标准筛查、引导自检和测评档案放到一起，做完就能直接带去 AI 聊天。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .test-main {
+            padding-top: 0;
+            padding-bottom: 120px;
+        }
+
+        .test-shell {
+            display: grid;
+            gap: 22px;
+            padding: 0 16px 24px;
+        }
+
+        .intro-grid,
+        .assessment-grid,
+        .standards-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .intro-grid {
+            grid-template-columns: minmax(0, 1.14fr) minmax(300px, 0.86fr);
+        }
+
+        .assessment-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .standards-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .intro-card,
+        .assessment-card,
+        .standard-card,
+        .archive-card,
+        .runner-card,
+        .result-card,
+        .empty-card {
+            display: grid;
+            gap: 14px;
+            padding: 20px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.84);
+            border: 1px solid rgba(255, 255, 255, 0.94);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .intro-card h2,
+        .result-card h2 {
+            font-size: 28px;
+            color: var(--ui-text);
+        }
+
+        .intro-card p,
+        .assessment-card p,
+        .standard-card p,
+        .archive-card p,
+        .runner-card p,
+        .result-card p,
+        .empty-card p {
+            font-size: 13px;
+            line-height: 1.85;
+            color: var(--ui-text-soft);
+        }
+
+        .hero-mark,
+        .metric-icon,
+        .assessment-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--ui-text);
+        }
+
+        .hero-mark .svg-icon,
+        .metric-icon .svg-icon,
+        .assessment-icon .svg-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .metric-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .metric-item {
+            display: grid;
+            grid-template-columns: 52px minmax(0, 1fr);
+            gap: 12px;
+            align-items: start;
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255, 248, 243, 0.9);
+        }
+
+        .metric-copy strong {
+            display: block;
+            font-size: 15px;
+            color: var(--ui-text);
+            margin-bottom: 4px;
+        }
+
+        .meta-row,
+        .action-row,
+        .filter-row,
+        .archive-action-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-chip,
+        .inline-chip {
+            min-height: 38px;
+            padding: 0 16px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.96);
+            background: rgba(255, 255, 255, 0.92);
+            color: var(--ui-text);
+            cursor: pointer;
+        }
+
+        .filter-chip.is-active {
+            background: rgba(255, 143, 123, 0.16);
+            border-color: rgba(255, 143, 123, 0.36);
+            color: #a84e44;
+        }
+
+        .assessment-card header,
+        .archive-head,
+        .runner-head,
+        .result-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .assessment-card h3,
+        .archive-card h3,
+        .runner-card h3,
+        .result-card h3 {
+            font-size: 18px;
+            color: var(--ui-text);
+        }
+
+        .evidence-badge,
+        .domain-badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 28px;
+            padding: 0 10px;
+            border-radius: 999px;
+            font-size: 11px;
+        }
+
+        .domain-badge {
+            background: rgba(96, 165, 250, 0.12);
+            color: #345d95;
+        }
+
+        .evidence-standard {
+            background: rgba(20, 184, 166, 0.14);
+            color: #13786d;
+        }
+
+        .evidence-screen {
+            background: rgba(249, 115, 22, 0.14);
+            color: #b45309;
+        }
+
+        .evidence-guided {
+            background: rgba(168, 85, 247, 0.12);
+            color: #7c3aed;
+        }
+
+        .assessment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--ui-text-muted);
+        }
+
+        .progress-shell {
+            display: grid;
+            gap: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            border-radius: 999px;
+            background: rgba(255, 240, 231, 0.92);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #ff9d72 0%, #ffb88c 100%);
+            transition: width 0.28s ease;
+        }
+
+        .question-label {
+            font-size: 12px;
+            color: var(--ui-text-muted);
+        }
+
+        .question-text {
+            font-size: 22px;
+            line-height: 1.55;
+            color: var(--ui-text);
+        }
+
+        .option-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-button {
+            text-align: left;
+            min-height: 54px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            background: rgba(255, 250, 247, 0.96);
+            color: var(--ui-text);
+            cursor: pointer;
+            transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+        }
+
+        .option-button:hover,
+        .option-button.is-active {
+            transform: translateY(-1px);
+            border-color: rgba(255, 143, 123, 0.34);
+            background: rgba(255, 244, 238, 0.98);
+        }
+
+        .result-score {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--ui-text);
+        }
+
+        .result-label {
+            font-size: 16px;
+            color: #b45a4f;
+        }
+
+        .result-points,
+        .archive-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .result-point,
+        .archive-item {
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(255, 249, 244, 0.96);
+        }
+
+        .result-point strong,
+        .archive-item strong {
+            display: block;
+            font-size: 14px;
+            color: var(--ui-text);
+            margin-bottom: 4px;
+        }
+
+        .archive-item small,
+        .source-line {
+            display: block;
+            font-size: 12px;
+            color: var(--ui-text-muted);
+            line-height: 1.8;
+        }
+
+        .link-button {
+            text-decoration: none;
+            color: #9b5c51;
+        }
+
+        .section-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-head h2 {
+            font-size: 24px;
+            color: var(--ui-text);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 1040px) {
+            .intro-grid,
+            .assessment-grid,
+            .standards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="page-header" style="padding: 16px;">
+            <a href="../index.html" class="back-btn" aria-label="返回首页">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div style="text-align: center;">
+                <h1 class="page-title">可信测评档案</h1>
+                <p class="page-subtitle" style="margin-top: 4px;">做完就能直接带去和 AI 聊</p>
+            </div>
+            <a href="chat.html" class="back-btn" aria-label="去聊天">
+                <i class="fas fa-comment-dots"></i>
+            </a>
+        </header>
+
+        <main class="content-section test-main">
+            <div class="test-shell">
+                <section class="intro-grid" data-reveal>
+                    <article class="intro-card">
+                        <div class="hero-mark" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="M12 3.5 14 10l6.5 2-6.5 2L12 20.5 10 14l-6.5-2L10 10 12 3.5Z"></path>
+                            </svg>
+                        </div>
+                        <h2>少一点猜，多一点可追溯。</h2>
+                        <p>这里把标准筛查、研究支持的快速工具、还有更轻量的引导自检放在一起。页面会明确区分“官方量表 / 临床筛查 / 引导自检”，做完后自动存档，也能一键丢给聊天继续聊。</p>
+                        <div class="meta-row">
+                            <span class="inline-chip" id="archiveCountChip">0 份档案</span>
+                            <span class="inline-chip">纯前端本地保存</span>
+                            <span class="inline-chip">聊天可随时调取</span>
+                        </div>
+                        <div class="action-row">
+                            <button class="btn btn-primary" id="scrollToAssessmentsBtn">开始做测评</button>
+                            <a class="btn btn-secondary" href="chat.html">直接去聊天</a>
+                        </div>
+                    </article>
+
+                    <aside class="intro-card">
+                        <div class="metric-list">
+                            <div class="metric-item">
+                                <div class="metric-icon" aria-hidden="true">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="M4.5 12h15"></path>
+                                        <path d="M12 4.5v15"></path>
+                                    </svg>
+                                </div>
+                                <div class="metric-copy">
+                                    <strong>标准量表单独标明</strong>
+                                    <p>WHO、AHRQ、PubMed、CFPB 这类来源会直接放在卡片里，不混在引导自检里一起说。</p>
+                                </div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-icon" aria-hidden="true">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <circle cx="12" cy="12" r="7"></circle>
+                                        <circle cx="12" cy="12" r="2.4"></circle>
+                                    </svg>
+                                </div>
+                                <div class="metric-copy">
+                                    <strong>档案可持续累积</strong>
+                                    <p>结果会连时间、标签、摘要一起存入本地档案，不用每次从零重新描述自己。</p>
+                                </div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-icon" aria-hidden="true">
+                                    <svg class="svg-icon" viewBox="0 0 24 24">
+                                        <path d="m5.5 12.5 4 4 9-9"></path>
+                                    </svg>
+                                </div>
+                                <div class="metric-copy">
+                                    <strong>把结果直接带进聊天</strong>
+                                    <p>存档后点一下就能发给 AI，不需要你再手工复述分数、标签和状态变化。</p>
+                                </div>
+                            </div>
+                        </div>
+                    </aside>
+                </section>
+
+                <section data-reveal id="assessmentHub">
+                    <div class="section-head">
+                        <h2>测评库</h2>
+                        <div class="filter-row" id="filterRow">
+                            <button class="filter-chip is-active" data-filter="all">全部</button>
+                            <button class="filter-chip" data-filter="psychology">心理学</button>
+                            <button class="filter-chip" data-filter="sociology">社会支持</button>
+                            <button class="filter-chip" data-filter="medicine">医学恢复</button>
+                            <button class="filter-chip" data-filter="behavioral">行为决策</button>
+                            <button class="filter-chip" data-filter="economics">经济压力</button>
+                        </div>
+                    </div>
+                    <div class="assessment-grid" id="assessmentGrid"></div>
+                </section>
+
+                <section class="runner-card hidden" data-reveal id="runnerSection">
+                    <div class="runner-head">
+                        <div>
+                            <h3 id="runnerTitle">开始测评</h3>
+                            <p id="runnerDescription">按你的真实状态来选，不需要追求“正确答案”。</p>
+                        </div>
+                        <button class="btn btn-secondary" id="runnerCloseBtn">暂时先不测</button>
+                    </div>
+
+                    <div class="progress-shell">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="question-label" id="progressLabel">第 1 题</div>
+                    </div>
+
+                    <div class="question-label" id="questionIntro">请按最近一段时间的真实感受来选</div>
+                    <div class="question-text" id="questionText"></div>
+                    <div class="option-list" id="optionList"></div>
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="prevQuestionBtn">上一题</button>
+                        <button class="btn btn-primary" id="nextQuestionBtn">下一题</button>
+                    </div>
+                </section>
+
+                <section class="result-card hidden" data-reveal id="resultSection">
+                    <div class="result-head">
+                        <div>
+                            <h2 id="resultTitle">测评结果</h2>
+                            <div class="result-score" id="resultScore">0</div>
+                            <div class="result-label" id="resultLabel">结果标签</div>
+                        </div>
+                        <div class="meta-row">
+                            <span class="inline-chip" id="resultEvidence">引导自检</span>
+                            <span class="inline-chip" id="resultTime">刚刚完成</span>
+                        </div>
+                    </div>
+                    <p id="resultSummary">这里会显示这份结果真正想提醒你的是什么。</p>
+                    <div class="result-points" id="resultPoints"></div>
+                    <div class="source-line" id="sourceLine"></div>
+                    <div class="action-row">
+                        <button class="btn btn-primary" id="saveArchiveBtn">存入档案</button>
+                        <button class="btn btn-secondary" id="sendToChatBtn">发给 AI 聊聊</button>
+                        <button class="btn btn-secondary" id="restartBtn">再测一次</button>
+                    </div>
+                </section>
+
+                <section data-reveal>
+                    <div class="section-head">
+                        <h2>我的档案</h2>
+                        <div class="action-row">
+                            <a class="btn btn-secondary" href="chat.html">带着档案去聊天</a>
+                            <button class="btn btn-secondary" id="clearArchivesBtn">清空档案</button>
+                        </div>
+                    </div>
+                    <div class="archive-list" id="archiveList"></div>
+                </section>
+
+                <section class="standards-grid" data-reveal>
+                    <article class="standard-card">
+                        <h3>官方量表</h3>
+                        <p>保留原始结构和评分逻辑，页面会直接放出来源链接和用途说明。</p>
+                    </article>
+                    <article class="standard-card">
+                        <h3>临床筛查</h3>
+                        <p>重点是尽快识别风险，而不是在这里替代诊断或治疗。</p>
+                    </article>
+                    <article class="standard-card">
+                        <h3>引导自检</h3>
+                        <p>更像高质量自我观察工具，帮助你把状态讲清楚，再带去和 AI 继续聊。</p>
+                    </article>
+                </section>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="test.html" class="nav-item active">
+                <i class="fas fa-clipboard-list"></i>
+                <span>测评</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>聊天</span>
+            </a>
+            <a href="horoscope.html" class="nav-item">
+                <i class="fas fa-stars"></i>
+                <span>运势</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../dist/js/evidence-assessments.js"></script>
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-test.js"></script>
+</body>
+</html>
+

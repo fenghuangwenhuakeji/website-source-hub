@@ -1,0 +1,643 @@
+.panelRoot {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  color: #4a1f17;
+  background:
+    radial-gradient(circle at top left, rgba(255, 199, 164, 0.26), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 233, 214, 0.22), transparent 30%),
+    linear-gradient(180deg, rgba(255, 251, 246, 0.98), rgba(255, 244, 236, 0.96));
+  border-radius: 28px;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid rgba(220, 38, 38, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 247, 240, 0.54));
+}
+
+.kicker {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #b45309;
+}
+
+.panelHeader h2 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.headerStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.panelHeaderAside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.headerAction {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #7c2d12;
+  background: linear-gradient(135deg, #ffd8c3, #ffece0);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.12);
+}
+
+.headerStat,
+.statCard {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 118px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(220, 38, 38, 0.08);
+}
+
+.headerStat strong,
+.headerStat span,
+.statCard strong,
+.statCard span {
+  display: block;
+}
+
+.headerStat strong,
+.statCard strong {
+  font-size: 18px;
+}
+
+.headerStat span,
+.statCard span,
+.heroCopy,
+.catalogToolbar p,
+.catalogCard p,
+.emptyState p,
+.emptyStateCompact,
+.historyItem p {
+  color: rgba(120, 53, 15, 0.68);
+}
+
+.tabBar {
+  display: flex;
+  gap: 10px;
+  padding: 14px 22px 0;
+  flex-wrap: wrap;
+}
+
+.tabButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  background: rgba(255, 255, 255, 0.74);
+  color: rgba(120, 53, 15, 0.82);
+  cursor: pointer;
+  transition: 180ms ease;
+}
+
+.tabButton:hover,
+.tabButtonActive {
+  color: #4a1f17;
+  border-color: rgba(255, 165, 110, 0.4);
+  background: linear-gradient(135deg, rgba(255, 248, 243, 1), rgba(255, 228, 210, 0.96));
+  box-shadow: 0 14px 32px rgba(220, 38, 38, 0.12);
+}
+
+.contentArea {
+  flex: 1;
+  min-height: 0;
+  padding: 16px 22px 22px;
+}
+
+.runtimeView,
+.catalogView,
+.sessionsView,
+.analyticsView {
+  height: 100%;
+  min-height: 0;
+}
+
+.hero,
+.controlCard,
+.matchCard,
+.consoleCard,
+.sideCard,
+.catalogCard,
+.sessionCard,
+.analyticsCard {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(255, 247, 240, 0.8)),
+    radial-gradient(circle at top right, rgba(255, 166, 112, 0.1), transparent 30%);
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  border-radius: 24px;
+  box-shadow: 0 18px 48px rgba(220, 38, 38, 0.08);
+  backdrop-filter: blur(16px);
+}
+
+.runtimeView {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+
+.hero,
+.controlCard,
+.matchCard,
+.consoleCard,
+.sideCard,
+.analyticsCard {
+  padding: 18px;
+}
+
+.hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.hero h2,
+.catalogToolbar h3 {
+  margin: 0 0 8px;
+}
+
+.heroCopy,
+.catalogToolbar p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.heroStats {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-content: flex-start;
+}
+
+.controlHeader,
+.sectionHeader,
+.catalogHeader,
+.catalogFooter,
+.toggleRow,
+.runtimeColumns,
+.latestRow,
+.breakdownList div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.controlHeader {
+  align-items: flex-start;
+}
+
+.controlHeader h3,
+.sectionHeader span,
+.catalogHeader strong {
+  margin: 0;
+}
+
+.controlActions,
+.toggleRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.controlCard textarea,
+.searchField input {
+  width: 100%;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  color: #4a1f17;
+  padding: 14px 16px;
+  outline: none;
+}
+
+.controlCard textarea {
+  min-height: 128px;
+  resize: vertical;
+  margin: 14px 0;
+}
+
+.controlCard textarea:focus,
+.searchField input:focus {
+  border-color: rgba(255, 165, 110, 0.45);
+  box-shadow: 0 0 0 3px rgba(255, 157, 102, 0.12);
+}
+
+.toggleChip,
+.primaryButton,
+.catalogFooter button,
+.controlActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 14px;
+  cursor: pointer;
+  color: #7c2d12;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.toggleChipActive,
+.primaryButton {
+  background: linear-gradient(135deg, #ffd8c3, #ffece0);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.12);
+}
+
+.matchGrid,
+.catalogGrid,
+.analyticsGrid {
+  display: grid;
+  gap: 12px;
+}
+
+.matchGrid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  margin-top: 12px;
+}
+
+.matchItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  background: rgba(255, 255, 255, 0.76);
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.matchItem strong,
+.matchItem span,
+.catalogFooter small,
+.catalogHeader span,
+.sectionHeader small {
+  display: block;
+}
+
+.matchItem span,
+.catalogHeader span,
+.catalogFooter small,
+.latestRow span,
+.breakdownList span,
+.historyItem span {
+  color: rgba(120, 53, 15, 0.62);
+  font-size: 12px;
+}
+
+.runtimeColumns {
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+
+.consoleCard {
+  flex: 1.25;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.sideStack {
+  flex: 0.75;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 280px;
+}
+
+.consoleList,
+.historyList,
+.catalogGrid,
+.sessionList {
+  overflow: auto;
+}
+
+.consoleList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  min-height: 0;
+}
+
+.consoleItem {
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(220, 38, 38, 0.08);
+  background: rgba(255, 255, 255, 0.76);
+}
+
+.consoleMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.consoleItem pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.tone_user {
+  background: rgba(91, 140, 255, 0.12);
+}
+
+.tone_success {
+  background: rgba(24, 196, 126, 0.12);
+}
+
+.tone_warning {
+  background: rgba(255, 177, 38, 0.12);
+}
+
+.tone_error {
+  background: rgba(255, 91, 91, 0.12);
+}
+
+.tone_assistant {
+  background: rgba(152, 111, 255, 0.12);
+}
+
+.metricGrid,
+.analyticsGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.metricGrid {
+  margin-top: 12px;
+}
+
+.metricTile {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(220, 38, 38, 0.08);
+}
+
+.metricTile strong,
+.metricTile span {
+  display: block;
+}
+
+.metricTile span {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(120, 53, 15, 0.62);
+}
+
+.latestResult,
+.breakdownList,
+.historyList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.catalogToolbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.searchField {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 280px;
+}
+
+.catalogGrid,
+.sessionList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  padding-right: 2px;
+}
+
+.catalogCard,
+.sessionCard {
+  padding: 18px;
+}
+
+.catalogCard p,
+.sessionCard p,
+.historyItem p {
+  margin: 10px 0;
+  line-height: 1.6;
+}
+
+.catalogFooter button {
+  min-height: 34px;
+  padding: 0 12px;
+}
+
+.analyticsGrid {
+  height: 100%;
+}
+
+.analyticsCard {
+  min-height: 0;
+}
+
+.historyItem {
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.historyItem strong {
+  display: block;
+}
+
+.emptyState,
+.emptyStateCompact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.emptyState {
+  flex-direction: column;
+}
+
+@media (max-width: 1120px) {
+  .panelHeader,
+  .hero,
+  .catalogToolbar,
+  .runtimeColumns {
+    flex-direction: column;
+  }
+
+  .headerStats,
+  .heroStats {
+    justify-content: flex-start;
+  }
+
+  .panelHeaderAside {
+    align-items: flex-start;
+  }
+
+  .sideStack {
+    min-width: 0;
+  }
+
+  .metricGrid,
+  .analyticsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Unified deep-space skin for runtime / settings / analytics panels */
+.panelRoot {
+  color: #e2e8f0;
+  background:
+    radial-gradient(circle at top left, rgba(124, 58, 237, 0.18), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(34, 211, 238, 0.12), transparent 30%),
+    linear-gradient(180deg, #050814 0%, #0b1220 58%, #111827 100%);
+}
+
+.panelHeader {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: linear-gradient(180deg, rgba(7, 12, 20, 0.92), rgba(11, 18, 32, 0.72));
+}
+
+.kicker {
+  color: #7dd3fc;
+}
+
+.panelHeader h2,
+.hero h2,
+.catalogToolbar h3,
+.catalogHeader strong {
+  color: #f8fafc;
+}
+
+.headerAction,
+.headerStat,
+.statCard,
+.tabButton,
+.toggleChip,
+.controlActions button,
+.catalogFooter button {
+  background: rgba(7, 12, 20, 0.86);
+  color: #e2e8f0;
+  border-color: rgba(148, 163, 184, 0.14);
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.12),
+    0 12px 28px rgba(2, 6, 23, 0.18);
+}
+
+.tabButton:hover,
+.tabButtonActive,
+.toggleChipActive,
+.primaryButton {
+  color: #f8fafc;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.92), rgba(34, 211, 238, 0.88));
+  box-shadow: 0 14px 28px rgba(124, 58, 237, 0.18);
+}
+
+.hero,
+.controlCard,
+.matchCard,
+.consoleCard,
+.sideCard,
+.catalogCard,
+.sessionCard,
+.analyticsCard {
+  background:
+    linear-gradient(180deg, rgba(7, 12, 20, 0.9), rgba(11, 18, 32, 0.84)),
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.08), transparent 30%);
+  border-color: rgba(148, 163, 184, 0.14);
+  box-shadow: 0 18px 48px rgba(2, 6, 23, 0.24);
+}
+
+.heroCopy,
+.catalogToolbar p,
+.catalogCard p,
+.emptyState p,
+.emptyStateCompact,
+.historyItem p,
+.headerStat span,
+.statCard span,
+.matchItem span,
+.catalogHeader span,
+.catalogFooter small,
+.latestRow span,
+.breakdownList span,
+.historyItem span {
+  color: rgba(203, 213, 225, 0.72);
+}
+
+.controlCard textarea,
+.searchField input,
+.matchItem,
+.metricTile,
+.historyItem,
+.emptyState,
+.emptyStateCompact {
+  background: rgba(8, 13, 24, 0.82);
+  border-color: rgba(148, 163, 184, 0.14);
+  color: #e2e8f0;
+}
+
+.controlCard textarea:focus,
+.searchField input:focus {
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+
+.metricTile span {
+  color: rgba(203, 213, 225, 0.68);
+}

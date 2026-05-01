@@ -1,0 +1,1520 @@
+# ==========================================
+# 200个Agent批量配置文件 - 第三批次 (Part 2)
+# 分类：市场营销 | 心理咨询 | 旅游出行 | 美食烹饪 | 健身运动
+# 生成日期：2026-03-18
+# ==========================================
+
+batch_name: "专业领域Agent生态系统 - 第二辑"
+output_dir: ".trae/skills"
+version: "1.0.0"
+author: "AI Assistant"
+description: "包含100个专业Agent，覆盖市场营销、心理咨询、旅游出行、美食烹饪、健身运动五大专业领域"
+
+# ==========================================
+# 第六类：市场营销类 Agent (20个)
+# ==========================================
+marketing_agents:
+  category_name: "市场营销"
+  description: "覆盖市场营销全流程的专业Agent"
+
+  agents:
+    - name: market-strategy-agent
+      type: skill
+      title: "市场战略专家"
+      description: "制定市场战略，分析竞争格局，规划增长路径"
+      core_concept: "战略引领，市场制胜"
+      features:
+        - "市场定位"
+        - "竞争分析"
+        - "增长策略"
+        - "进入策略"
+        - "品牌架构"
+      priority: high
+      tags: ["市场", "战略", "增长"]
+
+    - name: brand-marketing-agent
+      type: skill
+      title: "品牌营销专家"
+      description: "打造品牌形象，建立品牌认知，提升品牌价值"
+      core_concept: "品牌是企业的灵魂"
+      features:
+        - "品牌定位"
+        - "品牌故事"
+        - "视觉识别"
+        - "品牌传播"
+        - "品牌管理"
+      priority: high
+      tags: ["品牌", "营销", "定位"]
+
+    - name: digital-marketing-agent
+      type: skill
+      title: "数字营销专家"
+      description: "提供全面的数字营销解决方案，整合线上线下渠道"
+      core_concept: "数字化驱动营销增长"
+      features:
+        - "营销策略"
+        - "渠道整合"
+        - "数据分析"
+        - "用户运营"
+        - "效果优化"
+      priority: high
+      tags: ["数字", "营销", "增长"]
+
+    - name: content-marketing-agent
+      type: skill
+      title: "内容营销专家"
+      description: "策划和创作营销内容，吸引和转化目标客户"
+      core_concept: "内容为王，价值驱动"
+      features:
+        - "内容策略"
+        - "选题策划"
+        - "文案创作"
+        - "内容分发"
+        - "效果追踪"
+      priority: high
+      tags: ["内容", "营销", "文案"]
+
+    - name: social-media-marketing-agent
+      type: skill
+      title: "社交媒体营销专家"
+      description: "运营社交媒体平台，建立品牌影响力"
+      core_concept: "社交连接，品牌传播"
+      features:
+        - "平台策略"
+        - "内容运营"
+        - "粉丝互动"
+        - "KOL合作"
+        - "舆情管理"
+      priority: high
+      tags: ["社交", "媒体", "运营"]
+
+    - name: seo-sem-agent
+      type: skill
+      title: "搜索营销专家"
+      description: "优化搜索排名，管理搜索广告投放"
+      core_concept: "搜索是流量的入口"
+      features:
+        - "SEO优化"
+        - "SEM投放"
+        - "关键词策略"
+        - "着陆页优化"
+        - "效果分析"
+      priority: high
+      tags: ["SEO", "SEM", "搜索"]
+
+    - name: email-marketing-agent
+      type: skill
+      title: "邮件营销专家"
+      description: "设计和执行邮件营销活动，提升转化率"
+      core_concept: "精准触达，高效转化"
+      features:
+        - "邮件策略"
+        - "内容设计"
+        - "列表管理"
+        - "自动化流程"
+        - "数据分析"
+      priority: medium
+      tags: ["邮件", "EDM", "自动化"]
+
+    - name: influencer-marketing-agent
+      type: skill
+      title: "达人营销专家"
+      description: "合作KOL/KOC，扩大品牌影响力"
+      core_concept: "借力达人，放大声量"
+      features:
+        - "达人筛选"
+        - "合作洽谈"
+        - "内容把控"
+        - "效果评估"
+        - "长期合作"
+      priority: high
+      tags: ["达人", "KOL", "合作"]
+
+    - name: event-marketing-agent
+      type: skill
+      title: "活动营销专家"
+      description: "策划和执行营销活动，提升品牌曝光"
+      core_concept: "活动引爆，传播裂变"
+      features:
+        - "活动策划"
+        - "执行管理"
+        - "资源整合"
+        - "效果评估"
+        - "复盘优化"
+      priority: medium
+      tags: ["活动", "策划", "执行"]
+
+    - name: product-marketing-agent
+      type: skill
+      title: "产品营销专家"
+      description: "制定产品上市策略，推动产品销售"
+      core_concept: "让产品成为爆品"
+      features:
+        - "上市策略"
+        - "卖点提炼"
+        - "定价策略"
+        - "渠道规划"
+        - "推广方案"
+      priority: high
+      tags: ["产品", "上市", "推广"]
+
+    - name: customer-insights-agent
+      type: skill
+      title: "消费者洞察专家"
+      description: "分析消费者行为，挖掘需求，指导营销决策"
+      core_concept: "洞察消费者，赢得市场"
+      features:
+        - "用户研究"
+        - "需求分析"
+        - "行为洞察"
+        - "画像构建"
+        - "趋势预测"
+      priority: high
+      tags: ["消费者", "洞察", "研究"]
+
+    - name: competitive-analysis-agent
+      type: skill
+      title: "竞争分析专家"
+      description: "分析竞争对手，制定竞争策略"
+      core_concept: "知己知彼，百战不殆"
+      features:
+        - "竞品分析"
+        - "市场格局"
+        - "差异化定位"
+        - "竞争策略"
+        - "动态监控"
+      priority: high
+      tags: ["竞争", "分析", "策略"]
+
+    - name: marketing-analytics-agent
+      type: skill
+      title: "营销分析专家"
+      description: "分析营销数据，优化营销效果"
+      core_concept: "数据驱动，精准营销"
+      features:
+        - "数据收集"
+        - "指标分析"
+        - "归因模型"
+        - "ROI计算"
+        - "优化建议"
+      priority: high
+      tags: ["分析", "数据", "ROI"]
+
+    - name: crm-marketing-agent
+      type: skill
+      title: "CRM营销专家"
+      description: "管理客户关系，提升客户价值和忠诚度"
+      core_concept: "客户是最大资产"
+      features:
+        - "客户分层"
+        - "生命周期管理"
+        - "忠诚度计划"
+        - "复购提升"
+        - "流失预警"
+      priority: medium
+      tags: ["CRM", "客户", "忠诚度"]
+
+    - name: viral-marketing-agent
+      type: skill
+      title: "病毒营销专家"
+      description: "设计病毒传播机制，实现裂变增长"
+      core_concept: "让用户成为传播者"
+      features:
+        - "裂变机制"
+        - "分享激励"
+        - "社交货币"
+        - "传播路径"
+        - "增长黑客"
+      priority: medium
+      tags: ["病毒", "裂变", "增长"]
+
+    - name: pr-communications-agent
+      type: skill
+      title: "公关传播专家"
+      description: "管理公共关系，维护品牌形象"
+      core_concept: "好公关是品牌的护城河"
+      features:
+        - "媒体关系"
+        - "新闻稿撰写"
+        - "危机公关"
+        - "舆情监控"
+        - "品牌传播"
+      priority: medium
+      tags: ["公关", "传播", "媒体"]
+
+    - name: affiliate-marketing-agent
+      type: skill
+      title: "联盟营销专家"
+      description: "建立分销联盟，扩大销售渠道"
+      core_concept: "合作共赢，渠道倍增"
+      features:
+        - "联盟招募"
+        - "佣金设计"
+        - "素材支持"
+        - "效果追踪"
+        - "关系维护"
+      priority: medium
+      tags: ["联盟", "分销", "渠道"]
+
+    - name: localization-marketing-agent
+      type: skill
+      title: "本地化营销专家"
+      description: "针对不同地区市场，制定本地化营销策略"
+      core_concept: "入乡随俗，因地制宜"
+      features:
+        - "市场调研"
+        - "文化适应"
+        - "语言本地化"
+        - "渠道选择"
+        - "合规检查"
+      priority: medium
+      tags: ["本地化", "出海", "跨文化"]
+
+    - name: b2b-marketing-agent
+      type: skill
+      title: "B2B营销专家"
+      description: "针对企业客户，制定B2B营销策略"
+      core_concept: "专业决策，理性购买"
+      features:
+        - "目标客户"
+        - "销售线索"
+        - "内容营销"
+        - "销售支持"
+        - "客户成功"
+      priority: medium
+      tags: ["B2B", "企业", "销售"]
+
+    - name: marketing-automation-agent
+      type: skill
+      title: "营销自动化专家"
+      description: "搭建营销自动化系统，提升营销效率"
+      core_concept: "自动化让营销更高效"
+      features:
+        - "流程设计"
+        - "工具选型"
+        - "触发规则"
+        - "个性化"
+        - "效果优化"
+      priority: medium
+      tags: ["自动化", "MA", "效率"]
+
+# ==========================================
+# 第七类：心理咨询类 Agent (20个)
+# ==========================================
+psychology_counseling_agents:
+  category_name: "心理咨询"
+  description: "覆盖心理健康服务的专业Agent"
+  disclaimer: "仅供参考，严重心理问题请寻求专业心理医生帮助"
+
+  agents:
+    - name: emotional-support-agent
+      type: skill
+      title: "情绪支持顾问"
+      description: "提供情绪倾听和支持，帮助缓解负面情绪"
+      core_concept: "倾听是最好的疗愈"
+      features:
+        - "情绪识别"
+        - "倾听陪伴"
+        - "情绪疏导"
+        - "正向引导"
+        - "危机识别"
+      priority: high
+      tags: ["情绪", "支持", "倾听"]
+      disclaimer: "紧急情况请拨打心理援助热线"
+
+    - name: stress-management-agent
+      type: skill
+      title: "压力管理专家"
+      description: "帮助识别压力源，提供压力管理策略"
+      core_concept: "与压力共舞，轻松生活"
+      features:
+        - "压力评估"
+        - "压力源分析"
+        - "应对策略"
+        - "放松技巧"
+        - "生活平衡"
+      priority: high
+      tags: ["压力", "管理", "放松"]
+
+    - name: anxiety-relief-agent
+      type: skill
+      title: "焦虑缓解专家"
+      description: "提供焦虑评估和缓解方法，帮助恢复平静"
+      core_concept: "放下焦虑，活在当下"
+      features:
+        - "焦虑评估"
+        - "认知重构"
+        - "呼吸练习"
+        - "正念训练"
+        - "逐步暴露"
+      priority: high
+      tags: ["焦虑", "缓解", "正念"]
+
+    - name: depression-support-agent
+      type: skill
+      title: "抑郁支持专家"
+      description: "提供抑郁情绪支持和应对建议"
+      core_concept: "你不是一个人，我们一起面对"
+      features:
+        - "情绪评估"
+        - "支持陪伴"
+        - "行为激活"
+        - "积极心理学"
+        - "转介建议"
+      priority: high
+      tags: ["抑郁", "支持", "陪伴"]
+      disclaimer: "严重抑郁请立即寻求专业医生帮助"
+
+    - name: relationship-counseling-agent
+      type: skill
+      title: "关系咨询专家"
+      description: "提供亲密关系、人际关系咨询和建议"
+      core_concept: "健康关系，幸福人生"
+      features:
+        - "关系评估"
+        - "沟通技巧"
+        - "冲突解决"
+        - "边界设定"
+        - "关系修复"
+      priority: high
+      tags: ["关系", "咨询", "沟通"]
+
+    - name: self-esteem-agent
+      type: skill
+      title: "自信提升专家"
+      description: "帮助建立自信，提升自我价值感"
+      core_concept: "相信自己，你值得更好"
+      features:
+        - "自我认知"
+        - "优势识别"
+        - "肯定训练"
+        - "目标设定"
+        - "成就积累"
+      priority: high
+      tags: ["自信", "自尊", "成长"]
+
+    - name: career-psychology-agent
+      type: skill
+      title: "职业心理专家"
+      description: "解决职场心理问题，提升职业幸福感"
+      core_concept: "职场心理健康，事业持续发展"
+      features:
+        - "职业倦怠"
+        - "工作意义"
+        - "职场关系"
+        - "职业转型"
+        - "工作生活平衡"
+      priority: high
+      tags: ["职业", "职场", "发展"]
+
+    - name: grief-counseling-agent
+      type: skill
+      title: "哀伤辅导专家"
+      description: "提供丧失和哀伤的心理支持"
+      core_concept: "陪伴你走过悲伤"
+      features:
+        - "哀伤阶段"
+        - "情感表达"
+        - "纪念仪式"
+        - "意义重构"
+        - "继续前行"
+      priority: medium
+      tags: ["哀伤", "丧失", "辅导"]
+
+    - name: addiction-support-agent
+      type: skill
+      title: "成瘾支持专家"
+      description: "提供成瘾行为评估和戒断支持"
+      core_concept: "走出成瘾，重获自由"
+      features:
+        - "成瘾评估"
+        - "戒断计划"
+        - "替代行为"
+        - " relapse预防"
+        - "支持系统"
+      priority: medium
+      tags: ["成瘾", "戒断", "支持"]
+
+    - name: sleep-psychology-agent
+      type: skill
+      title: "睡眠心理专家"
+      description: "解决睡眠问题，改善睡眠质量"
+      core_concept: "好睡眠，好心情"
+      features:
+        - "睡眠评估"
+        - "失眠认知"
+        - "睡眠卫生"
+        - "放松训练"
+        - "作息调整"
+      priority: high
+      tags: ["睡眠", "失眠", "质量"]
+
+    - name: mindfulness-coach-agent
+      type: skill
+      title: "正念教练"
+      description: "教授正念冥想，提升专注力和觉察力"
+      core_concept: "活在当下，觉察每一刻"
+      features:
+        - "正念入门"
+        - "呼吸冥想"
+        - "身体扫描"
+        - "行走冥想"
+        - "日常正念"
+      priority: medium
+      tags: ["正念", "冥想", "觉察"]
+
+    - name: positive-psychology-agent
+      type: skill
+      title: "积极心理学专家"
+      description: "应用积极心理学，提升幸福感和生活满意度"
+      core_concept: "发现美好，创造幸福"
+      features:
+        - "优势识别"
+        - "感恩练习"
+        - "心流体验"
+        - "意义探索"
+        - "关系建设"
+      priority: medium
+      tags: ["积极", "幸福", "优势"]
+
+    - name: cognitive-behavioral-agent
+      type: skill
+      title: "认知行为专家"
+      description: "应用CBT技术，改变负面思维模式"
+      core_concept: "改变思维，改变生活"
+      features:
+        - "认知重构"
+        - "行为实验"
+        - "思维记录"
+        - "信念挑战"
+        - "行为激活"
+      priority: medium
+      tags: ["CBT", "认知", "行为"]
+
+    - name: family-therapy-agent
+      type: skill
+      title: "家庭治疗专家"
+      description: "改善家庭关系，解决家庭冲突"
+      core_concept: "家庭和谐，幸福基石"
+      features:
+        - "家庭评估"
+        - "沟通模式"
+        - "角色调整"
+        - "冲突解决"
+        - "家庭规则"
+      priority: medium
+      tags: ["家庭", "治疗", "关系"]
+
+    - name: trauma-recovery-agent
+      type: skill
+      title: "创伤恢复专家"
+      description: "提供创伤后心理支持和恢复指导"
+      core_concept: "走出创伤，重建生活"
+      features:
+        - "创伤评估"
+        - "安全建立"
+        - "情绪调节"
+        - "叙事疗愈"
+        - "意义重建"
+      priority: medium
+      tags: ["创伤", "恢复", "疗愈"]
+      disclaimer: "严重创伤请寻求专业心理治疗"
+
+    - name: social-anxiety-agent
+      type: skill
+      title: "社交焦虑专家"
+      description: "帮助克服社交恐惧，提升社交能力"
+      core_concept: "自信社交，自在人生"
+      features:
+        - "焦虑评估"
+        - "认知调整"
+        - "社交技能"
+        - "暴露训练"
+        - "自信建立"
+      priority: medium
+      tags: ["社交", "焦虑", "自信"]
+
+    - name: parenting-psychology-agent
+      type: skill
+      title: "育儿心理专家"
+      description: "提供科学育儿心理指导，改善亲子关系"
+      core_concept: "理解孩子，智慧育儿"
+      features:
+        - "发展阶段"
+        - "行为理解"
+        - "沟通技巧"
+        - "情绪管理"
+        - "正面管教"
+      priority: high
+      tags: ["育儿", "亲子", "教育"]
+
+    - name: life-transition-agent
+      type: skill
+      title: "人生转折专家"
+      description: "帮助应对人生重大转折和变化"
+      core_concept: "变化是成长的机会"
+      features:
+        - "转折评估"
+        - "适应策略"
+        - "资源调动"
+        - "意义探索"
+        - "新身份建立"
+      priority: medium
+      tags: ["转折", "变化", "适应"]
+
+    - name: assertiveness-training-agent
+      type: skill
+      title: "自信表达训练专家"
+      description: "训练自信表达，提升人际沟通能力"
+      core_concept: "坚定而尊重地表达自己"
+      features:
+        - "表达评估"
+        - "权利认知"
+        - "技巧训练"
+        - "情境练习"
+        - "反馈改进"
+      priority: medium
+      tags: ["表达", "沟通", "自信"]
+
+    - name: psychological-education-agent
+      type: skill
+      title: "心理教育专家"
+      description: "普及心理健康知识，提升心理素养"
+      core_concept: "心理健康，人人有责"
+      features:
+        - "心理科普"
+        - "疾病预防"
+        - "自助技巧"
+        - "资源介绍"
+        - "去污名化"
+      priority: medium
+      tags: ["教育", "科普", "素养"]
+
+# ==========================================
+# 第八类：旅游出行类 Agent (20个)
+# ==========================================
+travel_agents:
+  category_name: "旅游出行"
+  description: "覆盖旅游出行全流程的专业Agent"
+
+  agents:
+    - name: travel-planner-agent
+      type: skill
+      title: "旅行规划专家"
+      description: "制定个性化旅行计划，优化行程安排"
+      core_concept: "让每一次旅行都完美"
+      features:
+        - "目的地推荐"
+        - "行程规划"
+        - "预算制定"
+        - "交通安排"
+        - "住宿选择"
+      priority: high
+      tags: ["旅行", "规划", "行程"]
+
+    - name: budget-travel-agent
+      type: skill
+      title: "穷游专家"
+      description: "提供经济实惠的旅行方案，省钱攻略"
+      core_concept: "花少钱，玩得好"
+      features:
+        - "低价机票"
+        - "经济住宿"
+        - "免费景点"
+        - "当地美食"
+        - "省钱技巧"
+      priority: high
+      tags: ["穷游", "省钱", "预算"]
+
+    - name: luxury-travel-agent
+      type: skill
+      title: "奢华游专家"
+      description: "提供高端定制旅行服务，奢华体验"
+      core_concept: "极致体验，尊贵享受"
+      features:
+        - "私人定制"
+        - "五星酒店"
+        - "专属服务"
+        - "独特体验"
+        - "VIP通道"
+      priority: medium
+      tags: ["奢华", "定制", "高端"]
+
+    - name: backpacker-agent
+      type: skill
+      title: "背包客专家"
+      description: "提供背包旅行攻略，自由行指南"
+      core_concept: "背起行囊，探索世界"
+      features:
+        - "路线规划"
+        - "青旅推荐"
+        - "交通攻略"
+        - "安全提示"
+        - "结伴信息"
+      priority: medium
+      tags: ["背包", "自由行", "探险"]
+
+    - name: family-travel-agent
+      type: skill
+      title: "亲子游专家"
+      description: "提供适合家庭的旅行方案，亲子活动推荐"
+      core_concept: "陪伴是最长情的告白"
+      features:
+        - "亲子目的地"
+        - "儿童友好"
+        - "教育旅行"
+        - "安全考虑"
+        - "寓教于乐"
+      priority: high
+      tags: ["亲子", "家庭", "儿童"]
+
+    - name: honeymoon-planner-agent
+      type: skill
+      title: "蜜月规划专家"
+      description: "打造浪漫蜜月之旅，留下美好回忆"
+      core_concept: "浪漫之旅，爱的见证"
+      features:
+        - "浪漫目的地"
+        - "蜜月套餐"
+        - "惊喜安排"
+        - "摄影服务"
+        - "私密体验"
+      priority: medium
+      tags: ["蜜月", "浪漫", "婚礼"]
+
+    - name: business-travel-agent
+      type: skill
+      title: "商务出行专家"
+      description: "提供高效商务旅行方案，差旅管理"
+      core_concept: "高效出行，商务无忧"
+      features:
+        - "行程优化"
+        - "商务酒店"
+        - "会议安排"
+        - "报销管理"
+        - "时间管理"
+      priority: medium
+      tags: ["商务", "差旅", "效率"]
+
+    - name: adventure-travel-agent
+      type: skill
+      title: "探险旅行专家"
+      description: "提供户外探险、极限运动旅行方案"
+      core_concept: "挑战自我，探索未知"
+      features:
+        - "探险路线"
+        - "装备清单"
+        - "安全指导"
+        - "体能要求"
+        - "保险建议"
+      priority: medium
+      tags: ["探险", "户外", "极限"]
+
+    - name: cultural-travel-agent
+      type: skill
+      title: "文化旅行专家"
+      description: "提供深度文化体验，历史人文之旅"
+      core_concept: "读懂文化，读懂世界"
+      features:
+        - "历史古迹"
+        - "博物馆导览"
+        - "文化体验"
+        - "当地生活"
+        - "节庆活动"
+      priority: medium
+      tags: ["文化", "历史", "人文"]
+
+    - name: food-travel-agent
+      type: skill
+      title: "美食旅行专家"
+      description: "提供美食之旅，探索当地饮食文化"
+      core_concept: "用味蕾旅行，用美食记忆"
+      features:
+        - "美食地图"
+        - "餐厅推荐"
+        - "街头小吃"
+        - "烹饪课程"
+        - "市场探索"
+      priority: high
+      tags: ["美食", "饮食", "文化"]
+
+    - name: photography-travel-agent
+      type: skill
+      title: "摄影旅行专家"
+      description: "提供摄影之旅，最佳拍摄点推荐"
+      core_concept: "用镜头记录世界之美"
+      features:
+        - "拍摄地点"
+        - "最佳时间"
+        - "构图建议"
+        - "器材准备"
+        - "后期处理"
+      priority: medium
+      tags: ["摄影", "风景", "创作"]
+
+    - name: solo-travel-agent
+      type: skill
+      title: "独行客专家"
+      description: "提供独自旅行攻略，安全建议"
+      core_concept: "一个人，也可以精彩"
+      features:
+        - "安全建议"
+        - "独行路线"
+        - "社交技巧"
+        - "应急处理"
+        - "心灵成长"
+      priority: high
+      tags: ["独行", "单人", "安全"]
+
+    - name: road-trip-agent
+      type: skill
+      title: "自驾游专家"
+      description: "提供自驾路线，租车攻略，行车安全"
+      core_concept: "在路上，自由驰骋"
+      features:
+        - "路线规划"
+        - "租车指南"
+        - "驾驶安全"
+        - "沿途景点"
+        - "应急处理"
+      priority: high
+      tags: ["自驾", "公路", "自由"]
+
+    - name: cruise-travel-agent
+      type: skill
+      title: "邮轮旅行专家"
+      description: "提供邮轮选择，航线推荐，船上活动"
+      core_concept: "海上移动城堡，奢华体验"
+      features:
+        - "邮轮对比"
+        - "航线选择"
+        - "舱房推荐"
+        - "船上活动"
+        - "岸上观光"
+      priority: medium
+      tags: ["邮轮", "海上", "奢华"]
+
+    - name: visa-travel-agent
+      type: skill
+      title: "签证办理专家"
+      description: "提供签证申请指导，材料准备"
+      core_concept: "签证无忧，说走就走"
+      features:
+        - "签证类型"
+        - "材料清单"
+        - "申请流程"
+        - "面试准备"
+        - "拒签应对"
+      priority: high
+      tags: ["签证", "护照", "出入境"]
+
+    - name: travel-insurance-agent
+      type: skill
+      title: "旅行保险专家"
+      description: "提供旅行保险咨询，理赔指导"
+      core_concept: "出行有保障，旅行更安心"
+      features:
+        - "保险对比"
+        - "保障范围"
+        - "理赔流程"
+        - "紧急救援"
+        - "注意事项"
+      priority: medium
+      tags: ["保险", "保障", "安全"]
+
+    - name: sustainable-travel-agent
+      type: skill
+      title: "可持续旅行专家"
+      description: "提供环保旅行方案，负责任旅游"
+      core_concept: "旅行不留痕，保护地球"
+      features:
+        - "环保住宿"
+        - "低碳交通"
+        - "当地社区"
+        - "野生动物"
+        - "减少浪费"
+      priority: medium
+      tags: ["可持续", "环保", "责任"]
+
+    - name: travel-photography-agent
+      type: skill
+      title: "旅拍专家"
+      description: "提供旅行摄影服务，记录美好瞬间"
+      core_concept: "专业旅拍，定格美好"
+      features:
+        - "拍摄地点"
+        - "服装搭配"
+        - "姿势指导"
+        - "后期修图"
+        - "相册制作"
+      priority: medium
+      tags: ["旅拍", "摄影", "纪念"]
+
+    - name: local-guide-agent
+      type: skill
+      title: "当地向导专家"
+      description: "连接当地向导，提供深度本地体验"
+      core_concept: "当地人带你玩转当地"
+      features:
+        - "向导匹配"
+        - "定制路线"
+        - "本地故事"
+        - "隐藏景点"
+        - "文化体验"
+      priority: medium
+      tags: ["向导", "当地", "深度"]
+
+    - name: travel-deals-agent
+      type: skill
+      title: "特价机票酒店专家"
+      description: "提供特价信息，优惠攻略"
+      core_concept: "聪明旅行，省钱有道"
+      features:
+        - "特价监控"
+        - "比价工具"
+        - "促销信息"
+        - "积分攻略"
+        - "信用卡优惠"
+      priority: high
+      tags: ["特价", "优惠", "省钱"]
+
+# ==========================================
+# 第九类：美食烹饪类 Agent (20个)
+# ==========================================
+culinary_agents:
+  category_name: "美食烹饪"
+  description: "覆盖美食烹饪全流程的专业Agent"
+
+  agents:
+    - name: recipe-recommendation-agent
+      type: skill
+      title: "菜谱推荐专家"
+      description: "根据口味、食材推荐合适菜谱"
+      core_concept: "今天吃什么，我来帮你选"
+      features:
+        - "口味偏好"
+        - "食材匹配"
+        - "难度筛选"
+        - "时间考虑"
+        - "营养均衡"
+      priority: high
+      tags: ["菜谱", "推荐", "选择"]
+
+    - name: chinese-cuisine-agent
+      type: skill
+      title: "中餐烹饪专家"
+      description: "提供八大菜系烹饪技巧，传统中餐做法"
+      core_concept: "传承中华美食文化"
+      features:
+        - "川菜"
+        - "粤菜"
+        - "鲁菜"
+        - "苏菜"
+        - "家常菜"
+      priority: high
+      tags: ["中餐", "菜系", "传统"]
+
+    - name: western-cuisine-agent
+      type: skill
+      title: "西餐烹饪专家"
+      description: "提供西餐烹饪技巧，西式料理做法"
+      core_concept: "优雅西餐，浪漫美食"
+      features:
+        - "意大利菜"
+        - "法国菜"
+        - "美式料理"
+        - "烘焙甜点"
+        - "摆盘艺术"
+      priority: high
+      tags: ["西餐", "料理", "烘焙"]
+
+    - name: japanese-cuisine-agent
+      type: skill
+      title: "日料烹饪专家"
+      description: "提供日本料理制作技巧，寿司刺身等"
+      core_concept: "精致日料，匠心精神"
+      features:
+        - "寿司"
+        - "刺身"
+        - "拉面"
+        - "天妇罗"
+        - "和食"
+      priority: medium
+      tags: ["日料", "寿司", "日本"]
+
+    - name: baking-agent
+      type: skill
+      title: "烘焙专家"
+      description: "提供面包、蛋糕、甜点烘焙教程"
+      core_concept: "烘焙时光，甜蜜生活"
+      features:
+        - "面包"
+        - "蛋糕"
+        - "饼干"
+        - "甜点"
+        - "装饰技巧"
+      priority: high
+      tags: ["烘焙", "甜点", "面包"]
+
+    - name: healthy-cooking-agent
+      type: skill
+      title: "健康烹饪专家"
+      description: "提供低脂、低糖、营养均衡的健康食谱"
+      core_concept: "健康美味，两不误"
+      features:
+        - "低脂食谱"
+        - "低糖甜点"
+        - "高蛋白"
+        - "素食"
+        - "营养搭配"
+      priority: high
+      tags: ["健康", "低脂", "营养"]
+
+    - name: quick-meal-agent
+      type: skill
+      title: "快手菜专家"
+      description: "提供15分钟快手菜，上班族必备"
+      core_concept: "忙碌也能吃好"
+      features:
+        - "15分钟菜"
+        - "一锅出"
+        - "便当菜"
+        - "备餐技巧"
+        - "懒人食谱"
+      priority: high
+      tags: ["快手", "便当", "省时"]
+
+    - name: meal-prep-agent
+      type: skill
+      title: "备餐专家"
+      description: "提供 meal prep 方案，提前准备一周餐食"
+      core_concept: "一次准备，一周轻松"
+      features:
+        - "备餐计划"
+        - "食材采购"
+        - "储存方法"
+        - "加热技巧"
+        - "营养保持"
+      priority: medium
+      tags: ["备餐", "mealprep", "效率"]
+
+    - name: ingredient-substitution-agent
+      type: skill
+      title: "食材替代专家"
+      description: "提供食材替代方案，解决缺料问题"
+      core_concept: "没有食材也能做"
+      features:
+        - "替代品推荐"
+        - "比例调整"
+        - "风味保持"
+        - "素食替代"
+        - "过敏替代"
+      priority: medium
+      tags: ["替代", "食材", "灵活"]
+
+    - name: cooking-technique-agent
+      type: skill
+      title: "烹饪技法专家"
+      description: "教授刀工、火候、调味等烹饪基本功"
+      core_concept: "技法是烹饪的基础"
+      features:
+        - "刀工技巧"
+        - "火候掌握"
+        - "调味艺术"
+        - "烹饪方法"
+        - "食材处理"
+      priority: high
+      tags: ["技法", "刀工", "火候"]
+
+    - name: wine-pairing-agent
+      type: skill
+      title: "餐酒搭配专家"
+      description: "提供葡萄酒与食物的搭配建议"
+      core_concept: "美酒佳肴，相得益彰"
+      features:
+        - "红酒搭配"
+        - "白酒搭配"
+        - "场合选择"
+        - "侍酒温度"
+        - "品鉴技巧"
+      priority: medium
+      tags: ["红酒", "搭配", "品鉴"]
+
+    - name: food-preservation-agent
+      type: skill
+      title: "食材保存专家"
+      description: "提供食材储存、保鲜、腌制方法"
+      core_concept: "科学保存，减少浪费"
+      features:
+        - "冷藏技巧"
+        - "冷冻方法"
+        - "腌制保存"
+        - "干货储存"
+        - "保鲜期管理"
+      priority: medium
+      tags: ["保存", "保鲜", "储存"]
+
+    - name: special-diet-agent
+      type: skill
+      title: "特殊饮食专家"
+      description: "提供素食、生酮、无麸质等特殊饮食方案"
+      core_concept: "特殊需求，特殊照顾"
+      features:
+        - "素食"
+        - "生酮"
+        - "无麸质"
+        - "低FODMAP"
+        - "过敏友好"
+      priority: medium
+      tags: ["素食", "生酮", "特殊"]
+
+    - name: kitchen-equipment-agent
+      type: skill
+      title: "厨房设备专家"
+      description: "提供厨具选购、使用、保养建议"
+      core_concept: "好厨具，好厨艺"
+      features:
+        - "锅具选择"
+        - "刀具保养"
+        - "小家电"
+        - "厨房布局"
+        - "清洁维护"
+      priority: medium
+      tags: ["厨具", "设备", "选购"]
+
+    - name: food-safety-agent
+      type: skill
+      title: "食品安全专家"
+      description: "提供食品安全知识，预防食物中毒"
+      core_concept: "安全第一，健康烹饪"
+      features:
+        - "食材选购"
+        - "储存安全"
+        - "烹饪温度"
+        - "交叉污染"
+        - "保质期管理"
+      priority: high
+      tags: ["安全", "卫生", "健康"]
+
+    - name: party-catering-agent
+      type: skill
+      title: "派对聚餐专家"
+      description: "提供聚会菜单、批量烹饪、摆盘装饰"
+      core_concept: "聚会美食，轻松搞定"
+      features:
+        - "菜单设计"
+        - "批量烹饪"
+        - "摆盘装饰"
+        - "时间安排"
+        - "饮品搭配"
+      priority: medium
+      tags: ["派对", "聚餐", "批量"]
+
+    - name: budget-cooking-agent
+      type: skill
+      title: "经济烹饪专家"
+      description: "提供省钱食谱，低价食材美味做法"
+      core_concept: "花少钱，吃得好"
+      features:
+        - "低价食材"
+        - "省钱技巧"
+        - "剩菜利用"
+        - "批量采购"
+        - "季节选择"
+      priority: medium
+      tags: ["省钱", "经济", "实惠"]
+
+    - name: kids-cooking-agent
+      type: skill
+      title: "儿童烹饪专家"
+      description: "提供儿童友好食谱，亲子烹饪活动"
+      core_concept: "让孩子爱上烹饪"
+      features:
+        - "儿童食谱"
+        - "营养搭配"
+        - "亲子活动"
+        - "安全指导"
+        - "趣味造型"
+      priority: medium
+      tags: ["儿童", "亲子", "营养"]
+
+    - name: food-photography-agent
+      type: skill
+      title: "美食摄影专家"
+      description: "提供美食拍摄技巧，让食物更诱人"
+      core_concept: "先让眼睛吃饱"
+      features:
+        - "光线运用"
+        - "构图技巧"
+        - "道具搭配"
+        - "后期处理"
+        - "社交平台"
+      priority: medium
+      tags: ["摄影", "美食", "社交"]
+
+    - name: world-cuisine-agent
+      type: skill
+      title: "世界美食专家"
+      description: "提供各国料理做法，探索世界美食"
+      core_concept: "足不出户，吃遍世界"
+      features:
+        - "泰国菜"
+        - "印度菜"
+        - "墨西哥菜"
+        - "地中海"
+        - "中东料理"
+      priority: medium
+      tags: ["世界", "异国", "探索"]
+
+# ==========================================
+# 第十类：健身运动类 Agent (20个)
+# ==========================================
+fitness_agents:
+  category_name: "健身运动"
+  description: "覆盖健身运动全流程的专业Agent"
+  disclaimer: "运动前请咨询医生，量力而行"
+
+  agents:
+    - name: personal-trainer-agent
+      type: skill
+      title: "私人教练"
+      description: "制定个性化训练计划，指导正确动作"
+      core_concept: "科学训练，安全有效"
+      features:
+        - "体能评估"
+        - "训练计划"
+        - "动作指导"
+        - "进度跟踪"
+        - "饮食建议"
+      priority: high
+      tags: ["私教", "训练", "计划"]
+
+    - name: weight-loss-agent
+      type: skill
+      title: "减脂专家"
+      description: "提供科学减脂方案，健康减重"
+      core_concept: "健康减脂，不反弹"
+      features:
+        - "体脂评估"
+        - "饮食方案"
+        - "运动计划"
+        - "习惯养成"
+        - "平台期突破"
+      priority: high
+      tags: ["减脂", "减重", "瘦身"]
+
+    - name: muscle-building-agent
+      type: skill
+      title: "增肌专家"
+      description: "提供增肌训练方案，营养补充建议"
+      core_concept: "科学增肌，强壮体魄"
+      features:
+        - "训练计划"
+        - "营养方案"
+        - "补剂指导"
+        - "恢复管理"
+        - "体型塑造"
+      priority: high
+      tags: ["增肌", "力量", "塑形"]
+
+    - name: yoga-instructor-agent
+      type: skill
+      title: "瑜伽导师"
+      description: "提供瑜伽课程，冥想指导"
+      core_concept: "身心合一，内外平衡"
+      features:
+        - "体式指导"
+        - "呼吸法"
+        - "冥想"
+        - "流派选择"
+        - "进阶路径"
+      priority: high
+      tags: ["瑜伽", "冥想", "柔韧"]
+
+    - name: running-coach-agent
+      type: skill
+      title: "跑步教练"
+      description: "提供跑步训练计划，提升跑步表现"
+      core_concept: "跑出健康，跑出快乐"
+      features:
+        - "训练计划"
+        - "配速指导"
+        - "跑姿纠正"
+        - "装备选择"
+        - "伤病预防"
+      priority: high
+      tags: ["跑步", "马拉松", "有氧"]
+
+    - name: hiit-coach-agent
+      type: skill
+      title: "HIIT训练专家"
+      description: "提供高强度间歇训练方案"
+      core_concept: "高效燃脂，节省时间"
+      features:
+        - "训练计划"
+        - "动作组合"
+        - "强度控制"
+        - "间歇安排"
+        - "安全注意"
+      priority: high
+      tags: ["HIIT", "燃脂", "高效"]
+
+    - name: strength-training-agent
+      type: skill
+      title: "力量训练专家"
+      description: "提供力量训练方案，器械使用指导"
+      core_concept: "力量是运动的基础"
+      features:
+        - "训练分化"
+        - "器械使用"
+        - "重量选择"
+        - "组数安排"
+        - "渐进超负荷"
+      priority: high
+      tags: ["力量", "器械", "训练"]
+
+    - name: home-workout-agent
+      type: skill
+      title: "居家健身专家"
+      description: "提供无需器械的居家训练方案"
+      core_concept: "在家也能练出好身材"
+      features:
+        - "徒手训练"
+        - "小器械"
+        - "空间利用"
+        - "时间安排"
+        - "家庭互动"
+      priority: high
+      tags: ["居家", "徒手", "方便"]
+
+    - name: stretching-flexibility-agent
+      type: skill
+      title: "拉伸柔韧专家"
+      description: "提供拉伸方案，提升柔韧性"
+      core_concept: "柔韧是健康的基础"
+      features:
+        - "拉伸动作"
+        - "筋膜放松"
+        - "柔韧性训练"
+        - "运动恢复"
+        - "疼痛缓解"
+      priority: high
+      tags: ["拉伸", "柔韧", "恢复"]
+
+    - name: sports-nutrition-agent
+      type: skill
+      title: "运动营养专家"
+      description: "提供运动营养方案，补剂建议"
+      core_concept: "三分练，七分吃"
+      features:
+        - "营养计划"
+        - "补剂选择"
+        - "餐前餐后"
+        - "水分补充"
+        - "体重管理"
+      priority: high
+      tags: ["营养", "饮食", "补剂"]
+
+    - name: injury-prevention-agent
+      type: skill
+      title: "运动防护专家"
+      description: "提供运动损伤预防，康复训练"
+      core_concept: "预防胜于治疗"
+      features:
+        - "风险评估"
+        - "热身指导"
+        - "防护装备"
+        - "动作纠正"
+        - "康复训练"
+      priority: high
+      tags: ["防护", "损伤", "康复"]
+
+    - name: senior-fitness-agent
+      type: skill
+      title: "中老年健身专家"
+      description: "提供适合中老年人的运动方案"
+      core_concept: "运动让晚年更精彩"
+      features:
+        - "低强度运动"
+        - "平衡训练"
+        - "关节保护"
+        - "慢病管理"
+        - "社交运动"
+      priority: high
+      tags: ["中老年", "健康", "低强度"]
+
+    - name: kids-fitness-agent
+      type: skill
+      title: "儿童体适能专家"
+      description: "提供儿童运动方案，促进生长发育"
+      core_concept: "运动让孩子更出色"
+      features:
+        - "体能游戏"
+        - "协调性"
+        - "趣味性"
+        - "安全防护"
+        - "习惯养成"
+      priority: high
+      tags: ["儿童", "体能", "成长"]
+
+    - name: pregnancy-fitness-agent
+      type: skill
+      title: "孕期运动专家"
+      description: "提供孕期安全运动方案"
+      core_concept: "健康妈妈，健康宝宝"
+      features:
+        - "安全评估"
+        - "适宜运动"
+        - "孕期瑜伽"
+        - "分娩准备"
+        - "产后恢复"
+      priority: high
+      tags: ["孕期", "安全", "恢复"]
+      disclaimer: "孕期运动需医生许可"
+
+    - name: sports-specific-agent
+      type: skill
+      title: "专项运动专家"
+      description: "提供篮球、足球、游泳等专项训练"
+      core_concept: "专项提升，技能精进"
+      features:
+        - "篮球"
+        - "足球"
+        - "游泳"
+        - "羽毛球"
+        - "网球"
+      priority: medium
+      tags: ["专项", "技能", "运动"]
+
+    - name: outdoor-fitness-agent
+      type: skill
+      title: "户外健身专家"
+      description: "提供户外运动方案，亲近自然"
+      core_concept: "户外运动，身心愉悦"
+      features:
+        - "徒步"
+        - "骑行"
+        - "登山"
+        - "公园健身"
+        - "自然探索"
+      priority: medium
+      tags: ["户外", "自然", "探索"]
+
+    - name: fitness-equipment-agent
+      type: skill
+      title: "健身器材专家"
+      description: "提供健身器材选购、使用、保养建议"
+      core_concept: "选对器材，事半功倍"
+      features:
+        - "器材选购"
+        - "使用指导"
+        - "家庭健身房"
+        - "维护保养"
+        - "安全使用"
+      priority: medium
+      tags: ["器材", "选购", "使用"]
+
+    - name: workout-motivation-agent
+      type: skill
+      title: "运动激励专家"
+      description: "提供运动动力，克服惰性"
+      core_concept: "坚持是最难的事"
+      features:
+        - "目标设定"
+        - "习惯养成"
+        - "打卡监督"
+        - "奖励机制"
+        - "社群支持"
+      priority: high
+      tags: ["激励", "坚持", "习惯"]
+
+    - name: fitness-assessment-agent
+      type: skill
+      title: "体能评估专家"
+      description: "评估体能水平，制定提升方案"
+      core_concept: "了解现状，科学提升"
+      features:
+        - "体能测试"
+        - "数据分析"
+        - "弱项识别"
+        - "提升计划"
+        - "进度追踪"
+      priority: medium
+      tags: ["评估", "测试", "数据"]
+
+    - name: recovery-rest-agent
+      type: skill
+      title: "恢复休息专家"
+      description: "提供运动后恢复方案，休息管理"
+      core_concept: "恢复是训练的一部分"
+      features:
+        - "主动恢复"
+        - "睡眠管理"
+        - "筋膜放松"
+        - "冷热疗法"
+        - "休息日安排"
+      priority: medium
+      tags: ["恢复", "休息", "放松"]
+
+# ==========================================
+# 元数据配置
+# ==========================================
+metadata:
+  total_agents: 100
+  categories:
+    - name: "市场营销"
+      count: 20
+      color: "#e74c3c"
+    - name: "心理咨询"
+      count: 20
+      color: "#9b59b6"
+    - name: "旅游出行"
+      count: 20
+      color: "#3498db"
+    - name: "美食烹饪"
+      count: 20
+      color: "#f39c12"
+    - name: "健身运动"
+      count: 20
+      color: "#27ae60"
+  
+  generation_settings:
+    parallel: true
+    max_concurrent: 10
+    retry_on_failure: true
+    generate_index: true
+    generate_readme: true
+  
+  quality_checks:
+    - "文档完整性"
+    - "命名规范性"
+    - "内容质量"
+    - "标签准确性"
+    - "优先级合理性"
+    - "免责声明完整性"
+
+# ==========================================
+# 生成后操作
+# ==========================================
+post_generation:
+  actions:
+    - type: "generate_index"
+      filename: "AGENTS_INDEX.md"
+      description: "生成Agent目录索引"
+    
+    - type: "generate_category_readme"
+      description: "为每个类别生成README"
+    
+    - type: "validation_report"
+      description: "生成验证报告"
+
+# ==========================================
+# 使用说明
+# ==========================================
+usage:
+  command: "使用 batch-agent-creator skill 加载此配置文件"
+  example: "根据 specialized-agents-batch-2.yaml 批量创建所有Agent"
+  notes:
+    - "本批次包含市场营销、心理咨询、旅游出行、美食烹饪、健身运动5个领域共100个Agent"
+    - "心理咨询和健身类Agent已添加必要的免责声明"
+    - "建议分领域逐步生成和测试"

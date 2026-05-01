@@ -1,0 +1,14 @@
+【如何解决 app is not defined / CORS 错误】
+
+1. 错误原因：
+   现代浏览器出于安全考虑，禁止直接双击 HTML 文件（file:// 协议）加载模块化 JavaScript 脚本。
+   这导致 app.js 无法加载，从而出现 "app is not defined" 错误。
+
+2. 解决方法：
+   必须通过本地 HTTP 服务器运行项目。
+
+3. 操作步骤：
+   --> 双击运行本目录下的 "start_server.bat" 脚本。
+   --> 脚本会自动启动服务器并打开浏览器。
+
+   (前提：您的电脑需要安装 Python 或 Node.js)

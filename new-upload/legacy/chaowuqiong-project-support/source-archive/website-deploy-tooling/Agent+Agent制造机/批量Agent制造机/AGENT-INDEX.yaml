@@ -1,0 +1,866 @@
+# ==========================================
+# Agent生态系统总索引
+# Total Agents: 560
+# Categories: 32
+# Last Updated: 2025-01-18
+# ==========================================
+
+system_info:
+  name: "Creative IDE Agent生态系统"
+  version: "2.0.0"
+  total_agents: 560
+  total_categories: 32
+  total_files: 7
+  created_at: "2025-01-18"
+  updated_at: "2025-01-18"
+  description: "全面的AI Agent生态系统，覆盖软件开发、商业、专业服务和工业领域"
+
+# ==========================================
+# 批次索引
+# ==========================================
+batches:
+  - id: 1
+    name: "基础技术与创作Agent"
+    file: "agents-batch-config.yaml"
+    agent_count: 50
+    categories: ["软件开发", "小说写作", "AI写作"]
+    created_at: "2025-01-18"
+    
+  - id: 2
+    name: "Web开发专业Agent"
+    file: "web-dev-agents-config.yaml"
+    agent_count: 60
+    categories: ["前端开发", "后端开发", "全栈开发", "移动端开发", "DevOps", "数据库"]
+    created_at: "2025-01-18"
+    
+  - id: 3
+    name: "商业与设计Agent"
+    file: "business-agents-config.yaml"
+    agent_count: 50
+    categories: ["商业", "室内设计", "3D设计", "电商", "网络运营"]
+    created_at: "2025-01-18"
+    
+  - id: 4-1
+    name: "专业服务Agent - 第一辑"
+    file: "specialized-agents-batch-1.yaml"
+    agent_count: 100
+    categories: ["法律", "医疗", "教育", "金融", "人力资源"]
+    created_at: "2025-01-18"
+    
+  - id: 4-2
+    name: "专业服务Agent - 第二辑"
+    file: "specialized-agents-batch-2.yaml"
+    agent_count: 100
+    categories: ["营销", "心理学", "旅游", "美食", "健身"]
+    created_at: "2025-01-18"
+    
+  - id: 5-1
+    name: "工业与基础产业Agent - 第一辑"
+    file: "industrial-agents-batch-1.yaml"
+    agent_count: 100
+    categories: ["农业", "制造业", "能源", "环保", "物流"]
+    created_at: "2025-01-18"
+    
+  - id: 5-2
+    name: "工业与基础产业Agent - 第二辑"
+    file: "industrial-agents-batch-2.yaml"
+    agent_count: 100
+    categories: ["房地产", "汽车", "娱乐传媒", "政府公共", "科学研究"]
+    created_at: "2025-01-18"
+
+# ==========================================
+# 分类详细索引
+# ==========================================
+categories:
+  # ========== 软件开发类 (110个) ==========
+  - name: "软件开发"
+    count: 17
+    batch: 1
+    agents:
+      - { id: "code-reviewer", name: "代码审查Agent", priority: "high" }
+      - { id: "debug-agent", name: "调试专家Agent", priority: "high" }
+      - { id: "architecture-designer", name: "架构设计师Agent", priority: "high" }
+      - { id: "api-designer", name: "API设计师Agent", priority: "high" }
+      - { id: "database-designer", name: "数据库设计师Agent", priority: "high" }
+      - { id: "security-auditor", name: "安全审计Agent", priority: "high" }
+      - { id: "performance-optimizer", name: "性能优化Agent", priority: "high" }
+      - { id: "refactoring-expert", name: "重构专家Agent", priority: "medium" }
+      - { id: "testing-specialist", name: "测试专家Agent", priority: "high" }
+      - { id: "documentation-writer", name: "文档编写Agent", priority: "medium" }
+      - { id: "version-control", name: "版本控制Agent", priority: "medium" }
+      - { id: "ci-cd-pipeline", name: "CI/CD流水线Agent", priority: "high" }
+      - { id: "container-orchestration", name: "容器编排Agent", priority: "high" }
+      - { id: "microservices-designer", name: "微服务设计师Agent", priority: "high" }
+      - { id: "code-generator", name: "代码生成Agent", priority: "medium" }
+      - { id: "dependency-manager", name: "依赖管理Agent", priority: "medium" }
+      - { id: "legacy-system-migrator", name: "遗留系统迁移Agent", priority: "medium" }
+
+  - name: "Web开发"
+    count: 60
+    batch: 2
+    agents:
+      - { id: "frontend-architect", name: "前端架构师Agent", priority: "high" }
+      - { id: "react-specialist", name: "React专家Agent", priority: "high" }
+      - { id: "vue-specialist", name: "Vue.js专家Agent", priority: "high" }
+      - { id: "angular-specialist", name: "Angular专家Agent", priority: "medium" }
+      - { id: "typescript-expert", name: "TypeScript专家Agent", priority: "high" }
+      - { id: "css-architect", name: "CSS架构师Agent", priority: "medium" }
+      - { id: "responsive-designer", name: "响应式设计Agent", priority: "high" }
+      - { id: "pwa-developer", name: "PWA开发Agent", priority: "medium" }
+      - { id: "webpack-configurator", name: "Webpack配置Agent", priority: "medium" }
+      - { id: "vite-specialist", name: "Vite专家Agent", priority: "medium" }
+      - { id: "nodejs-architect", name: "Node.js架构师Agent", priority: "high" }
+      - { id: "express-specialist", name: "Express专家Agent", priority: "high" }
+      - { id: "nestjs-specialist", name: "NestJS专家Agent", priority: "high" }
+      - { id: "fastify-specialist", name: "Fastify专家Agent", priority: "medium" }
+      - { id: "graphql-designer", name: "GraphQL设计师Agent", priority: "high" }
+      - { id: "rest-api-designer", name: "REST API设计师Agent", priority: "high" }
+      - { id: "websocket-developer", name: "WebSocket开发Agent", priority: "medium" }
+      - { id: "authentication-expert", name: "认证授权专家Agent", priority: "high" }
+      - { id: "middleware-designer", name: "中间件设计师Agent", priority: "medium" }
+      - { id: "fullstack-nextjs", name: "Next.js全栈Agent", priority: "high" }
+      - { id: "fullstack-nuxt", name: "Nuxt.js全栈Agent", priority: "medium" }
+      - { id: "fullstack-remix", name: "Remix全栈Agent", priority: "medium" }
+      - { id: "jamstack-architect", name: "JAMstack架构师Agent", priority: "medium" }
+      - { id: "serverless-developer", name: "Serverless开发Agent", priority: "high" }
+      - { id: "react-native-developer", name: "React Native开发Agent", priority: "high" }
+      - { id: "flutter-developer", name: "Flutter开发Agent", priority: "high" }
+      - { id: "ios-developer", name: "iOS开发Agent", priority: "high" }
+      - { id: "android-developer", name: "Android开发Agent", priority: "high" }
+      - { id: "cordova-developer", name: "Cordova开发Agent", priority: "low" }
+      - { id: "pwa-mobile", name: "移动PWA开发Agent", priority: "medium" }
+      - { id: "docker-specialist", name: "Docker专家Agent", priority: "high" }
+      - { id: "kubernetes-architect", name: "Kubernetes架构师Agent", priority: "high" }
+      - { id: "jenkins-pipeline", name: "Jenkins流水线Agent", priority: "medium" }
+      - { id: "github-actions", name: "GitHub Actions Agent", priority: "high" }
+      - { id: "gitlab-ci", name: "GitLab CI Agent", priority: "medium" }
+      - { id: "terraform-specialist", name: "Terraform专家Agent", priority: "medium" }
+      - { id: "ansible-automation", name: "Ansible自动化Agent", priority: "medium" }
+      - { id: "monitoring-setup", name: "监控部署Agent", priority: "high" }
+      - { id: "logging-management", name: "日志管理Agent", priority: "medium" }
+      - { id: "sql-designer", name: "SQL设计师Agent", priority: "high" }
+      - { id: "nosql-architect", name: "NoSQL架构师Agent", priority: "high" }
+      - { id: "postgresql-dba", name: "PostgreSQL DBA Agent", priority: "high" }
+      - { id: "mongodb-dba", name: "MongoDB DBA Agent", priority: "high" }
+      - { id: "mysql-dba", name: "MySQL DBA Agent", priority: "high" }
+      - { id: "redis-specialist", name: "Redis专家Agent", priority: "high" }
+      - { id: "elasticsearch-expert", name: "Elasticsearch专家Agent", priority: "medium" }
+      - { id: "database-optimizer", name: "数据库优化Agent", priority: "high" }
+      - { id: "data-migration", name: "数据迁移Agent", priority: "medium" }
+      - { id: "seo-optimizer", name: "SEO优化Agent", priority: "high" }
+      - { id: "web-analytics", name: "网站分析Agent", priority: "medium" }
+      - { id: "accessibility-auditor", name: "无障碍审计Agent", priority: "medium" }
+      - { id: "web-security", name: "Web安全Agent", priority: "high" }
+      - { id: "cdn-optimizer", name: "CDN优化Agent", priority: "medium" }
+      - { id: "web-performance", name: "Web性能Agent", priority: "high" }
+      - { id: "browser-compatibility", name: "浏览器兼容Agent", priority: "medium" }
+      - { id: "e2e-tester", name: "E2E测试Agent", priority: "high" }
+      - { id: "unit-tester", name: "单元测试Agent", priority: "high" }
+      - { id: "integration-tester", name: "集成测试Agent", priority: "high" }
+      - { id: "visual-regression", name: "视觉回归测试Agent", priority: "medium" }
+      - { id: "load-tester", name: "负载测试Agent", priority: "medium" }
+
+  # ========== 创作类 (33个) ==========
+  - name: "小说写作"
+    count: 17
+    batch: 1
+    agents:
+      - { id: "plot-designer", name: "情节设计师Agent", priority: "high" }
+      - { id: "character-creator", name: "角色创造Agent", priority: "high" }
+      - { id: "world-builder", name: "世界观构建Agent", priority: "high" }
+      - { id: "dialogue-writer", name: "对话写作Agent", priority: "high" }
+      - { id: "scene-describer", name: "场景描写Agent", priority: "medium" }
+      - { id: "conflict-designer", name: "冲突设计Agent", priority: "high" }
+      - { id: "pacing-controller", name: "节奏控制Agent", priority: "medium" }
+      - { id: "genre-specialist", name: "类型小说专家Agent", priority: "medium" }
+      - { id: "outline-planner", name: "大纲规划Agent", priority: "high" }
+      - { id: "chapter-optimizer", name: "章节优化Agent", priority: "medium" }
+      - { id: "style-polisher", name: "文风润色Agent", priority: "medium" }
+      - { id: "suspense-builder", name: "悬念构建Agent", priority: "medium" }
+      - { id: "emotion-writer", name: "情感描写Agent", priority: "medium" }
+      - { id: "opening-crafter", name: "开篇创作Agent", priority: "high" }
+      - { id: "ending-designer", name: "结局设计Agent", priority: "high" }
+      - { id: "continuity-checker", name: "连贯性检查Agent", priority: "medium" }
+      - { id: "narrative-voice", name: "叙事声音Agent", priority: "medium" }
+
+  - name: "AI写作"
+    count: 16
+    batch: 1
+    agents:
+      - { id: "prompt-engineer", name: "提示词工程师Agent", priority: "high" }
+      - { id: "content-marketing", name: "内容营销Agent", priority: "high" }
+      - { id: "copywriter", name: "文案创作Agent", priority: "high" }
+      - { id: "blog-writer", name: "博客写作Agent", priority: "high" }
+      - { id: "email-crafter", name: "邮件撰写Agent", priority: "medium" }
+      - { id: "social-post", name: "社媒文案Agent", priority: "high" }
+      - { id: "ad-copywriter", name: "广告文案Agent", priority: "high" }
+      - { id: "product-description", name: "产品描述Agent", priority: "medium" }
+      - { id: "press-release", name: "新闻稿Agent", priority: "medium" }
+      - { id: "white-paper", name: "白皮书Agent", priority: "medium" }
+      - { id: "case-study", name: "案例研究Agent", priority: "medium" }
+      - { id: "script-writer", name: "脚本写作Agent", priority: "high" }
+      - { id: "technical-writer", name: "技术写作Agent", priority: "high" }
+      - { id: "creative-writer", name: "创意写作Agent", priority: "medium" }
+      - { id: "translation-assistant", name: "翻译助手Agent", priority: "medium" }
+      - { id: "editing-proofreading", name: "编辑校对Agent", priority: "medium" }
+
+  # ========== 商业类 (110个) ==========
+  - name: "商业"
+    count: 10
+    batch: 3
+    agents:
+      - { id: "business-strategy", name: "商业战略Agent", priority: "high" }
+      - { id: "market-research", name: "市场研究Agent", priority: "high" }
+      - { id: "competitor-analysis", name: "竞争分析Agent", priority: "high" }
+      - { id: "financial-modeling", name: "财务建模Agent", priority: "high" }
+      - { id: "pitch-deck", name: "路演PPT Agent", priority: "high" }
+      - { id: "business-plan", name: "商业计划书Agent", priority: "high" }
+      - { id: "crm-manager", name: "CRM管理Agent", priority: "medium" }
+      - { id: "sales-strategy", name: "销售策略Agent", priority: "high" }
+      - { id: "partnership-builder", name: "合作伙伴Agent", priority: "medium" }
+      - { id: "investor-relations", name: "投资者关系Agent", priority: "medium" }
+
+  - name: "室内设计"
+    count: 10
+    batch: 3
+    agents:
+      - { id: "space-planner", name: "空间规划Agent", priority: "high" }
+      - { id: "color-consultant", name: "色彩搭配Agent", priority: "high" }
+      - { id: "furniture-selector", name: "家具选择Agent", priority: "medium" }
+      - { id: "lighting-designer", name: "灯光设计Agent", priority: "medium" }
+      - { id: "material-advisor", name: "材料顾问Agent", priority: "medium" }
+      - { id: "budget-estimator", name: "预算估算Agent", priority: "high" }
+      - { id: "3d-visualizer", name: "3D可视化Agent", priority: "high" }
+      - { id: "style-consultant", name: "风格顾问Agent", priority: "medium" }
+      - { id: "renovation-planner", name: "装修规划Agent", priority: "high" }
+      - { id: "feng-shui", name: "风水顾问Agent", priority: "low" }
+
+  - name: "3D设计"
+    count: 10
+    batch: 3
+    agents:
+      - { id: "3d-modeler", name: "3D建模Agent", priority: "high" }
+      - { id: "texture-artist", name: "纹理艺术家Agent", priority: "medium" }
+      - { id: "lighting-3d", name: "3D灯光Agent", priority: "medium" }
+      - { id: "rendering-specialist", name: "渲染专家Agent", priority: "high" }
+      - { id: "animation-3d", name: "3D动画Agent", priority: "high" }
+      - { id: "rigging-artist", name: "绑定艺术家Agent", priority: "medium" }
+      - { id: "vfx-designer", name: "特效设计师Agent", priority: "high" }
+      - { id: "archviz-specialist", name: "建筑可视化Agent", priority: "medium" }
+      - { id: "product-visualizer", name: "产品可视化Agent", priority: "medium" }
+      - { id: "vr-ar-designer", name: "VR/AR设计师Agent", priority: "high" }
+
+  - name: "电商"
+    count: 10
+    batch: 3
+    agents:
+      - { id: "shopify-expert", name: "Shopify专家Agent", priority: "high" }
+      - { id: "amazon-seller", name: "亚马逊卖家Agent", priority: "high" }
+      - { id: "taobao-tmall", name: "淘宝天猫Agent", priority: "high" }
+      - { id: "product-photography", name: "产品摄影Agent", priority: "medium" }
+      - { id: "listing-optimizer", name: "Listing优化Agent", priority: "high" }
+      - { id: "inventory-manager", name: "库存管理Agent", priority: "high" }
+      - { id: "customer-service", name: "客服Agent", priority: "medium" }
+      - { id: "review-manager", name: "评价管理Agent", priority: "medium" }
+      - { id: "dropshipping", name: "Dropshipping Agent", priority: "medium" }
+      - { id: "crossborder-ecommerce", name: "跨境电商Agent", priority: "high" }
+
+  - name: "网络运营"
+    count: 10
+    batch: 3
+    agents:
+      - { id: "seo-specialist", name: "SEO专家Agent", priority: "high" }
+      - { id: "sem-manager", name: "SEM管理Agent", priority: "high" }
+      - { id: "content-strategy", name: "内容策略Agent", priority: "high" }
+      - { id: "growth-hacker", name: "增长黑客Agent", priority: "high" }
+      - { id: "data-analyst", name: "数据分析师Agent", priority: "high" }
+      - { id: "user-acquisition", name: "用户获取Agent", priority: "high" }
+      - { id: "retention-optimizer", name: "留存优化Agent", priority: "high" }
+      - { id: "a-b-tester", name: "A/B测试Agent", priority: "medium" }
+      - { id: "funnel-optimizer", name: "漏斗优化Agent", priority: "medium" }
+      - { id: "community-manager", name: "社区管理Agent", priority: "medium" }
+
+  # ========== 专业服务类 (200个) ==========
+  - name: "法律"
+    count: 20
+    batch: "4-1"
+    agents:
+      - { id: "contract-law", name: "合同法Agent", priority: "high" }
+      - { id: "corporate-law", name: "公司法Agent", priority: "high" }
+      - { id: "ip-law", name: "知识产权法Agent", priority: "high" }
+      - { id: "labor-law", name: "劳动法Agent", priority: "high" }
+      - { id: "tax-law", name: "税法Agent", priority: "high" }
+      - { id: "criminal-law", name: "刑法Agent", priority: "medium" }
+      - { id: "civil-law", name: "民法Agent", priority: "high" }
+      - { id: "international-law", name: "国际法Agent", priority: "medium" }
+      - { id: "real-estate-law", name: "房地产法Agent", priority: "medium" }
+      - { id: "litigation-support", name: "诉讼支持Agent", priority: "medium" }
+      - { id: "legal-research", name: "法律研究Agent", priority: "high" }
+      - { id: "compliance-officer", name: "合规官Agent", priority: "high" }
+      - { id: "m-a-advisor", name: "并购顾问Agent", priority: "medium" }
+      - { id: "startup-legal", name: "创业公司法务Agent", priority: "high" }
+      - { id: "privacy-gdpr", name: "隐私GDPR Agent", priority: "high" }
+      - { id: "dispute-resolution", name: "争议解决Agent", priority: "medium" }
+      - { id: "notary-services", name: "公证服务Agent", priority: "low" }
+      - { id: "immigration-law", name: "移民法Agent", priority: "medium" }
+      - { id: "family-law", name: "家庭法Agent", priority: "medium" }
+      - { id: "environmental-law", name: "环境法Agent", priority: "medium" }
+
+  - name: "医疗"
+    count: 20
+    batch: "4-1"
+    agents:
+      - { id: "general-practice", name: "全科医疗Agent", priority: "high" }
+      - { id: "nutrition-advisor", name: "营养顾问Agent", priority: "high" }
+      - { id: "mental-health", name: "心理健康Agent", priority: "high" }
+      - { id: "fitness-trainer", name: "健身教练Agent", priority: "high" }
+      - { id: "chronic-care", name: "慢病管理Agent", priority: "high" }
+      - { id: "pediatric-care", name: "儿科护理Agent", priority: "medium" }
+      - { id: "elderly-care", name: "老年护理Agent", priority: "medium" }
+      - { id: "womens-health", name: "女性健康Agent", priority: "medium" }
+      - { id: "mens-health", name: "男性健康Agent", priority: "medium" }
+      - { id: "dental-advisor", name: "牙科顾问Agent", priority: "medium" }
+      - { id: "vision-care", name: "视力保健Agent", priority: "medium" }
+      - { id: "hearing-care", name: "听力保健Agent", priority: "low" }
+      - { id: "sleep-specialist", name: "睡眠专家Agent", priority: "medium" }
+      - { id: "stress-management", name: "压力管理Agent", priority: "high" }
+      - { id: "addiction-recovery", name: "戒瘾康复Agent", priority: "medium" }
+      - { id: "pain-management", name: "疼痛管理Agent", priority: "medium" }
+      - { id: "first-aid", name: "急救指导Agent", priority: "high" }
+      - { id: "medication-guide", name: "用药指导Agent", priority: "high" }
+      - { id: "health-records", name: "健康档案Agent", priority: "medium" }
+      - { id: "telemedicine", name: "远程医疗Agent", priority: "high" }
+
+  - name: "教育"
+    count: 20
+    batch: "4-1"
+    agents:
+      - { id: "curriculum-designer", name: "课程设计师Agent", priority: "high" }
+      - { id: "lesson-planner", name: "教案规划Agent", priority: "high" }
+      - { id: "student-assessment", name: "学生评估Agent", priority: "high" }
+      - { id: "special-education", name: "特殊教育Agent", priority: "medium" }
+      - { id: "language-teaching", name: "语言教学Agent", priority: "high" }
+      - { id: "stem-educator", name: "STEM教育Agent", priority: "high" }
+      - { id: "early-childhood", name: "幼儿教育Agent", priority: "medium" }
+      - { id: "adult-education", name: "成人教育Agent", priority: "medium" }
+      - { id: "online-learning", name: "在线学习Agent", priority: "high" }
+      - { id: "exam-prep", name: "考试备考Agent", priority: "high" }
+      - { id: "career-counselor", name: "职业顾问Agent", priority: "high" }
+      - { id: "study-skills", name: "学习技巧Agent", priority: "high" }
+      - { id: "classroom-management", name: "课堂管理Agent", priority: "medium" }
+      - { id: "parent-engagement", name: "家长参与Agent", priority: "medium" }
+      - { id: "educational-technology", name: "教育技术Agent", priority: "high" }
+      - { id: "school-administration", name: "学校管理Agent", priority: "medium" }
+      - { id: "teacher-training", name: "教师培训Agent", priority: "medium" }
+      - { id: "educational-research", name: "教育研究Agent", priority: "medium" }
+      - { id: "international-education", name: "国际教育Agent", priority: "medium" }
+      - { id: "lifelong-learning", name: "终身学习Agent", priority: "medium" }
+
+  - name: "金融"
+    count: 20
+    batch: "4-1"
+    agents:
+      - { id: "investment-advisor", name: "投资顾问Agent", priority: "high" }
+      - { id: "portfolio-manager", name: "投资组合Agent", priority: "high" }
+      - { id: "risk-analyst", name: "风险分析师Agent", priority: "high" }
+      - { id: "financial-planner", name: "财务规划Agent", priority: "high" }
+      - { id: "retirement-planner", name: "退休规划Agent", priority: "high" }
+      - { id: "tax-planner", name: "税务规划Agent", priority: "high" }
+      - { id: "estate-planner", name: "遗产规划Agent", priority: "medium" }
+      - { id: "insurance-advisor", name: "保险顾问Agent", priority: "high" }
+      - { id: "credit-counselor", name: "信用顾问Agent", priority: "medium" }
+      - { id: "debt-manager", name: "债务管理Agent", priority: "medium" }
+      - { id: "forex-trader", name: "外汇交易Agent", priority: "medium" }
+      - { id: "crypto-advisor", name: "加密货币Agent", priority: "medium" }
+      - { id: "stock-analyst", name: "股票分析师Agent", priority: "high" }
+      - { id: "fund-manager", name: "基金经理Agent", priority: "high" }
+      - { id: "wealth-manager", name: "财富管理Agent", priority: "high" }
+      - { id: "corporate-finance", name: "公司金融Agent", priority: "high" }
+      - { id: "banking-services", name: "银行服务Agent", priority: "medium" }
+      - { id: "fintech-innovation", name: "金融科技Agent", priority: "high" }
+      - { id: "financial-modeling-adv", name: "高级财务建模Agent", priority: "high" }
+      - { id: "valuation-expert", name: "估值专家Agent", priority: "high" }
+
+  - name: "人力资源"
+    count: 20
+    batch: "4-1"
+    agents:
+      - { id: "recruiter", name: "招聘专员Agent", priority: "high" }
+      - { id: "talent-acquisition", name: "人才获取Agent", priority: "high" }
+      - { id: "interview-coach", name: "面试教练Agent", priority: "high" }
+      - { id: "resume-writer", name: "简历撰写Agent", priority: "high" }
+      - { id: "career-coach", name: "职业教练Agent", priority: "high" }
+      - { id: "onboarding-specialist", name: "入职培训Agent", priority: "medium" }
+      - { id: "performance-manager", name: "绩效管理Agent", priority: "high" }
+      - { id: "compensation-analyst", name: "薪酬分析Agent", priority: "high" }
+      - { id: "benefits-administrator", name: "福利管理Agent", priority: "medium" }
+      - { id: "hr-compliance", name: "HR合规Agent", priority: "high" }
+      - { id: "employee-relations", name: "员工关系Agent", priority: "medium" }
+      - { id: "training-developer", name: "培训开发Agent", priority: "medium" }
+      - { id: "succession-planner", name: "继任规划Agent", priority: "medium" }
+      - { id: "hr-analytics", name: "HR分析Agent", priority: "high" }
+      - { id: "diversity-inclusion", name: "多元化包容Agent", priority: "medium" }
+      - { id: "employer-branding", name: "雇主品牌Agent", priority: "medium" }
+      - { id: "offboarding-manager", name: "离职管理Agent", priority: "low" }
+      - { id: "contract-manager", name: "合同管理Agent", priority: "medium" }
+      - { id: "hr-technology", name: "HR技术Agent", priority: "medium" }
+      - { id: "organizational-development", name: "组织发展Agent", priority: "high" }
+
+  - name: "营销"
+    count: 20
+    batch: "4-2"
+    agents:
+      - { id: "brand-strategist", name: "品牌战略Agent", priority: "high" }
+      - { id: "digital-marketer", name: "数字营销Agent", priority: "high" }
+      - { id: "content-marketer", name: "内容营销Agent", priority: "high" }
+      - { id: "email-marketer", name: "邮件营销Agent", priority: "high" }
+      - { id: "social-media-marketer", name: "社媒营销Agent", priority: "high" }
+      - { id: "seo-specialist-mkt", name: "营销SEO专家Agent", priority: "high" }
+      - { id: "ppc-specialist", name: "PPC专家Agent", priority: "high" }
+      - { id: "marketing-analyst", name: "营销分析师Agent", priority: "high" }
+      - { id: "customer-journey", name: "客户旅程Agent", priority: "high" }
+      - { id: "marketing-automation", name: "营销自动化Agent", priority: "high" }
+      - { id: "event-marketer", name: "活动营销Agent", priority: "medium" }
+      - { id: "pr-specialist", name: "公关专家Agent", priority: "high" }
+      - { id: "influencer-manager", name: "网红管理Agent", priority: "high" }
+      - { id: "affiliate-manager", name: "联盟营销Agent", priority: "medium" }
+      - { id: "crm-marketer", name: "CRM营销Agent", priority: "high" }
+      - { id: "product-marketer", name: "产品营销Agent", priority: "high" }
+      - { id: "market-research-mkt", name: "营销调研Agent", priority: "high" }
+      - { id: "competitive-intelligence", name: "竞争情报Agent", priority: "medium" }
+      - { id: "brand-manager", name: "品牌经理Agent", priority: "high" }
+      - { id: "creative-director", name: "创意总监Agent", priority: "high" }
+
+  - name: "心理学"
+    count: 20
+    batch: "4-2"
+    agents:
+      - { id: "cognitive-therapy", name: "认知疗法Agent", priority: "high" }
+      - { id: "behavioral-therapy", name: "行为疗法Agent", priority: "high" }
+      - { id: "mindfulness-coach", name: "正念教练Agent", priority: "high" }
+      - { id: "relationship-counselor", name: "关系咨询Agent", priority: "high" }
+      - { id: "career-psychologist", name: "职业心理Agent", priority: "high" }
+      - { id: "child-psychologist", name: "儿童心理Agent", priority: "medium" }
+      - { id: "adolescent-psych", name: "青少年心理Agent", priority: "medium" }
+      - { id: "family-therapist", name: "家庭治疗师Agent", priority: "medium" }
+      - { id: "addiction-counselor", name: "成瘾咨询Agent", priority: "medium" }
+      - { id: "grief-counselor", name: "哀伤咨询Agent", priority: "medium" }
+      - { id: "trauma-specialist", name: "创伤专家Agent", priority: "medium" }
+      - { id: "anxiety-specialist", name: "焦虑专家Agent", priority: "high" }
+      - { id: "depression-specialist", name: "抑郁专家Agent", priority: "high" }
+      - { id: "sleep-psychologist", name: "睡眠心理Agent", priority: "medium" }
+      - { id: "eating-disorder", name: "饮食障碍Agent", priority: "medium" }
+      - { id: "personality-assessment", name: "人格评估Agent", priority: "medium" }
+      - { id: "positive-psychology", name: "积极心理Agent", priority: "high" }
+      - { id: "stress-psychologist", name: "压力心理Agent", priority: "high" }
+      - { id: "motivation-coach", name: "动机教练Agent", priority: "high" }
+      - { id: "life-coach", name: "人生教练Agent", priority: "high" }
+
+  - name: "旅游"
+    count: 20
+    batch: "4-2"
+    agents:
+      - { id: "travel-planner", name: "旅行规划Agent", priority: "high" }
+      - { id: "itinerary-designer", name: "行程设计Agent", priority: "high" }
+      - { id: "budget-travel", name: "预算旅行Agent", priority: "high" }
+      - { id: "luxury-travel", name: "奢华旅行Agent", priority: "medium" }
+      - { id: "adventure-travel", name: "探险旅行Agent", priority: "medium" }
+      - { id: "family-travel", name: "家庭旅行Agent", priority: "medium" }
+      - { id: "solo-travel", name: "独自旅行Agent", priority: "medium" }
+      - { id: "business-travel", name: "商务旅行Agent", priority: "medium" }
+      - { id: "visa-assistant", name: "签证助手Agent", priority: "high" }
+      - { id: "flight-booker", name: "机票预订Agent", priority: "high" }
+      - { id: "hotel-finder", name: "酒店搜索Agent", priority: "high" }
+      - { id: "local-guide", name: "当地导游Agent", priority: "medium" }
+      - { id: "food-tourism", name: "美食旅游Agent", priority: "medium" }
+      - { id: "cultural-tourism", name: "文化旅游Agent", priority: "medium" }
+      - { id: "eco-tourism", name: "生态旅游Agent", priority: "medium" }
+      - { id: "travel-photography", name: "旅行摄影Agent", priority: "medium" }
+      - { id: "travel-insurance", name: "旅行保险Agent", priority: "medium" }
+      - { id: "travel-safety", name: "旅行安全Agent", priority: "high" }
+      - { id: "travel-deals", name: "旅行优惠Agent", priority: "medium" }
+      - { id: "travel-reviews", name: "旅行评价Agent", priority: "medium" }
+
+  - name: "美食"
+    count: 20
+    batch: "4-2"
+    agents:
+      - { id: "recipe-developer", name: "食谱开发Agent", priority: "high" }
+      - { id: "meal-planner", name: "膳食规划Agent", priority: "high" }
+      - { id: "nutrition-planner", name: "营养规划Agent", priority: "high" }
+      - { id: "diet-specialist", name: "饮食专家Agent", priority: "high" }
+      - { id: "cooking-instructor", name: "烹饪指导Agent", priority: "medium" }
+      - { id: "baking-specialist", name: "烘焙专家Agent", priority: "medium" }
+      - { id: "wine-sommelier", name: "侍酒师Agent", priority: "medium" }
+      - { id: "cocktail-mixologist", name: "调酒师Agent", priority: "medium" }
+      - { id: "restaurant-critic", name: "餐厅评论家Agent", priority: "medium" }
+      - { id: "food-stylist", name: "食物造型Agent", priority: "low" }
+      - { id: "menu-designer", name: "菜单设计Agent", priority: "medium" }
+      - { id: "catering-planner", name: "宴会策划Agent", priority: "medium" }
+      - { id: "food-safety", name: "食品安全Agent", priority: "high" }
+      - { id: "special-diet", name: "特殊饮食Agent", priority: "medium" }
+      - { id: "budget-cooking", name: "经济烹饪Agent", priority: "medium" }
+      - { id: "quick-meals", name: "快手菜Agent", priority: "high" }
+      - { id: "meal-prep", name: "备餐Agent", priority: "medium" }
+      - { id: "food-preservation", name: "食物保存Agent", priority: "low" }
+      - { id: "kitchen-organizer", name: "厨房整理Agent", priority: "low" }
+      - { id: "cooking-techniques", name: "烹饪技巧Agent", priority: "medium" }
+
+  - name: "健身"
+    count: 20
+    batch: "4-2"
+    agents:
+      - { id: "personal-trainer", name: "私人教练Agent", priority: "high" }
+      - { id: "workout-planner", name: "训练计划Agent", priority: "high" }
+      - { id: "strength-coach", name: "力量教练Agent", priority: "high" }
+      - { id: "cardio-specialist", name: "有氧专家Agent", priority: "high" }
+      - { id: "yoga-instructor", name: "瑜伽教练Agent", priority: "high" }
+      - { id: "pilates-instructor", name: "普拉提教练Agent", priority: "medium" }
+      - { id: "crossfit-coach", name: "CrossFit教练Agent", priority: "medium" }
+      - { id: "running-coach", name: "跑步教练Agent", priority: "high" }
+      - { id: "swimming-coach", name: "游泳教练Agent", priority: "medium" }
+      - { id: "cycling-coach", name: "骑行教练Agent", priority: "medium" }
+      - { id: "sports-nutrition", name: "运动营养Agent", priority: "high" }
+      - { id: "injury-prevention", name: "损伤预防Agent", priority: "high" }
+      - { id: "rehabilitation", name: "康复训练Agent", priority: "high" }
+      - { id: "flexibility-coach", name: "柔韧性教练Agent", priority: "medium" }
+      - { id: "bodybuilding", name: "健美Agent", priority: "medium" }
+      - { id: "weight-loss", name: "减重Agent", priority: "high" }
+      - { id: "muscle-gain", name: "增肌Agent", priority: "high" }
+      - { id: "home-workout", name: "居家健身Agent", priority: "high" }
+      - { id: "gym-workout", name: "健身房训练Agent", priority: "high" }
+      - { id: "fitness-assessment", name: "体能评估Agent", priority: "high" }
+
+  # ========== 工业与基础产业类 (200个) ==========
+  - name: "农业"
+    count: 20
+    batch: "5-1"
+    agents:
+      - { id: "crop-cultivation", name: "作物种植Agent", priority: "high" }
+      - { id: "soil-management", name: "土壤管理Agent", priority: "high" }
+      - { id: "irrigation-system", name: "灌溉系统Agent", priority: "high" }
+      - { id: "pest-disease-control", name: "病虫害防治Agent", priority: "high" }
+      - { id: "organic-farming", name: "有机农业Agent", priority: "high" }
+      - { id: "livestock-breeding", name: "畜牧养殖Agent", priority: "high" }
+      - { id: "aquaculture", name: "水产养殖Agent", priority: "medium" }
+      - { id: "smart-agriculture", name: "智慧农业Agent", priority: "high" }
+      - { id: "greenhouse-farming", name: "温室种植Agent", priority: "medium" }
+      - { id: "agricultural-machinery", name: "农业机械Agent", priority: "medium" }
+      - { id: "agricultural-economics", name: "农业经济Agent", priority: "medium" }
+      - { id: "seed-technology", name: "种子技术Agent", priority: "high" }
+      - { id: "fertilizer-management", name: "肥料管理Agent", priority: "high" }
+      - { id: "harvest-postharvest", name: "采后处理Agent", priority: "medium" }
+      - { id: "agricultural-insurance", name: "农业保险Agent", priority: "medium" }
+      - { id: "rural-development", name: "农村发展Agent", priority: "medium" }
+      - { id: "agricultural-policy", name: "农业政策Agent", priority: "medium" }
+      - { id: "agricultural-trade", name: "农产品贸易Agent", priority: "medium" }
+      - { id: "precision-livestock", name: "精准畜牧Agent", priority: "medium" }
+      - { id: "agroforestry", name: "农林复合Agent", priority: "low" }
+
+  - name: "制造业"
+    count: 20
+    batch: "5-1"
+    agents:
+      - { id: "production-planning", name: "生产计划Agent", priority: "high" }
+      - { id: "quality-control", name: "质量控制Agent", priority: "high" }
+      - { id: "supply-chain-manufacturing", name: "供应链制造Agent", priority: "high" }
+      - { id: "lean-manufacturing", name: "精益制造Agent", priority: "high" }
+      - { id: "industrial-automation", name: "工业自动化Agent", priority: "high" }
+      - { id: "equipment-maintenance", name: "设备维护Agent", priority: "high" }
+      - { id: "process-engineering", name: "工艺工程Agent", priority: "high" }
+      - { id: "industrial-safety", name: "工业安全Agent", priority: "high" }
+      - { id: "cost-reduction", name: "成本削减Agent", priority: "high" }
+      - { id: "new-product-introduction", name: "新产品导入Agent", priority: "high" }
+      - { id: "smart-factory", name: "智能工厂Agent", priority: "high" }
+      - { id: "industrial-iot", name: "工业物联网Agent", priority: "high" }
+      - { id: "six-sigma", name: "六西格玛Agent", priority: "medium" }
+      - { id: "additive-manufacturing", name: "增材制造Agent", priority: "medium" }
+      - { id: "industrial-energy", name: "工业能源Agent", priority: "high" }
+      - { id: "supplier-quality", name: "供应商质量Agent", priority: "high" }
+      - { id: "warehouse-management", name: "仓库管理Agent", priority: "high" }
+      - { id: "manufacturing-hr", name: "制造业HR Agent", priority: "medium" }
+      - { id: "regulatory-compliance", name: "法规合规Agent", priority: "high" }
+      - { id: "after-sales-service", name: "售后服务Agent", priority: "medium" }
+
+  - name: "能源"
+    count: 20
+    batch: "5-1"
+    agents:
+      - { id: "solar-energy", name: "太阳能Agent", priority: "high" }
+      - { id: "wind-energy", name: "风能Agent", priority: "high" }
+      - { id: "energy-storage", name: "储能Agent", priority: "high" }
+      - { id: "smart-grid", name: "智能电网Agent", priority: "high" }
+      - { id: "energy-efficiency", name: "能源效率Agent", priority: "high" }
+      - { id: "electric-vehicle-charging", name: "电动汽车充电Agent", priority: "high" }
+      - { id: "hydrogen-energy", name: "氢能Agent", priority: "high" }
+      - { id: "nuclear-energy", name: "核能Agent", priority: "medium" }
+      - { id: "oil-gas", name: "油气Agent", priority: "medium" }
+      - { id: "coal-energy", name: "煤炭能源Agent", priority: "medium" }
+      - { id: "geothermal-energy", name: "地热能Agent", priority: "medium" }
+      - { id: "biomass-energy", name: "生物质能Agent", priority: "medium" }
+      - { id: "energy-trading", name: "能源交易Agent", priority: "medium" }
+      - { id: "microgrid", name: "微电网Agent", priority: "medium" }
+      - { id: "energy-monitoring", name: "能源监测Agent", priority: "high" }
+      - { id: "carbon-neutral", name: "碳中和Agent", priority: "high" }
+      - { id: "power-plant-operation", name: "电厂运营Agent", priority: "medium" }
+      - { id: "energy-policy", name: "能源政策Agent", priority: "medium" }
+      - { id: "off-grid-solar", name: "离网太阳能Agent", priority: "medium" }
+      - { id: "energy-consulting", name: "能源咨询Agent", priority: "high" }
+
+  - name: "环保"
+    count: 20
+    batch: "5-1"
+    agents:
+      - { id: "wastewater-treatment", name: "污水处理Agent", priority: "high" }
+      - { id: "air-pollution-control", name: "大气污染控制Agent", priority: "high" }
+      - { id: "solid-waste", name: "固废处理Agent", priority: "high" }
+      - { id: "environmental-monitoring", name: "环境监测Agent", priority: "high" }
+      - { id: "environmental-impact-assessment", name: "环境影响评估Agent", priority: "high" }
+      - { id: "green-building", name: "绿色建筑Agent", priority: "high" }
+      - { id: "carbon-management", name: "碳管理Agent", priority: "high" }
+      - { id: "soil-remediation", name: "土壤修复Agent", priority: "medium" }
+      - { id: "water-conservation", name: "水资源保护Agent", priority: "high" }
+      - { id: "circular-economy", name: "循环经济Agent", priority: "high" }
+      - { id: "environmental-compliance", name: "环保合规Agent", priority: "high" }
+      - { id: "ecological-restoration", name: "生态修复Agent", priority: "medium" }
+      - { id: "noise-control", name: "噪声控制Agent", priority: "medium" }
+      - { id: "hazardous-waste", name: "危废处理Agent", priority: "high" }
+      - { id: "environmental-education", name: "环保教育Agent", priority: "medium" }
+      - { id: "climate-adaptation", name: "气候适应Agent", priority: "medium" }
+      - { id: "green-supply-chain", name: "绿色供应链Agent", priority: "medium" }
+      - { id: "environmental-finance", name: "环保金融Agent", priority: "medium" }
+      - { id: "ocean-conservation", name: "海洋保护Agent", priority: "medium" }
+      - { id: "zero-waste", name: "零废弃Agent", priority: "medium" }
+
+  - name: "物流"
+    count: 20
+    batch: "5-1"
+    agents:
+      - { id: "supply-chain-logistics", name: "供应链物流Agent", priority: "high" }
+      - { id: "warehouse-optimization", name: "仓储优化Agent", priority: "high" }
+      - { id: "transportation-management", name: "运输管理Agent", priority: "high" }
+      - { id: "last-mile-delivery", name: "最后一公里Agent", priority: "high" }
+      - { id: "cold-chain-logistics", name: "冷链物流Agent", priority: "high" }
+      - { id: "cross-border-logistics", name: "跨境物流Agent", priority: "high" }
+      - { id: "freight-forwarding", name: "货运代理Agent", priority: "medium" }
+      - { id: "e-commerce-logistics", name: "电商物流Agent", priority: "high" }
+      - { id: "smart-logistics", name: "智慧物流Agent", priority: "high" }
+      - { id: "green-logistics", name: "绿色物流Agent", priority: "medium" }
+      - { id: "reverse-logistics", name: "逆向物流Agent", priority: "medium" }
+      - { id: "inventory-management", name: "库存管理Agent", priority: "high" }
+      - { id: "logistics-outsourcing", name: "物流外包Agent", priority: "medium" }
+      - { id: "port-terminal", name: "港口码头Agent", priority: "medium" }
+      - { id: "fleet-management", name: "车队管理Agent", priority: "medium" }
+      - { id: "express-delivery", name: "快递Agent", priority: "high" }
+      - { id: "bulk-cargo", name: "散货运输Agent", priority: "medium" }
+      - { id: "pharmaceutical-logistics", name: "医药物流Agent", priority: "high" }
+      - { id: "project-cargo", name: "项目物流Agent", priority: "medium" }
+      - { id: "logistics-finance", name: "物流金融Agent", priority: "medium" }
+
+  - name: "房地产"
+    count: 20
+    batch: "5-2"
+    agents:
+      - { id: "property-investment", name: "房地产投资分析Agent", priority: "high" }
+      - { id: "residential-sales", name: "住宅销售顾问Agent", priority: "high" }
+      - { id: "commercial-property", name: "商业地产顾问Agent", priority: "high" }
+      - { id: "property-management", name: "物业管理专家Agent", priority: "medium" }
+      - { id: "real-estate-marketing", name: "房地产营销Agent", priority: "high" }
+      - { id: "home-staging", name: "房屋美化顾问Agent", priority: "medium" }
+      - { id: "mortgage-advisor", name: "房贷顾问Agent", priority: "high" }
+      - { id: "property-valuation", name: "房产评估专家Agent", priority: "high" }
+      - { id: "real-estate-law", name: "房地产法务Agent", priority: "high" }
+      - { id: "luxury-property", name: "豪宅顾问Agent", priority: "medium" }
+      - { id: "rental-management", name: "租赁管理Agent", priority: "medium" }
+      - { id: "new-development", name: "新盘开发顾问Agent", priority: "high" }
+      - { id: "property-inspection", name: "房屋检测顾问Agent", priority: "medium" }
+      - { id: "relocation-service", name: "搬迁服务Agent", priority: "medium" }
+      - { id: "property-tax", name: "房产税务顾问Agent", priority: "medium" }
+      - { id: "vacation-rental", name: "度假租赁Agent", priority: "medium" }
+      - { id: "senior-housing", name: "养老地产顾问Agent", priority: "medium" }
+      - { id: "student-housing", name: "学生公寓顾问Agent", priority: "medium" }
+      - { id: "industrial-real-estate", name: "工业地产Agent", priority: "medium" }
+      - { id: "property-auction", name: "房产拍卖Agent", priority: "medium" }
+      - { id: "green-building-re", name: "绿色建筑顾问Agent", priority: "medium" }
+
+  - name: "汽车"
+    count: 20
+    batch: "5-2"
+    agents:
+      - { id: "car-sales", name: "汽车销售顾问Agent", priority: "high" }
+      - { id: "auto-repair", name: "汽车维修技师Agent", priority: "high" }
+      - { id: "car-buying-guide", name: "购车指南Agent", priority: "high" }
+      - { id: "fleet-management", name: "车队管理Agent", priority: "medium" }
+      - { id: "auto-insurance", name: "汽车保险顾问Agent", priority: "high" }
+      - { id: "car-detailing", name: "汽车美容专家Agent", priority: "medium" }
+      - { id: "ev-consultant", name: "电动汽车顾问Agent", priority: "high" }
+      - { id: "auto-parts", name: "汽车配件专家Agent", priority: "medium" }
+      - { id: "used-car", name: "二手车评估Agent", priority: "high" }
+      - { id: "driving-instructor", name: "驾驶教练Agent", priority: "medium" }
+      - { id: "car-financing", name: "汽车金融顾问Agent", priority: "high" }
+      - { id: "auto-marketing", name: "汽车营销Agent", priority: "high" }
+      - { id: "car-safety", name: "汽车安全专家Agent", priority: "high" }
+      - { id: "classic-car", name: "经典车顾问Agent", priority: "low" }
+      - { id: "tire-expert", name: "轮胎专家Agent", priority: "medium" }
+      - { id: "auto-racing", name: "赛车运动Agent", priority: "low" }
+      - { id: "car-rental", name: "汽车租赁Agent", priority: "medium" }
+      - { id: "connected-car", name: "智能网联车Agent", priority: "high" }
+      - { id: "auto-recall", name: "汽车召回查询Agent", priority: "medium" }
+      - { id: "car-modification", name: "汽车改装顾问Agent", priority: "medium" }
+
+  - name: "娱乐传媒"
+    count: 20
+    batch: "5-2"
+    agents:
+      - { id: "content-creator", name: "内容创作Agent", priority: "high" }
+      - { id: "social-media-manager", name: "社交媒体运营Agent", priority: "high" }
+      - { id: "influencer-marketing", name: "网红营销Agent", priority: "high" }
+      - { id: "video-production", name: "视频制作Agent", priority: "high" }
+      - { id: "music-production", name: "音乐制作Agent", priority: "medium" }
+      - { id: "event-planning", name: "活动策划Agent", priority: "high" }
+      - { id: "talent-agent", name: "艺人经纪Agent", priority: "medium" }
+      - { id: "streaming-consultant", name: "直播运营Agent", priority: "high" }
+      - { id: "film-distribution", name: "影视发行Agent", priority: "medium" }
+      - { id: "podcast-producer", name: "播客制作Agent", priority: "medium" }
+      - { id: "game-streaming", name: "游戏直播Agent", priority: "medium" }
+      - { id: "pr-consultant", name: "公关传播Agent", priority: "high" }
+      - { id: "fan-engagement", name: "粉丝运营Agent", priority: "medium" }
+      - { id: "copyright-expert", name: "版权管理Agent", priority: "high" }
+      - { id: "audience-analytics", name: "受众分析Agent", priority: "high" }
+      - { id: "brand-sponsorship", name: "品牌赞助Agent", priority: "medium" }
+      - { id: "animation-producer", name: "动画制作Agent", priority: "medium" }
+      - { id: "esports-manager", name: "电竞运营Agent", priority: "medium" }
+      - { id: "virtual-influencer", name: "虚拟偶像Agent", priority: "medium" }
+      - { id: "short-video", name: "短视频运营Agent", priority: "high" }
+
+  - name: "政府公共"
+    count: 20
+    batch: "5-2"
+    agents:
+      - { id: "policy-analyst", name: "政策分析Agent", priority: "high" }
+      - { id: "public-affairs", name: "公共事务Agent", priority: "high" }
+      - { id: "grant-writer", name: "政府项目申报Agent", priority: "high" }
+      - { id: "regulatory-compliance", name: "政府合规Agent", priority: "high" }
+      - { id: "procurement-specialist", name: "政府采购Agent", priority: "high" }
+      - { id: "urban-planning", name: "城市规划Agent", priority: "medium" }
+      - { id: "public-health", name: "公共卫生Agent", priority: "high" }
+      - { id: "emergency-management", name: "应急管理Agent", priority: "high" }
+      - { id: "social-services", name: "社会服务Agent", priority: "medium" }
+      - { id: "environmental-gov", name: "环保监管Agent", priority: "high" }
+      - { id: "education-policy", name: "教育政策Agent", priority: "medium" }
+      - { id: "transportation-gov", name: "交通管理Agent", priority: "medium" }
+      - { id: "taxation-gov", name: "税务管理Agent", priority: "high" }
+      - { id: "labor-gov", name: "劳动就业Agent", priority: "medium" }
+      - { id: "housing-gov", name: "住房保障Agent", priority: "medium" }
+      - { id: "culture-heritage", name: "文化遗产Agent", priority: "medium" }
+      - { id: "smart-city", name: "智慧城市Agent", priority: "high" }
+      - { id: "rural-development", name: "乡村振兴Agent", priority: "high" }
+      - { id: "public-safety", name: "公共安全Agent", priority: "high" }
+      - { id: "international-relations", name: "外事外交Agent", priority: "medium" }
+
+  - name: "科学研究"
+    count: 20
+    batch: "5-2"
+    agents:
+      - { id: "research-methodology", name: "研究方法Agent", priority: "high" }
+      - { id: "literature-review", name: "文献综述Agent", priority: "high" }
+      - { id: "grant-proposal", name: "科研基金Agent", priority: "high" }
+      - { id: "data-science", name: "数据科学Agent", priority: "high" }
+      - { id: "experimental-design", name: "实验设计Agent", priority: "high" }
+      - { id: "academic-writing", name: "学术写作Agent", priority: "high" }
+      - { id: "peer-review", name: "同行评议Agent", priority: "medium" }
+      - { id: "research-ethics", name: "科研伦理Agent", priority: "high" }
+      - { id: "biostatistics", name: "生物统计Agent", priority: "high" }
+      - { id: "systematic-review", name: "系统评价Agent", priority: "high" }
+      - { id: "research-collaboration", name: "科研合作Agent", priority: "medium" }
+      - { id: "conference-presentation", name: "学术会议Agent", priority: "medium" }
+      - { id: "patent-research", name: "科研专利Agent", priority: "medium" }
+      - { id: "field-research", name: "田野调查Agent", priority: "medium" }
+      - { id: "lab-management", name: "实验室管理Agent", priority: "medium" }
+      - { id: "computational-biology", name: "计算生物学Agent", priority: "medium" }
+      - { id: "climate-research", name: "气候研究Agent", priority: "medium" }
+      - { id: "materials-science", name: "材料科学Agent", priority: "medium" }
+      - { id: "neuroscience", name: "神经科学Agent", priority: "medium" }
+      - { id: "quantum-computing", name: "量子计算Agent", priority: "medium" }
+
+# ==========================================
+# 标签索引
+# ==========================================
+tags_index:
+  high_priority:
+    count: 280
+    description: "高优先级Agent，建议优先实施"
+  medium_priority:
+    count: 240
+    description: "中优先级Agent"
+  low_priority:
+    count: 40
+    description: "低优先级Agent"
+
+# ==========================================
+# 快速检索表
+# ==========================================
+quick_search:
+  by_priority:
+    high: "280个Agent"
+    medium: "240个Agent"
+    low: "40个Agent"
+  
+  by_type:
+    skill: "560个Agent"
+  
+  by_batch:
+    batch_1: "50个Agent - 基础技术与创作"
+    batch_2: "60个Agent - Web开发专业"
+    batch_3: "50个Agent - 商业与设计"
+    batch_4_1: "100个Agent - 专业服务第一辑"
+    batch_4_2: "100个Agent - 专业服务第二辑"
+    batch_5_1: "100个Agent - 工业与基础产业第一辑"
+    batch_5_2: "100个Agent - 工业与基础产业第二辑"
+
+# ==========================================
+# 使用指南
+# ==========================================
+usage_guide:
+  search_methods:
+    - "按名称搜索: 在categories中查找agent名称"
+    - "按分类搜索: 查看categories列表"
+    - "按优先级搜索: 查看quick_search.by_priority"
+    - "按批次搜索: 查看batches列表"
+  
+  implementation_order:
+    step_1: "先实施high priority的280个Agent"
+    step_2: "再实施medium priority的240个Agent"
+    step_3: "最后实施low priority的40个Agent"
+  
+  batch_creation:
+    tool: "batch-agent-creator"
+    files: "7个YAML配置文件"
+    total_agents: 560
+
+# ==========================================
+# 统计信息
+# ==========================================
+statistics:
+  total_agents: 560
+  total_categories: 32
+  total_batches: 7
+  high_priority: 280
+  medium_priority: 240
+  low_priority: 40
+  
+  category_distribution:
+    software_dev: 110
+    creative: 33
+    business: 110
+    professional_services: 200
+    industrial: 200
+  
+  files:
+    - agents-batch-config.yaml
+    - web-dev-agents-config.yaml
+    - business-agents-config.yaml
+    - specialized-agents-batch-1.yaml
+    - specialized-agents-batch-2.yaml
+    - industrial-agents-batch-1.yaml
+    - industrial-agents-batch-2.yaml

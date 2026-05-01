@@ -1,0 +1,1 @@
+export default { id: 'book_str', name: 'Tome of Strength', effect: 'Learn a random Warrior card.' };

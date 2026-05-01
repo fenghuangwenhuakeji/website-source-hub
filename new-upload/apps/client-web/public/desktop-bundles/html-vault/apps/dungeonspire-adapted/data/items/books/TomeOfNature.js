@@ -1,0 +1,1 @@
+export default { id: 'book_nat', name: 'Tome of Nature', effect: 'Learn a random Druid card.' };

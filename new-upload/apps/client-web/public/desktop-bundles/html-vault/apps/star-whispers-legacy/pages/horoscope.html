@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今日运势 - 星语心伴</title>
+    <meta name="description" content="把星座运势当作温和提醒，帮助你把握今天的节奏和幸运时刻。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .fortune-main {
+            padding-top: 0;
+            padding-bottom: 120px;
+        }
+
+        .fortune-shell {
+            display: grid;
+            gap: 22px;
+            padding: 0 16px 24px;
+        }
+
+        .fortune-header-center {
+            display: grid;
+            justify-items: center;
+            gap: 8px;
+            text-align: center;
+        }
+
+        .fortune-page-glyph {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff8f7b;
+            background:
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.95), rgba(255, 243, 238, 0.88) 58%, rgba(255, 230, 221, 0.84) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.96);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .fortune-page-glyph svg {
+            width: 28px;
+            height: 28px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.9;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .zodiac-grid,
+        .score-grid,
+        .detail-grid,
+        .life-grid,
+        .tool-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .zodiac-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .zodiac-btn {
+            display: grid;
+            gap: 4px;
+            padding: 14px 16px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 235, 225, 0.96);
+            background: rgba(255, 248, 243, 0.96);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .zodiac-btn strong,
+        .score-card strong,
+        .detail-card strong {
+            color: var(--ui-text);
+        }
+
+        .zodiac-btn span,
+        .detail-card p,
+        .fortune-subtitle,
+        .helper-text {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--ui-text-soft);
+            margin: 0;
+        }
+
+        .zodiac-btn.is-active {
+            border-color: rgba(255, 143, 123, 0.4);
+            background: rgba(255, 242, 236, 0.98);
+            box-shadow: var(--ui-shadow-sm);
+        }
+
+        .score-grid,
+        .detail-grid,
+        .life-grid,
+        .tool-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .score-card,
+        .detail-card,
+        .life-card {
+            display: grid;
+            gap: 10px;
+            padding: 18px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .score-card span {
+            font-size: 12px;
+            color: var(--ui-text-muted);
+        }
+
+        .score-stars {
+            display: flex;
+            gap: 6px;
+        }
+
+        .score-star {
+            width: 18px;
+            height: 18px;
+            color: rgba(255, 143, 123, 0.18);
+        }
+
+        .score-star.is-on {
+            color: #ff8f7b;
+        }
+
+        .score-star svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        .life-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .life-card span {
+            font-size: 11px;
+            color: var(--ui-text-muted);
+        }
+
+        .life-card strong {
+            font-size: 16px;
+            color: var(--ui-text);
+        }
+
+        @media (max-width: 960px) {
+            .zodiac-grid,
+            .score-grid,
+            .detail-grid,
+            .life-grid,
+            .tool-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .zodiac-grid,
+            .score-grid,
+            .detail-grid,
+            .life-grid,
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="page-header" style="padding: 16px;">
+            <a href="../index.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="fortune-header-center">
+                <div class="fortune-page-glyph" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                        <path d="m12 3.8 1.8 3.9 4.2.6-3 3 0.8 4.2-3.8-2-3.8 2 0.8-4.2-3-3 4.2-.6Z"></path>
+                        <path d="M18.5 5.5h2"></path>
+                        <path d="M19.5 4.5v2"></path>
+                        <path d="M4 18.5c1.8-3.2 5-5 8-5s6.2 1.8 8 5"></path>
+                    </svg>
+                </div>
+                <h1 class="page-title">今日运势</h1>
+                <p class="page-subtitle" style="margin-top: 4px;">把运势当提醒，不把它当命令</p>
+            </div>
+            <a href="tarot.html" class="back-btn" title="温和反思">
+                <i class="fas fa-hat-wizard"></i>
+            </a>
+        </header>
+
+        <main class="content-section fortune-main">
+            <div class="fortune-shell">
+                <section class="assistant-spotlight" data-reveal>
+                    <div class="spotlight-content">
+                        <span class="spotlight-kicker">
+                            <i class="fas fa-stars"></i>
+                            今日轻运势
+                        </span>
+                        <h2 class="spotlight-title" id="fortuneTitle">天秤 · 今日轻运势</h2>
+                        <p class="spotlight-copy" id="fortuneSummary">这里会给你一段更适合今天的节奏提醒，帮你把握幸运时刻，也帮你避开过满的推进方式。</p>
+                        <p class="fortune-subtitle" id="fortuneSubtitle">09.23 - 10.23 · 风象 · 幸运时段 14:00 - 15:30</p>
+                        <div class="page-tools" style="margin-top: 16px;">
+                            <a class="journey-button secondary" href="tarot.html">去做反思卡</a>
+                            <a class="journey-button secondary" href="chat.html">带着结果去聊天</a>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="support-card" data-reveal>
+                    <div class="support-top">
+                        <div class="support-glyph" aria-hidden="true">
+                            <svg class="svg-icon" viewBox="0 0 24 24">
+                                <path d="m12 3.8 2.6 5.4 5.9.9-4.2 4.1 1 5.8L12 17.2 6.7 20l1-5.8-4.2-4.1 5.9-.9Z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="support-title">选择你的星座</h3>
+                    </div>
+                    <p class="helper-text">同一天不需要频繁刷新，重点是用它提醒你今天怎么更稳。</p>
+                    <div class="zodiac-grid" id="zodiacGrid"></div>
+                </section>
+
+                <section class="score-grid" id="fortuneScores" data-reveal></section>
+
+                <section class="detail-grid" data-reveal>
+                    <article class="detail-card">
+                        <strong>关系提醒</strong>
+                        <p id="relationTip">生成后会显示今天适合的沟通方式。</p>
+                    </article>
+                    <article class="detail-card">
+                        <strong>行动建议</strong>
+                        <p id="workTip">生成后会显示今天更适合推进事情的方式。</p>
+                    </article>
+                    <article class="detail-card">
+                        <strong>恢复节奏</strong>
+                        <p id="recoveryTip">生成后会显示今天更适合保留余量的方式。</p>
+                    </article>
+                    <article class="detail-card">
+                        <strong>幸运元素</strong>
+                        <p>幸运色：<span id="luckyColor">生成后显示</span></p>
+                        <p>幸运方位：<span id="luckyDirection">生成后显示</span></p>
+                        <p>性格提醒：<span id="personalityHint">生成后显示</span></p>
+                    </article>
+                </section>
+
+                <section class="life-grid" data-reveal>
+                    <article class="life-card">
+                        <span>今日水果</span>
+                        <strong id="lifeFruit">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>今日蔬菜</span>
+                        <strong id="lifeVegetable">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>适配饮品</span>
+                        <strong id="lifeDrink">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>适合吃点什么</span>
+                        <strong id="lifeFood">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>适合运动</span>
+                        <strong id="lifeSport">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>家居氛围</span>
+                        <strong id="lifeHome">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>睡衣 / 被子 / 枕头</span>
+                        <strong id="lifeBedding">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>今日杯子</span>
+                        <strong id="lifeCup">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>盆栽偏好</span>
+                        <strong id="lifePlant">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>适合去做什么</span>
+                        <strong id="lifeOuting">生成后显示</strong>
+                    </article>
+                    <article class="life-card">
+                        <span>居住氛围</span>
+                        <strong id="lifeResidence">生成后显示</strong>
+                    </article>
+                </section>
+
+                <section class="tool-grid" data-reveal>
+                    <article class="detail-card">
+                        <strong>存入档案</strong>
+                        <p class="helper-text">今天的轻运势也可以进入档案，后面在聊天页直接调出来。</p>
+                        <div class="page-tools">
+                            <button class="journey-button secondary" id="saveHoroscopeBtn" type="button">存入档案</button>
+                        </div>
+                    </article>
+                    <article class="detail-card">
+                        <strong>带去聊天</strong>
+                        <p class="helper-text">一键把今天的提醒塞进聊天页，继续聊关系、压力或行动安排。</p>
+                        <div class="page-tools">
+                            <button class="journey-button primary" id="sendHoroscopeBtn" type="button">发给 AI 继续聊</button>
+                        </div>
+                    </article>
+                </section>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="test.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>测评</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>聊天</span>
+            </a>
+            <a href="horoscope.html" class="nav-item active">
+                <i class="fas fa-stars"></i>
+                <span>运势</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-horoscope.js"></script>
+</body>
+</html>
+

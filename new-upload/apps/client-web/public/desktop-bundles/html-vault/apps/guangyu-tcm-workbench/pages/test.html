@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康评估 - 光玉中医健康工作台</title>
+    <meta name="description" content="中医健康工作台的评估页：风险分流、体质倾向、睡眠节律、脾胃节律和情志身心观察。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .hidden { display: none !important; }
+        .test-main { padding-top: 0; padding-bottom: 120px; }
+        .test-shell { display:grid; gap:22px; padding:0 16px 24px; }
+        .intro-grid, .assessment-grid, .result-points { display:grid; gap:14px; }
+        .intro-grid { grid-template-columns: minmax(0,1.12fr) minmax(300px,.88fr); }
+        .assessment-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+        .intro-card, .metric-card, .assessment-card, .archive-card, .runner-card, .result-card, .empty-card { display:grid; gap:14px; padding:20px; border-radius:28px; background:rgba(255,255,255,.84); border:1px solid rgba(255,255,255,.94); box-shadow: var(--ui-shadow-md); }
+        .intro-card h2, .result-card h2 { font-size: 28px; color: var(--ui-text); }
+        .intro-card p, .metric-card p, .assessment-card p, .archive-card p, .runner-card p, .result-card p, .empty-card p { font-size:13px; line-height:1.85; color: var(--ui-text-soft); }
+        .metric-list { display:grid; gap:12px; }
+        .metric-item, .result-point { display:grid; gap:8px; padding:16px; border-radius:22px; background:rgba(255,248,243,.9); }
+        .meta-row, .action-row, .filter-row, .archive-action-row { display:flex; flex-wrap:wrap; gap:10px; }
+        .filter-chip, .inline-chip { min-height:38px; padding:0 16px; border-radius:999px; border:1px solid rgba(255,255,255,.96); background:rgba(255,255,255,.92); color: var(--ui-text); cursor:pointer; }
+        .filter-chip.is-active { background: rgba(255,143,123,.16); border-color: rgba(255,143,123,.36); color:#a84e44; }
+        .assessment-card header, .archive-head, .runner-head, .result-head { display:flex; justify-content:space-between; gap:12px; align-items:flex-start; }
+        .assessment-card h3, .archive-card h3, .runner-card h3, .result-card h3 { font-size:18px; color: var(--ui-text); }
+        .evidence-badge, .domain-badge { display:inline-flex; align-items:center; min-height:28px; padding:0 10px; border-radius:999px; font-size:11px; }
+        .domain-badge { background: rgba(96,165,250,.12); color:#345d95; }
+        .evidence-standard { background: rgba(20,184,166,.14); color:#13786d; }
+        .evidence-screen { background: rgba(249,115,22,.14); color:#b45309; }
+        .evidence-guided { background: rgba(168,85,247,.12); color:#7c3aed; }
+        .assessment-meta { display:flex; flex-wrap:wrap; gap:8px; font-size:12px; color: var(--ui-text-muted); }
+        .progress-shell { display:grid; gap:8px; }
+        .progress-bar { width:100%; height:10px; border-radius:999px; background: rgba(255,240,231,.92); overflow:hidden; }
+        .progress-fill { height:100%; width:0; border-radius:999px; background: linear-gradient(135deg, #ff9d72 0%, #ffb88c 100%); transition: width .28s ease; }
+        .option-list { display:grid; gap:10px; }
+        .option-button { min-height:48px; padding:0 16px; border-radius:18px; border:1px solid rgba(255,255,255,.94); background:rgba(255,255,255,.92); color: var(--ui-text); cursor:pointer; text-align:left; }
+        .option-button.is-active { border-color: rgba(255,143,123,.42); background: rgba(255,245,239,.98); }
+        .link-button { color:#2f6bcc; text-decoration:none; }
+        @media (max-width: 900px) { .intro-grid, .assessment-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="app-container">
+        <header class="page-header" style="padding:16px;">
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <div style="text-align:center;">
+                <h1 class="page-title">健康评估</h1>
+                <p class="page-subtitle" style="margin-top:4px;">先做风险分流，再看体质与节律线索</p>
+            </div>
+            <a href="api-settings.html" class="back-btn"><i class="fas fa-sliders-h"></i></a>
+        </header>
+        <main class="content-section test-main">
+            <div class="test-shell">
+                <section class="intro-grid" data-reveal>
+                    <article class="intro-card">
+                        <h2>评估先帮你把问题看稳。</h2>
+                        <p>这里的评估不做正式诊断，而是帮助你先看安全边界、体质倾向、睡眠节律、脾胃线索和情志身心联动。完成后会自动归档，也能一键带去 AI 解读页继续整理。</p>
+                        <div class="filter-row" id="filterRow">
+                            <button class="filter-chip is-active" type="button" data-filter="all">全部</button>
+                            <button class="filter-chip" type="button" data-filter="safety">安全分流</button>
+                            <button class="filter-chip" type="button" data-filter="constitution">体质自评</button>
+                            <button class="filter-chip" type="button" data-filter="sleep">睡眠节律</button>
+                            <button class="filter-chip" type="button" data-filter="digestion">脾胃节律</button>
+                            <button class="filter-chip" type="button" data-filter="emotion">情志身心</button>
+                        </div>
+                    </article>
+                    <article class="metric-card">
+                        <div class="metric-list">
+                            <div class="metric-item"><strong>先做风险分流</strong><p>先看有没有不适合只靠 AI 继续看的红旗症状。</p></div>
+                            <div class="metric-item"><strong>再看体感线索</strong><p>冷热、睡眠、饭后反应、排便、情绪和身体联动一起看。</p></div>
+                            <div class="metric-item"><strong>最后存进记录库</strong><p><span id="archiveCountChip">0 份记录</span> 会跟着项目一起独立保存。</p></div>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="assessment-grid" id="assessmentGrid" data-reveal></section>
+
+                <section class="runner-card hidden" id="runnerSection" data-reveal>
+                    <div class="runner-head">
+                        <div><h3 id="runnerTitle">评估标题</h3><p id="runnerDescription">评估说明</p></div>
+                        <button class="btn btn-secondary" id="runnerCloseBtn" type="button">关闭</button>
+                    </div>
+                    <div class="progress-shell">
+                        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                        <span class="chat-kpi-copy" id="progressLabel">第 1 题 / 共 1 题</span>
+                    </div>
+                    <div>
+                        <p class="chat-kpi-copy" id="questionIntro"></p>
+                        <h3 id="questionText" style="margin-top:8px;"></h3>
+                    </div>
+                    <div class="option-list" id="optionList"></div>
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="prevQuestionBtn" type="button">上一题</button>
+                        <button class="btn btn-primary" id="nextQuestionBtn" type="button">下一题</button>
+                    </div>
+                </section>
+
+                <section class="result-card hidden" id="resultSection" data-reveal>
+                    <div class="result-head">
+                        <div><h2 id="resultTitle">评估结果</h2><p id="resultSummary"></p></div>
+                        <div style="text-align:right;">
+                            <strong id="resultScore" style="font-size:24px;color:var(--ui-text);display:block;">--</strong>
+                            <span class="inline-chip" id="resultLabel">结果标签</span>
+                        </div>
+                    </div>
+                    <div class="meta-row">
+                        <span class="domain-badge" id="resultEvidence">评估类型</span>
+                        <span class="inline-chip" id="resultTime">刚刚完成</span>
+                    </div>
+                    <div class="result-points" id="resultPoints"></div>
+                    <p id="sourceLine"></p>
+                    <div class="action-row">
+                        <button class="btn btn-secondary" id="restartBtn" type="button">重新测一遍</button>
+                        <button class="btn btn-secondary" id="saveArchiveBtn" type="button">只保存记录</button>
+                        <button class="btn btn-primary" id="sendToChatBtn" type="button">保存并发给 AI</button>
+                    </div>
+                </section>
+
+                <section class="archive-card" id="archiveHub" data-reveal>
+                    <div class="archive-head">
+                        <div><h3>记录库</h3><p>项目内独立保存，不和其他项目共用。</p></div>
+                        <button class="btn btn-secondary" id="clearArchivesBtn" type="button">清空记录</button>
+                    </div>
+                    <div class="assessment-grid" id="archiveList"></div>
+                </section>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="test.html" class="nav-item active"><i class="fas fa-clipboard-list"></i><span>评估</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI解读</span></a>
+            <a href="observe.html" class="nav-item"><i class="fas fa-eye"></i><span>观察</span></a>
+            <a href="profile.html" class="nav-item"><i class="fas fa-folder-open"></i><span>档案</span></a>
+        </nav>
+    </div>
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/evidence-assessments.js"></script>
+    <script src="../dist/js/page-test.js"></script>
+</body>
+</html>

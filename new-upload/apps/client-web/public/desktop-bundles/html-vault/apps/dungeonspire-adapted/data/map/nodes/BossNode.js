@@ -1,0 +1,1 @@
+export default { type: 'Boss', icon: 'boss_skull', chance: 0.0, unique: true };

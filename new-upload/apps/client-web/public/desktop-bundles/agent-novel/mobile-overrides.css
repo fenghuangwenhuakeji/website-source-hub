@@ -1,0 +1,145 @@
+@media (max-width: 980px) {
+  :root {
+    --mobile-header-height: 48px;
+  }
+
+  html,
+  body {
+    width: 100vw;
+    height: 100dvh;
+    min-height: 100dvh;
+    position: fixed;
+    inset: 0;
+    overflow: hidden !important;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+    background: #f5f7fb !important;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  .page-shell {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    margin: 0 !important;
+    padding: calc(6px + env(safe-area-inset-top, 0px)) 6px calc(8px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow: hidden !important;
+  }
+
+  .studio-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .center-stage {
+    min-height: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .session-rail,
+  .control-rail {
+    display: none !important;
+  }
+
+  .stage-bar {
+    flex: 0 0 auto;
+    border-radius: 14px !important;
+    box-shadow: 0 10px 24px rgba(18, 36, 63, 0.08) !important;
+  }
+
+  .stage-bar-row,
+  .stage-bar-actions,
+  .stage-bar-meta,
+  .stage-bar-controls {
+    gap: 6px !important;
+  }
+
+  .stage-bar-main strong {
+    font-size: 15px !important;
+    line-height: 1.2 !important;
+  }
+
+  .button,
+  .compact-field,
+  .suggestion-button {
+    min-height: 38px !important;
+  }
+
+  .chat-panel {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+  }
+
+  .chat-log,
+  .message-list {
+    max-height: 44dvh !important;
+  }
+
+  .chat-panel-head {
+    flex: 0 0 auto;
+    gap: 8px !important;
+  }
+
+  .chat-log,
+  .message-list,
+  .task-process-panel {
+    min-height: 0 !important;
+    overflow: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .result-panel {
+    max-height: 42dvh !important;
+    overflow: auto !important;
+    border-radius: 12px !important;
+  }
+
+  .final-output {
+    max-height: 34dvh !important;
+    overflow: auto !important;
+  }
+
+  .session-rail,
+  .control-rail {
+    max-height: 42dvh !important;
+    overflow: auto !important;
+    border-radius: 14px !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .stage-bar-row,
+  .stage-bar-controls,
+  .chat-actions,
+  .result-head {
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+  }
+
+  .compact-field,
+  .button,
+  .suggestion-button {
+    width: auto !important;
+    flex: 1 1 auto;
+  }
+}

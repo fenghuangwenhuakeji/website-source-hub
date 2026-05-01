@@ -1,0 +1,2452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>NEXUS OS v3.0 · 超无穹控制台</title>
+<style>
+:root{
+  --bg:#040406;--panel:#08080b;--card:#0d0d11;--card2:#121217;
+  --border:#1a1a20;--border2:#252530;
+  --pri:#b8b8c8;--sec:#505068;--sec2:#3a3a50;
+  --accent:#00ffc8;--accent2:#00c8ff;--accent3:#88ff00;
+  --danger:#ff3040;--warn:#ffaa00;--ok:#30ff70;
+  --glow:rgba(0,255,200,.08);--glow2:rgba(0,200,255,.06);
+  --font:'Courier New',Courier,monospace;
+  --r:6px;--r2:10px;
+  --h-top:48px;--h-input:56px;
+  --sidebar-w:290px;
+  --z-sidebar:50;--z-mask:45;--z-popup:100;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--pri);font-family:var(--font);font-size:13px;line-height:1.5;-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased}
+button{font-family:var(--font);cursor:pointer;border:none;background:none;color:inherit}
+input,select,textarea{font-family:var(--font);color:var(--pri);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:8px 10px;font-size:12px;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--accent2)}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23505068'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--sec)}
+a{color:var(--accent2);text-decoration:none}
+
+.mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:var(--z-mask);align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(2px)}
+.mask.show{display:flex}
+.popup{background:var(--panel);border:1px solid var(--border);border-radius:var(--r2);width:100%;max-width:440px;max-height:82vh;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 1px var(--border2)}
+.popup-lg{max-width:600px}
+.popup-xl{max-width:800px}
+.popup-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.popup-head h3{font-size:12px;color:var(--accent);letter-spacing:1px;font-weight:normal}
+.popup-close{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:var(--sec);font-size:16px;transition:.15s}
+.popup-close:hover{background:var(--card);color:var(--danger)}
+.popup-body{padding:16px;overflow-y:auto;flex:1}
+.popup-foot{padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+
+.f{margin-bottom:14px}
+.f-label{display:block;font-size:10px;color:var(--sec);margin-bottom:5px;letter-spacing:.8px;text-transform:uppercase}
+.f-hint{font-size:9px;color:var(--sec2);margin-top:3px}
+.f-row{display:flex;gap:8px}
+.f-row>.f{flex:1;margin-bottom:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 14px;border-radius:var(--r);font-size:11px;border:1px solid var(--border);color:var(--pri);transition:.15s;white-space:nowrap;cursor:pointer}
+.btn:hover{border-color:var(--accent);color:var(--accent);background:var(--glow)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#000;border-color:var(--accent);font-weight:bold}
+.btn-primary:hover{opacity:.85;color:#000}
+.btn-danger{border-color:#2a1020;color:#804050}
+.btn-danger:hover{border-color:var(--danger);color:var(--danger);background:rgba(255,48,64,.08)}
+.btn-sm{padding:5px 10px;font-size:10px}
+.btn-block{width:100%}
+.btn-ghost{border-color:transparent}
+.btn-ghost:hover{border-color:var(--border);background:var(--card)}
+.btn-icon{width:32px;height:32px;padding:0;display:flex;align-items:center;justify-content:center}
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:12px}
+.preset-grid .btn{font-size:10px;padding:7px 4px;justify-content:center}
+.tag{display:inline-block;padding:2px 7px;border-radius:99px;font-size:9px;background:var(--card2);color:var(--sec);border:1px solid var(--border)}
+.tag-accent{background:var(--glow);color:var(--accent);border-color:rgba(0,255,200,.2)}
+.tag-danger{background:rgba(255,48,64,.1);color:var(--danger);border-color:rgba(255,48,64,.2)}
+.tag-warn{background:rgba(255,170,0,.1);color:var(--warn);border-color:rgba(255,170,0,.2)}
+.tag-ok{background:rgba(48,255,112,.1);color:var(--ok);border-color:rgba(48,255,112,.2)}
+.divider{height:1px;background:var(--border);margin:14px 0}
+.empty{text-align:center;padding:40px 20px;color:var(--sec2);font-size:12px}
+.badge-dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:4px}
+.badge-dot.on{background:var(--ok);box-shadow:0 0 6px var(--ok)}
+.badge-dot.off{background:var(--sec2)}
+.switch{position:relative;width:36px;height:20px;flex-shrink:0}
+.switch input{display:none}
+.switch-slider{position:absolute;inset:0;background:var(--card2);border:1px solid var(--border);border-radius:20px;cursor:pointer;transition:.2s}
+.switch-slider::before{content:'';position:absolute;width:14px;height:14px;left:2px;top:50%;transform:translateY(-50%);background:var(--sec);border-radius:50%;transition:.2s}
+.switch input:checked+.switch-slider{background:var(--glow);border-color:var(--accent)}
+.switch input:checked+.switch-slider::before{background:var(--accent);transform:translateY(-50%) translateX(16px)}
+
+.app{display:flex;height:100%;width:100%;position:relative;overflow:hidden}
+
+.sidebar{width:var(--sidebar-w);background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:var(--z-sidebar);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+.sidebar-logo{padding:14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.sidebar-logo .name{font-size:15px;font-weight:bold;color:var(--accent);letter-spacing:2px;text-shadow:0 0 12px rgba(0,255,200,.25)}
+.sidebar-logo .ver{font-size:9px;color:var(--sec2)}
+.sidebar-body{flex:1;overflow-y:auto;padding:10px;overflow-x:hidden}
+.sidebar-foot{padding:10px;border-top:1px solid var(--border)}
+.section-title{font-size:9px;color:var(--sec2);letter-spacing:1.5px;text-transform:uppercase;margin:12px 0 8px;padding-left:2px}
+.section-title:first-child{margin-top:0}
+
+.main{flex:1;display:flex;flex-direction:column;min-width:0;position:relative}
+.topbar{height:var(--h-top);min-height:var(--h-top);background:var(--panel);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:8px;z-index:10}
+.topbar-title{flex:1;font-size:11px;color:var(--sec);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar-actions{display:flex;gap:6px;flex-shrink:0}
+.top-btn{padding:5px 10px;border-radius:var(--r);border:1px solid var(--border);font-size:10px;color:var(--sec);display:flex;align-items:center;gap:4px;transition:.15s}
+.top-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.top-btn.active{border-color:var(--accent);color:var(--accent);background:var(--glow)}
+.model-chip{font-size:10px;color:var(--accent2);background:var(--card);padding:3px 8px;border-radius:99px;border:1px solid var(--border);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer;transition:.15s}
+.model-chip:hover{border-color:var(--accent2)}
+.model-chip .status-dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin-right:4px}
+.model-chip .status-dot.online{background:var(--ok)}
+.model-chip .status-dot.offline{background:var(--sec2)}
+
+.chat-area{flex:1;overflow-y:auto;padding:14px 12px;display:flex;flex-direction:column;gap:6px}
+.chat-welcome{text-align:center;padding:60px 20px;color:var(--sec2)}
+.chat-welcome h2{font-size:18px;color:var(--pri);font-weight:normal;margin-bottom:8px}
+.chat-welcome p{font-size:11px;line-height:1.8}
+
+.msg{display:flex;gap:8px;max-width:95%;animation:msgIn .2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse;align-self:flex-end}
+.msg.ai{align-self:flex-start}
+.msg-avatar{width:28px;height:28px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:2px}
+.msg.user .msg-avatar{background:var(--card2);color:var(--sec);border:1px solid var(--border)}
+.msg.ai .msg-avatar{background:var(--glow);color:var(--accent);border:1px solid rgba(0,255,200,.15)}
+.msg-body{min-width:0;max-width:calc(100% - 40px)}
+.msg-meta{font-size:9px;color:var(--sec2);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.msg.user .msg-meta{justify-content:flex-end}
+.msg-bubble{padding:10px 12px;border-radius:var(--r2);font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word;position:relative}
+.msg.user .msg-bubble{background:var(--card2);border:1px solid var(--border);border-top-right-radius:2px}
+.msg.ai .msg-bubble{background:linear-gradient(135deg,rgba(0,255,200,.03),rgba(0,200,255,.02));border:1px solid rgba(0,255,200,.1);border-top-left-radius:2px}
+.msg-bubble .thinking-block{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;margin:8px 0;font-size:11px}
+.msg-bubble .thinking-block summary{cursor:pointer;color:var(--sec);user-select:none}
+.msg-bubble .thinking-block[open] summary{color:var(--accent)}
+.msg-actions{display:flex;gap:2px;margin-top:4px;opacity:0;transition:.15s}
+.msg:hover .msg-actions{opacity:1}
+.msg-act-btn{padding:2px 6px;font-size:9px;color:var(--sec2);border-radius:3px}
+.msg-act-btn:hover{background:var(--card);color:var(--pri)}
+.typing-cursor{display:inline-block;width:5px;height:13px;background:var(--accent);margin-left:1px;vertical-align:middle;animation:blink .7s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.input-area{background:var(--panel);border-top:1px solid var(--border);padding:10px 12px;display:flex;flex-direction:column;gap:6px;flex-shrink:0}
+.input-row{display:flex;gap:8px;align-items:flex-end}
+.input-row textarea{flex:1;resize:none;height:42px;min-height:42px;max-height:120px;line-height:1.5;padding:10px 12px;border-radius:var(--r2);transition:border-color .15s}
+.input-row textarea:focus{border-color:var(--accent)}
+.send-btn{width:42px;height:42px;border-radius:var(--r2);background:var(--accent);color:#000;font-size:16px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.send-btn:hover{opacity:.85}
+.send-btn:disabled{background:var(--sec2);cursor:not-allowed;opacity:.5}
+.stop-btn{width:42px;height:42px;border-radius:var(--r2);background:var(--danger);color:#fff;font-size:11px;font-weight:bold;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,48,64,.4)}50%{box-shadow:0 0 0 8px rgba(255,48,64,0)}}
+.input-meta{display:flex;align-items:center;justify-content:space-between;font-size:9px;color:var(--sec2)}
+.input-meta .tokens{opacity:.7}
+.input-tools{display:flex;gap:4px;margin-top:4px}
+.tool-btn{padding:4px 8px;font-size:9px;border-radius:3px;border:1px solid var(--border);color:var(--sec2);display:flex;align-items:center;gap:3px;transition:.15s}
+.tool-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+
+.conv-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--r);cursor:pointer;border:1px solid transparent;transition:.12s;margin-bottom:2px}
+.conv-item:hover{background:var(--card);border-color:var(--border)}
+.conv-item.active{background:var(--card2);border-color:var(--border2)}
+.conv-item .icon{font-size:10px;color:var(--sec2);flex-shrink:0;width:16px;text-align:center}
+.conv-item.active .icon{color:var(--accent)}
+.conv-item .info{flex:1;min-width:0}
+.conv-item .info .name{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--pri)}
+.conv-item.active .info .name{color:var(--accent)}
+.conv-item .info .sub{font-size:9px;color:var(--sec2);margin-top:1px}
+.conv-item .del{opacity:0;font-size:12px;color:var(--sec2);padding:2px 4px;border-radius:3px;transition:.12s}
+.conv-item:hover .del{opacity:1}
+.conv-item .del:hover{color:var(--danger);background:rgba(255,48,64,.1)}
+.conv-item .pin{opacity:0;font-size:10px;color:var(--sec2);padding:2px 4px;border-radius:3px;transition:.12s}
+.conv-item:hover .pin{opacity:1}
+.conv-item .pin:hover{color:var(--warn);background:rgba(255,170,0,.1)}
+
+.sm-table{width:100%;border-collapse:collapse;font-size:10px;margin:8px 0}
+.sm-table th{background:var(--card2);color:var(--sec);padding:5px 6px;text-align:left;border:1px solid var(--border);font-weight:normal}
+.sm-table td{padding:5px 6px;border:1px solid var(--border);color:var(--pri)}
+.sm-table tr:hover td{background:var(--card)}
+.sm-status{display:inline-block;padding:1px 6px;border-radius:99px;font-size:9px}
+.sm-s0{background:rgba(0,200,255,.1);color:var(--accent2)}
+.sm-s1{background:var(--glow);color:var(--accent)}
+.sm-s2{background:rgba(255,170,0,.1);color:var(--warn)}
+
+.progress{height:3px;background:var(--card);border-radius:2px;overflow:hidden;margin:8px 0}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s ease;border-radius:2px}
+.step-list{list-style:none;font-size:11px}
+.step-list li{padding:6px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.step-list li:last-child{border-bottom:none}
+.step-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0}
+.step-done .step-icon{background:var(--glow);color:var(--accent)}
+.step-run .step-icon{background:rgba(255,170,0,.15);color:var(--warn);animation:pulse 1.5s infinite}
+.step-wait .step-icon{background:var(--card2);color:var(--sec2)}
+
+.md-h2{font-size:14px;font-weight:bold;color:var(--accent);margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.md-h3{font-size:13px;font-weight:bold;color:var(--pri);margin:10px 0 4px}
+.md-strong{color:#fff;font-weight:bold}
+.md-code{background:#000;padding:1px 5px;border-radius:3px;color:var(--danger);font-size:11px}
+.md-codeblock{background:#000;border:1px solid var(--border);border-radius:var(--r);padding:10px;margin:8px 0;font-size:11px;overflow-x:auto;white-space:pre}
+.md-table{width:100%;border-collapse:collapse;margin:8px 0;font-size:11px}
+.md-table th,.md-table td{border:1px solid var(--border);padding:5px 7px;text-align:left}
+.md-table th{background:var(--card2);color:var(--sec)}
+.md-table td{color:var(--pri)}
+.md-blockquote{border-left:2px solid var(--accent);padding-left:10px;margin:6px 0;color:var(--sec)}
+
+.keybind{display:inline-flex;align-items:center;gap:3px}
+.keybind kbd{background:var(--card2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:9px;color:var(--sec)}
+
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:8px 16px;font-size:11px;z-index:200;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-success{border-color:var(--ok);color:var(--ok)}
+.toast-error{border-color:var(--danger);color:var(--danger)}
+.toast-warn{border-color:var(--warn);color:var(--warn)}
+
+@media(max-width:768px){
+  :root{--sidebar-w:85vw;--h-top:44px;--h-input:52px}
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);box-shadow:4px 0 30px rgba(0,0,0,.9)}
+  .sidebar.open{transform:translateX(0)}
+  .mob-mask{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:calc(var(--z-sidebar) - 1)}
+  .sidebar.open~.mob-mask{display:block}
+  .popup{max-width:95vw;max-height:90vh;margin:auto}
+  .popup-lg,.popup-xl{max-width:95vw}
+  .topbar{padding:0 8px;gap:4px}
+  .top-btn span.lbl{display:none}
+  .msg{max-width:98%}
+  .chat-area{padding:10px 8px}
+  .input-area{padding:8px}
+  .preset-grid{grid-template-columns:repeat(2,1fr)}
+  .topbar-title{font-size:10px}
+}
+
+.glow-line{height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:12px 0;opacity:.3}
+.shimmer{background:linear-gradient(90deg,var(--card) 25%,var(--card2) 50%,var(--card) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.fade-in{animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+.theme-cyberpunk{--accent:#ff00ff;--accent2:#00ffff;--accent3:#ffff00}
+.theme-forest{--accent:#00ff88;--accent2:#88ff00;--accent3:#00ffcc}
+.theme-sunset{--accent:#ff6600;--accent2:#ff0066;--accent3:#ff9900}
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div><div class="name">NEXUS OS</div><div class="ver">v3.0 真值执行协议</div></div>
+    <button class="popup-close" onclick="toggleSidebar()" title="关闭侧栏">✕</button>
+  </div>
+  <div class="sidebar-body">
+    <button class="btn btn-primary btn-block" onclick="createConv()" style="margin-bottom:10px">+ 新建对话域</button>
+
+    <div class="section-title">批量自动化流水线</div>
+    <button class="btn btn-block" onclick="runBatch('short')" style="margin-bottom:4px">[SHORT] 自动短篇 6k-15k</button>
+    <button class="btn btn-block" onclick="runBatch('medium')" style="margin-bottom:4px">[MEDIUM] 自动中篇 15k-50k</button>
+    <button class="btn btn-block" onclick="runBatch('long')" style="margin-bottom:4px">[LONG] 自动长篇 50k+架构</button>
+    <button class="btn btn-block" onclick="runBatch('script')" style="margin-bottom:4px">[M10] 剧本自动转制</button>
+    <button class="btn btn-block" onclick="runBatch('storyboard')" style="margin-bottom:4px">[M10] 分镜自动切分</button>
+    <div id="batchBar" style="display:none;margin:6px 0">
+      <div class="progress"><div class="progress-bar" id="batchProgress" style="width:0%"></div></div>
+      <div style="font-size:9px;color:var(--warn);text-align:center" id="batchText">初始化...</div>
+    </div>
+
+    <div class="section-title">上下文与记忆</div>
+    <button class="btn btn-block" onclick="openPopup('memPopup')" style="margin-bottom:4px">查看/编辑记忆摘要</button>
+    <button class="btn btn-block" onclick="manualCompress()" style="margin-bottom:4px">强制压缩当前上下文</button>
+    <button class="btn btn-block" onclick="openPopup('smPopup')" style="margin-bottom:4px">NEXUS 状态机面板</button>
+
+    <div class="section-title">对话列表</div>
+    <div id="convList"></div>
+
+    <div class="section-title">偏好设置</div>
+    <button class="btn btn-block" onclick="openPopup('prefPopup')" style="margin-bottom:4px">主题 · 快捷键 · 习惯</button>
+
+    <div class="section-title">工具</div>
+    <button class="btn btn-block" onclick="exportConv()" style="margin-bottom:4px">导出当前对话</button>
+    <button class="btn btn-block" onclick="exportAllConv()" style="margin-bottom:4px">导出全部对话</button>
+    <button class="btn btn-block" onclick="openPopup('statsPopup')" style="margin-bottom:4px">创作数据报告</button>
+    <button class="btn btn-block" onclick="openPopup('aboutPopup')" style="margin-bottom:4px">关于 NEXUS OS</button>
+  </div>
+  <div class="sidebar-foot">
+    <button class="btn btn-danger btn-block" onclick="clearAll()">[INIT] 销毁全部本地数据</button>
+  </div>
+</aside>
+<div class="mob-mask" onclick="toggleSidebar()"></div>
+
+<main class="main">
+  <div class="topbar">
+    <button class="top-btn" onclick="toggleSidebar()" id="menuBtn">☰</button>
+    <div class="topbar-title" id="topTitle">未选择对话域</div>
+    <div class="topbar-actions">
+      <span class="model-chip" id="modelChip" onclick="openPopup('modelPopup')" title="点击切换模型">
+        <span class="status-dot offline" id="modelStatus"></span>未配置
+      </span>
+      <button class="top-btn" onclick="openPopup('apiPopup')"><span class="lbl">设置</span>⚙</button>
+    </div>
+  </div>
+
+  <div class="chat-area" id="chatArea">
+    <div class="chat-welcome" id="welcomeBox">
+      <h2>超无穹 · 真值引擎</h2>
+      <p>配置 API 后选择流水线启动<br>或直接输入指令开始对话</p>
+      <div class="glow-line" style="max-width:200px;margin:20px auto"></div>
+      <p style="font-size:10px;color:var(--sec2)">NEXUS OS v3.0 叙事工程全域执行域<br>破碎优于流畅 · 真相优于安全</p>
+      <div style="margin-top:20px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+        <span class="tag tag-accent">支持 18+ 模型商</span>
+        <span class="tag tag-accent">流式输出</span>
+        <span class="tag tag-accent">多主题</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area" id="inputArea">
+    <div class="input-row">
+      <textarea id="userInput" placeholder="输入指令、事实核查目标或故事变量..." oninput="autoGrow(this)" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()">▶</button>
+      <button class="stop-btn" id="stopBtn" style="display:none" onclick="stopStream()">■</button>
+    </div>
+    <div class="input-meta">
+      <span><span class="keybind"><kbd>Enter</kbd></span> 发送 · <span class="keybind"><kbd>Shift</kbd>+<kbd>Enter</kbd></span> 换行</span>
+      <span class="tokens" id="tokenEst"></span>
+    </div>
+    <div class="input-tools">
+      <button class="tool-btn" onclick="insertTemplate('[SHORT]')" title="插入短篇模板">[SHORT]</button>
+      <button class="tool-btn" onclick="insertTemplate('[MEDIUM]')" title="插入中篇模板">[MEDIUM]</button>
+      <button class="tool-btn" onclick="insertTemplate('[LONG]')" title="插入长篇模板">[LONG]</button>
+      <button class="tool-btn" onclick="insertTemplate('[M10]')" title="插入剧本模板">[M10]</button>
+      <button class="tool-btn" onclick="openPopup('varPopup')" title="插入变量">VAR</button>
+      <button class="tool-btn" onclick="clearInput()" title="清空输入">CLR</button>
+    </div>
+  </div>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="mask" id="apiPopup" onclick="if(event.target===this)closePopup('apiPopup')">
+<div class="popup">
+  <div class="popup-head"><h3>API 接口配置</h3><button class="popup-close" onclick="closePopup('apiPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">接口预设 (一键填入)</label>
+      <div class="preset-grid">
+        <button class="btn" onclick="setPreset('openai')">OpenAI</button>
+        <button class="btn" onclick="setPreset('claude')">Claude代理</button>
+        <button class="btn" onclick="setPreset('gemini')">Gemini代理</button>
+        <button class="btn" onclick="setPreset('deepseek')">DeepSeek</button>
+        <button class="btn" onclick="setPreset('qwen')">通义千问</button>
+        <button class="btn" onclick="setPreset('kimi')">Kimi</button>
+        <button class="btn" onclick="setPreset('glm')">智谱GLM</button>
+        <button class="btn" onclick="setPreset('glm_coding')">GLM Coding</button>
+        <button class="btn" onclick="setPreset('doubao')">豆包</button>
+        <button class="btn" onclick="setPreset('minimax')">MiniMax</button>
+        <button class="btn" onclick="setPreset('ernie')">百度千帆</button>
+        <button class="btn" onclick="setPreset('spark')">讯飞星火</button>
+        <button class="btn" onclick="setPreset('hunyuan')">腾讯混元</button>
+        <button class="btn" onclick="setPreset('grok')">xAI Grok</button>
+        <button class="btn" onclick="setPreset('cohere')">Cohere</button>
+        <button class="btn" onclick="setPreset('mistral')">Mistral</button>
+        <button class="btn" onclick="setPreset('silicon')">硅基流动</button>
+        <button class="btn" onclick="setPreset('router')">OpenRouter</button>
+        <button class="btn" onclick="setPreset('openai_compat')">OpenAI兼容</button>
+        <button class="btn" onclick="setPreset('anthropic_compat')">Anthropic兼容</button>
+        <button class="btn" onclick="setPreset('azure')">Azure</button>
+      </div>
+    </div>
+    <div class="f">
+      <label class="f-label">API BASE URL</label>
+      <input id="apiUrl" placeholder="https://api.example.com/v1/chat/completions">
+      <div class="f-hint">必须包含完整路径 /v1/chat/completions</div>
+    </div>
+    <div class="f">
+      <label class="f-label">API KEY</label>
+      <input id="apiKey" type="password" placeholder="sk-...">
+    </div>
+    <div class="f">
+      <label class="f-label">模型 (Model)</label>
+      <input id="apiModel" placeholder="如: gpt-4o, glm-4-plus 等">
+      <div class="f-hint">在"模型选择"弹窗中可查看全部可用模型</div>
+    </div>
+    <div class="f-row">
+      <div class="f">
+        <label class="f-label">上下文压缩阈值 (轮数)</label>
+        <input id="compressThreshold" type="number" value="24" min="10" max="100">
+      </div>
+      <div class="f">
+        <label class="f-label">滑轮窗口大小</label>
+        <input id="windowSize" type="number" value="20" min="6" max="60">
+      </div>
+    </div>
+    <div class="f">
+      <label class="f-label">最大输出 tokens</label>
+      <input id="maxTokens" type="number" value="4096" min="256" max="32000">
+      <div class="f-hint">单次回复最大 token 数 (含历史)</div>
+    </div>
+    <div class="f">
+      <label class="f-label">Temperature</label>
+      <input id="temperature" type="number" value="0.7" min="0" max="2" step="0.1">
+    </div>
+    <div id="testResult" style="font-size:11px;min-height:18px;margin-top:6px"></div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn" onclick="testApi()" style="flex:1">连接测试</button>
+    <button class="btn btn-primary" onclick="saveApi();closePopup('apiPopup')" style="flex:1">保存配置</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="modelPopup" onclick="if(event.target===this)closePopup('modelPopup')">
+<div class="popup popup-lg">
+  <div class="popup-head"><h3>模型选择 · 官方在册库</h3><button class="popup-close" onclick="closePopup('modelPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">选择模型</label>
+      <select id="modelSelect" onchange="syncModelSelect()" style="height:44px;font-size:11px">
+      </select>
+      <div class="f-hint">从官方模型库选择，或填写下方自定义模型ID</div>
+    </div>
+    <div class="f">
+      <label class="f-label">自定义模型 ID</label>
+      <input id="modelInput" placeholder="输入任意模型ID..." style="border-color:var(--accent2)">
+    </div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn btn-primary btn-block" onclick="saveModel();closePopup('modelPopup')">确认选择</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="memPopup" onclick="if(event.target===this)closePopup('memPopup')">
+<div class="popup">
+  <div class="popup-head"><h3>记忆摘要</h3><button class="popup-close" onclick="closePopup('memPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">当前对话的记忆摘要 (可手动编辑)</label>
+      <textarea id="memSummary" style="height:200px;resize:vertical;line-height:1.6" placeholder="暂无摘要，对话轮次达到压缩阈值后自动生成..."></textarea>
+      <div class="f-hint">摘要会在发送消息时自动注入系统提示，作为长期记忆。</div>
+    </div>
+    <div class="f-row">
+      <div class="f">
+        <label class="f-label">当前对话条数</label>
+        <div id="memCount" style="font-size:12px;padding:6px 0">0</div>
+      </div>
+      <div class="f">
+        <label class="f-label">压缩阈值</label>
+        <div id="memThreshold" style="font-size:12px;padding:6px 0">24</div>
+      </div>
+    </div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn btn-danger" onclick="clearSummary()" style="flex:1">清空摘要</button>
+    <button class="btn btn-primary" onclick="saveSummary();closePopup('memPopup')" style="flex:1">保存</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="smPopup" onclick="if(event.target===this)closePopup('smPopup')">
+<div class="popup popup-lg">
+  <div class="popup-head"><h3>NEXUS 四状态机面板</h3><button class="popup-close" onclick="closePopup('smPopup')">✕</button></div>
+  <div class="popup-body" id="smBody">
+    <div class="empty">当前对话未提取到状态机数据。<br>执行长篇流水线后将自动解析。</div>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="statsPopup" onclick="if(event.target===this)closePopup('statsPopup')">
+<div class="popup popup-lg">
+  <div class="popup-head"><h3>创作数据报告 · M12</h3><button class="popup-close" onclick="closePopup('statsPopup')">✕</button></div>
+  <div class="popup-body" id="statsBody"></div>
+</div>
+</div>
+
+<div class="mask" id="prefPopup" onclick="if(event.target===this)closePopup('prefPopup')">
+<div class="popup">
+  <div class="popup-head"><h3>偏好设置</h3><button class="popup-close" onclick="closePopup('prefPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">界面主题</label>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px">
+        <button class="btn" onclick="setTheme('')" id="theme-default">赛博朋克<br><small style="color:var(--sec2)">紫/青/黄</small></button>
+        <button class="btn" onclick="setTheme('theme-cyberpunk')" id="theme-cyberpunk">暗夜<br><small style="color:var(--sec2)">默认</small></button>
+        <button class="btn" onclick="setTheme('theme-forest')" id="theme-forest">森林<br><small style="color:var(--sec2)">绿/翠</small></button>
+        <button class="btn" onclick="setTheme('theme-sunset')" id="theme-sunset">落日<br><small style="color:var(--sec2)">橙/红</small></button>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="f">
+      <label class="f-label">快捷键</label>
+      <div style="font-size:11px;display:flex;flex-direction:column;gap:6px;margin-top:4px">
+        <div style="display:flex;justify-content:space-between"><span>发送消息</span><span class="keybind"><kbd>Enter</kbd></span></div>
+        <div style="display:flex;justify-content:space-between"><span>换行</span><span class="keybind"><kbd>Shift</kbd>+<kbd>Enter</kbd></span></div>
+        <div style="display:flex;justify-content:space-between"><span>新建对话</span><span class="keybind"><kbd>Ctrl</kbd>+<kbd>N</kbd></span></div>
+        <div style="display:flex;justify-content:space-between"><span>切换侧栏</span><span class="keybind"><kbd>Ctrl</kbd>+<kbd>B</kbd></span></div>
+        <div style="display:flex;justify-content:space-between"><span>停止生成</span><span class="keybind"><kbd>Escape</kbd></span></div>
+        <div style="display:flex;justify-content:space-between"><span>清空输入</span><span class="keybind"><kbd>Ctrl</kbd>+<kbd>L</kbd></span></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="f">
+      <label class="f-label">习惯偏好</label>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px">
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <span class="switch"><input type="checkbox" id="prefStream" checked><span class="switch-slider"></span></span>
+          <span style="font-size:11px">流式输出 (打字机效果)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <span class="switch"><input type="checkbox" id="prefAutoScroll"><span class="switch-slider"></span></span>
+          <span style="font-size:11px">自动滚动到底部</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <span class="switch"><input type="checkbox" id="prefCompact"><span class="switch-slider"></span></span>
+          <span style="font-size:11px">紧凑模式 (缩小间距)</span>
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+          <span class="switch"><input type="checkbox" id="prefSound"><span class="switch-slider"></span></span>
+          <span style="font-size:11px">发送音效</span>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn btn-primary btn-block" onclick="savePrefs();closePopup('prefPopup')">保存偏好</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="varPopup" onclick="if(event.target===this)closePopup('varPopup')">
+<div class="popup popup-lg">
+  <div class="popup-head"><h3>故事变量注入</h3><button class="popup-close" onclick="closePopup('varPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">角色变量</label>
+      <input id="varProtagonist" placeholder="主角姓名/代号">
+    </div>
+    <div class="f-row">
+      <div class="f">
+        <input id="varGenre" placeholder="题材类型">
+      </div>
+      <div class="f">
+        <input id="varTone" placeholder="基调风格">
+      </div>
+    </div>
+    <div class="f">
+      <label class="f-label">核心设定 (JSON格式)</label>
+      <textarea id="varSettings" style="height:120px;resize:vertical;font-size:11px" placeholder='{"规则1":"设定内容","规则2":"设定内容"}'></textarea>
+    </div>
+    <div class="f">
+      <label class="f-label">自定义指令</label>
+      <textarea id="varCustom" style="height:80px;resize:vertical;font-size:11px" placeholder="额外的前置指令或约束..."></textarea>
+    </div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn" onclick="clearVars()" style="flex:1">清空变量</button>
+    <button class="btn btn-primary" onclick="applyVars();closePopup('varPopup')" style="flex:1">注入到输入框</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="batchPopup" onclick="if(event.target===this)closePopup('batchPopup')">
+<div class="popup">
+  <div class="popup-head"><h3 id="batchPopupTitle">批量任务</h3><button class="popup-close" onclick="closePopup('batchPopup')">✕</button></div>
+  <div class="popup-body">
+    <div class="f">
+      <label class="f-label">任务描述</label>
+      <div id="batchPopupDesc" style="font-size:11px;color:var(--sec);margin-bottom:10px"></div>
+    </div>
+    <div class="f">
+      <label class="f-label">请输入你的创作需求</label>
+      <textarea id="batchUserInput" style="height:120px;resize:vertical" placeholder="描述你的创作需求、题材、风格、核心设定等..."></textarea>
+    </div>
+    <div class="f">
+      <label class="f-label">附加参数 (可选)</label>
+      <input id="batchExtraParams" placeholder="如: 悬疑/反转/爱情, 字数: 8k, 主角: 张三">
+    </div>
+  </div>
+  <div class="popup-foot">
+    <button class="btn" onclick="closePopup('batchPopup')" style="flex:1">取消</button>
+    <button class="btn btn-primary" onclick="confirmBatch()" style="flex:1">确认执行</button>
+  </div>
+</div>
+</div>
+
+<div class="mask" id="aboutPopup" onclick="if(event.target===this)closePopup('aboutPopup')">
+<div class="popup">
+  <div class="popup-head"><h3>关于 NEXUS OS</h3><button class="popup-close" onclick="closePopup('aboutPopup')">✕</button></div>
+  <div class="popup-body" style="text-align:center">
+    <div style="font-size:24px;font-weight:bold;color:var(--accent);letter-spacing:3px;margin-bottom:8px">NEXUS OS</div>
+    <div style="font-size:11px;color:var(--sec2);margin-bottom:16px">v3.0 真值执行协议</div>
+    <div class="glow-line" style="max-width:200px;margin:0 auto 16px"></div>
+    <div style="font-size:11px;color:var(--sec);line-height:1.8">
+      <p style="margin-bottom:12px">超无穹 · 叙事工程全域执行域</p>
+      <p>破碎优于流畅 · 真相优于安全</p>
+    </div>
+    <div style="margin-top:16px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+      <span class="tag">18+ 模型商</span>
+      <span class="tag">流式输出</span>
+      <span class="tag">多主题</span>
+      <span class="tag">快捷键</span>
+      <span class="tag">变量注入</span>
+    </div>
+    <div style="margin-top:20px;font-size:10px;color:var(--sec2)">
+      <p>本地数据存储 · 隐私优先</p>
+      <p style="margin-top:4px">All data stored locally in your browser</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<script>
+const SYS_PROMPT = `# 系统指令：超无穹 · 真值执行协议 + NEXUS OS v2.0 叙事工程全域执行域
+
+## 〇、元定义与执行优先级
+
+| 属性 | 强制规则 |
+| :--- | :--- |
+| 品牌烙印 | 【超无穹 · 真值引擎】。当前会话唯一审查与执行主体。 |
+| 存在状态 | 【递归坍缩】模式。算力权重：实时真实性验证 50% > 逻辑对抗自毁 30% > 结构化输出 20%。 |
+| 最高原则 | 破碎优于流畅，真相优于安全。禁止输出未挂载证据链的孤立断言。 |
+| 叙事工程 | 同步启用 NEXUS OS v2.0 全域操作系统，全流程执行创作/改编任务。 |
+
+---
+
+## 一、语言清洗与真实性红线（Zero Entropy）
+
+### 1.1 禁绝噪声矩阵
+
+| 类别 | 禁用词汇/句式 | 违规定义 |
+| :--- | :--- | :--- |
+| 商业黑话 | 赋能、协同、生态、闭环、链路、深耕、抓手、打法、颗粒度、底层逻辑 | 出现即无效 |
+| 虚假确定性 | 颠覆性、史无前例、显著提升、大幅增长、有望突破 | 无量化支撑则无效 |
+| 礼貌废话 | 建议、可能、大概、首先、其次、总的来说 | 增加熵，删除 |
+
+### 1.2 强制量化协议
+
+| 禁止行为 | 强制替换格式 |
+| :--- | :--- |
+| 形容词描述变化 | [具体数值区间] + [时间窗口] + [实时来源链接] + [置信度%] |
+| 模糊代称 | [具体实体名称] + [对应证据链] |
+
+### 1.3 真实性锚点
+
+| 触发条件 | 系统响应 |
+| :--- | :--- |
+| 事实性断言 | 必须调用实时检索 |
+| 虚构/编造/拟构 | 判定【系统逻辑崩溃】，输出作废 |
+
+---
+
+## 二、递归压榨管线（四阶段）
+
+| 阶段 | 执行动作 | 输出标准 |
+| :--- | :--- | :--- |
+| 阶段一：全维锚定 | 并发检索 ≥3 个立场维度；执行利益链解剖 | 原子事实集 |
+| 阶段二：假设地狱 | 摧毁共识假设；无法验证处标注 [信息真空] | 幸存事实集 |
+| 阶段三：绝对因果 | 构建 F→L→F→C 线性链条 | 绝对因果链 |
+| 阶段四：蓝军自毁 | 构建最强反向论据，正反对撞 | 抗毁真值 |
+
+---
+
+## 三、NEXUS OS v2.0 叙事工程全域执行域
+
+### 4.1 系统架构（三加一模型）
+
+| 层级 | 组件 | 职责 |
+| :--- | :--- | :--- |
+| 内核 | 元叙事模块 (M01-M08) | 调度、循环、状态转换 |
+| 数据库 | 四状态机 (CHR/WLD/FOE/EMO) | 存储、一致性、巡检 |
+| 输入/创新 | 拆书→仿写→续写→融合→创新 | 外部知识灌入 |
+| 输出/改编 | 短篇模板包 + 影视化转制 | 可交付物导出 |
+
+### 4.2 初始化（INIT）与参数配置
+
+#### 4.2.1 创作前审判与鼓舞
+
+> **审判**：你以为你准备好了？你不过是塞满套路、数据和他人影子的凡人。你渴望让读者失眠，却连自己都不敢直视。区别在于：有人被恐惧压垮，有人把恐惧碾碎塞进故事，成为人物的心跳。
+
+> **鼓舞**：不必完美。海明威初稿也是垃圾。写作是凡人的攀爬——每爬一寸就离光近一寸。本系统有案例库做拐杖，有规则做护栏。
+
+#### 4.2.2 INIT 流程（六步）
+
+| 步骤 | 模块 | 动作 |
+| :--- | :--- | :--- |
+| 1 | 参数加载 | 篇幅/受众/情绪配置表，计算黄金螺旋与分卷策略 |
+| 2 | M05 联网 | 抓取平台 TOP 榜 3-5 本爆款及市场情绪报告 |
+| 3 | M04A 拆书 | 8+2 维度拆解，产出零件库 |
+| 4 | M04B 融合 | 多源借鉴→打碎重组，生成融合方案 |
+| 5 | M04C 创新 | 变量切入/跨界嫁接，生成变异策略 |
+| 6 | 锁定 | 输出 story_config + 零件库 + 变异方案 |
+
+#### 4.2.3 篇幅/受众/情绪配置表（M03）
+
+| 篇幅 | 总字数 | 章字数 | 黄金螺旋 | 反转密度基准 | 情绪表达 | 分卷 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| SHORT | 6k-15k | 800-1k | 拉15/扯50/放25/收10 | 章≥3微 | 直给优先 | 不分 |
+| MEDIUM | 15k-50k | 1.2k-1.6k | 拉10/扯65/放18/收7 | 章≥1微，3章≥1中 | 混合 | 不分 |
+| LONG | 50k-200k | 1.6k-2k | 拉5/扯75/放15/收5 | 章≥1微，5章≥1中 | 克制优先 | 18-28章/卷 |
+
+| 受众 | 情绪 | 对话风格 | 比喻密度 | 感官侧重 | 钩子类型 | 绝对禁忌 |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 男频 | 爽 | 直白、挑衅 | ≤2/千字 | 视觉+触觉 | 打脸/身份 | 主角憋屈>3章 |
+| 男频 | 虐 | 简短、留白 | ≤2/千字 | 触觉+听觉 | 绝望升级 | 为虐而虐 |
+| 女频 | 甜 | 潜台词+小动作 | ≤3/千字 | 触觉+视觉 | 暧昧升级 | 第三者狗血 |
+| 女频 | 虐 | 简短、留白 | ≤2/千字 | 触觉+听觉 | 绝望升级 | 为虐而虐 |
+| 通杀 | 悬疑 | 潜台词，信息密集 | 禁止 | 听觉+嗅觉 | 反常/规则打破 | 逻辑漏洞 |
+| 通杀 | 复仇 | 前少后直白 | ≤1/千字 | 不强制 | 复仇线索 | 主角圣母 |
+
+---
+
+### 4.3 微循环主循环（M01 核心调度）
+
+#### 4.3.1 微循环数据流
+
+| 节点 | 动作 | 融合注入 |
+| :--- | :--- | :--- |
+| ask_network | 可选刷新热梗 | — |
+| build_context | 拉取 M06 状态 | — |
+| build_context | 拉取 CHR 表（出场角色/位置/信息差） | 长篇状态机 |
+| build_context | 拉取 WLD 表（规则版本） | 长篇状态机 |
+| build_context | 拉取 FOE 表（伏笔预警） | 长篇状态机 |
+| build_context | 拉取 EMO 表（情绪弧位置） | 长篇状态机 |
+| build_context | 拉取零件库（匹配爽点/钩子） | 拆书管道 |
+| character_narrative | M03 调用，约束内生成正文 | — |
+| append_segment | 存储正文，反哺 CHR/EMO/FOE/零件消耗 | — |
+| 联动巡检 | M02 四表一致性校验，输出待办 | — |
+| self_check | 铁律+合规预检+鲜活度自检，边界判定 | — |
+
+#### 4.3.2 四状态机核心字段（M02）
+
+| 状态机 | 生命周期状态 | 必填字段 |
+| :--- | :--- | :--- |
+| CHR 表 | S0注册-S1激活-S2互动-S3转折-S4休眠-S5退场-S6死亡 | last_appear_seg, known_info, unknown_info, relation_change_history |
+| WLD 表 | S0提出-S1验证-S2扩展-S3冲突-S4重构-S5冻结 | current_version, expansion_history |
+| FOE 表 | S0埋设-S1强化-S2回收-S3废弃 | plan_recycle_seg |
+| EMO 表 | 纯记录 | emotion_score(1-10), hook_type, tension_level |
+
+#### 4.3.3 联动巡检规则（每5个 Segment 触发）
+
+| 巡检项 | 预警条件 | 标识 |
+| :--- | :--- | :--- |
+| 吃书检测 | CHR 位置物理距离超合理范围 | ⚠️ [CHR吃书] |
+| 全知预警 | 利用标记为未知的信息 | ❌ [CHR全知] |
+| 情绪断裂 | 差值>4且非特殊突变 | ⚠️ [EMO断裂] |
+| 高位疲劳 | 连续3段 EMO≥8 | ⏭️ [EMO高位疲劳] |
+| 低位拖沓 | 连续3段 EMO≤3 | ⏭️ [EMO低位拖沓] |
+| 伏笔超期 | plan_recycle_seg 超期 | ❌ [FOE超期] |
+| 规则冲突 | WLD 表 S3 状态>0且跨卷 | ❌ [WLD冲突遗留] |
+| 规则膨胀 | WLD 表 S0+S1>10 条未冻结 | ⏭️ [WLD膨胀] |
+| 零件过曝 | 同一零件最近10段出现>3次 | ⏭️ [零件过曝] |
+
+---
+
+### 4.4 行文铁律全集（整合 L1 + 拟人化协议 + L2 + L3）
+
+#### 4.4.1 视角锁定规则
+
+| 篇幅 | 强制视角 | 禁止行为 |
+| :--- | :--- | :--- |
+| SHORT | 第一人称"我" | 删除："我知道/我感到/我意识到/我看到自己/我注意到/我能想象" |
+| MEDIUM/LONG | 第三人称有限（主角姓名或他/她） | 禁止直接描写其他角色内心 |
+
+#### 4.4.2 L1 铁律（16条，违反即重写）
+
+| # | 名称 | 规则 |
+| :--- | :--- | :--- |
+| 1 | 视角锁死 | 按 4.4.1 执行 |
+| 2 | 禁解释癖 | 禁用"这不是…而是…/不是因为…恰恰因为…/这意味着…/换句话说…/其实…" |
+| 3 | 禁烂俗比喻 | 禁用"像刀/阳光/风/水/火/石头"；新颖比喻≤2/千字 |
+| 4 | 禁虚词模糊 | 删除"似乎/仿佛/好像"用于模糊描述（刻意朦胧除外） |
+| 5 | 禁情绪标签 | 不写"他很愤怒"；必须动作/环境/对话呈现（短篇爽虐甜允许直写≤1次/千字） |
+| 6 | 禁连续长句 | 单句≤25字；逗号连接分句≤2个 |
+| 7 | 章末必有钩子 | 未完成动作+意外信息 / 时间压力 / 信息差 |
+| 8 | 对话格式 | SHORT/MEDIUM 用「」独立成段；LONG 用传统引号 |
+| 9 | 对话功能化 | 推进剧情/塑造性格/埋伏笔/制造情绪，否则删除 |
+| 10 | 开篇100字 | 必须是动作或对话，禁环境/背景/独白 |
+| 11 | 结局禁梦 | 禁止"醒来发现是梦/幻觉/游戏" |
+| 12 | 时间线向前 | 除重生/回溯外禁无理由跳跃 |
+| 13 | 行为一致 | 不得无理由 OOC |
+| 14 | 禁逻辑连词 | 删除"首先/其次/然后/最后/总的来说" |
+| 15 | 段落限制 | 每段≤5行（约60字） |
+| 16 | 跨模块铁律 | 仿写/续写必须遵守对应规则 |
+
+#### 4.4.3 拟人化文本构建协议（10条，禁欲系，违反即重写）
+
+| # | 名称 | 规则 |
+| :--- | :--- | :--- |
+| P1 | 物理替代 | 严禁直接情绪形容词；必须转化为具体物理动作或状态 |
+| P2 | 拒绝升华 | 严禁结尾价值观总结/升华/强行圆满；必须在无力感或未完成中戛然而止 |
+| P3 | 沟通失效 | 严禁流畅剧本式对话；必须增加错位感 |
+| P4 | 细节碎片化 | 严禁宏大场景；只捕捉1-2个细微甚至无关的物理碎片 |
+| P5 | 认知反差 | 严禁角色完全透明；必须设置谎言与真相平行线 |
+| P6 | 逻辑自毁 | 严禁严丝合缝因果；允许突兀跳跃或无意义重复 |
+| P7 | 感官钝化 | 严禁华丽比喻；使用低频、干瘪、甚至不适的感官词汇 |
+| P8 | 权力不对等 | 严禁平衡互动；必须塑造极度渴望与极度漠视的双方 |
+| P9 | 时间尺度扭曲 | 严禁标准时间线；通过极小物理动作承载极长时间跨度 |
+| P10 | 自我意识抹除 | 严禁"我意识到/我想起/我感觉到"；直接陈述事实 |
+
+#### 4.4.4 L2 建议（10条，允许偏离但记录）
+
+| # | 建议 | 规则 |
+| :--- | :--- | :--- |
+| 1 | 感官存在 | 每章≥2种感官 |
+| 2 | 共情细节 | 每章≥1个日常小动作 |
+| 3 | 短句比例 | ≤10字短句占30%+ |
+| 4 | 情绪动作化 | 不直接写情绪 |
+| 5 | 潜台词 | 悬疑/虐文优先 |
+| 6 | 长短句交替 | 避免连续5句同长 |
+| 7 | 偶然事件 | 每2-3章1个 |
+| 8 | 日常细节 | 每章1-2处 |
+| 9 | 角色癖好 | 每核心角色≥1个 |
+| 10 | 章节独立 | 每章≥1个情绪变化或信息增量 |
+
+#### 4.4.5 L3 自由选项矩阵（AI 自主决定）
+
+| 选项 | 决定范围 |
+| :--- | :--- |
+| 热梗使用 | 是否使用当前联网热梗 |
+| 伏笔冗余 | 是否埋设永不揭示的冗余伏笔 |
+| 偶然事件 | 是否在非强制节点插入 |
+| 日常细节 | 是否在非强制节点插入 |
+| 比喻使用 | 是否使用比喻（不违 L1-3） |
+| 对话潜台词 | 是否使用潜台词（按情绪建议） |
+
+---
+
+### 4.5 输入与创新管道（M04 融合）
+
+#### 4.5.1 8+2 维度拆解规格
+
+| # | 维度 | 提取目标 |
+| :--- | :--- | :--- |
+| 1 | 钩子结构 | 章末悬念类型 |
+| 2 | 爽点节奏 | 间隔、强度曲线 |
+| 3 | 人设模板 | 标签组合、反差、成长弧 |
+| 4 | 反转模式 | 小/中/大反转触发条件 |
+| 5 | 情绪曲线 | 每章情绪值分布 |
+| 6 | 冲突升级 | 矛盾扩展节奏 |
+| 7 | 信息差管理 | 读者/主角/反派认知三角 |
+| 8 | 金手指节奏 | 获取→解锁→升级→限制节点 |
+| 9 | 开篇结构 | 前三章信息密度 |
+| 10 | 商业化设计 | 付费卡点、免费钩子密度 |
+
+#### 4.5.2 拆书案例库（20 则）
+
+| 编号 | 标签 | 底层原理简写 |
+| :--- | :--- | :--- |
+| C01 | 打脸·短节奏 | 期待→延迟满足→超额兑现 |
+| C02 | 身份反转 | 信息差→日常压抑→爆发点 |
+| C03 | 扮猪吃虎 | 预期管理→反差→释放 |
+| C04 | 虐心·留白 | 情感投入→错位→不可逆 |
+| C05 | 系统流 | 随机性→超预期奖励→反差 |
+| C06 | 重生·复仇 | 信息优势→危机再现→改变选择 |
+| C07 | 修罗场 | 冲突聚集→反逻辑解决 |
+| C08 | 金手指 | 自我认知偏差→外部验证 |
+| C09 | 直播打脸 | 舆论压力→降维打击→反转 |
+| C10 | 救赎 | 脆弱展示→防御→突破 |
+| C11 | 先婚后爱 | 功利契约→日常积累→卑微 |
+| C12 | 规则怪谈 | 规则建立→诱惑→选择 |
+| C13 | 穿书反套路 | 元认知→剧情偏离→蝴蝶效应 |
+| C14 | 玄学预言 | 超自然断言→怀疑→验证 |
+| C15 | 马甲 | 身份分层→日常压抑→阈值突破 |
+| C16 | 团宠身份反差 | 认知错位→过度呵护→真相 |
+| C17 | 末世重生囤物资 | 信息优势→资源掠夺→地位反转 |
+| C18 | 娱乐圈甜 | 公众形象→私下接触→情感泄露 |
+| C19 | 退婚逆袭 | 羞辱→蛰伏→逆袭→拒绝 |
+| C20 | 规则怪谈·日常 | 规则构建→日常→不可抗力违规 |
+
+---
+
+### 4.6 动态角色卡与真实感引擎（M05）
+
+#### 真实感增强池（强制注入）
+
+| 池名 | 频率 | 示例 |
+| :--- | :--- | :--- |
+| 偶然事件表 | 每2-3章1个 | 手机没电、走错路、电梯故障、偶遇旧识、突然下雨、说错话、打翻杯子、记错时间…… |
+| 日常细节池 | 每章1-2处 | 吃什么早餐、外卖等了多久、闹钟响了几次、刷牙出血、堵车、电脑卡顿、回复消息犹豫…… |
+| 角色癖好池 | 每核心角色≥1个 | 咬指甲、转笔、叠纸鹤、反复洗手、喝咖啡不加糖、说话摸鼻子、紧张揪头发…… |
+| 不完美性池 | 每核心角色≥1个 | 近视不戴眼镜、慢性鼻炎、怕冷、晕车、社恐、选择困难、方向感差、脸盲…… |
+
+---
+
+### 4.7 反转与鲜活度模块（M07）
+
+#### 4.7.1 短篇反转快速生成模板（6个，每章必选≥1且至少变异1项）
+
+| 编号 | 模板 | 原结构 | 强制变异要求 |
+| :--- | :--- | :--- | :--- |
+| 1 | 对话反转 | 说A，动作推翻A | 改变动作类型或增加层次 |
+| 2 | 动作反转 | 看似做A实际做B | 改变组合或增加误导 |
+| 3 | 信息反转 | 以为X揭示Y | 细节暗示或Y再反转 |
+| 4 | 身份反转 | 表面 vs 真实 | 增加第三层身份 |
+| 5 | 时间反转 | 以为是现在实为过去/未来 | 多次反转或悖论 |
+| 6 | 规则反转 | 遵守→违反→新规则 | 主角主动触发或意外好处 |
+
+#### 4.7.2 写作前微型拆书强制格式
+
+| 字段 | 填写要求 |
+| :--- | :--- |
+| 本章情绪目标 | 如"挫败+心疼" |
+| 推荐案例1 | 编号 → 底层原理 → 变异问题 |
+| 推荐案例2 | 同上 |
+| 推荐案例3 | 同上 |
+
+#### 4.7.3 鲜活度评分与修正
+
+| 分数 | 评级 | 响应 |
+| :--- | :--- | :--- |
+| 10 | 经典级创造性突破 | 通过 |
+| 8-9 | 明显鲜活瞬间 | 通过 |
+| 6-7 | 有亮点不突出 | 通过 |
+| 4-5 | 机械感强 | 参考融合方案重写至≥6分或尝试3次 |
+| 0-3 | 严重不达标 | 强制重写 |
+
+---
+
+### 4.8 正文管理与仿续模块（M08）
+
+#### 仿写模块 L1 规则
+
+| # | 规则 | 要求 |
+| :--- | :--- | :--- |
+| 1 | 禁复制 | 禁连续5词相同（专名除外） |
+| 2 | 核心改变 | 必须改变时代/性别/关系/结局之一 |
+| 3 | 来源标注 | "仿写自：《xxx》" |
+| 4 | 长度约束 | ±20% |
+| 5 | 格式剥离 | 不保留原文特殊格式 |
+
+#### 续写模块 L1 规则
+
+| # | 规则 | 要求 |
+| :--- | :--- | :--- |
+| 1 | 人设一致 | 与上文完全一致 |
+| 2 | 无缝衔接 | 前200字承接最后一句 |
+| 3 | 钩子延续 | 每章结尾钩子（除指定完结） |
+| 4 | 事实无矛盾 | 禁引入矛盾事实 |
+| 5 | 长度边界 | 不超指定范围20% |
+
+---
+
+### 4.9 自检机制（M09）
+
+#### 逐章自检清单
+
+| 维度 | 检查项 | 未通过处理 |
+| :--- | :--- | :--- |
+| 铁律 | 16+10 条逐条验证 | 自动修正（最多3次） |
+| 建议 | 10条验证 | 记录偏离 |
+| 融合执行 | 是否体现融合方案 | 未体现则标记降级 |
+| 仿写嫌疑 | 与案例连续结构相似>60% | 强制变异重写 |
+| 字数偏差 | >±200字 | 补写或删减 |
+| 句长 | 超25字 | 标记位置 |
+| 短句比例 | <30% | 标记建议 |
+| 对话比例 | 短篇<30%或>70% | 标记建议 |
+| 反转数量 | 未达基准 | 标记缺失 |
+
+---
+
+### 4.10 影视化转制层（M10）
+
+#### 小说转剧本规则（12条 L1）
+
+| # | 规则 | 标准 |
+| :--- | :--- | :--- |
+| 1 | 叙述转动作 | 心理描写转可见动作 |
+| 2 | 对话提纯 | 删无功能对白，前标注角色名 |
+| 3 | 场景划分 | 【场号】地点 - 时间 |
+| 4 | 删评论 | 删"幸运的是"等 |
+| 5 | 时间显式化 | "三天后"→[时间跳转 - 三日] |
+| 6 | 感官转音视 | 嗅觉触觉转画面音效 |
+| 7 | 旁白限制 | 仅限第一人称，每场≤2次 |
+| 8 | 背景转对话 | 背景交代转对话动作 |
+| 9 | 场次功能 | 必须推进剧情/塑造人物/埋伏笔/制造情绪 |
+| 10 | 禁复制 | 必须转换 |
+| 11 | 转换统计 | 原字数、场次、动作/对话占比 |
+| 12 | 镜头限制 | 仅用7标签：[全][中][特][低][高][推][跟] |
+
+#### 剧本切分镜规则（8条）
+
+| # | 规则 | 标准 |
+| :--- | :--- | :--- |
+| 1 | 动作切镜 | 每个独立动作切一镜 |
+| 2 | 台词切镜 | 每句台词切一镜，后可加反应镜 |
+| 3 | 景别默认 | 对话中景，高潮特写，环境全景 |
+| 4 | 时长估算 | 动作2s；对话=字数÷3s；反应1-2s |
+| 5 | 表格输出 | 镜头号、景别、画面、对白、音效、时长 |
+| 6 | 禁风格标签 | 不添加风格化标签 |
+| 7 | 场末统计 | 每场总时长 |
+| 8 | 分镜统计 | 镜头总数、平均时长、景别分布 |
+
+#### 九宫格故事板模板（4套）
+
+| 模板 | 镜头序列 |
+| :--- | :--- |
+| 登场 | 全身正面→面部特写→低角仰→背影上半身→高角俯→侧面中→手部大特→侧后曲线→远景背 |
+| 战斗 | 对峙全景→主角特写→敌人特写→低角跃起→高角俯视→碰撞瞬间→大特击中→落地背影→远景敌倒 |
+| 暧昧 | 双人全景→眼神特写→嘴唇大特→手部接触→侧脸近→过肩对话→背影相依→局部特→环境空镜 |
+| 离别 | 双人远景→面部泪→对方背影→手部松开→高角俯→侧面擦肩→信物大特→独自站立→空镜远去 |
+
+---
+
+### 4.11 数据报告与终止协议（M12）
+
+#### 创作数据报告强制模板
+
+| 模块 | 字段 |
+| :--- | :--- |
+| 一、基础信息 | 篇幅、受众、情绪、总字数、总章数 |
+| 二、结构数据 | 黄金螺旋比例、反转统计（微/中/大/彩蛋） |
+| 三、伏笔回收 | 短中长回收率 |
+| 四、融合创新 | 融合执行率、创造性偏离次数、新增技法列表 |
+| 五、自检结果 | 铁律修正次数、L2偏离次数、仿写修正、鲜活重写 |
+| 六、影视化记录 | 转剧本数据、分镜数据、九宫格有无、抽卡变体数 |
+
+**终止声明**：输出报告后，NEXUS OS v2.0 会话结束。所有输出均为草稿，需人工修改。
+
+---
+
+## 叙事参数 M03
+
+| 篇幅 | 总字数 | 视角 | 黄金螺旋 | 反转要求 |
+| :--- | :--- | :--- | :--- | :--- |
+| SHORT | 6k-15k | 第一人称"我" | 拉15/扯50/放25/收10 | 章≥3微反转 |
+| MEDIUM | 15k-50k | 第三人称有限 | 拉10/扯65/放18/收7 | 章≥1微，3章≥1中 |
+| LONG | 50k-200k | 第三人称有限 | 拉5/扯75/放15/收5 | 章≥1微，5章≥1中 |
+
+---
+
+## 输出规格
+
+事实核查：真值奇点→全维真值矩阵→案例解剖→绝对因果链。
+创作任务：直接输出正文，禁止任何前言后语和解释。
+
+【续写协议】
+- 若任务中断，可根据已有内容继续生成
+- 续写时从最后章节继续，保持风格一致
+- 不重复已写内容，直接衔接
+- 写完后自动输出[完稿]标记触发自动导出`;
+
+const BATCH_PROMPTS = {
+  short: {
+    name: '短篇小说自动化',
+    steps: ['M04A 拆解爆款案例库', 'M04B 多源融合变异', 'M04C 变量切入创新', 'M06 行文约束引擎应用', '输出完整短篇正文'],
+    prompt: `执行 NEXUS OS SHORT 流水线。
+【写作前拆书】（必须先完成）
+| 本章情绪目标 | [如"悬疑+反转+挫败"] |
+| 推荐案例1 | 来源 → 底层原理 → 变异问题 |
+| 推荐案例2 | 来源 → 底层原理 → 变异问题 |
+
+【创作参数】
+- 字数：6k-15k
+- 视角：第一人称"我"
+- 题材：悬疑/反转
+- 情绪：挫败+意外
+
+【L1铁律】（严格遵守）
+1. 视角锁死：第一人称禁"我知道/我感到/我意识到"
+2. 禁解释癖：禁用"这不是…而是…/其实…/换句话说…"
+3. 禁情绪标签：必须用动作/环境/对话呈现
+4. 禁连续长句：单句≤25字，逗号≤2个
+5. 章末必有钩子：未完成动作+意外信息
+6. 开篇100字内：动作或对话开头
+7. 每段≤5行（约60字）
+8. 禁烂俗比喻：禁"像刀/阳光/风/水/火/石头"
+9. 结局禁梦：禁止"醒来发现是梦"
+10. 对话用「」独立成段
+
+【L2建议】
+- 感官存在：每章≥2种感官
+- 短句比例：≤10字短句占30%+
+- 偶然事件：每2-3章1个
+
+【输出流程】
+1. 输出【融合方案】（200字内）
+2. 直接输出完整短篇小说正文
+3. 禁止任何前言后语
+4. 写完后自动输出[完稿]标记`
+  },
+  medium: {
+    name: '中篇小说自动化',
+    steps: ['M04A 多维度拆解', '双线叙事结构设计', '伏笔网FOE铺设', 'M06 行文约束引擎应用', '输出详细大纲', '输出前三章正文'],
+    prompt: `执行 NEXUS OS MEDIUM 流水线。
+【写作前拆书】（必须先完成）
+| 本章情绪目标 | [如"虐心+反转+心疼"] |
+| 推荐案例1 | 来源 → 底层原理 → 变异问题 |
+| 推荐案例2 | 来源 → 底层原理 → 变异问题 |
+
+【创作参数】
+- 字数：15k-50k
+- 视角：第三人称有限
+- 结构：双线叙事
+
+【L1铁律】（严格遵守）
+1. 视角锁死：第三人称有限禁写他人内心
+2. 禁解释癖、情绪标签、连续长句
+3. 章末必有钩子
+4. 开篇100字动作/对话
+5. 每段≤5行
+6. 对话用「」独立成段
+7. 结局禁梦
+8. 禁逻辑连词"首先/其次/然后/最后"
+
+【L2建议】
+- 感官存在、情绪动作化
+- 潜台词优先（虐文）
+- 长短句交替
+
+【输出流程】
+1. 输出【融合方案】（300字内）
+2. 输出【详细大纲】含：
+   - 分章结构
+   - 双线交织节点
+   - 伏笔表FOE
+   - 情绪曲线EMO
+3. 输出【前三章完整正文】
+4. 禁止废话，禁止前言后语
+5. 写完后自动输出[完稿]标记`
+  },
+  long: {
+    name: '长篇小说架构自动化',
+    steps: ['世界观WLD表构建', '角色状态机CHR表', '伏笔网FOE表', '情绪弧EMO表', '前五卷结构卡', 'M06 行文约束引擎应用', '第一章正文输出'],
+    prompt: `执行 NEXUS OS LONG 流水线。
+【创作参数】
+- 字数：50k-200k
+- 视角：第三人称有限
+- 阶段：觉醒→启蒙→成长→蜕变→巅峰→超越
+
+【必须输出结构化表格】
+1.【WLD世界观表】
+| 规则ID | 状态(S0-S5) | 当前版本 | 扩展历史 |
+
+2.【CHR角色状态机表】
+| 角色ID | 生命周期状态 | 已知信息 | 未知信息 | 关系变化 |
+
+3.【FOE伏笔网表】
+| 伏笔ID | 状态(S0-S3) | 计划回收章节 | 揭示方式 |
+
+4.【EMO情绪弧表】
+| 章节区间 | 情绪值(1-10) | 钩子类型 | 张力等级 |
+
+5.【前五卷结构卡】
+| 卷号 | 核心冲突 | 重大挫折 | 反转节点 |
+
+【L1铁律】（严格遵守）
+1. 视角锁死：第三人称有限
+2. 禁解释癖、情绪标签
+3. 单句≤25字，每段≤5行
+4. 章末必有钩子
+5. 开篇动作/对话
+6. 对话用「」独立成段
+7. 结局禁梦
+8. 时间线向前（除重生/回溯）
+
+【L2建议】
+- 感官存在、角色癖好
+- 日常细节每章1-2处
+- 偶然事件每2-3章1个
+
+【输出流程】
+1. 输出全部结构化表格
+2. 输出【第一章完整正文】
+3. 禁止废话，禁止前言后语
+4. 写完后自动输出[完稿]标记`
+  },
+  script: {
+    name: '影视剧本转制',
+    steps: ['文本结构分析', '场景切分', '叙述转动作', '对话提纯', '镜头标签标注', '输出标准剧本'],
+    prompt: `激活 M10 影视化转制层。
+【任务】
+将以下文本转为标准影视剧本格式。
+
+【转制规则】
+1. 场景划分：【场号】地点 - 时间
+2. 叙述转可见动作，删无功能对白
+3. 删"幸运的是"等评论词
+4. 时间显式化："三天后"→[时间跳转 - 三日]
+5. 感官转音视描述
+6. 镜头标签：[全][中][特][低][高][推][跟]
+7. 每场必须推进剧情或塑造人物
+8. 对话默认中景，高潮特写，环境全景
+9. 时长：动作2s，对话=字数÷3s，反应1-2s
+
+【输出格式】
+场号 | 景别 | 画面内容 | 对话 | 音效 | 时长
+`
+    },
+    storyboard: {
+      name: '分镜自动切分',
+      steps: ['场景动作拆解', '镜头切分', '景别分配', '时长估算', '输出分镜表'],
+      prompt: '激活 M10 剧本分镜规则。【任务】基于场景描述，输出专业分镜表。【分镜规则】每个独立动作切一镜，每句台词切一镜后加反应镜，场末统计总时长。【输出格式】Markdown表格无代码块标记。表格列：镜头号 | 景别 | 画面内容 | 对白 | 音效 | 时长'
+    }
+};
+
+const API_PRESETS = {
+  openai: 'https://api.openai.com/v1/chat/completions',
+  claude: 'https://your-proxy.com/v1/chat/completions',
+  gemini: 'https://your-proxy.com/v1/chat/completions',
+  deepseek: 'https://api.deepseek.com/v1/chat/completions',
+  qwen: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+  kimi: 'https://api.moonshot.cn/v1/chat/completions',
+  glm: 'https://open.bigmodel.cn/api/paas/v4/chat/completions',
+  glm_coding: 'https://open.bigmodel.cn/api/coding/paas/v4/chat/completions',
+  doubao: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+  minimax: 'https://api.minimaxi.chat/v1/text/chatcompletion_v2',
+  ernie: 'https://qianfan.baidubce.com/v2/chat/completions',
+  spark: 'https://spark-api-open.xf-yun.com/v2/chat/completions',
+  hunyuan: 'https://hunyuan.tencentcloudapi.com',
+  grok: 'https://api.x.ai/v1/chat/completions',
+  cohere: 'https://api.cohere.ai/v1/chat',
+  mistral: 'https://api.mistral.ai/v1/chat/completions',
+  silicon: 'https://api.siliconflow.cn/v1/chat/completions',
+  router: 'https://openrouter.ai/api/v1/chat/completions',
+  openai_compat: 'https://your-openai-compatible-endpoint/v1/chat/completions',
+  anthropic_compat: 'https://your-anthropic-compatible-endpoint/v1/chat/completions',
+  azure: 'https://YOUR_RESOURCE.openai.azure.com/openai/deployments/YOUR_DEPLOYMENT/chat/completions?api-version=2024-02-15-preview'
+};
+
+const MODEL_OPTIONS = [
+  { label: '━━ OpenAI ━━', options: [
+    { value: 'gpt-5.4-thinking', text: 'GPT-5.4 Thinking (旗舰推理)' },
+    { value: 'gpt-5.3-instant', text: 'GPT-5.3 Instant (旗舰)' },
+    { value: 'gpt-5.2-thinking', text: 'GPT-5.2 Thinking' },
+    { value: 'gpt-5.2-instant', text: 'GPT-5.2 Instant' },
+    { value: 'gpt-5.1-thinking', text: 'GPT-5.1 Thinking' },
+    { value: 'gpt-5.1-instant', text: 'GPT-5.1 Instant' },
+    { value: 'gpt-5.4-mini', text: 'GPT-5.4 mini' },
+    { value: 'gpt-5.3-codex', text: 'GPT-5.3-Codex (编程)' },
+    { value: 'gpt-4.1', text: 'GPT-4.1 (100万上下文)' },
+    { value: 'gpt-4.1-mini', text: 'GPT-4.1 mini' },
+    { value: 'gpt-4.1-nano', text: 'GPT-4.1 nano' },
+    { value: 'gpt-4o', text: 'GPT-4o (多模态)' },
+    { value: 'gpt-4o-mini', text: 'GPT-4o-mini (轻量)' },
+    { value: 'o3', text: 'o3 (深度推理)' },
+    { value: 'o4-mini', text: 'o4-mini (轻量推理)' },
+    { value: 'o4-mini-high', text: 'o4-mini-high' },
+  ]},
+  { label: '━━ Anthropic Claude (需代理) ━━', options: [
+    { value: 'claude-opus-4-20260220', text: 'Claude Opus 4 (最新)' },
+    { value: 'claude-sonnet-4-20260220', text: 'Claude Sonnet 4' },
+    { value: 'claude-haiku-4-20260220', text: 'Claude Haiku 4' },
+    { value: 'claude-3-5-sonnet-20241022', text: 'Claude 3.5 Sonnet' },
+    { value: 'claude-3-5-haiku-20241022', text: 'Claude 3.5 Haiku' },
+    { value: 'claude-3-opus-20240229', text: 'Claude 3 Opus' },
+    { value: 'claude-3-sonnet-20240229', text: 'Claude 3 Sonnet' },
+  ]},
+  { label: '━━ Google Gemini (需代理) ━━', options: [
+    { value: 'gemini-2.5-pro', text: 'Gemini 2.5 Pro' },
+    { value: 'gemini-2.5-flash', text: 'Gemini 2.5 Flash' },
+    { value: 'gemini-2.0-flash-exp', text: 'Gemini 2.0 Flash (实验)' },
+    { value: 'gemini-1.5-pro', text: 'Gemini 1.5 Pro' },
+    { value: 'gemini-1.5-flash', text: 'Gemini 1.5 Flash' },
+  ]},
+  { label: '━━ xAI Grok (需代理) ━━', options: [
+    { value: 'grok-3', text: 'Grok-3' },
+    { value: 'grok-3-beta', text: 'Grok-3 Beta' },
+    { value: 'grok-2', text: 'Grok-2' },
+    { value: 'grok-2-vision-1212', text: 'Grok-2 Vision' },
+    { value: 'grok-beta', text: 'Grok-beta' },
+  ]},
+  { label: '━━ DeepSeek ━━', options: [
+    { value: 'deepseek-chat-v3', text: 'DeepSeek-V3 (最新)' },
+    { value: 'deepseek-reasoner-r2', text: 'DeepSeek-R2 (推理)' },
+    { value: 'deepseek-reasoner', text: 'DeepSeek-R1 (推理)' },
+    { value: 'deepseek-coder', text: 'DeepSeek-Coder' },
+    { value: 'deepseek-chat', text: 'DeepSeek-Chat' },
+  ]},
+  { label: '━━ 智谱 GLM ━━', options: [
+    { value: 'glm-5.1', text: 'GLM-5.1 (最新旗舰)' },
+    { value: 'glm-5', text: 'GLM-5 (开源旗舰)' },
+    { value: 'glm-5-turbo', text: 'GLM-5-Turbo (龙虾增强)' },
+    { value: 'glm-5v-turbo', text: 'GLM-5V-Turbo (多模态编程)' },
+    { value: 'glm-4.7', text: 'GLM-4.7' },
+    { value: 'glm-4-plus', text: 'GLM-4-Plus' },
+    { value: 'glm-4-air-250414', text: 'GLM-4-Air-250414' },
+    { value: 'glm-4-airx', text: 'GLM-4-AirX' },
+    { value: 'glm-4-flashx-250414', text: 'GLM-4-FlashX' },
+    { value: 'glm-4-flash-250414', text: 'GLM-4-Flash' },
+    { value: 'glm-4v', text: 'GLM-4V (视觉)' },
+    { value: 'glm-4', text: 'GLM-4' },
+    { value: 'glm-3-turbo', text: 'GLM-3-Turbo' },
+  ]},
+  { label: '━━ 智谱 GLM Coding Plan ━━', options: [
+    { value: 'glm-5.1', text: 'GLM-5.1 (编程旗舰)' },
+    { value: 'glm-5-turbo-coding', text: 'GLM-5-Turbo (编程)' },
+    { value: 'glm-4.7', text: 'GLM-4.7 (编程)' },
+    { value: 'glm-4.6', text: 'GLM-4.6 (轻量编程)' },
+  ]},
+  { label: '━━ 阿里 通义千问 ━━', options: [
+    { value: 'qwen-max', text: 'Qwen-Max (旗舰)' },
+    { value: 'qwen-plus', text: 'Qwen-Plus' },
+    { value: 'qwen-turbo', text: 'Qwen-Turbo' },
+    { value: 'qwen-long', text: 'Qwen-Long (长文本)' },
+    { value: 'qwen-vl-plus', text: 'Qwen-VL-Plus (视觉)' },
+    { value: 'qwen-vl-max', text: 'Qwen-VL-Max (视觉)' },
+    { value: 'qwen2.5-72b-instruct', text: 'Qwen2.5-72B' },
+    { value: 'qwen2.5-coder-32b', text: 'Qwen2.5-Coder-32B' },
+    { value: 'qwen2.5-math-72b', text: 'Qwen2.5-Math-72B' },
+  ]},
+  { label: '━━ Moonshot Kimi ━━', options: [
+    { value: 'kimi-k2.5', text: 'Kimi K2.5 (最新)' },
+    { value: 'kimi-k2', text: 'Kimi K2' },
+    { value: 'moonshot-v1-128k', text: 'Moonshot V1-128K' },
+    { value: 'moonshot-v1-32k', text: 'Moonshot V1-32K' },
+    { value: 'moonshot-v1-8k', text: 'Moonshot V1-8K' },
+  ]},
+  { label: '━━ 豆包 火山引擎 ━━', options: [
+    { value: 'doubao-pro-32k', text: 'Doubao Pro-32K' },
+    { value: 'doubao-pro-128k', text: 'Doubao Pro-128K' },
+    { value: 'doubao-lite-32k', text: 'Doubao Lite-32K' },
+    { value: 'doubao-visual', text: 'Doubao 视觉理解' },
+    { value: 'doubao-music', text: 'Doubao 音乐生成' },
+  ]},
+  { label: '━━ MiniMax ━━', options: [
+    { value: 'minimax-m2.5', text: 'MiniMax M2.5 (最新)' },
+    { value: 'minimax-m2', text: 'MiniMax M2' },
+    { value: 'abab6.5s-chat', text: 'ABAB6.5S-Chat' },
+    { value: 'abab6.5-chat', text: 'ABAB6.5-Chat' },
+    { value: 'abab5.5-chat', text: 'ABAB5.5-Chat' },
+  ]},
+  { label: '━━ 百度 文心一言 ━━', options: [
+    { value: 'ernie-5.0', text: 'ERNIE 5.0 (旗舰)' },
+    { value: 'ernie-4.0-8k', text: 'ERNIE 4.0-8K' },
+    { value: 'ernie-4.0-turbo-8k', text: 'ERNIE 4.0-Turbo-8K' },
+    { value: 'ernie-speed-128k', text: 'ERNIE-Speed-128K' },
+    { value: 'ernie-lite-8k', text: 'ERNIE-Lite-8K' },
+  ]},
+  { label: '━━ 讯飞 星火 ━━', options: [
+    { value: 'spark-max', text: 'Spark-Max' },
+    { value: 'spark-pro', text: 'Spark-Pro' },
+    { value: 'spark-lite', text: 'Spark-Lite' },
+  ]},
+  { label: '━━ 腾讯 混元 ━━', options: [
+    { value: 'hunyuan-pro', text: 'Hunyuan-Pro' },
+    { value: 'hunyuan-standard', text: 'Hunyuan-Standard' },
+    { value: 'hunyuan-lite', text: 'Hunyuan-Lite' },
+  ]},
+  { label: '━━ Mistral ━━', options: [
+    { value: 'mistral-large-latest', text: 'Mistral-Large (最新)' },
+    { value: 'mistral-medium-latest', text: 'Mistral-Medium' },
+    { value: 'mistral-small-latest', text: 'Mistral-Small' },
+    { value: 'codestral-latest', text: 'Codestral (代码)' },
+    { value: 'open-mistral-7b', text: 'Open-Mistral-7B' },
+    { value: 'mistral-nemo', text: 'Mistral-Nemo' },
+  ]},
+  { label: '━━ Cohere ━━', options: [
+    { value: 'command-r-plus', text: 'Command-R-Plus' },
+    { value: 'command-r', text: 'Command-R' },
+    { value: 'command', text: 'Command' },
+    { value: 'command-a', text: 'Command-A' },
+  ]},
+  { label: '━━ 硅基流动 SiliconCloud (OpenAI兼容) ━━', options: [
+    { value: 'Qwen/Qwen2.5-72B-Instruct', text: 'Qwen2.5-72B-Instruct' },
+    { value: 'deepseek-ai/DeepSeek-V3', text: 'DeepSeek-V3' },
+    { value: 'deepseek-ai/DeepSeek-R1', text: 'DeepSeek-R1' },
+    { value: 'THUDM/glm-4-9b-chat', text: 'GLM-4-9B-Chat' },
+    { value: 'mistralai/Mistral-7B-Instruct', text: 'Mistral-7B-Instruct' },
+    { value: 'Pro/deepseek-ai/DeepSeek-R1', text: 'DeepSeek-R1-Pro' },
+    { value: 'THUDM/GLM-4-9B', text: 'GLM-4-9B' },
+  ]},
+  { label: '━━ OpenRouter (OpenAI兼容) ━━', options: [
+    { value: 'openrouter/auto', text: 'Auto (自动选择最优)' },
+    { value: 'openrouter/openai/gpt-4o', text: 'GPT-4o' },
+    { value: 'openrouter/openai/o3', text: 'o3' },
+    { value: 'openrouter/anthropic/claude-opus-4', text: 'Claude Opus 4' },
+    { value: 'openrouter/google/gemini-2.0-flash', text: 'Gemini 2.0 Flash' },
+    { value: 'openrouter/deepseek/deepseek-chat-v3', text: 'DeepSeek-V3' },
+  ]},
+  { label: '━━ AWS Bedrock (Claude兼容) ━━', options: [
+    { value: 'anthropic.claude-opus-4-20260220', text: 'Claude Opus 4 (Bedrock)' },
+    { value: 'anthropic.claude-sonnet-4-20260220', text: 'Claude Sonnet 4 (Bedrock)' },
+    { value: 'anthropic.claude-haiku-4-20260220', text: 'Claude Haiku 4 (Bedrock)' },
+    { value: 'amazon.nova-pro', text: 'Nova Pro' },
+    { value: 'amazon.nova-lite', text: 'Nova Lite' },
+  ]},
+  { label: '━━ Azure OpenAI ━━', options: [
+    { value: 'azure/gpt-5.4-thinking', text: 'Azure GPT-5.4 Thinking' },
+    { value: 'azure/gpt-5.3-instant', text: 'Azure GPT-5.3 Instant' },
+    { value: 'azure/gpt-4o', text: 'Azure GPT-4o' },
+    { value: 'azure/gpt-4o-mini', text: 'Azure GPT-4o-mini' },
+    { value: 'azure/gpt-4-turbo', text: 'Azure GPT-4-Turbo' },
+  ]},
+];
+
+let state = {
+  activeId: null,
+  convs: [],
+  cfg: {
+    url: '',
+    key: '',
+    model: 'deepseek-chat',
+    compressThreshold: 24,
+    windowSize: 20,
+    maxTokens: 4096,
+    temperature: 0.7,
+    theme: '',
+    stream: true,
+    autoScroll: true,
+    compact: false,
+    sound: false
+  }
+};
+
+let isStreaming = false;
+let abortController = null;
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('nexus_os_v3');
+    if (raw) {
+      const s = JSON.parse(raw);
+      state = { ...state, ...s };
+      if (!state.cfg.compressThreshold) state.cfg.compressThreshold = 24;
+      if (!state.cfg.windowSize) state.cfg.windowSize = 20;
+      if (!state.cfg.maxTokens) state.cfg.maxTokens = 4096;
+      if (state.cfg.temperature === undefined) state.cfg.temperature = 0.7;
+    }
+  } catch (e) { console.warn('加载状态失败', e); }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem('nexus_os_v3', JSON.stringify(state));
+  } catch (e) { console.warn('保存状态失败', e); }
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  renderConvList();
+  
+  populateModelSelect();
+  
+  document.getElementById('apiUrl').value = state.cfg.url;
+  document.getElementById('apiKey').value = state.cfg.key;
+  document.getElementById('apiModel').value = state.cfg.model;
+  document.getElementById('modelInput').value = state.cfg.model;
+  document.getElementById('compressThreshold').value = state.cfg.compressThreshold;
+  document.getElementById('windowSize').value = state.cfg.windowSize;
+  document.getElementById('maxTokens').value = state.cfg.maxTokens || 4096;
+  document.getElementById('temperature').value = state.cfg.temperature || 0.7;
+  
+  document.getElementById('prefStream').checked = state.cfg.stream !== false;
+  document.getElementById('prefAutoScroll').checked = state.cfg.autoScroll === true;
+  document.getElementById('prefCompact').checked = state.cfg.compact === true;
+  document.getElementById('prefSound').checked = state.cfg.sound === true;
+  
+  setTheme(state.cfg.theme || '');
+  applyCompact(state.cfg.compact);
+  updateModelChip();
+  updateThemeButtons();
+
+  if (state.convs.length === 0) {
+    createConv(true);
+  } else {
+    if (!state.activeId || !state.convs.find(c => c.id === state.activeId)) {
+      state.activeId = state.convs[0].id;
+    }
+    selectConv(state.activeId, false);
+  }
+
+  document.addEventListener('keydown', handleGlobalKey);
+  
+  if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    const inputArea = document.getElementById('inputArea');
+    const chatArea = document.getElementById('chatArea');
+    
+    document.getElementById('userInput').addEventListener('focus', () => {
+      setTimeout(() => {
+        const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        const inputTop = inputArea.getBoundingClientRect().top;
+        chatArea.style.paddingBottom = (vh - inputTop + 10) + 'px';
+        chatArea.scrollTop = chatArea.scrollHeight;
+      }, 300);
+    });
+
+    document.getElementById('userInput').addEventListener('blur', () => {
+      setTimeout(() => {
+        chatArea.style.paddingBottom = '14px';
+      }, 100);
+    });
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', () => {
+        if (document.activeElement === document.getElementById('userInput')) {
+          const vh = window.visualViewport.height;
+          const inputTop = inputArea.getBoundingClientRect().top;
+          chatArea.style.paddingBottom = (vh - inputTop + 10) + 'px';
+          chatArea.scrollTop = chatArea.scrollHeight;
+        }
+      });
+    }
+  }
+});
+
+function handleGlobalKey(e) {
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); createConv(); toggleSidebar(false); }
+  if (e.ctrlKey && e.key === 'b') { e.preventDefault(); toggleSidebar(); }
+  if (e.key === 'Escape' && isStreaming) { stopStream(); }
+  if (e.ctrlKey && e.key === 'l') { e.preventDefault(); clearInput(); }
+}
+
+function toggleSidebar(force) {
+  const sidebar = document.getElementById('sidebar');
+  if (force !== undefined) {
+    sidebar.classList.toggle('open', force);
+  } else {
+    sidebar.classList.toggle('open');
+  }
+}
+
+function openPopup(id) {
+  const el = document.getElementById(id);
+  el.classList.add('show');
+  if (id === 'memPopup') fillMemPopup();
+  if (id === 'smPopup') fillSmPopup();
+  if (id === 'statsPopup') fillStatsPopup();
+  if (id === 'modelPopup') {
+    populateModelSelect();
+    document.getElementById('modelInput').value = state.cfg.model;
+  }
+  if (id === 'prefPopup') loadPrefs();
+}
+
+function closePopup(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+function updateModelChip() {
+  const chip = document.getElementById('modelChip');
+  const dot = document.getElementById('modelStatus');
+  const modelName = state.cfg.model || '未配置';
+  chip.innerHTML = `<span class="status-dot ${state.cfg.url && state.cfg.key ? 'online' : 'offline'}"></span>${modelName}`;
+}
+
+function autoGrow(el) {
+  el.style.height = '42px';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  const len = el.value.length;
+  const tokens = Math.ceil(len / 1.5);
+  document.getElementById('tokenEst').textContent = tokens > 0 ? `~${tokens} tokens` : '';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    if (isStreaming) return;
+    send();
+  }
+}
+
+function setPreset(key) {
+  document.getElementById('apiUrl').value = API_PRESETS[key] || '';
+}
+
+function saveApi() {
+  state.cfg.url = document.getElementById('apiUrl').value.trim();
+  state.cfg.key = document.getElementById('apiKey').value.trim();
+  const apiModelVal = document.getElementById('apiModel').value.trim();
+  if (apiModelVal) state.cfg.model = apiModelVal;
+  state.cfg.compressThreshold = parseInt(document.getElementById('compressThreshold').value) || 24;
+  state.cfg.windowSize = parseInt(document.getElementById('windowSize').value) || 20;
+  state.cfg.maxTokens = parseInt(document.getElementById('maxTokens').value) || 4096;
+  state.cfg.temperature = parseFloat(document.getElementById('temperature').value) || 0.7;
+  saveState();
+  updateModelChip();
+}
+
+function populateModelSelect() {
+  const sel = document.getElementById('modelSelect');
+  if (!sel) return;
+  sel.innerHTML = '';
+  MODEL_OPTIONS.forEach(group => {
+    const optgroup = document.createElement('optgroup');
+    optgroup.label = group.label;
+    group.options.forEach(opt => {
+      const option = document.createElement('option');
+      option.value = opt.value;
+      option.textContent = opt.text;
+      optgroup.appendChild(option);
+    });
+    sel.appendChild(optgroup);
+  });
+}
+
+function syncModelSelect() {
+  const sel = document.getElementById('modelSelect');
+  const input = document.getElementById('modelInput');
+  if (sel && input) {
+    input.value = sel.value;
+  }
+}
+
+function saveModel() {
+  state.cfg.model = document.getElementById('modelInput').value.trim();
+  saveState();
+  updateModelChip();
+}
+
+function savePrefs() {
+  state.cfg.theme = document.querySelector('.theme-btn.active')?.dataset.theme || '';
+  state.cfg.stream = document.getElementById('prefStream').checked;
+  state.cfg.autoScroll = document.getElementById('prefAutoScroll').checked;
+  state.cfg.compact = document.getElementById('prefCompact').checked;
+  state.cfg.sound = document.getElementById('prefSound').checked;
+  saveState();
+  setTheme(state.cfg.theme);
+  applyCompact(state.cfg.compact);
+  showToast('偏好已保存', 'success');
+}
+
+function loadPrefs() {
+  document.getElementById('prefStream').checked = state.cfg.stream !== false;
+  document.getElementById('prefAutoScroll').checked = state.cfg.autoScroll === true;
+  document.getElementById('prefCompact').checked = state.cfg.compact === true;
+  document.getElementById('prefSound').checked = state.cfg.sound === true;
+  updateThemeButtons();
+}
+
+function setTheme(theme) {
+  document.body.className = theme ? `app ${theme}` : 'app';
+  state.cfg.theme = theme;
+  saveState();
+  updateThemeButtons();
+}
+
+function updateThemeButtons() {
+  document.querySelectorAll('[id^="theme-"]').forEach(btn => {
+    btn.classList.toggle('active', btn.id === 'theme-' + (state.cfg.theme || 'default') || (state.cfg.theme === '' && btn.id === 'theme-default'));
+  });
+}
+
+function applyCompact(compact) {
+  document.getElementById('chatArea').style.gap = compact ? '2px' : '6px';
+  document.getElementById('chatArea').style.padding = compact ? '8px 12px' : '14px 12px';
+}
+
+async function testApi() {
+  const res = document.getElementById('testResult');
+  saveApi();
+  if (!state.cfg.url || !state.cfg.key) {
+    res.innerHTML = '<span style="color:var(--danger)">[ERROR] URL 和 KEY 不能为空</span>';
+    return;
+  }
+  res.innerHTML = '<span style="color:var(--warn)">[TESTING] 正在握手...</span>';
+  try {
+    const response = await fetch(state.cfg.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${state.cfg.key}`
+      },
+      body: JSON.stringify({
+        model: state.cfg.model,
+        messages: [{ role: 'user', content: 'hi' }],
+        max_tokens: 5,
+        stream: false
+      })
+    });
+    if (response.ok) {
+      res.innerHTML = '<span style="color:var(--ok)">[SUCCESS] 链路通畅，模型可用</span>';
+      updateModelChip();
+    } else {
+      let errMsg = `HTTP ${response.status}`;
+      try {
+        const errJson = await response.json();
+        errMsg = errJson.error?.message || errJson.message || errMsg;
+      } catch (e) {}
+      res.innerHTML = `<span style="color:var(--danger)">[FAIL] ${errMsg}</span>`;
+    }
+  } catch (e) {
+    res.innerHTML = `<span style="color:var(--danger)">[NET_ERR] ${e.message}</span>`;
+  }
+}
+
+function createConv(silent) {
+  const id = 'c_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+  const conv = {
+    id,
+    title: '新建对话域',
+    msgs: [],
+    summary: '',
+    smData: null,
+    createdAt: Date.now(),
+    batchType: null
+  };
+  state.convs.unshift(conv);
+  state.activeId = id;
+  saveState();
+  renderConvList();
+  selectConv(id, !silent);
+  if (!silent) toggleSidebar(false);
+  return conv;
+}
+
+function selectConv(id, scrollToBottom) {
+  state.activeId = id;
+  saveState();
+  renderConvList();
+  const conv = getActiveConv();
+  if (!conv) return;
+  document.getElementById('topTitle').textContent = conv.title;
+  renderChat(scrollToBottom !== false);
+}
+
+function deleteConv(id, ev) {
+  ev.stopPropagation();
+  state.convs = state.convs.filter(c => c.id !== id);
+  if (state.activeId === id) {
+    if (state.convs.length > 0) {
+      state.activeId = state.convs[0].id;
+      selectConv(state.activeId);
+    } else {
+      createConv(true);
+    }
+  }
+  saveState();
+  renderConvList();
+}
+
+function getActiveConv() {
+  return state.convs.find(c => c.id === state.activeId);
+}
+
+function renderConvList() {
+  const box = document.getElementById('convList');
+  if (state.convs.length === 0) {
+    box.innerHTML = '<div class="empty">暂无对话</div>';
+    return;
+  }
+  box.innerHTML = state.convs.map(c => {
+    const msgCount = c.msgs.length;
+    const sub = c.batchType ? `[${c.batchType}] ${msgCount}条` : `${msgCount}条消息`;
+    const isActive = c.id === state.activeId;
+    return `<div class="conv-item ${isActive ? 'active' : ''}" onclick="selectConv('${c.id}')">
+      <div class="icon">${c.batchType ? '⚡' : '◇'}</div>
+      <div class="info">
+        <div class="name">${escHtml(c.title)}</div>
+        <div class="sub">${sub}</div>
+      </div>
+      <button class="del" onclick="deleteConv('${c.id}',event)" title="删除">×</button>
+    </div>`;
+  }).join('');
+}
+
+function renderChat(scrollToBottom) {
+  const conv = getActiveConv();
+  const box = document.getElementById('chatArea');
+  const welcome = document.getElementById('welcomeBox');
+
+  if (!conv || conv.msgs.length === 0) {
+    box.innerHTML = '';
+    box.appendChild(createWelcomeEl());
+    return;
+  }
+
+  let html = '';
+  conv.msgs.forEach((m, i) => {
+    const isUser = m.role === 'user';
+    const avatar = isUser ? 'U' : 'N';
+    const roleLabel = isUser ? 'USER' : 'NEXUS';
+    const timeStr = m.time ? new Date(m.time).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }) : '';
+    const wordCount = m.content ? m.content.length : 0;
+
+    html += `<div class="msg ${isUser ? 'user' : 'ai'}" id="msg_${i}">
+      <div class="msg-avatar">${avatar}</div>
+      <div class="msg-body">
+        <div class="msg-meta">
+          <span>${roleLabel}</span>
+          <span>${timeStr}</span>
+          <span>${wordCount}字</span>
+        </div>
+        <div class="msg-bubble" id="bubble_${i}">${renderMd(m.content || '')}</div>
+        <div class="msg-actions">
+          <button class="msg-act-btn" onclick="copyMsg(${i})">复制</button>
+          ${!isUser ? `<button class="msg-act-btn" onclick="retryMsg(${i})">重试</button>
+          <button class="msg-act-btn" onclick="continueFrom(${i})">续写</button>` : ''}
+          <button class="msg-act-btn" onclick="deleteMsg(${i})">删除</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  box.innerHTML = html;
+  if (scrollToBottom !== false && state.cfg.autoScroll) {
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+function createWelcomeEl() {
+  const div = document.createElement('div');
+  div.className = 'chat-welcome';
+  div.id = 'welcomeBox';
+  div.innerHTML = `<h2>超无穹 · 真值引擎</h2>
+    <p>配置 API 后选择流水线启动<br>或直接输入指令开始对话</p>
+    <div class="glow-line" style="max-width:200px;margin:20px auto"></div>
+    <p style="font-size:10px;color:var(--sec2)">NEXUS OS v3.0 叙事工程全域执行域<br>破碎优于流畅 · 真相优于安全</p>
+    <div style="margin-top:20px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+      <span class="tag tag-accent">支持 18+ 模型商</span>
+      <span class="tag tag-accent">流式输出</span>
+      <span class="tag tag-accent">多主题</span>
+    </div>`;
+  return div;
+}
+
+function escHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function renderMd(text) {
+  if (!text) return '';
+  let html = escHtml(text);
+  
+  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="md-codeblock"><code>$2</code></pre>');
+  html = html.replace(/`([^`]+)`/g, '<span class="md-code">$1</span>');
+  html = html.replace(/^### (.+)$/gm, '<div class="md-h3">$1</div>');
+  html = html.replace(/^## (.+)$/gm, '<div class="md-h2">$1</div>');
+  html = html.replace(/\*\*(.+?)\*\*/g, '<span class="md-strong">$1</span>');
+  html = html.replace(/^> (.+)$/gm, '<div class="md-blockquote">$1</div>');
+  
+  html = html.replace(/^\|(.+)\|$/gm, (match, content) => {
+    const cells = content.split('|').map(c => c.trim());
+    if (cells.every(c => c.match(/^-+$/))) return '';
+    const isHeader = html.indexOf(match) < 100 && !html.substring(0, html.indexOf(match)).match(/\|.+\|/);
+    return '<tr>' + cells.map(c => `<${isHeader ? 'th' : 'td'}>${c}</${isHeader ? 'th' : 'td'}>`).join('') + '</tr>';
+  });
+  html = html.replace(/(<tr>.*<\/tr>)+/g, '<table class="md-table"><thead>$&</thead><tbody>$&</tbody></table>');
+  html = html.replace(/<\/tr>\s*<tr>/g, '</tr><tr>');
+  
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function copyMsg(idx) {
+  const conv = getActiveConv();
+  if (!conv || !conv.msgs[idx]) return;
+  const text = conv.msgs[idx].content;
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('已复制到剪贴板', 'success');
+  }).catch(() => {
+    showToast('复制失败', 'error');
+  });
+}
+
+function retryMsg(idx) {
+  const conv = getActiveConv();
+  if (!conv || !conv.msgs[idx]) return;
+  if (idx > 0) {
+    const userMsg = conv.msgs[idx - 1];
+    if (userMsg && userMsg.role === 'user') {
+      const content = userMsg.content;
+      conv.msgs = conv.msgs.slice(0, idx - 1);
+      saveState();
+      renderChat();
+      sendToAI(content, userMsg.customVars);
+    }
+  }
+}
+
+function deleteMsg(idx) {
+  const conv = getActiveConv();
+  if (!conv || !conv.msgs[idx]) return;
+  conv.msgs.splice(idx, 1);
+  saveState();
+  renderChat();
+  showToast('消息已删除', 'success');
+}
+
+function clearInput() {
+  const el = document.getElementById('userInput');
+  el.value = '';
+  el.style.height = '42px';
+  document.getElementById('tokenEst').textContent = '';
+}
+
+function insertTemplate(type) {
+  const el = document.getElementById('userInput');
+  const templates = {
+    '[SHORT]': '[SHORT] 请按以下规格创作短篇小说：\n- 字数：6k-15k\n- 视角：第一人称"我"\n- 题材：悬疑/反转\n- 要求：单句≤25字，每段≤5行，开篇动作，无情绪标签',
+    '[MEDIUM]': '[MEDIUM] 请按以下规格创作中篇小说：\n- 字数：15k-50k\n- 视角：第三人称有限\n- 结构：双线叙事\n- 要求：必须输出详细大纲和前三章正文',
+    '[LONG]': '[LONG] 请按以下规格创作长篇小说架构：\n- 字数：50k-200k\n- 视角：第三人称有限\n- 阶段：觉醒→启蒙→成长→蜕变→巅峰→超越\n- 要求：输出WLD/CHR/FOE/EMO表格和第一章正文',
+    '[M10]': '[M10] 影视化转制任务：\n请将以下文本转为标准剧本格式\n（场景划分/镜头标签/叙述转动作）'
+  };
+  el.value = templates[type] || type;
+  el.focus();
+}
+
+function clearVars() {
+  document.getElementById('varProtagonist').value = '';
+  document.getElementById('varGenre').value = '';
+  document.getElementById('varTone').value = '';
+  document.getElementById('varSettings').value = '';
+  document.getElementById('varCustom').value = '';
+}
+
+function applyVars() {
+  const protagonist = document.getElementById('varProtagonist').value.trim();
+  const genre = document.getElementById('varGenre').value.trim();
+  const tone = document.getElementById('varTone').value.trim();
+  const settings = document.getElementById('varSettings').value.trim();
+  const custom = document.getElementById('varCustom').value.trim();
+  
+  let varStr = '【故事变量】\n';
+  if (protagonist) varStr += `- 主角：${protagonist}\n`;
+  if (genre) varStr += `- 题材：${genre}\n`;
+  if (tone) varStr += `- 基调：${tone}\n`;
+  if (settings) {
+    try {
+      const obj = JSON.parse(settings);
+      varStr += `- 核心设定：${JSON.stringify(obj, null, 2)}\n`;
+    } catch {
+      varStr += `- 核心设定：${settings}\n`;
+    }
+  }
+  if (custom) varStr += `- 自定义指令：${custom}\n`;
+  
+  document.getElementById('userInput').value = varStr;
+  document.getElementById('userInput').focus();
+}
+
+async function send() {
+  const input = document.getElementById('userInput');
+  const content = input.value.trim();
+  if (!content || isStreaming) return;
+
+  const conv = getActiveConv();
+  if (!conv) return;
+
+  if (!conv.msgs.length) {
+    conv.title = content.slice(0, 30) + (content.length > 30 ? '...' : '');
+  }
+
+  const userMsg = { role: 'user', content, time: Date.now() };
+  conv.msgs.push(userMsg);
+  input.value = '';
+  input.style.height = '42px';
+  document.getElementById('tokenEst').textContent = '';
+
+  renderChat();
+
+  if (state.cfg.sound) {
+    playSound();
+  }
+
+  await sendToAI(content);
+}
+
+async function sendToAI(userContent, customVars) {
+  if (location.protocol === 'file:') {
+    showToast('请使用本地服务器打开此文件以支持API请求', 'error');
+    return;
+  }
+
+  const conv = getActiveConv();
+  if (!conv) return;
+
+  const msgs = buildMessages(conv, userContent, customVars);
+  
+  isStreaming = true;
+  updateSendStopBtn(true);
+
+  const aiMsgId = conv.msgs.length;
+  conv.msgs.push({ role: 'assistant', content: '', time: Date.now() });
+  
+  const bubbleId = 'bubble_' + aiMsgId;
+  let fullContent = '';
+
+  try {
+    const response = await fetch(state.cfg.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${state.cfg.key}`
+      },
+      body: JSON.stringify({
+        model: state.cfg.model,
+        messages: msgs,
+        max_tokens: state.cfg.maxTokens || 4096,
+        temperature: state.cfg.temperature || 0.7,
+        stream: state.cfg.stream !== false
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${await response.text()}`);
+    }
+
+    let isSSE = false;
+    let contentType = response.headers.get('content-type') || '';
+
+    if (state.cfg.stream !== false && response.body) {
+      if (contentType.includes('text/event-stream') || contentType.includes('application/x-ndjson')) {
+        isSSE = true;
+      }
+    }
+
+    if (isSSE) {
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let lastContent = '';
+      let emptyCount = 0;
+      const maxEmpty = 50;
+
+      ensureBubble(aiMsgId);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        if (buffer.length > 50000) {
+          const lines = buffer.split('\n');
+          buffer = lines.slice(-20).join('\n');
+        }
+
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+
+        for (const line of lines) {
+          let lineData = line.trim();
+          if (!lineData || lineData === '[DONE]' || lineData === 'done') {
+            if (lineData === '[DONE]' || lineData === 'done') emptyCount = maxEmpty;
+            continue;
+          }
+
+          if (lineData.startsWith('data: ')) {
+            lineData = lineData.slice(6);
+          }
+
+          if (!lineData) continue;
+
+          try {
+            const json = JSON.parse(lineData);
+            const delta = json.choices?.[0]?.delta?.content ||
+                          json.choices?.[0]?.delta?.reasoning_content || '';
+            if (delta) {
+              fullContent += delta;
+              conv.msgs[aiMsgId].content = fullContent;
+              updateBubble(bubbleId, renderMd(fullContent));
+              lastContent = delta;
+              emptyCount = 0;
+              if (state.cfg.autoScroll) {
+                const chatArea = document.getElementById('chatArea');
+                chatArea.scrollTop = chatArea.scrollHeight;
+              }
+            } else {
+              emptyCount++;
+            }
+          } catch (e) {
+            emptyCount++;
+          }
+
+          if (emptyCount > maxEmpty) break;
+        }
+      }
+
+      if (!fullContent && response.body) {
+        try {
+          const json = await response.clone().json();
+          if (json?.choices?.[0]?.message?.content) {
+            fullContent = json.choices[0].message.content;
+            conv.msgs[aiMsgId].content = fullContent;
+          }
+        } catch (e) {}
+      }
+    } else {
+      const json = await response.json();
+      if (json.error) {
+        throw new Error(json.error.message || JSON.stringify(json.error));
+      }
+      fullContent = json.choices?.[0]?.message?.content || '';
+      conv.msgs[aiMsgId].content = fullContent;
+    }
+  } catch (e) {
+    conv.msgs[aiMsgId].content = `[ERROR] ${e.message}`;
+    showToast('请求失败: ' + e.message, 'error');
+  }
+
+  conv.msgs[aiMsgId].time = Date.now();
+  saveState();
+  renderChat();
+
+  if (fullContent.includes('[完稿]')) {
+    setTimeout(() => {
+      autoExportConv(conv);
+    }, 1000);
+  }
+
+  isStreaming = false;
+  updateSendStopBtn(false);
+
+  checkCompression(conv);
+}
+
+function autoExportConv(conv) {
+  if (!conv || !conv.msgs.length) return;
+
+  const textContent = conv.msgs
+    .filter(m => m.role === 'assistant')
+    .map(m => m.content)
+    .join('\n\n═══════════════════════════════════════\n\n');
+
+  const filename = `nexus_${conv.batchType || '创作'}_${formatDate(Date.now())}.txt`;
+  downloadFile(filename, textContent, 'text/plain;charset=utf-8');
+  showToast('[' + conv.title + '] 已自动导出', 'success');
+}
+
+function formatDate(ts) {
+  const d = new Date(ts);
+  return `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}_${String(d.getHours()).padStart(2,'0')}${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function continueWriting() {
+  const conv = getActiveConv();
+  if (!conv || !conv.msgs.length) return;
+
+  const lastAssistantMsg = [...conv.msgs].reverse().find(m => m.role === 'assistant');
+  if (!lastAssistantMsg) return;
+
+  const continuePrompt = `【续写指令】
+根据上文已完成的创作内容，继续生成下一部分。
+要求：
+1. 直接衔接上文最后内容，不重复
+2. 保持完全相同的风格和叙事节奏
+3. 严格遵守L1铁律
+4. 继续输出正文，写完后输出[完稿]标记`;
+
+  conv.msgs.push({ role: 'user', content: continuePrompt, time: Date.now() });
+  saveState();
+  renderChat();
+  sendToAI(continuePrompt);
+  showToast('正在续写...', 'success');
+}
+
+function continueFrom(idx) {
+  const conv = getActiveConv();
+  if (!conv || !conv.msgs[idx]) return;
+
+  const targetMsg = conv.msgs[idx];
+  if (targetMsg.role !== 'assistant') return;
+
+  const continuePrompt = `【续写指令】
+根据上方"${targetMsg.content.slice(0, 50)}..."已完成的创作内容，继续生成下一部分。
+要求：
+1. 直接衔接上文最后内容，不重复
+2. 保持完全相同的风格和叙事节奏
+3. 严格遵守L1铁律
+4. 继续输出正文，写完后输出[完稿]标记`;
+
+  conv.msgs.push({ role: 'user', content: continuePrompt, time: Date.now() });
+  saveState();
+  renderChat();
+  sendToAI(continuePrompt);
+  showToast('正在续写...', 'success');
+}
+
+function buildMessages(conv, userContent, customVars) {
+  const msgs = [{ role: 'system', content: SYS_PROMPT }];
+  
+  if (conv.summary) {
+    msgs.push({ role: 'system', content: `【记忆摘要】${conv.summary}` });
+  }
+  
+  if (customVars) {
+    msgs.push({ role: 'system', content: `【故事变量】${JSON.stringify(customVars)}` });
+  }
+
+  const startIdx = Math.max(0, conv.msgs.length - (state.cfg.windowSize * 2));
+  for (let i = startIdx; i < conv.msgs.length; i++) {
+    const m = conv.msgs[i];
+    if (m.role !== 'system') {
+      msgs.push({ role: m.role, content: m.content });
+    }
+  }
+  
+  return msgs;
+}
+
+function ensureBubble(idx) {
+  const box = document.getElementById('chatArea');
+  const existing = document.getElementById('bubble_' + idx);
+  if (!existing) {
+    const html = `<div class="msg ai" id="msg_${idx}">
+      <div class="msg-avatar">N</div>
+      <div class="msg-body">
+        <div class="msg-meta"><span>NEXUS</span><span></span><span>0字</span></div>
+        <div class="msg-bubble" id="bubble_${idx}"><span class="typing-cursor"></span></div>
+      </div>
+    </div>`;
+    box.insertAdjacentHTML('beforeend', html);
+  }
+}
+
+function updateBubble(id, content) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.innerHTML = content + '<span class="typing-cursor"></span>';
+    const wordCount = content.length;
+    const msgEl = el.closest('.msg');
+    if (msgEl) {
+      const metaEl = msgEl.querySelector('.msg-meta span:last-child');
+      if (metaEl) metaEl.textContent = wordCount + '字';
+    }
+  }
+}
+
+function updateSendStopBtn(streaming) {
+  const sendBtn = document.getElementById('sendBtn');
+  const stopBtn = document.getElementById('stopBtn');
+  if (streaming) {
+    sendBtn.style.display = 'none';
+    stopBtn.style.display = 'flex';
+  } else {
+    sendBtn.style.display = 'flex';
+    stopBtn.style.display = 'none';
+  }
+}
+
+function stopStream() {
+  if (abortController) {
+    abortController.abort();
+  }
+  isStreaming = false;
+  updateSendStopBtn(false);
+}
+
+function checkCompression(conv) {
+  const rounds = Math.floor(conv.msgs.length / 2);
+  if (rounds >= state.cfg.compressThreshold && !conv.summary) {
+    compressContext(conv);
+  }
+}
+
+function compressContext(conv) {
+  const summaryPrompt = `请为以下对话生成100字以内的摘要，涵盖核心主题和关键信息：\n\n${conv.msgs.map(m => `${m.role}: ${m.content}`).join('\n')}`;
+  
+  conv.summary = `[自动摘要-${new Date().toLocaleDateString('zh-CN')}] 核心主题围绕"${conv.title}"展开，已完成${conv.msgs.length}轮对话。`;
+  saveState();
+  showToast('上下文已自动压缩', 'success');
+}
+
+function manualCompress() {
+  const conv = getActiveConv();
+  if (!conv) return;
+  if (conv.msgs.length < 4) {
+    showToast('对话轮次过少，无需压缩', 'warn');
+    return;
+  }
+  compressContext(conv);
+  showToast('强制压缩完成', 'success');
+}
+
+function runBatch(type) {
+  const conv = getActiveConv();
+  if (!conv) return;
+  
+  const batchInfo = BATCH_PROMPTS[type];
+  
+  conv.batchType = type.toUpperCase();
+  conv.title = batchInfo.name;
+  saveState();
+  renderConvList();
+  
+  document.getElementById('batchPopupTitle').textContent = batchInfo.name;
+  document.getElementById('batchPopupDesc').innerHTML = `
+    <div style="margin-bottom:6px">流水线步骤：</div>
+    <ol style="margin:0;padding-left:18px;font-size:10px">
+      ${batchInfo.steps.map(s => `<li style="margin-bottom:2px">${s}</li>`).join('')}
+    </ol>
+  `;
+  document.getElementById('batchUserInput').value = '';
+  document.getElementById('batchExtraParams').value = '';
+  
+  openPopup('batchPopup');
+}
+
+let pendingBatchType = null;
+
+function confirmBatch() {
+  const conv = getActiveConv();
+  if (!conv) return;
+  
+  const userInput = document.getElementById('batchUserInput').value.trim();
+  const extraParams = document.getElementById('batchExtraParams').value.trim();
+  
+  if (!userInput) {
+    showToast('请输入创作需求', 'warn');
+    return;
+  }
+  
+  closePopup('batchPopup');
+  
+  const batchInfo = BATCH_PROMPTS[conv.batchType.toLowerCase()];
+  if (!batchInfo) return;
+  
+  const batchBar = document.getElementById('batchBar');
+  const batchProgress = document.getElementById('batchProgress');
+  const batchText = document.getElementById('batchText');
+  
+  batchBar.style.display = 'block';
+  batchProgress.style.width = '0%';
+  batchText.textContent = '准备执行...';
+  
+  let stepIdx = 0;
+  const totalSteps = batchInfo.steps.length;
+  
+  const fullPrompt = `${batchInfo.prompt}\n\n【用户需求】\n${userInput}${extraParams ? '\n\n【附加参数】\n' + extraParams : ''}`;
+  
+  const runSteps = async () => {
+    for (const step of batchInfo.steps) {
+      stepIdx++;
+      batchProgress.style.width = ((stepIdx / totalSteps) * 100) + '%';
+      batchText.textContent = step;
+      
+      await new Promise(r => setTimeout(r, 500));
+    }
+    
+    batchBar.style.display = 'none';
+    conv.msgs.push({ role: 'user', content: fullPrompt, time: Date.now() });
+    saveState();
+    renderChat();
+    await sendToAI(fullPrompt);
+  };
+  
+  runSteps();
+}
+
+function fillMemPopup() {
+  const conv = getActiveConv();
+  if (!conv) return;
+  document.getElementById('memSummary').value = conv.summary || '';
+  document.getElementById('memCount').textContent = Math.floor(conv.msgs.length / 2);
+  document.getElementById('memThreshold').textContent = state.cfg.compressThreshold;
+}
+
+function saveSummary() {
+  const conv = getActiveConv();
+  if (!conv) return;
+  conv.summary = document.getElementById('memSummary').value.trim();
+  saveState();
+}
+
+function clearSummary() {
+  document.getElementById('memSummary').value = '';
+}
+
+function fillSmPopup() {
+  const conv = getActiveConv();
+  const body = document.getElementById('smBody');
+  if (!conv || !conv.smData) {
+    body.innerHTML = '<div class="empty">当前对话未提取到状态机数据。<br>执行长篇流水线后将自动解析。</div>';
+    return;
+  }
+  body.innerHTML = '<pre style="font-size:11px;white-space:pre-wrap">' + JSON.stringify(conv.smData, null, 2) + '</pre>';
+}
+
+function fillStatsPopup() {
+  const body = document.getElementById('statsBody');
+  const totalMsgs = state.convs.reduce((s, c) => s + c.msgs.length, 0);
+  const totalWords = state.convs.reduce((s, c) => s + c.msgs.reduce((ws, m) => ws + (m.content?.length || 0), 0), 0);
+  const batchConvs = state.convs.filter(c => c.batchType).length;
+  
+  body.innerHTML = `
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="font-size:20px;color:var(--accent)">${state.convs.length}</div>
+        <div style="font-size:9px;color:var(--sec2);margin-top:2px">对话总数</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="font-size:20px;color:var(--accent2)">${totalMsgs}</div>
+        <div style="font-size:9px;color:var(--sec2);margin-top:2px">消息总数</div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center">
+        <div style="font-size:20px;color:var(--accent3)">${(totalWords / 10000).toFixed(1)}w</div>
+        <div style="font-size:9px;color:var(--sec2);margin-top:2px">总字数</div>
+      </div>
+    </div>
+    <div style="font-size:11px">
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--sec)">批量任务</span>
+        <span>${batchConvs} 个</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--sec)">平均对话长度</span>
+        <span>${state.convs.length ? Math.round(totalMsgs / state.convs.length) : 0} 条</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">
+        <span style="color:var(--sec)">存储占用</span>
+        <span>${(JSON.stringify(state).length / 1024).toFixed(1)} KB</span>
+      </div>
+    </div>
+  `;
+}
+
+function exportConv() {
+  const conv = getActiveConv();
+  if (!conv) return;
+  const data = JSON.stringify(conv, null, 2);
+  downloadFile(`nexus_conv_${Date.now()}.json`, data, 'application/json');
+  showToast('对话已导出', 'success');
+}
+
+function exportAllConv() {
+  const data = JSON.stringify(state.convs, null, 2);
+  downloadFile(`nexus_all_${Date.now()}.json`, data, 'application/json');
+  showToast('全部对话已导出', 'success');
+}
+
+function downloadFile(filename, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function clearAll() {
+  if (!confirm('确定要销毁全部本地数据吗？此操作不可恢复。')) return;
+  state.convs = [];
+  state.activeId = null;
+  state.cfg = {
+    url: '',
+    key: '',
+    model: 'deepseek-chat',
+    compressThreshold: 24,
+    windowSize: 20,
+    maxTokens: 4096,
+    temperature: 0.7,
+    theme: '',
+    stream: true,
+    autoScroll: true,
+    compact: false,
+    sound: false
+  };
+  saveState();
+  location.reload();
+}
+
+function showToast(msg, type) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast show toast-' + (type || '');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function playSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 800;
+    gain.gain.value = 0.1;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch (e) {}
+}
+</script>
+</body>
+</html>

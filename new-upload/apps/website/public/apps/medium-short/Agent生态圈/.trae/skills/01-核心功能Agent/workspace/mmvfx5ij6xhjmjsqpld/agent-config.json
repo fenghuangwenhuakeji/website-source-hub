@@ -1,0 +1,18 @@
+{
+  "batch_name": "Auto-auto-agent-1773802029379",
+  "output_dir": "D:\\AIcreateEngine\\标准软件开发范式\\.trae\\skills\\01-核心功能Agent\\workspace\\mmvfx5ij6xhjmjsqpld",
+  "agents": [
+    {
+      "name": "auto-agent-1773802029379",
+      "type": "skill",
+      "title": "auto-agent-1773802029379",
+      "description": "Auto generated auto-agent-1773802029379",
+      "core_concept": "Auto generated agent",
+      "features": [
+        "Auto feature 1",
+        "Auto feature 2"
+      ],
+      "priority": "medium"
+    }
+  ]
+}

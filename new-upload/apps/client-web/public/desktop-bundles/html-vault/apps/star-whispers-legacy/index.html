@@ -1,0 +1,966 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星语心伴 - 明亮一点的陪伴入口</title>
+    <meta name="description" content="把聊天、测试、画像和温和提示融合在一起的纯前端陪伴入口。少一点说明，多一点直接开始。">
+    <meta name="keywords" content="AI陪伴,心理测试,画像,反思,星座,纯前端">
+    <link rel="stylesheet" href="assets/css/all.min.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/unified-ui.css">
+    <style>
+        #tab-home.active,
+        #tab-chat.active,
+        #tab-discover.active,
+        #tab-mine.active {
+            display: block;
+            width: 100%;
+        }
+
+        .content-section > .tab-content {
+            width: 100%;
+        }
+
+        .landing-shell,
+        .home-shell,
+        .home-chat-shell,
+        .discover-shell,
+        .mine-shell {
+            display: grid;
+            gap: 22px;
+        }
+
+        .hero-board {
+            display: grid;
+            grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+            gap: 18px;
+            align-items: start;
+        }
+
+        .hero-actions,
+        .inline-pair {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .today-board {
+            display: grid;
+            gap: 14px;
+            padding: 20px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        .board-label {
+            font-size: 12px;
+            color: var(--ui-text-muted);
+        }
+
+        .board-title {
+            font-size: 20px;
+            color: var(--ui-text);
+        }
+
+        .board-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .board-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: rgba(255, 249, 244, 0.96);
+        }
+
+        .board-index {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 143, 123, 0.12);
+            color: #b45a4f;
+            font-size: 12px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .board-copy strong {
+            display: block;
+            font-size: 14px;
+            color: var(--ui-text);
+        }
+
+        .board-copy span {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: var(--ui-text-soft);
+        }
+
+        .route-grid,
+        .journey-grid,
+        .discover-grid,
+        .summary-grid {
+            display: grid;
+            gap: 14px;
+        }
+
+        .route-grid {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .journey-grid,
+        .discover-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .route-card .route-icon,
+        .discover-card .discover-icon,
+        .summary-card .summary-icon,
+        .service-item .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.86);
+            color: var(--ui-text);
+            font-size: 20px;
+        }
+
+        .logo-icon .svg-icon,
+        .route-icon .svg-icon,
+        .discover-icon .svg-icon,
+        .service-icon .svg-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .route-card .route-actions,
+        .discover-card .route-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 2px;
+        }
+
+        .journey-card ul,
+        .summary-card ul {
+            display: grid;
+            gap: 8px;
+            padding-left: 18px;
+            color: var(--ui-text-soft);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .soft-panel {
+            display: grid;
+            gap: 14px;
+            padding: 22px;
+        }
+
+        .soft-panel-head h3 {
+            font-size: 20px;
+            color: var(--ui-text);
+        }
+
+        .soft-panel-head p {
+            margin-top: 6px;
+            font-size: 13px;
+            line-height: 1.75;
+            color: var(--ui-text-soft);
+        }
+
+        .micro-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .micro-card {
+            min-height: 140px;
+        }
+
+        .micro-card span {
+            display: inline-flex;
+            min-height: 28px;
+            padding: 0 10px;
+            align-items: center;
+            border-radius: 999px;
+            background: rgba(255, 143, 123, 0.12);
+            color: #b45a4f;
+            font-size: 11px;
+            margin-bottom: 10px;
+        }
+
+        .feature-stage,
+        .service-stage {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .feature-item,
+        .service-item {
+            display: grid;
+            place-items: center;
+            gap: 8px;
+            min-height: 138px;
+            padding: 18px 12px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--ui-text);
+            border-radius: 24px;
+        }
+
+        .feature-item strong,
+        .service-item strong {
+            font-size: 14px;
+        }
+
+        .feature-item span,
+        .service-item span {
+            font-size: 12px;
+            line-height: 1.65;
+            color: var(--ui-text-soft);
+        }
+
+        .home-chat-spotlight {
+            padding-bottom: 22px;
+        }
+
+        .chat-preview-note {
+            display: grid;
+            gap: 10px;
+            padding: 16px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.76);
+        }
+
+        .chat-preview-note strong {
+            font-size: 14px;
+        }
+
+        .chat-preview-note p {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--ui-text-soft);
+        }
+
+        .rail-list {
+            display: grid;
+            gap: 8px;
+            padding-left: 18px;
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--ui-text-soft);
+        }
+
+        .discover-card,
+        .summary-card {
+            display: grid;
+            gap: 12px;
+            padding: 20px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.82);
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            box-shadow: var(--ui-shadow-md);
+        }
+
+        .discover-card h3,
+        .summary-card h3 {
+            font-size: 18px;
+            color: var(--ui-text);
+        }
+
+        .discover-card p,
+        .summary-card p {
+            font-size: 13px;
+            line-height: 1.8;
+            color: var(--ui-text-soft);
+        }
+
+        .mine-topline {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .mine-metric {
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            box-shadow: var(--ui-shadow-sm);
+        }
+
+        .mine-metric strong {
+            display: block;
+            font-size: 20px;
+            color: var(--ui-text);
+            margin-bottom: 6px;
+        }
+
+        .mine-metric span {
+            display: block;
+            font-size: 12px;
+            color: var(--ui-text-soft);
+            line-height: 1.7;
+        }
+
+        .record-list {
+            display: grid;
+            gap: 12px;
+        }
+
+        .record-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 18px;
+            border-radius: 24px;
+        }
+
+        .record-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 18px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.82);
+            color: var(--ui-text);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .record-copy {
+            flex: 1;
+        }
+
+        .record-copy strong {
+            display: block;
+            font-size: 15px;
+            color: var(--ui-text);
+            margin-bottom: 4px;
+        }
+
+        .record-copy p {
+            font-size: 12px;
+            line-height: 1.75;
+            color: var(--ui-text-soft);
+        }
+
+        .record-link {
+            min-height: 40px;
+            padding: 0 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.88);
+            color: var(--ui-text);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1180px) {
+            .hero-board,
+            .journey-grid,
+            .discover-grid,
+            .route-grid,
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .feature-stage,
+            .service-stage,
+            .mine-topline {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .micro-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .hero-board,
+            .journey-grid,
+            .discover-grid,
+            .route-grid,
+            .summary-grid,
+            .feature-stage,
+            .service-stage,
+            .mine-topline {
+                grid-template-columns: 1fr;
+            }
+
+            .record-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .record-link {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+
+    <div class="app-container">
+        <header class="header-section">
+            <div class="header-top">
+                <div class="logo-section">
+                    <div class="logo-icon" aria-hidden="true">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="4.5"></circle>
+                            <path d="M12 2.5v2.5"></path>
+                            <path d="M12 19v2.5"></path>
+                            <path d="M4.9 4.9l1.8 1.8"></path>
+                            <path d="M17.3 17.3l1.8 1.8"></path>
+                            <path d="M2.5 12H5"></path>
+                            <path d="M19 12h2.5"></path>
+                            <path d="M4.9 19.1l1.8-1.8"></path>
+                            <path d="M17.3 6.7l1.8-1.8"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="logo-text">星语心伴</div>
+                        <div class="board-label">纯前端陪伴入口</div>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a class="header-btn" href="pages/api-settings.html" title="模式设置">
+                        <i class="fas fa-sliders-h"></i>
+                    </a>
+                    <a class="header-btn" href="pages/profile.html" title="我的节奏">
+                        <i class="fas fa-user"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="daily-quote-card">
+                <div class="quote-header">
+                    <span class="quote-title">今天先别想太多</span>
+                    <span class="quote-date">选一个入口就够了</span>
+                </div>
+                <p class="quote-content">这里更像一张陪伴工作台。你只需要点开、说一句、做一个测试，剩下的梳理交给页面在背后帮你完成。</p>
+            </div>
+        </header>
+
+        <nav class="main-nav" aria-label="主页面入口">
+            <a class="nav-tab active" href="index.html">今日入口</a>
+            <a class="nav-tab" href="pages/chat.html">陪伴聊天</a>
+            <a class="nav-tab" href="pages/test.html">测试画像</a>
+            <a class="nav-tab" href="pages/profile.html">我的节奏</a>
+        </nav>
+
+        <main class="content-section">
+            <section class="tab-content active" id="tab-home">
+                <div class="home-shell">
+                    <section class="assistant-spotlight" data-reveal>
+                        <div class="hero-board">
+                            <div class="spotlight-content">
+                                <span class="spotlight-kicker">
+                                    <i class="fas fa-sparkles"></i>
+                                    明亮模式已启用
+                                </span>
+                                <h1 class="spotlight-title">现在不用想太多，选一个入口就好。</h1>
+                                <p class="spotlight-copy">想被安慰、想理清楚、想看看关系、想先测一测，都可以从这里直接开始。</p>
+
+                                <div class="hero-actions">
+                                    <a class="btn btn-primary" href="pages/chat.html">直接聊聊</a>
+                                    <a class="btn btn-secondary" href="pages/test.html">1 分钟测一测</a>
+                                    <button class="btn btn-secondary seed-chat" data-msg="最近一段关系让我有点累，想先看看边界到底卡在哪里" data-open-tab="true">看关系画像</button>
+                                </div>
+
+                                <div class="meta-chip-row" style="margin-top: 18px;">
+                                    <span class="status-chip local" id="homeModeChip">本地陪伴常驻</span>
+                                    <span class="meta-chip"><strong>当前主题</strong><span id="homeTopicChip">情绪梳理</span></span>
+                                    <span class="meta-chip"><strong>当前感受</strong><span id="homeMoodChip">需要被接住</span></span>
+                                </div>
+                            </div>
+
+                            <aside class="today-board">
+                                <div>
+                                    <div class="board-label">此刻更像哪一种</div>
+                                    <div class="board-title">点一下，页面就帮你把开场句放好。</div>
+                                </div>
+
+                                <div class="feelings-row" id="heroFeelingPills">
+                                    <button class="feeling-pill seed-chat" data-msg="我现在更想先被安慰一下，别急着分析我" data-open-tab="true">想被安慰</button>
+                                    <button class="feeling-pill seed-chat" data-msg="我脑子很乱，想先把事情和感受分开" data-open-tab="true">想理清楚</button>
+                                    <button class="feeling-pill seed-chat" data-msg="最近一段关系让我很消耗，想看看边界怎么立" data-open-tab="true">关系困扰</button>
+                                    <button class="feeling-pill seed-chat" data-msg="我最近压力很大，想把最耗能的来源拆开看" data-open-tab="true">压力过载</button>
+                                </div>
+
+                                <div class="board-list">
+                                    <div class="board-item">
+                                        <span class="board-index">01</span>
+                                        <div class="board-copy">
+                                            <strong>少说明</strong>
+                                            <span>入口短、动作快，不把用户留在说明文字里。</span>
+                                        </div>
+                                    </div>
+                                    <div class="board-item">
+                                        <span class="board-index">02</span>
+                                        <div class="board-copy">
+                                            <strong>多引导</strong>
+                                            <span>测试、画像和心理提示词会在背后参与，不用你先想好术语。</span>
+                                        </div>
+                                    </div>
+                                    <div class="board-item">
+                                        <span class="board-index">03</span>
+                                        <div class="board-copy">
+                                            <strong>先接住再推进</strong>
+                                            <span>默认更温和、更倾听，少说教，先陪你站稳。</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </section>
+
+                    <section class="route-grid" data-reveal>
+                        <article class="route-card">
+                            <span class="route-meta"><i class="fas fa-heart"></i> 轻安慰入口</span>
+                            <div class="route-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M7.5 18h8.5a4 4 0 0 0 .4-8A5.5 5.5 0 0 0 6 8.8 3.8 3.8 0 0 0 7.5 18Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="route-title">先被接住</h3>
+                            <p class="route-copy">适合刚刚有情绪、暂时不想分析的时候。</p>
+                            <div class="route-actions">
+                                <button class="journey-button primary seed-chat" data-msg="我现在脑子有点满，先别给建议，陪我把情绪放下来" data-open-tab="true">一键开始</button>
+                            </div>
+                        </article>
+
+                        <article class="route-card">
+                            <span class="route-meta"><i class="fas fa-compass"></i> 梳理入口</span>
+                            <div class="route-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M12 3.5 14 10l6.5 2-6.5 2L12 20.5 10 14l-6.5-2L10 10 12 3.5Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="route-title">把事情想清楚</h3>
+                            <p class="route-copy">适合想把事实、感受和下一步拆开看。</p>
+                            <div class="route-actions">
+                                <button class="journey-button primary seed-chat" data-msg="帮我把这件事拆成发生了什么、我在意什么、我能做什么" data-open-tab="true">直接拆解</button>
+                            </div>
+                        </article>
+
+                        <article class="route-card">
+                            <span class="route-meta"><i class="fas fa-people-arrows"></i> 关系入口</span>
+                            <div class="route-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M9 9.2c-1.5-1.7-4.2-1.8-5.8-.1-1.6 1.7-1.6 4.4.1 6s4.4 1.6 6-.1l5.4-6c1.6-1.7 4.3-1.8 6-.1 1.7 1.6 1.8 4.3.1 6-1.6 1.7-4.3 1.8-6 .1"></path>
+                                </svg>
+                            </div>
+                            <h3 class="route-title">看关系画像</h3>
+                            <p class="route-copy">适合边界、拉扯、误会、反复内耗。</p>
+                            <div class="route-actions">
+                                <button class="journey-button primary seed-chat" data-msg="最近一段关系让我反复拉扯，想先看边界和需求分别是什么" data-open-tab="true">去看看</button>
+                            </div>
+                        </article>
+
+                        <article class="route-card">
+                            <span class="route-meta"><i class="fas fa-seedling"></i> 自测入口</span>
+                            <div class="route-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="m5.5 12.5 4 4 9-9"></path>
+                                </svg>
+                            </div>
+                            <h3 class="route-title">先测一测</h3>
+                            <p class="route-copy">不想说太多时，先用测试和画像帮你起步。</p>
+                            <div class="route-actions">
+                                <a class="journey-button primary" href="pages/test.html">开始小测试</a>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="journey-grid" data-reveal>
+                        <article class="journey-card">
+                            <span class="journey-meta"><i class="fas fa-stopwatch"></i> 1 分钟</span>
+                            <h3 class="journey-title">今日情绪测温</h3>
+                            <p class="journey-copy">如果你还不想开口，可以先测，再回到聊天页继续。</p>
+                            <div class="journey-tags">
+                                <span class="journey-tag">快</span>
+                                <span class="journey-tag">轻</span>
+                                <span class="journey-tag">适合起步</span>
+                            </div>
+                            <a class="journey-button secondary" href="pages/test.html">去测一测</a>
+                        </article>
+
+                        <article class="journey-card">
+                            <span class="journey-meta"><i class="fas fa-user-friends"></i> 关系画像</span>
+                            <h3 class="journey-title">把相处模式看得更清楚</h3>
+                            <p class="journey-copy">更少讲道理，更多用画像和温和问题把模式拉出来。</p>
+                            <div class="journey-tags">
+                                <span class="journey-tag">边界</span>
+                                <span class="journey-tag">依恋</span>
+                                <span class="journey-tag">反复拉扯</span>
+                            </div>
+                            <button class="journey-button secondary seed-chat" data-msg="请用温和一点的关系画像方式陪我看看这段互动" data-open-tab="true">开始画像</button>
+                        </article>
+
+                        <article class="journey-card">
+                            <span class="journey-meta"><i class="fas fa-brain"></i> 心理提示词</span>
+                            <h3 class="journey-title">提示词放在背后</h3>
+                            <p class="journey-copy">你不用自己组织专业术语，点一下就会自动带入更适合的提问方式。</p>
+                            <div class="journey-tags">
+                                <span class="journey-tag">情绪命名</span>
+                                <span class="journey-tag">边界提问</span>
+                                <span class="journey-tag">行动拆小</span>
+                            </div>
+                            <button class="journey-button secondary seed-chat" data-msg="请用更温和、更多倾听、更少说教的方式陪我往下聊" data-open-tab="true">加载提示词</button>
+                        </article>
+                    </section>
+
+                    <section class="soft-panel" data-reveal>
+                        <div class="soft-panel-head">
+                            <h3>你只负责点开，系统会在背后做这些事。</h3>
+                            <p>测试、画像、心理学提示词和对话节奏会一起工作，但页面上只保留最轻的入口。</p>
+                        </div>
+                        <div class="micro-grid">
+                            <article class="micro-card">
+                                <span>情绪</span>
+                                <strong>先命名，再安放</strong>
+                                <p>把“乱”和“难受”拆成更具体的感受，用户更容易继续说。</p>
+                            </article>
+                            <article class="micro-card">
+                                <span>关系</span>
+                                <strong>先看模式，不急着下结论</strong>
+                                <p>关系画像会偏向观察互动，而不是直接告诉你谁对谁错。</p>
+                            </article>
+                            <article class="micro-card">
+                                <span>行动</span>
+                                <strong>一步够小，才更容易真的开始</strong>
+                                <p>页面会优先把建议拆小，避免一上来就像被上课。</p>
+                            </article>
+                        </div>
+                    </section>
+
+                    <section data-reveal>
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-th-large"></i> 更多入口</h2>
+                            <a class="section-more" href="pages/profile.html">查看全部</a>
+                        </div>
+                        <div class="feature-stage">
+                            <a href="pages/chat.html" class="feature-item">
+                                <div class="service-icon"><i class="fas fa-comment-dots"></i></div>
+                                <strong>AI 聊天</strong>
+                                <span>安慰、梳理、边界、复盘</span>
+                            </a>
+                            <a href="pages/test.html" class="feature-item">
+                                <div class="service-icon"><i class="fas fa-clipboard-list"></i></div>
+                                <strong>心理测试</strong>
+                                <span>轻量起步，不用先开口</span>
+                            </a>
+                            <a href="pages/mbti.html" class="feature-item">
+                                <div class="service-icon"><i class="fas fa-puzzle-piece"></i></div>
+                                <strong>MBTI</strong>
+                                <span>用结果看自己的模式</span>
+                            </a>
+                            <a href="pages/mbti.html#portrait" class="feature-item">
+                                <div class="service-icon"><i class="fas fa-user-astronaut"></i></div>
+                                <strong>MBTI 画像</strong>
+                                <span>补充画像，少一点模糊感</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="tab-content" id="tab-chat">
+                <div class="home-chat-shell">
+                    <section class="assistant-spotlight home-chat-spotlight" data-reveal>
+                        <div class="spotlight-content">
+                            <span class="spotlight-kicker"><i class="fas fa-head-side-heart"></i> 首页陪伴总览</span>
+                            <h2 class="spotlight-title">说一句也可以，我先接住你。</h2>
+                            <p class="spotlight-copy">你可以直接在首页开始；如果想要更沉浸的界面，再进入独立聊天页。</p>
+                            <div class="status-chip-row" style="margin-top: 16px;">
+                                <span class="status-chip local" id="chatModeChip">本地陪伴</span>
+                                <span class="meta-chip"><strong>主题</strong><span id="chatTopic">情绪梳理</span></span>
+                                <span class="meta-chip"><strong>感受</strong><span id="chatMood">需要被接住</span></span>
+                                <span class="meta-chip"><strong>阶段</strong><span id="chatStage">刚开始梳理</span></span>
+                            </div>
+                            <div class="metric-grid">
+                                <div class="metric-card">
+                                    <span class="metric-label">输入轮次</span>
+                                    <span class="metric-value" id="chatTurns">0 轮输入</span>
+                                    <span class="metric-copy">越往后越偏向一起收束和落动作。</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">下一句建议</span>
+                                    <span class="metric-copy" id="chatFollowup">先说一件最卡的事就够了。</span>
+                                </div>
+                                <div class="metric-card">
+                                    <span class="metric-label">完整体验</span>
+                                    <span class="metric-copy">需要更沉浸时，可以切到独立聊天页继续。</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="chat-shell" data-reveal>
+                        <div class="chat-layout">
+                            <div class="chat-panel">
+                                <div class="chat-panel-head">
+                                    <div class="chat-panel-title">
+                                        <strong>星语心伴</strong>
+                                        <span id="homeModelInfo">本地陪伴模式</span>
+                                    </div>
+                                    <div class="chat-panel-actions">
+                                        <button class="icon-button" id="homeClearBtn" title="清空聊天">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="chat-feed" id="homeChatMessages"></div>
+                            </div>
+
+                            <aside class="chat-rail">
+                                <div class="rail-card">
+                                    <h3>一键开场</h3>
+                                    <div class="prompt-list" id="homeQuickReplies">
+                                        <button class="prompt-button" data-msg="我现在有点想哭，但又说不清为什么">想先被接住</button>
+                                        <button class="prompt-button" data-msg="帮我把这件事拆成事实、感受和我能做的部分">想理清楚</button>
+                                        <button class="prompt-button" data-msg="最近一段关系让我很累，陪我看看边界和需求">关系边界</button>
+                                        <button class="prompt-button" data-msg="我最近有点撑不住，想先拆一下压力来源">压力拆解</button>
+                                    </div>
+                                </div>
+
+                                <div class="rail-card">
+                                    <h3>陪伴节奏</h3>
+                                    <ul class="rail-list">
+                                        <li>先听，再梳理，再行动。</li>
+                                        <li>默认更温和，少说教。</li>
+                                        <li>如果你还不想说，先去做个测试也可以。</li>
+                                    </ul>
+                                </div>
+
+                                <div class="chat-preview-note">
+                                    <strong>想要更完整的对话空间？</strong>
+                                    <p>独立聊天页会把快捷路线、开场按钮和侧边陪伴信息放得更完整。</p>
+                                    <a class="inline-action primary" href="pages/chat.html">进入完整聊天页</a>
+                                </div>
+                            </aside>
+                        </div>
+
+                        <section class="composer-shell">
+                            <div class="composer-head">
+                                <div>
+                                    <strong>开始这一轮</strong>
+                                    <span>哪怕只打一小句，也已经算开始了。</span>
+                                </div>
+                                <div class="inline-pair">
+                                    <a class="inline-action secondary" href="pages/chat.html">独立聊天页</a>
+                                    <a class="inline-action secondary" href="pages/api-settings.html">模式设置</a>
+                                </div>
+                            </div>
+                            <div class="composer-row">
+                                <textarea id="homeChatInput" class="composer-textarea" rows="1" placeholder="比如：我今天一直心里发紧，不知道该从哪里说起。"></textarea>
+                                <button id="homeChatSendBtn" class="send-button" title="发送">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </section>
+                    </section>
+                </div>
+            </section>
+
+            <section class="tab-content" id="tab-discover">
+                <div class="discover-shell">
+                    <section class="summary-grid" data-reveal>
+                        <article class="discover-card">
+                            <div class="discover-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="7"></circle>
+                                    <circle cx="12" cy="12" r="2.5"></circle>
+                                </svg>
+                            </div>
+                            <h3>心理测试</h3>
+                            <p>适合不想先组织语言的时候。先测，再回到聊天页继续。</p>
+                            <div class="route-actions">
+                                <a class="journey-button primary" href="pages/test.html">进入测试</a>
+                            </div>
+                        </article>
+
+                        <article class="discover-card">
+                            <div class="discover-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <path d="M12 4.5a7.5 7.5 0 1 0 7.5 7.5"></path>
+                                    <path d="M12 1.5v3"></path>
+                                    <path d="M12 19.5v3"></path>
+                                </svg>
+                            </div>
+                            <h3>人格画像</h3>
+                            <p>MBTI、SBTI 可以作为看自己的不同切面，不急着贴标签。</p>
+                            <div class="route-actions">
+                                <a class="journey-button secondary" href="pages/mbti.html">MBTI</a>
+                                <a class="journey-button secondary" href="pages/mbti.html#portrait">MBTI 画像</a>
+                            </div>
+                        </article>
+
+                        <article class="discover-card">
+                            <div class="discover-icon" aria-hidden="true">
+                                <svg class="svg-icon" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="3.2"></circle>
+                                    <path d="M12 2.5v3"></path>
+                                    <path d="M12 18.5v3"></path>
+                                    <path d="M21.5 12h-3"></path>
+                                    <path d="M5.5 12h-3"></path>
+                                    <path d="m18.7 5.3-2.1 2.1"></path>
+                                    <path d="m7.4 16.6-2.1 2.1"></path>
+                                    <path d="m18.7 18.7-2.1-2.1"></path>
+                                    <path d="m7.4 7.4-2.1-2.1"></path>
+                                </svg>
+                            </div>
+                            <h3>温和反思</h3>
+                            <p>反思卡和星座保留为温和入口，不当成命令，只当成提问器。</p>
+                            <div class="route-actions">
+                                <a class="journey-button secondary" href="pages/tarot.html">反思卡</a>
+                                <a class="journey-button secondary" href="pages/horoscope.html">星座</a>
+                            </div>
+                        </article>
+                    </section>
+
+                    <section class="soft-panel" data-reveal>
+                        <div class="soft-panel-head">
+                            <h3>不用记住术语，只要点开路径。</h3>
+                            <p>下面这些按钮会把更合适的心理学提问方式直接塞进聊天入口里。</p>
+                        </div>
+                        <div class="feelings-row">
+                            <button class="feeling-pill seed-chat" data-msg="请用情绪命名的方式陪我梳理，不要一上来给结论" data-open-tab="true">情绪命名</button>
+                            <button class="feeling-pill seed-chat" data-msg="请用关系边界的方式陪我看这件事，帮我区分责任和感受" data-open-tab="true">关系边界</button>
+                            <button class="feeling-pill seed-chat" data-msg="请把行动建议拆得更小一点，我现在不太撑得住" data-open-tab="true">行动拆小</button>
+                            <button class="feeling-pill seed-chat" data-msg="请先多听我说，多安慰我一点，少一些教育感" data-open-tab="true">更多倾听</button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="tab-content" id="tab-mine">
+                <div class="mine-shell">
+                    <section class="assistant-spotlight" data-reveal>
+                        <div class="spotlight-content">
+                            <span class="spotlight-kicker"><i class="fas fa-heart-circle-check"></i> 我的节奏</span>
+                            <h2 class="spotlight-title">最近的状态，会在这里轻轻收住。</h2>
+                            <p class="spotlight-copy">不用翻很多地方，最近的聊天主题、感受和入口都在这里。</p>
+                            <div class="mine-topline">
+                                <div class="mine-metric">
+                                    <strong id="mineMood">需要被接住</strong>
+                                    <span>最近感受</span>
+                                </div>
+                                <div class="mine-metric">
+                                    <strong id="mineStage">刚开始梳理</strong>
+                                    <span>当前阶段</span>
+                                </div>
+                                <div class="mine-metric">
+                                    <strong id="mineTurns">0 轮输入</strong>
+                                    <span>聊天轮次</span>
+                                </div>
+                                <div class="mine-metric">
+                                    <strong id="mineTopic">情绪梳理</strong>
+                                    <span>当前主题</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section data-reveal>
+                        <div class="section-header">
+                            <h2 class="section-title"><i class="fas fa-compass"></i> 常用入口</h2>
+                        </div>
+                        <div class="service-stage">
+                            <a href="pages/chat.html" class="service-item">
+                                <div class="service-icon"><i class="fas fa-comment-dots"></i></div>
+                                <strong>继续聊天</strong>
+                                <span>回到最主要的陪伴入口</span>
+                            </a>
+                            <a href="pages/test.html" class="service-item">
+                                <div class="service-icon"><i class="fas fa-clipboard-check"></i></div>
+                                <strong>做个测试</strong>
+                                <span>先测一测，再回来说</span>
+                            </a>
+                            <a href="pages/profile.html" class="service-item">
+                                <div class="service-icon"><i class="fas fa-id-badge"></i></div>
+                                <strong>个人中心</strong>
+                                <span>看完整记录和入口</span>
+                            </a>
+                            <a href="pages/api-settings.html" class="service-item">
+                                <div class="service-icon"><i class="fas fa-sliders-h"></i></div>
+                                <strong>模式设置</strong>
+                                <span>本地常驻，远程增强</span>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section class="record-list" data-reveal>
+                        <article class="record-item">
+                            <div class="record-icon"><i class="fas fa-comment-heart"></i></div>
+                            <div class="record-copy">
+                                <strong>下一句建议</strong>
+                                <p id="mineFollowup">先说一句最真实的话就够了。</p>
+                            </div>
+                            <a class="record-link" href="pages/chat.html">继续说</a>
+                        </article>
+
+                        <article class="record-item">
+                            <div class="record-icon"><i class="fas fa-brain"></i></div>
+                            <div class="record-copy">
+                                <strong>如果今天不想多说</strong>
+                                <p>可以先去测试或画像页，页面会把结果重新带回聊天链路。</p>
+                            </div>
+                            <a class="record-link" href="pages/test.html">先测一测</a>
+                        </article>
+                    </section>
+                </div>
+            </section>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="index.html" class="nav-item active">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </a>
+            <a href="pages/test.html" class="nav-item">
+                <i class="fas fa-clipboard-list"></i>
+                <span>测评</span>
+            </a>
+            <a href="pages/chat.html" class="nav-item">
+                <i class="fas fa-comment-dots"></i>
+                <span>聊天</span>
+            </a>
+            <a href="pages/horoscope.html" class="nav-item">
+                <i class="fas fa-stars"></i>
+                <span>运势</span>
+            </a>
+            <a href="pages/profile.html" class="nav-item">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="dist/js/local-companion.js"></script>
+    <script src="dist/js/api-config.js"></script>
+    <script src="dist/js/chat-runtime.js"></script>
+    <script src="dist/js/page-home.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,179 @@
+/* ===== 三层记忆 + RAG + 知识图谱 面板 ===== */
+
+.memory-panel {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.memory-block {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+.memory-block:hover {
+    border-color: rgba(56, 68, 88, 0.9);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+.memory-block::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+}
+.memory-block::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    filter: blur(30px);
+    opacity: 0.06;
+    pointer-events: none;
+}
+
+.memory-block.working::before { background: linear-gradient(90deg, #f0c040, #fb923c); }
+.memory-block.working::after { background: #f0c040; }
+.memory-block.session::before { background: linear-gradient(90deg, #58a6ff, #39d2c0); }
+.memory-block.session::after { background: #58a6ff; }
+.memory-block.rag::before { background: linear-gradient(90deg, #34d399, #10b981); }
+.memory-block.rag::after { background: #34d399; }
+.memory-block.kg::before { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
+.memory-block.kg::after { background: #a78bfa; }
+
+.memory-block-title {
+    font-size: 10px;
+    color: var(--text-tertiary);
+    margin-bottom: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.memory-block-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+.memory-block-sub {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 4px;
+}
+
+.memory-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 2px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+.memory-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.memory-bar-fill.working { background: linear-gradient(90deg, #f0c040, #fb923c); }
+.memory-bar-fill.session { background: linear-gradient(90deg, #58a6ff, #39d2c0); }
+.memory-bar-fill.rag { background: linear-gradient(90deg, #34d399, #10b981); }
+.memory-bar-fill.kg { background: linear-gradient(90deg, #a78bfa, #7c3aed); }
+
+/* ===== 上下文信息条 ===== */
+.context-info-bar {
+    display: none;
+    background: rgba(240, 192, 64, 0.05);
+    border: 1px solid rgba(240, 192, 64, 0.15);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 11px;
+    color: var(--primary);
+    margin-bottom: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.2px;
+}
+
+/* ===== 知识图谱迷你视图 ===== */
+.kg-mini-view {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    margin-top: 10px;
+    max-height: 140px;
+    overflow-y: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-content: flex-start;
+}
+
+.kg-entity-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: default;
+    transition: all var(--transition-fast);
+    border: 1px solid transparent;
+}
+.kg-entity-tag:hover { transform: scale(1.05); }
+
+.kg-entity-tag.character {
+    background: rgba(248, 113, 113, 0.1);
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.2);
+}
+.kg-entity-tag.location {
+    background: rgba(57, 210, 192, 0.1);
+    color: #39d2c0;
+    border-color: rgba(57, 210, 192, 0.2);
+}
+.kg-entity-tag.plot_point {
+    background: rgba(240, 192, 64, 0.1);
+    color: #f0c040;
+    border-color: rgba(240, 192, 64, 0.2);
+}
+.kg-entity-tag.theme {
+    background: rgba(167, 139, 250, 0.1);
+    color: #a78bfa;
+    border-color: rgba(167, 139, 250, 0.2);
+}
+.kg-entity-tag.conflict {
+    background: rgba(251, 146, 60, 0.1);
+    color: #fb923c;
+    border-color: rgba(251, 146, 60, 0.2);
+}
+.kg-entity-tag.golden_line {
+    background: rgba(240, 192, 64, 0.12);
+    color: #f0c040;
+    border-color: rgba(240, 192, 64, 0.25);
+}
+.kg-entity-tag.foreshadowing {
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+    border-color: rgba(99, 102, 241, 0.2);
+}
+.kg-entity-tag.event {
+    background: rgba(52, 211, 153, 0.1);
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.2);
+}
+.kg-entity-tag.structure {
+    background: rgba(88, 166, 255, 0.1);
+    color: #58a6ff;
+    border-color: rgba(88, 166, 255, 0.2);
+}

@@ -1,0 +1,20 @@
+{
+    "intents":  [
+                    "improve UI",
+                    "fix mobile layout",
+                    "refine interaction",
+                    "organize visual hierarchy"
+                ],
+    "autoRun":  "keyword-and-context matched",
+    "keywords":  [
+                     "vue3",
+                     "admin",
+                     "agent",
+                     "运维部署agent",
+                     "frontend",
+                     "ux",
+                     "product",
+                     "vue3-admin-agent agent",
+                     "vue3-admin-agent skill"
+                 ]
+}

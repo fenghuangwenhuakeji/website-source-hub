@@ -1,0 +1,14 @@
+{
+    "parentAgent":  "agent__deployment-agent",
+    "pets":  [
+
+             ],
+    "petLifecycle":  [
+                         "seed",
+                         "train",
+                         "assist",
+                         "graduate",
+                         "hibernate",
+                         "retire"
+                     ]
+}

@@ -1,0 +1,11 @@
+{
+    "autonomousLoops":  [
+                            "learn",
+                            "dream",
+                            "compress",
+                            "self-check"
+                        ],
+    "currentProject":  null,
+    "followThrough":  true,
+    "silentIteration":  true
+}

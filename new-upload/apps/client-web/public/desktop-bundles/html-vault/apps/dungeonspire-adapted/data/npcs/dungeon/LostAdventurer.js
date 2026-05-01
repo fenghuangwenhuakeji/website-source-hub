@@ -1,0 +1,1 @@
+export default { id: 'npc_lost', name: 'Rald', role: 'QuestGiver', dialogue: 'Have you seen my sword?' };

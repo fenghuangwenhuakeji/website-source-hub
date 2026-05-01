@@ -1,0 +1,1 @@
+export default ['Arthur', 'Borin', 'Cael', 'Drog', 'Eldrin', 'Farg', 'Gorn'];

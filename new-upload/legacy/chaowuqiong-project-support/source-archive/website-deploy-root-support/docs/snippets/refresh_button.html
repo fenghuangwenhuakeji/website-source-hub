@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <script type="module" crossorigin src="./assets/polyfills-DEFFm6sm.js"></script>
+
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta http-equiv="Content-Securiy-Policy" content="script-src 'self'" />    
+    <link rel="icon" type="image/jpeg" href="./favicon.jpg" />
+    <title>OpenRoom</title>
+    <style>
+      #root,
+      body,
+      html {
+        margin: 0;
+      }
+      /* 刷新按钮样式 */
+      #refresh-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #refresh-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      }
+      #refresh-btn.spinning {
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      /* 用户信息显示 */
+      #user-info {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 9998;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 14px;
+        min-width: 200px;
+        display: none;
+      }
+      #user-info.show {
+        display: block;
+      }
+      #user-info .info-item {
+        margin: 8px 0;
+        display: flex;
+        justify-content: space-between;
+      }
+      #user-info .info-label {
+        color: #aaa;
+      }
+      #user-info .info-value {
+        color: #4ade80;
+        font-weight: bold;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-CxfYsPbO.js"></script>    <link rel="modulepreload" crossorigin href="./assets/vendor-i18n-C4pywuhA.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-framer-DL-HhwWB.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-react-DAtrFMfn.js">
+    <link rel="stylesheet" crossorigin href="./assets/styles/index-DTOllJFH.css">
+    <script type="module">import.meta.url;import("_").catch(()=>1);(async function*(){})().next();if(location.protocol!="file:"){window.__vite_is_modern_browser=true}</script>
+    <script type="module">!function(){if(window.__vite_is_modern_browser)return;console.warn("vite: loading legacy chunks, syntax error above and the same error below should be ignored");var e=document.getElementById("vite-legacy-polyfill"),n=document.createElement("script");n.src=e.src,n.onload=function(){System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))},document.body.appendChild(n)}();</script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <!-- 刷新按钮 -->
+    <button id="refresh-btn" title="刷新积分和时长">🔄</button>
+    
+    <!-- 用户信息显示 -->
+    <div id="user-info">
+      <div class="info-item">
+        <span class="info-label">当前积分:</span>
+        <span class="info-value" id="user-points">--</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">会员到期:</span>
+        <span class="info-value" id="user-expire">--</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">状态:</span>
+        <span class="info-value" id="user-status">--</span>
+      </div>
+    </div>
+    
+    <script>
+      // 获取 token 的辅助函数
+      function getToken() {
+        // 尝试从 localStorage 获取
+        const authStorage = localStorage.getItem('auth-storage');
+        if (authStorage) {
+          try {
+            const parsed = JSON.parse(authStorage);
+            if (parsed.state && parsed.state.token) {
+              return parsed.state.token;
+            }
+          } catch (e) {}
+        }
+        // 尝试直接获取 token
+        return localStorage.getItem('token') || sessionStorage.getItem('token');
+      }
+      
+      // 刷新用户数据
+      async function refreshUserData() {
+        const btn = document.getElementById('refresh-btn');
+        const userInfo = document.getElementById('user-info');
+        
+        btn.classList.add('spinning');
+        
+        try {
+          const token = getToken();
+          if (!token) {
+            console.log('未找到 token，请先登录');
+            btn.classList.remove('spinning');
+            return;
+          }
+          
+          // 获取用户信息
+          const response = await fetch('/api/auth/profile', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (!response.ok) {
+            throw new Error('获取用户信息失败');
+          }
+          
+          const data = await response.json();
+          
+          if (data.success && data.data) {
+            const user = data.data;
+            
+            // 更新显示
+            document.getElementById('user-points').textContent = user.points || 0;
+            
+            if (user.membership_expire) {
+              const expireDate = new Date(user.membership_expire);
+              const now = new Date();
+              const diff = expireDate - now;
+              
+              if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                
+                if (days > 0) {
+                  document.getElementById('user-expire').textContent = `${days}天${hours}小时`;
+                  document.getElementById('user-status').textContent = '✅ 会员有效';
+                  document.getElementById('user-status').style.color = '#4ade80';
+                } else {
+                  document.getElementById('user-expire').textContent = `${hours}小时`;
+                  document.getElementById('user-status').textContent = '✅ 会员有效';
+                  document.getElementById('user-status').style.color = '#4ade80';
+                }
+              } else {
+                document.getElementById('user-expire').textContent = '已过期';
+                document.getElementById('user-status').textContent = '❌ 非会员';
+                document.getElementById('user-status').style.color = '#ef4444';
+              }
+            } else {
+              document.getElementById('user-expire').textContent = '无会员';
+              document.getElementById('user-status').textContent = '❌ 非会员';
+              document.getElementById('user-status').style.color = '#ef4444';
+            }
+            
+            // 显示用户信息面板
+            userInfo.classList.add('show');
+            
+            // 3秒后自动隐藏
+            setTimeout(() => {
+              userInfo.classList.remove('show');
+            }, 5000);
+            
+            console.log('用户数据刷新成功:', user);
+          }
+        } catch (error) {
+          console.error('刷新用户数据失败:', error);
+          alert('刷新失败: ' + error.message);
+        } finally {
+          btn.classList.remove('spinning');
+        }
+      }
+      
+      // 绑定按钮点击事件
+      document.getElementById('refresh-btn').addEventListener('click', refreshUserData);
+      
+      // 页面加载完成后自动刷新一次
+      window.addEventListener('load', () => {
+        setTimeout(refreshUserData, 2000);
+      });
+      
+      // 每30秒自动刷新一次
+      setInterval(refreshUserData, 30000);
+    </script>
+    
+    <script nomodule>!function(){var e=document,t=e.createElement("script");if(!("noModule"in t)&&"onbeforeload"in t){var n=!1;e.addEventListener("beforeload",(function(e){if(e.target===t)n=!0;else if(!e.target.hasAttribute("nomodule")||!n)return;e.preventDefault()}),!0),t.type="module",t.src=".",e.head.appendChild(t),t.remove()}}();</script>
+    <script nomodule crossorigin id="vite-legacy-polyfill" src="./assets/polyfills-legacy-DHRYMYDY.js"></script>
+    <script nomodule crossorigin id="vite-legacy-entry" data-src="./assets/index-legacy-C0IbEkyX.js">System.import(document.getElementById('vite-legacy-entry').getAttribute('data-src'))</script>
+  </body>
+</html>

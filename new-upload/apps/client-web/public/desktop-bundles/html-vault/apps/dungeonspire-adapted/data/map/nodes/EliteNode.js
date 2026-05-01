@@ -1,0 +1,1 @@
+export default { type: 'CombatElite', icon: 'skull_elite', chance: 0.1 };

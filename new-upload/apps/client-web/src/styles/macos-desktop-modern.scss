@@ -1,0 +1,802 @@
+/**
+ * macOS Desktop Modern Styles v3.0
+ * 全面升级 macOS 桌面组件样式
+ * 玻璃拟态、极光渐变、3D深度、霓虹光效
+ */
+
+@use './macos-modern-v3.scss' as *;
+
+// ============================================
+// 桌面背景
+// ============================================
+
+.macos-desktop {
+  width: 100vw;
+  height: 100vh;
+  background: $bg-universe;
+  position: relative;
+  overflow: hidden;
+  
+  // 极光背景效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: $gradient-aurora-radial;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+  
+  // 星空粒子效果
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.2), transparent),
+      radial-gradient(1px 1px at 230px 80px, rgba(255,255,255,0.3), transparent),
+      radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.2), transparent);
+    background-repeat: repeat;
+    background-size: 350px 200px;
+    pointer-events: none;
+    opacity: 0.4;
+    animation: twinkle 8s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.6; }
+}
+
+// ============================================
+// 菜单栏 - 现代玻璃拟态
+// ============================================
+
+.menu-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $menu-bar-height;
+  @include glass(0.08, 24px);
+  border-bottom: 1px solid $border-subtle;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $space-5;
+  z-index: 10000;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+  
+  // 顶部高光
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+      transparent 0%, 
+      rgba(255,255,255,0.2) 20%, 
+      rgba(255,255,255,0.3) 50%, 
+      rgba(255,255,255,0.2) 80%, 
+      transparent 100%
+    );
+  }
+}
+
+.menu-bar-left {
+  display: flex;
+  align-items: center;
+  gap: $space-5;
+}
+
+.menu-bar-right {
+  display: flex;
+  align-items: center;
+  gap: $space-4;
+}
+
+.menu-bar-logo {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  svg {
+    width: 18px;
+    height: 18px;
+    color: $text-primary;
+    filter: drop-shadow(0 0 8px rgba($color-primary, 0.5));
+  }
+  
+  span {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-primary;
+    letter-spacing: -0.3px;
+  }
+}
+
+.menu-bar-item {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-2 $space-3;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-secondary;
+  border-radius: $radius-md;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: $text-primary;
+  }
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.menu-bar-status {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+}
+
+.status-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: $radius-md;
+  cursor: pointer;
+  @include transition(all);
+  color: $text-secondary;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: $text-primary;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.menu-bar-time {
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-primary;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+// ============================================
+// Dock - 现代悬浮设计
+// ============================================
+
+.dock {
+  position: fixed;
+  bottom: $space-4;
+  left: 50%;
+  transform: translateX(-50%);
+  height: $dock-height;
+  @include glass(0.1, 30px);
+  border: 1px solid $border-light;
+  border-radius: $radius-2xl;
+  display: flex;
+  align-items: center;
+  padding: $space-3 $space-5;
+  gap: $space-2;
+  z-index: 9999;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  
+  // 底部发光
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 10%;
+    right: 10%;
+    height: 40px;
+    background: radial-gradient(ellipse at center, rgba($color-primary, 0.15) 0%, transparent 70%);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+}
+
+.dock-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  width: 64px;
+  height: 100%;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    transform: translateY(-8px);
+    
+    .dock-icon {
+      box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba($color-primary, 0.3);
+    }
+    
+    .dock-label {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  &.active {
+    .dock-icon {
+      box-shadow: 
+        0 0 0 2px rgba($color-primary, 0.5),
+        0 0 20px rgba($color-primary, 0.4);
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      width: 4px;
+      height: 4px;
+      background: $color-primary;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba($color-primary, 0.8);
+    }
+  }
+}
+
+.dock-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  @include transition(all);
+  overflow: hidden;
+  
+  img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+  }
+  
+  svg {
+    width: 26px;
+    height: 26px;
+    color: $text-primary;
+  }
+}
+
+.dock-label {
+  position: absolute;
+  top: -36px;
+  padding: $space-2 $space-3;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(12px);
+  border-radius: $radius-md;
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-primary;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(10px);
+  @include transition(all);
+  pointer-events: none;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  border: 1px solid $border-light;
+}
+
+// ============================================
+// 窗口 - 现代玻璃窗口
+// ============================================
+
+.window {
+  position: absolute;
+  min-width: 400px;
+  min-height: 300px;
+  @include glass(0.06, 30px);
+  border: 1px solid $border-light;
+  border-radius: $window-radius;
+  box-shadow: 
+    0 25px 80px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  @include transition(transform box-shadow);
+  
+  &:hover {
+    box-shadow: 
+      0 30px 100px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(255, 255, 255, 0.08),
+      inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  }
+  
+  &.active {
+    box-shadow: 
+      0 35px 120px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba($color-primary, 0.2),
+      0 0 60px rgba($color-primary, 0.1),
+      inset 0 1px 1px rgba(255, 255, 255, 0.15);
+    z-index: 100;
+  }
+  
+  &.minimized {
+    opacity: 0;
+    transform: scale(0.8) translateY(100px);
+    pointer-events: none;
+  }
+  
+  &.maximized {
+    top: $menu-bar-height !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: calc(100vh - #{$menu-bar-height}) !important;
+    border-radius: 0;
+  }
+}
+
+.window-header {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 $space-4;
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+  border-bottom: 1px solid $border-subtle;
+  cursor: grab;
+  
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.window-controls {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+}
+
+.window-control-btn {
+  width: $control-btn-size;
+  height: $control-btn-size;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  @include transition(all);
+  position: relative;
+  
+  svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    opacity: 0;
+    @include transition(opacity);
+  }
+  
+  &:hover svg {
+    opacity: 1;
+  }
+  
+  &.close {
+    background: $btn-close;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.2);
+    
+    &:hover {
+      background: $btn-close-hover;
+      box-shadow: 0 0 10px $btn-close-glow;
+    }
+  }
+  
+  &.minimize {
+    background: $btn-minimize;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.2);
+    
+    &:hover {
+      background: $btn-minimize-hover;
+      box-shadow: 0 0 10px $btn-minimize-glow;
+    }
+  }
+  
+  &.maximize {
+    background: $btn-maximize;
+    box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.2);
+    
+    &:hover {
+      background: $btn-maximize-hover;
+      box-shadow: 0 0 10px $btn-maximize-glow;
+    }
+  }
+}
+
+.window-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  color: $text-primary;
+  letter-spacing: -0.2px;
+}
+
+.window-content {
+  flex: 1;
+  overflow: auto;
+  padding: $space-4;
+  
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+  }
+}
+
+// ============================================
+// 桌面图标
+// ============================================
+
+.desktop-icons {
+  position: absolute;
+  top: $menu-bar-height + $space-6;
+  left: $space-6;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+  z-index: 10;
+}
+
+.desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  width: 80px;
+  padding: $space-3;
+  border-radius: $radius-lg;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    
+    .desktop-icon-image {
+      transform: scale(1.05);
+    }
+  }
+  
+  &.selected {
+    background: rgba($color-primary, 0.15);
+    
+    .desktop-icon-label {
+      background: rgba($color-primary, 0.8);
+      color: white;
+    }
+  }
+}
+
+.desktop-icon-image {
+  width: 56px;
+  height: 56px;
+  border-radius: $radius-lg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.04) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  @include transition(transform);
+  
+  svg {
+    width: 28px;
+    height: 28px;
+    color: $text-primary;
+  }
+  
+  img {
+    width: 70%;
+    height: 70%;
+    object-fit: contain;
+  }
+}
+
+.desktop-icon-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: $text-primary;
+  text-align: center;
+  padding: $space-1 $space-2;
+  border-radius: $radius-sm;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  @include transition(all);
+}
+
+// ============================================
+// 上下文菜单
+// ============================================
+
+.context-menu {
+  position: fixed;
+  min-width: 200px;
+  @include glass(0.1, 24px);
+  border: 1px solid $border-light;
+  border-radius: $radius-lg;
+  padding: $space-2;
+  z-index: 10001;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: fadeInScale 0.15s $ease-out;
+}
+
+.context-menu-item {
+  display: flex;
+  align-items: center;
+  gap: $space-3;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  font-size: 13px;
+  color: $text-secondary;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: $text-primary;
+  }
+  
+  svg {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+  }
+  
+  &.danger {
+    color: $error-light;
+    
+    &:hover {
+      background: rgba($error, 0.15);
+    }
+  }
+  
+  &.separator {
+    height: 1px;
+    background: $border-subtle;
+    margin: $space-2 0;
+    padding: 0;
+    pointer-events: none;
+  }
+}
+
+// ============================================
+// 通知
+// ============================================
+
+.notification {
+  position: fixed;
+  top: $menu-bar-height + $space-4;
+  right: $space-4;
+  width: 360px;
+  @include glass-panel;
+  padding: $space-4;
+  z-index: 10002;
+  animation: slideInRight 0.3s $ease-out;
+  
+  &.exit {
+    animation: fadeOutRight 0.2s $ease-out forwards;
+  }
+}
+
+@keyframes fadeOutRight {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $space-3;
+}
+
+.notification-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-primary;
+}
+
+.notification-close {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-md;
+  cursor: pointer;
+  color: $text-muted;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: $text-primary;
+  }
+  
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+.notification-content {
+  font-size: 13px;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
+// ============================================
+// 启动台
+// ============================================
+
+.launchpad {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(40px) saturate(180%);
+  z-index: 9998;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 80px;
+  animation: fadeIn 0.3s $ease-out;
+}
+
+.launchpad-search {
+  width: 400px;
+  max-width: 90%;
+  margin-bottom: $space-10;
+  
+  input {
+    width: 100%;
+    padding: $space-3 $space-4;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid $border-light;
+    border-radius: $radius-full;
+    font-size: 16px;
+    color: $text-primary;
+    text-align: center;
+    @include transition(all);
+    
+    &::placeholder {
+      color: $text-muted;
+    }
+    
+    &:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.15);
+      border-color: $border-medium;
+      box-shadow: 0 0 30px rgba($color-primary, 0.2);
+    }
+  }
+}
+
+.launchpad-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: $space-6;
+  max-width: 1200px;
+  width: 90%;
+  padding: 0 $space-6;
+}
+
+.launchpad-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  padding: $space-3;
+  border-radius: $radius-xl;
+  cursor: pointer;
+  @include transition(all);
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+  }
+}
+
+.launchpad-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: $radius-xl;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  
+  svg {
+    width: 36px;
+    height: 36px;
+    color: $text-primary;
+  }
+}
+
+.launchpad-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-primary;
+  text-align: center;
+}

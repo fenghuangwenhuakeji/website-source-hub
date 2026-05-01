@@ -1,0 +1,18 @@
+{
+    "phase":  "standby",
+    "backgroundLoops":  [
+                            "learn",
+                            "dream",
+                            "compress"
+                        ],
+    "phases":  [
+                   "boot",
+                   "understand",
+                   "interact",
+                   "execute",
+                   "inspect",
+                   "improve",
+                   "update",
+                   "standby"
+               ]
+}

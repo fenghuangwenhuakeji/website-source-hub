@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>档案中心 - 光玉中医健康工作台</title>
+    <meta name="description" content="查看本项目内的健康评估记录、当前主题和继续入口。">
+    <link rel="stylesheet" href="../assets/css/all.min.css">
+    <link rel="stylesheet" href="../css/home.css">
+    <link rel="stylesheet" href="../css/unified-ui.css">
+    <style>
+        .profile-main { padding-top: 0; padding-bottom: 120px; }
+        .profile-shell { display:grid; gap:20px; padding:0 16px 24px; }
+        .quick-grid, .care-records { display:grid; gap:14px; }
+        .quick-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+        .quick-card, .record-item, .profile-hero-card { display:grid; gap:10px; padding:18px; border-radius:28px; background:rgba(255,255,255,.82); border:1px solid rgba(255,255,255,.92); box-shadow: var(--ui-shadow-md); text-decoration:none; color: var(--ui-text); }
+        .profile-hero-row, .quick-top { display:flex; align-items:center; gap:16px; }
+        .profile-hero-avatar, .quick-glyph { width:72px; height:72px; border-radius:24px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,.86); color: var(--ui-text); flex-shrink:0; }
+        .quick-glyph { width:46px; height:46px; border-radius:18px; }
+        .profile-hero-copy h2 { font-size:28px; margin-bottom:6px; color: var(--ui-text); }
+        .profile-hero-copy p, .quick-card p, .record-copy p { color: var(--ui-text-soft); line-height:1.8; font-size:13px; }
+        .quick-card strong, .record-copy strong { font-size:17px; color: var(--ui-text); }
+        .record-action { display:inline-flex; align-items:center; justify-content:center; min-height:40px; padding:0 16px; border-radius:16px; background:rgba(255,255,255,.88); color: var(--ui-text); text-decoration:none; white-space:nowrap; }
+        @media (max-width: 900px) { .quick-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="app-container">
+        <header class="page-header" style="padding:16px;">
+            <a href="../index.html" class="back-btn"><i class="fas fa-arrow-left"></i></a>
+            <div style="text-align:center;">
+                <h1 class="page-title">档案中心</h1>
+                <p class="page-subtitle" style="margin-top:4px;">把当前状态和历史记录轻轻收住</p>
+            </div>
+            <a href="api-settings.html" class="back-btn"><i class="fas fa-sliders-h"></i></a>
+        </header>
+        <main class="content-section profile-main">
+            <div class="profile-shell">
+                <section class="profile-hero-card" data-reveal>
+                    <div class="profile-hero-row">
+                        <div class="profile-hero-avatar"><i class="fas fa-folder-open"></i></div>
+                        <div class="profile-hero-copy">
+                            <h2>这里收的是本项目自己的健康记录。</h2>
+                            <p>当前主题、输入轮次、已完成评估和可继续入口都集中放在这里，不读取其他项目的聊天或档案。</p>
+                        </div>
+                    </div>
+                    <div class="status-chip-row" style="margin-top:16px;">
+                        <span class="status-chip local" id="profileModeChip">本地辅助解读</span>
+                        <span class="meta-chip"><strong>输入轮次</strong><span id="profileTurns">0 轮输入</span></span>
+                        <span class="meta-chip"><strong>当前主题</strong><span id="profileTopic">主诉采集</span></span>
+                        <span class="meta-chip"><strong>记录库</strong><span id="profileArchiveCount">0 份记录</span></span>
+                    </div>
+                    <div class="profile-summary-grid">
+                        <div class="stat-item"><span class="stat-value" id="profileMood">需要梳理</span><span class="stat-label">当前体感</span></div>
+                        <div class="stat-item"><span class="stat-value" id="profileStage">刚开始采集</span><span class="stat-label">当前阶段</span></div>
+                        <div class="stat-item"><span class="stat-value" id="profileFollowup">补一句主诉</span><span class="stat-label">下一句建议</span></div>
+                    </div>
+                </section>
+
+                <section class="quick-grid" data-reveal>
+                    <a class="quick-card" href="test.html"><div class="quick-top"><div class="quick-glyph"><i class="fas fa-clipboard-list"></i></div><strong>继续评估</strong></div><p>先做风险分流、体质倾向、睡眠或脾胃节律观察。</p></a>
+                    <a class="quick-card" href="chat.html"><div class="quick-top"><div class="quick-glyph"><i class="fas fa-comment-dots"></i></div><strong>继续 AI 解读</strong></div><p>把当前主诉、节律变化和档案一起带进去继续整理。</p></a>
+                    <a class="quick-card" href="observe.html"><div class="quick-top"><div class="quick-glyph"><i class="fas fa-eye"></i></div><strong>打开观察台</strong></div><p>如果还说不清，就先从寒热、睡眠、脾胃和舌象自述开始。</p></a>
+                </section>
+
+                <section class="care-records" data-reveal>
+                    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+                        <div><h3 style="font-size:20px;color:var(--ui-text);">历史记录</h3><p style="font-size:13px;color:var(--ui-text-soft);">可一键发给 AI，也可以删除或清空。</p></div>
+                        <button class="record-action" id="clearProfileArchivesBtn" type="button">清空全部</button>
+                    </div>
+                    <div class="care-records" id="profileArchiveList"></div>
+                </section>
+            </div>
+        </main>
+        <nav class="bottom-nav">
+            <a href="../index.html" class="nav-item"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="test.html" class="nav-item"><i class="fas fa-clipboard-list"></i><span>评估</span></a>
+            <a href="chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI解读</span></a>
+            <a href="observe.html" class="nav-item"><i class="fas fa-eye"></i><span>观察</span></a>
+            <a href="profile.html" class="nav-item active"><i class="fas fa-folder-open"></i><span>档案</span></a>
+        </nav>
+    </div>
+    <script src="../dist/js/local-companion.js"></script>
+    <script src="../dist/js/api-config.js"></script>
+    <script src="../dist/js/profile-archive.js"></script>
+    <script src="../dist/js/page-profile.js"></script>
+</body>
+</html>

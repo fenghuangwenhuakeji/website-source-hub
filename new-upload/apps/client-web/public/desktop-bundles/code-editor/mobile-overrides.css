@@ -1,0 +1,238 @@
+@media (max-width: 768px) {
+  html,
+  body,
+  #root {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    position: fixed !important;
+    inset: 0 !important;
+  }
+
+  body {
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  [class*="_container_"] {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  [class*="_commandCenter_"] {
+    min-height: 40px !important;
+    padding: 0 8px !important;
+  }
+
+  [class*="_brandMark_"] {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+
+  [class*="_brandCluster_"] strong {
+    max-width: 46vw;
+    font-size: 12px !important;
+  }
+
+  [class*="_ideLayout_"] {
+    width: 100% !important;
+    height: calc(100dvh - 40px) !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  [class*="_mobileWorkspaceBar_"] {
+    display: flex !important;
+    min-height: 38px !important;
+    padding: 5px 8px !important;
+    gap: 6px !important;
+    overflow-x: auto !important;
+    background: rgba(5, 7, 13, 0.96) !important;
+    border-bottom: 1px solid rgba(34, 211, 238, 0.14) !important;
+  }
+
+  [class*="_mobileWorkspaceBar_"] button {
+    flex: 0 0 auto;
+    min-height: 28px !important;
+    padding: 0 10px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+  }
+
+  [class*="_taskPanel_"] {
+    position: absolute !important;
+    top: 38px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: calc(100dvh - 38px) !important;
+    overflow: auto !important;
+    border-radius: 18px 18px 0 0 !important;
+    box-shadow: 0 -18px 42px rgba(0, 0, 0, 0.38) !important;
+  }
+
+  [class*="_taskPanel_"][class*="_mobilePanelHidden_"] {
+    display: none !important;
+  }
+
+  [class*="_centerArea_"],
+  [class*="_chatPanel_"] {
+    min-width: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  [class*="_chatPanel_"] {
+    border-left: 0 !important;
+    border-right: 0 !important;
+  }
+
+  [class*="_editorSection_"] {
+    height: calc(100% - 156px) !important;
+    min-height: 46dvh !important;
+  }
+
+  [class*="_codexWorkbench_"],
+  [class*="_cycleStrip_"],
+  [class*="_toolTimeline_"],
+  [class*="_sandboxPanel_"],
+  [class*="_agentControlMatrix_"],
+  [class*="_memoryOverview_"] {
+    min-height: 28dvh !important;
+    max-height: 58dvh !important;
+    overflow: auto !important;
+  }
+
+  [class*="_runList_"],
+  [class*="_historyList_"],
+  [class*="_turnList_"] {
+    max-height: 38dvh !important;
+    overflow: auto !important;
+  }
+
+  [class*="_messages_"] {
+    max-height: 24dvh !important;
+    padding: 8px 10px !important;
+  }
+
+  [class*="_composer_"] {
+    gap: 6px !important;
+    padding: 8px 10px 9px !important;
+  }
+
+  [class*="_chatInputArea_"] {
+    padding: 10px !important;
+    gap: 8px !important;
+  }
+
+  [class*="_chatInputArea_"] textarea,
+  [class*="_chatTextarea_"],
+  [class*="_inputShell_"] textarea {
+    min-height: 52px !important;
+    max-height: 92px !important;
+    font-size: 16px !important;
+    line-height: 1.5 !important;
+    resize: none !important;
+  }
+
+  [class*="_contextBar_"],
+  [class*="_modeSwitchRow_"],
+  [class*="_capabilityStrip_"],
+  [class*="_messageTools_"] {
+    display: none !important;
+  }
+
+  html[data-mobile-static-ide="true"] body,
+  html[data-mobile-static-ide="true"] [class*="_container_"] {
+    background: #f5f7fb !important;
+    color: #17191d !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_commandCenter_"],
+  html[data-mobile-static-ide="true"] [class*="_mobileWorkspaceBar_"],
+  html[data-mobile-static-ide="true"] [class*="_taskPanel_"],
+  html[data-mobile-static-ide="true"] [class*="_chatPanel_"],
+  html[data-mobile-static-ide="true"] [class*="_centerArea_"] {
+    border-color: rgba(23, 25, 29, 0.08) !important;
+    background: rgba(255, 255, 255, 0.86) !important;
+    color: #17191d !important;
+    box-shadow: 0 12px 30px rgba(66, 76, 92, 0.12) !important;
+    backdrop-filter: blur(18px) saturate(135%);
+    -webkit-backdrop-filter: blur(18px) saturate(135%);
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_mobileWorkspaceBar_"] {
+    border-bottom: 1px solid rgba(23, 25, 29, 0.08) !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_mobileWorkspaceBar_"] button,
+  html[data-mobile-static-ide="true"] [class*="_sidePanelTab_"],
+  html[data-mobile-static-ide="true"] [class*="_viewBtn_"] {
+    border-color: rgba(23, 25, 29, 0.08) !important;
+    background: rgba(23, 25, 29, 0.05) !important;
+    color: rgba(23, 25, 29, 0.68) !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_active_"] {
+    color: #ed5b45 !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_chatPanel_"] {
+    flex: 0 0 40dvh !important;
+    max-height: 42dvh !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_chatMessages_"],
+  html[data-mobile-static-ide="true"] [class*="_messages_"] {
+    flex: 0 1 18dvh !important;
+    max-height: 18dvh !important;
+    color: #17191d !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_chatInputArea_"] {
+    flex: 0 0 auto !important;
+    background: rgba(255, 255, 255, 0.92) !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_taskCenter_"] {
+    min-height: 44dvh !important;
+    max-height: 58dvh !important;
+    overflow: hidden !important;
+    border-radius: 14px !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_taskCenter_"] [class*="_body_"],
+  html[data-mobile-static-ide="true"] [class*="_planList_"],
+  html[data-mobile-static-ide="true"] [class*="_todoList_"] {
+    min-height: 0 !important;
+    max-height: 38dvh !important;
+    overflow: auto !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_drivesSection_"] {
+    display: none !important;
+  }
+
+  html[data-mobile-static-ide="true"] [class*="_fileTree_"]::before {
+    content: "手机端临时工作区";
+    display: block;
+    margin: 8px;
+    padding: 10px;
+    border: 1px solid rgba(237, 91, 69, 0.18);
+    border-radius: 12px;
+    background: rgba(237, 91, 69, 0.08);
+    color: #17191d;
+    font-size: 13px;
+    font-weight: 800;
+  }
+}

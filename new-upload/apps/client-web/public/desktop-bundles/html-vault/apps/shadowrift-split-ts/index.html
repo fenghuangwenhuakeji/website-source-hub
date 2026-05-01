@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>暗影裂隙v2.0</title>
+  <link rel="stylesheet" href="css/shadowrift.css?v=20260419-hotkeys1" />
+  <link rel="stylesheet" href="css/menu-redesign.css?v=20260419-hotkeys1" />
+  <link rel="stylesheet" href="css/asset-bindings.css?v=20260419-hotkeys1" />
+</head>
+<body class="noselect" data-sr-screen="menu">
+
+  <div id="gameWrap">
+  <canvas id="c"></canvas>
+    <div id="ui">
+      <div id="hud">
+        <div class="barWrap">
+          <div class="barLabel"><span>生命</span><span id="hpTxt" class="mono">0/0</span></div>
+          <div class="bar"><div id="hpFill" class="barFill" style="background: rgba(248,113,113,0.9)"></div></div>
+        </div>
+        <div class="barWrap">
+          <div class="barLabel"><span>法力</span><span id="mpTxt" class="mono">0/0</span></div>
+          <div class="bar"><div id="mpFill" class="barFill" style="background: rgba(96,165,250,0.92)"></div></div>
+        </div>
+        <div class="barWrap">
+          <div class="barLabel"><span>经验</span><span id="xpTxt" class="mono">Lv.1 / 巅峰0</span></div>
+          <div class="bar"><div id="xpFill" class="barFill" style="background: rgba(52,211,153,0.92)"></div></div>
+        </div>
+        <div class="small" id="skillTxt" style="margin-top:8px; opacity:0.92;"></div>
+        <div class="small" id="buffTxt" style="margin-top:6px; opacity:0.85;"></div>
+      </div>
+      <div id="topRight">
+        <div id="stageTxt" class="mono"></div>
+        <div id="bossTxt" class="mono" style="margin-top:6px;"></div>
+        <div id="riftRow" class="riftRow" aria-label="裂隙进度">
+  <div id="riftLabel" class="mono riftLabel">【裂隙进度】</div>
+  <div id="riftBarWrap" class="riftBarWrap" aria-label="裂隙进度条">
+  <div id="riftBarFill" class="riftBarFill"></div>
+  <div id="riftBarOverlay" class="riftBarOverlay"></div>
+  <div id="riftBarTicks" class="riftBarTicks"></div>
+  <div id="riftBarText" class="riftBarText mono"></div>
+  <div id="riftGainTxt" class="riftGainTxt mono"></div>
+</div>
+</div>
+        <div id="riftHintTxt" class="mono riftHintTxt"></div>
+        <div id="fpsTxt" class="mono" style="margin-top:6px; opacity:0.75;"></div>
+      </div>
+      <div id="equipBar" aria-label="装备图标栏"></div>
+      <div id="inv">
+        <div class="box">
+          <div class="small"><b>装备</b>（右侧图标栏：<b>Shift</b>+点击卸下）</div>
+          <div class="sep"></div>
+          <div class="small" id="setTxt">套装（仅本职业生效）：—</div>
+          <div class="small" id="goldTxt" style="margin-top:6px; opacity:0.92;">金币：0</div>
+          <button class="btn" id="openShopBtn" style="margin-top:8px; pointer-events:auto;">金币商店（紫装）</button>
+          <div class="small" style="margin-top:6px; opacity:0.78;">提示：靠近掉落物按 <b>空格</b> 拾取（走过去可自动拾取暗金/套装；ESC→设置可开启“掉落即拾取”）。</div>
+        </div>
+      </div>
+      <div id="compare">
+        <div class="box">
+          <div class="small"><b>装备对比</b>（悬停掉落物时显示）</div>
+          <div class="cols" id="compareCols"></div>
+          <div class="tag" id="compareHint" style="margin-top:8px;">—</div>
+        </div>
+      </div>
+      <div id="log"></div>
+      <div id="centerToast"></div>
+    </div>
+    <div id="menu">
+      <div id="panel">
+        <h1>暗影裂隙v2.0</h1>
+        <button id="btnExitGame" class="btnExitGame">退出游戏</button>
+        <div id="exitConfirm" class="confirmOverlay" role="dialog" aria-modal="true" aria-label="退出确认">
+          <div class="modal">
+            <h2>确认退出游戏？</h2>
+            <div class="muted" style="line-height:1.55;">
+              当前进度会自动保存。<br/>
+              浏览器模式可能无法直接关闭标签页，将跳转到空白页以模拟“退出”。
+            </div>
+            <div class="actions">
+              <button class="btn" id="exitCancelBtn">取消</button>
+              <button class="btn primary" id="exitConfirmBtn">退出</button>
+            </div>
+          </div>
+        </div>
+        <div class="muted">
+          特性：割草爽感 + 高密度战斗 + 高自由度装备库 + 技能与装备联动 + 多Boss演出 + 等级80 / 巅峰5000<br/>
+          <span class="mono">WASD</span> / 鼠标点击移动 · 鼠标左键普攻 · <span class="mono">1/2/3/4</span>技能 · <span class="mono">Q/E</span>药水 · <span class="mono">ESC</span>菜单
+        </div>
+        <div class="sep"></div>
+        <div class="row saveRow">
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">野蛮人 <span class="slotTag">槽位1</span></div>
+                <div class="muted">旋风斩 / 冲锋 / 地震 / 战吼</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;"><button class="btn primary" id="pickBarb">进入</button><button class="btn danger" id="wipeBarb" title="仅清空该角色存档">清除</button></div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState0">—</b></div>
+            <div class="kv"><span>定位</span><b>近战割草 + 爆发位移</b></div>
+            <div class="kv"><span>上手</span><b>简单</b></div>
+            <div class="kv"><span>推荐</span><b>想爽就选</b></div>
+          </div>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">法师 <span class="slotTag">槽位2</span></div>
+                <div class="muted">火球术 / 闪电链 / 暴风雪 / 奥术涌动</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;"><button class="btn primary" id="pickMage">进入</button><button class="btn danger" id="wipeMage" title="仅清空该角色存档">清除</button></div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState1">—</b></div>
+            <div class="kv"><span>定位</span><b>远程AOE + 控场</b></div>
+            <div class="kv"><span>上手</span><b>中等</b></div>
+            <div class="kv"><span>推荐</span><b>喜欢清屏特效</b></div>
+          </div>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">武僧 <span class="slotTag">槽位3</span></div>
+                <div class="muted">七伤拳 / 爆裂掌 / 金钟破 / 禅心</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;"><button class="btn primary" id="pickMonk">进入</button><button class="btn danger" id="wipeMonk" title="仅清空该角色存档">清除</button></div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState2">—</b></div>
+            <div class="kv"><span>定位</span><b>近战连击 + 爆裂收割</b></div>
+            <div class="kv"><span>上手</span><b>困难</b></div>
+            <div class="kv"><span>推荐</span><b>喜欢贴身爆发</b></div>
+          </div>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">猎魔人 <span class="slotTag">槽位4</span></div>
+                <div class="muted">多重射击 / 箭雨 / 飞刀 / 鹰眼专注</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;"><button class="btn primary" id="pickDH">进入</button><button class="btn danger" id="wipeDH" title="仅清空该角色存档">清除</button></div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState3">—</b></div>
+            <div class="kv"><span>定位</span><b>远程爆发 + 机动风筝</b></div>
+            <div class="kv"><span>上手</span><b>简单</b></div>
+            <div class="kv"><span>推荐</span><b>喜欢多段与走位</b></div>
+          </div>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">刺客 <span class="slotTag">槽位5</span></div>
+                <div class="muted">虎击 / 龙爪 / 影刃陷阱 / 暗影化身</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn primary" id="pickAss">进入</button>
+                <button class="btn danger" id="wipeAss" title="仅清空该角色存档">清除</button>
+              </div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState4">—</b></div>
+            <div class="kv"><span>定位</span><b>潜行爆发 + 机动切入</b></div>
+            <div class="kv"><span>上手</span><b>中等</b></div>
+            <div class="kv"><span>推荐</span><b>喜欢刺杀与走位</b></div>
+          </div>
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div>
+                <div style="font-weight:700;">德鲁伊 <span class="slotTag">槽位6</span></div>
+                <div class="muted">召唤灵狼 / 风刃 / 飓风领域 / 熊人形态</div>
+              </div>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <button class="btn primary" id="pickDru">进入</button>
+                <button class="btn danger" id="wipeDru" title="仅清空该角色存档">清除</button>
+              </div>
+            </div>
+            <div class="sep"></div>
+            <div class="kv"><span>存档进度</span><b id="slotState5">—</b></div>
+            <div class="kv"><span>定位</span><b>召唤控制 + 形态切换</b></div>
+            <div class="kv"><span>上手</span><b>中等</b></div>
+            <div class="kv"><span>推荐</span><b>喜欢召唤与控场</b></div>
+          </div>
+          </div>
+        <div class="row settingsRow">
+          <div class="card">
+            <div style="font-weight:700;">设置</div>
+            <div class="sep"></div>
+            <div class="kv"><span>当前槽位</span><b id="saveState">未读取</b></div>
+            <div class="kv"><span>画质</span><b><select id="gfxPreset" style="background: rgba(255,255,255,0.06); color:#f4f4f4; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:6px 8px;"><option value="high">高（完整特效）</option><option value="low">低（性能优化）</option></select></b></div><div class="kv"><span>分辨率</span><b><select id="resSelect" style="background: rgba(255,255,255,0.06); color:#f4f4f4; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:6px 8px;"><option value="auto">自动（适配屏幕）</option><option value="1280x720">1280×720</option><option value="1600x900">1600×900</option><option value="1920x1080">1920×1080</option><option value="2560x1440">2560×1440</option><option value="3840x2160">3840×2160</option></select></b></div>
+            <div class="kv"><span>音效</span><b><input type="range" id="sfxVol" min="0" max="100" value="50" /></b></div>
+            <div class="kv"><span>掉落显示</span><b>
+              <select id="lootFilter" style="background: rgba(255,255,255,0.06); color:#f4f4f4; border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:6px 8px;">
+                <option value="1">显示全部</option>
+                <option value="2">仅金色及以上</option>
+                <option value="3">仅暗金/套装/紫装</option>
+                <option value="4">仅套装</option>
+              </select>
+            </b></div>
+            <div class="kv"><span>自动拾取（暗金/套装）</span><b><input type="checkbox" id="autoPickup" /></b></div>
+            <div class="muted" style="margin-top:6px;">开启后：暗金/套装只要掉落即自动拾取（不需要靠近）。</div>
+            <div class="sep"></div>
+            <div class="muted" style="margin-top:10px;">说明：这是单文件离线版本，所有内容在浏览器本地运行。无网络、无安装。你可以随时<b>返回主菜单</b>切换职业。</div>
+          </div>
+        </div>
+        <div class="sep"></div>
+        <div class="muted">
+          【ESC可打开菜单切换角色 / 查看玩家数据和装备 / 切换技能分支】<br/>
+          裂隙：击杀怪物获得裂隙进度（普通/精英/首领不同）。进度填满后出现<b>裂隙守护者</b>；只有击败守护者才会出现结算界面，拾取掉落后进入下一层并刷新地图。
+        </div>
+      </div>
+    </div>
+    <div id="attrOverlay" class="bagOverlay" style="display:none;">
+      <div class="modal bagModal">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div class="modalTitle">属性</div>
+          <button class="btn" id="attrCloseBtn">关闭</button>
+        </div>
+        <div class="sep"></div>
+        <div id="attrOverlayBody"></div>
+      </div>
+    </div>
+    <div id="skillOverlay" class="bagOverlay" style="display:none;">
+      <div class="modal bagModal">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+          <div class="modalTitle">技能</div>
+          <button class="btn" id="skillCloseBtn">关闭</button>
+        </div>
+        <div class="sep"></div>
+        <div id="skillOverlayBody"></div>
+      </div>
+    </div>
+    <div id="bagOverlay" class="bagOverlay" style="display:none;">
+      <div class="modal bagModal">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div class="bagTitle">背包</div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <div class="tag" id="bagCapHint">常规每部位最多20件</div>
+            <button class="btn" id="bagCloseBtn" style="pointer-events:auto;">关闭</button>
+          </div>
+        </div>
+        <div id="bagTabs" class="bagTabs" style="margin-top:10px;"></div>
+        <div class="bagPane" id="bagPaneNormal">
+          <div class="bagPaneHead">
+            <div class="lbl">常规装备</div>
+            <div class="cap" id="bagCapNorm">0/20</div>
+          </div>
+          <div id="bagListNormal" class="bagList" style="margin-top:10px;"></div>
+          <div id="bagCompareNormal" class="bagCompare" style="display:none; margin-top:12px;"></div>
+        </div>
+        <div class="bagPane" id="bagPaneMut" style="margin-top:14px;">
+          <div class="bagPaneHead">
+            <div class="lbl">突变装备</div>
+            <div class="cap" id="bagCapMut">0/10</div>
+          </div>
+          <div id="bagListMut" class="bagList" style="margin-top:10px;"></div>
+          <div id="bagCompareFx" class="bagCompare fx" style="display:none; margin-top:12px;"></div>
+        </div>
+      </div>
+    </div>
+    <div id="overlay">
+      <div class="modal">
+        <h2 id="ovTitle">副本结算</h2>
+        <div class="muted" id="ovSub">—</div>
+        <div class="sep"></div>
+        <div class="list" id="ovList"></div>
+        <div class="actions">
+          <button class="btn" id="ovToMenu">返回主菜单</button>
+          <button class="btn primary" id="ovContinue">继续</button>
+        </div>
+      </div>
+    </div>
+    <div id="shopOverlay">
+      <div class="modal">
+        <h2>金币商店</h2>
+        <div class="muted" id="shopSub">300000 金币 / 件 · 紫装随等级与巅峰成长（后期强于随机掉落）</div>
+        <div class="sep"></div>
+        <div class="tabs">
+          <button class="btn" id="shopTabBarb">野蛮人紫装</button>
+          <button class="btn" id="shopTabMage">法师紫装</button>
+          <button class="btn" id="shopTabMonk">武僧紫装</button>
+          <button class="btn" id="shopTabDH">猎魔人紫装</button>
+                  <button class="btn" id="shopTabAss">刺客紫装</button>
+          <button class="btn" id="shopTabDruid">德鲁伊紫装</button>
+</div>
+        <div class="grid" id="shopGrid"></div>
+        <div class="actions">
+          <button class="btn" id="shopClose">关闭</button>
+        </div>
+      </div>
+    </div>
+    <div id="tooltip"></div>
+</div>
+  <script src="dist/js/shadowrift-bootstrap.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-data-skills.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-data-items.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-asset-manifest.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-roguelike.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-menu-redesign.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/generated/shadowrift-main.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-api-bridge.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-menu-asset-bindings.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-ui-icon-bindings.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-roguelike-asset-bindings.js?v=20260419-hotkeys1"></script>
+  <script src="dist/js/shadowrift-fx-disabled.js?v=20260419-hotkeys1"></script>
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨竹智能创作分析系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        .shared-view { display: none; }
+        .main-app-view { display: block; }
+        body.sharing .shared-view { display: block; }
+        body.sharing .main-app-view { display: none; }
+         .shared-container {
+            max-width: 800px;
+            margin: 20px auto;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .shared-header {
+            padding: 15px;
+            background-color: var(--background-color-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .shared-header h1 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body class="theme-cyberpunk">
+
+    <!-- 主应用视图 -->
+    <div class="main-app-view">
+        <div class="container">
+            <!-- 左侧项目管理面板 -->
+            <aside class="project-panel">
+                <div class="project-header">
+                    <div class="project-title"><i class="fas fa-bamboo"></i> 项目管理</div>
+                    <div>
+                       <button id="clear-all-projects-btn" class="control-btn" title="一键清空所有项目"><i class="fas fa-trash-alt"></i></button>
+                       <button id="project-manager-btn-aside" class="control-btn"><i class="fas fa-folder-open"></i></button>
+                    </div>
+                </div>
+                <div class="project-search"><input type="text" id="projectSearchInput" placeholder="搜索项目..."></div>
+                <div class="project-list" id="projectList"></div>
+            </aside>
+
+            <!-- 主内容区域 -->
+            <main class="main-content">
+                <!-- 聊天头部 -->
+                <header class="chat-header">
+                    <div class="header-title"><i class="fas fa-bamboo"></i> 墨竹智能创作分析系统</div>
+                    <div class="header-actions">
+                        <!-- 分享和写作模式按钮已移除 -->
+                    </div>
+                </header>
+
+                <!-- 聊天容器 -->
+                <div class="chat-container">
+                    <div class="chat-history" id="chat-history"></div>
+                    <button id="copy-all-btn" class="control-btn" title="复制全文"><i class="fas fa-book"></i></button>
+                </div>
+
+                <!-- 输入区域 -->
+                <div class="chat-input">
+                   <div class="input-wrapper">
+                       <button id="attachment-btn" class="settings-btn" title="上传文件/图片" style="margin-right: 8px;"><i class="fas fa-paperclip"></i></button>
+                       <textarea class="message-input" id="message-input" placeholder="欢迎使用，请说出你的第一句话或者使用侧边栏的工具箱" rows="1"></textarea>
+                       <button class="send-btn" id="send-btn"><i class="fas fa-paper-plane"></i> 发送</button>
+                       <button class="send-btn" id="stop-btn" title="停止生成" style="display: none;"><i class="fas fa-stop"></i> 停止</button>
+                   </div>
+                </div>
+            </main>
+
+            <!-- 右侧控制面板 -->
+            <aside class="control-panel">
+                <div class="control-panel-header">
+                    <div class="control-panel-title">创作工具箱</div>
+                    <div class="header-controls">
+                        <button id="theme-switcher" class="control-btn" title="切换主题"><i class="fas fa-palette"></i></button>
+                    </div>
+                </div>
+                <div class="control-panel-body" id="toolbox-container">
+                    <div class="tool-group">
+                       <h3>项目与效率</h3>
+                       <button class="tool-btn" id="prompt-manager-btn"><i class="fas fa-book"></i> 提示词库</button>
+                       <button class="tool-btn" id="batch-process-btn"><i class="fas fa-tasks"></i> 批量处理</button>
+                       <button class="tool-btn" id="prompt-workflow-btn"><i class="fas fa-project-diagram"></i> 提示词工作流</button>
+                       <button class="tool-btn" id="export-btn"><i class="fas fa-download"></i> 导出项目</button>
+                       <button class="tool-btn" id="one-click-export-txt-btn"><i class="fas fa-file-alt"></i> 一键导出TXT</button>
+                       <button class="tool-btn" id="batch-export-txt-btn"><i class="fas fa-file-export"></i> 批量导出TXT</button>
+                       <button class="tool-btn" id="reset-project-btn"><i class="fas fa-sync-alt"></i> 清空对话</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>润色</h3>
+                       <button class="tool-btn" id="format-btn"><i class="fas fa-align-left"></i> 自动排版</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>卡牌系统</h3>
+                       <button class="tool-btn" id="card-deconstruct-btn"><i class="fas fa-puzzle-piece"></i> 拆解室</button>
+                       <button class="tool-btn" id="card-library-btn"><i class="fas fa-layer-group"></i> 卡牌室</button>
+                       <button class="tool-btn" id="card-composer-btn"><i class="fas fa-drafting-compass"></i> 组合室</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>核心构建</h3>
+                       <button class="tool-btn" id="persona-module-btn"><i class="fas fa-theater-masks"></i> 人设模块</button>
+                       <button class="tool-btn" id="worldview-module-btn"><i class="fas fa-atlas"></i> 世界观模块</button>
+                       <button class="tool-btn" id="outline-module-btn"><i class="fas fa-list-ol"></i> 细纲模块</button>
+                       <button class="tool-btn" id="golden-chapters-btn"><i class="fas fa-medal"></i> 黄金三章</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>万物皆可拆</h3>
+                       <button class="tool-btn" id="deconstruct-character-btn"><i class="fas fa-user-ninja"></i> 拆人物</button>
+                       <button class="tool-btn" id="deconstruct-structure-btn"><i class="fas fa-sitemap"></i> 拆结构</button>
+                       <button class="tool-btn" id="deconstruct-emotion-btn"><i class="fas fa-flushed"></i> 拆情绪</button>
+                       <button class="tool-btn" id="deconstruct-plot-btn"><i class="fas fa-project-diagram"></i> 拆情节</button>
+                       <button class="tool-btn" id="deconstruct-theme-btn"><i class="fas fa-lightbulb"></i> 拆主题</button>
+                   </div>
+                    <div class="tool-group">
+                       <h3>结构与仿写</h3>
+                       <button class="tool-btn" id="clue-extraction-btn"><i class="fas fa-search"></i> 提取线索伏笔</button>
+                       <button class="tool-btn" id="loop-construction-btn"><i class="fas fa-recycle"></i> 循环构建</button>
+                       <button class="tool-btn" id="imitation-writer-btn"><i class="fas fa-pencil-alt"></i> 仿写功能</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>场景与转换</h3>
+                       <button class="tool-btn" id="scene-character-btn"><i class="fas fa-users"></i> 场景加人物</button>
+                       <button class="tool-btn" id="novel-to-script-btn"><i class="fas fa-film"></i> 小说转剧本</button>
+                       <button class="tool-btn" id="novel-to-anime-btn"><i class="fas fa-palette"></i> 转动漫分镜</button>
+                   </div>
+                   <div class="tool-group">
+                       <h3>创意生成</h3>
+                       <button class="tool-btn" id="intro-generator-btn"><i class="fas fa-feather-alt"></i> 导语生成器</button>
+                       <button class="tool-btn" id="inspiration-generator-btn"><i class="fas fa-lightbulb"></i> 灵感生成器</button>
+                       <button class="tool-btn" id="code-assistant-btn"><i class="fas fa-code"></i> 代码助手</button>
+                   </div>
+                    <div class="tool-group">
+                        <h3>写作辅助</h3>
+                        <button class="tool-btn" id="worldview-btn"><i class="fas fa-globe-asia"></i> 世界观设定</button>
+                        <button class="tool-btn" id="character-design-btn"><i class="fas fa-user-edit"></i> 角色设计</button>
+                        <button class="tool-btn" id="plot-planner-btn"><i class="fas fa-sitemap"></i> 情节规划</button>
+                        <button class="tool-btn" id="style-analyzer-btn"><i class="fas fa-diagnoses"></i> 风格分析</button>
+                        <button class="tool-btn" id="dialogue-enhancer-btn"><i class="fas fa-comments"></i> 对白润色</button>
+                        <button class="tool-btn" id="pov-shifter-btn"><i class="fas fa-exchange-alt"></i> 视角转换</button>
+                        <button class="tool-btn" id="emotion-mapper-btn"><i class="fas fa-chart-line"></i> 情绪曲线</button>
+                        <button class="tool-btn" id="naming-helper-btn"><i class="fas fa-magic"></i> 起名助手</button>
+                        <button class="tool-btn" id="review-simulator-btn"><i class="fas fa-star-half-alt"></i> 读者评论模拟</button>
+                    </div>
+                    <div class="tool-group">
+                        <h3>代码工具</h3>
+                        <button class="tool-btn" id="code-refactor-btn"><i class="fas fa-wrench"></i> 代码重构</button>
+                        <button class="tool-btn" id="code-explainer-btn"><i class="fas fa-book-reader"></i> 代码解释</button>
+                        <button class="tool-btn" id="test-case-generator-btn"><i class="fas fa-vial"></i> 测试用例生成</button>
+                        <button class="tool-btn" id="api-doc-generator-btn"><i class="fas fa-file-alt"></i> API文档生成</button>
+                        <button class="tool-btn" id="regex-helper-btn"><i class="fas fa-spell-check"></i> 正则表达式助手</button>
+                        <button class="tool-btn" id="commit-message-generator-btn"><i class="fas fa-code-branch"></i> 提交信息生成</button>
+                        <button class="tool-btn" id="sql-generator-btn"><i class="fas fa-database"></i> SQL生成器</button>
+                        <button class="tool-btn" id="frontend-component-generator-btn"><i class="fab fa-react"></i> 前端组件生成</button>
+                        <button class="tool-btn" id="ci-cd-generator-btn"><i class="fas fa-cogs"></i> CI/CD配置生成</button>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- 分享视图 -->
+    <div class="shared-view">
+        <div class="shared-container">
+            <div class="shared-header">
+                <h1><i class="fas fa-bamboo"></i> 分享的对话</h1>
+                <p>由 墨竹智能创作分析系统 创建</p>
+            </div>
+            <div class="chat-history" id="shared-chat-history">
+                <!-- 分享的内容将动态插入这里 -->
+            </div>
+             <div class="shared-footer" style="text-align: center; padding: 15px; background-color: var(--background-color-light); border-top: 1px solid var(--border-color);">
+                <a href="#" id="back-to-app" style="color: var(--primary-color); text-decoration: none;">返回主应用</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 所有模态框 -->
+    <div id="notification-container"></div>
+
+
+    
+    <div id="prompt-manager-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-book"></i> 提示词武器库</h2>
+                <button class="close-btn" id="close-manager-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="prompt-category-container"></div>
+                <div id="prompt-list-container"></div>
+            </div>
+            <div class="modal-footer">
+                <button id="import-prompts-btn" class="action-btn"><i class="fas fa-upload"></i> 导入</button>
+                <button id="export-prompts-btn" class="action-btn"><i class="fas fa-download"></i> 导出</button>
+                <button id="add-new-prompt-btn" class="action-btn"><i class="fas fa-plus"></i> 新增提示词</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="prompt-editor-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="prompt-editor-title">新增提示词</h2>
+                <button class="close-btn" id="close-editor-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="prompt-edit-index" value="-1">
+                <div class="form-group">
+                    <label for="prompt-title-input">标题</label>
+                    <input type="text" id="prompt-title-input" placeholder="为你的提示词取一个响亮的名字">
+                </div>
+                <div class="form-group">
+                   <label for="prompt-category-input">分类</label>
+                   <input type="text" id="prompt-category-input" list="prompt-categories" placeholder="选择或输入一个新的分类">
+                   <datalist id="prompt-categories"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="prompt-content-input">内容</label>
+                    <textarea id="prompt-content-input" rows="8" placeholder="在这里输入你的提示词模板..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="save-prompt-btn" class="action-btn">保存</button>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 导出选项弹窗 -->
+    <div id="export-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-download"></i> 导出选项</h2>
+                <button class="close-btn" id="close-export-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="export-format">导出格式</label>
+                    <select id="export-format">
+                        <option value="markdown">Markdown</option>
+                        <option value="html">HTML</option>
+                        <option value="txt">纯文本</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="export-filename">文件名</label>
+                    <input type="text" id="export-filename" placeholder="输入文件名（不含扩展名）">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="include-timestamp" checked> 包含时间戳
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="include-thinking" checked> 包含思考过程
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-export-btn" class="action-btn"><i class="fas fa-download"></i> 确认导出</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自动排版和润色选项弹窗 -->
+    <div id="format-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-magic"></i> 自动排版和润色</h2>
+                <button class="close-btn" id="close-format-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>排版选项</label>
+                    <label>
+                        <input type="checkbox" id="format-paragraphs" checked> 段落格式化
+                    </label>
+                    <label>
+                        <input type="checkbox" id="format-punctuation" checked> 标点符号优化
+                    </label>
+                    <label>
+                        <input type="checkbox" id="format-grammar" checked> 语法检查
+                    </label>
+                    <label>
+                        <input type="checkbox" id="format-highlight-terms"> 术语高亮
+                    </label>
+                     <label>
+                        <input type="checkbox" id="format-generate-summary"> 生成摘要
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>润色风格</label>
+                    <select id="polish-style">
+                        <option value="professional">专业风格</option>
+                        <option value="casual">轻松风格</option>
+                        <option value="academic">学术风格</option>
+                        <option value="creative">创意风格</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="polish-target">润色目标</label>
+                    <select id="polish-target">
+                        <option value="last-message">最后一条消息</option>
+                        <option value="recent-messages">最近5条消息</option>
+                        <option value="all-messages">所有消息</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="confirm-format-btn" class="action-btn"><i class="fas fa-magic"></i> 开始润色</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量处理弹窗 -->
+    <div id="batch-process-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-tasks"></i> 批量处理任务</h2>
+                <button class="close-btn" id="close-batch-process-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="batch-prompt-template">选择一个提示词模板</label>
+                    <select id="batch-prompt-template"></select>
+                </div>
+                <div class="form-group">
+                    <label for="batch-prompts-input">输入多个题目（每行一个）</label>
+                    <textarea id="batch-prompts-input" rows="10" placeholder="例如：&#10;分析《红楼梦》的悲剧内核&#10;写一首关于夏夜的诗&#10;..."></textarea>
+                </div>
+                 <small>程序会将每个题目追加到所选模板末尾，然后为每个题目自动创建一个新项目并保存结果。</small>
+            </div>
+            <div class="modal-footer">
+                <button id="start-batch-process-btn" class="action-btn"><i class="fas fa-play-circle"></i> 开始处理</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 代码助手弹窗 -->
+    <div id="code-assistant-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-code"></i> 智能代码助手</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="code-language">编程语言</label>
+                    <select id="code-language">
+                        <option value="javascript">JavaScript</option>
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="cpp">C++</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
+                        <option value="sql">SQL</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="code-type">代码类型</label>
+                    <select id="code-type">
+                        <option value="function">函数/方法</option>
+                        <option value="class">类/对象</option>
+                        <option value="algorithm">算法实现</option>
+                        <option value="debug">调试修复</option>
+                        <option value="optimize">性能优化</option>
+                        <option value="refactor">重构建议</option>
+                        <option value="explain">代码解释</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="code-description">需求描述</label>
+                    <textarea id="code-description" rows="6" placeholder="详细描述你的代码需求，例如：实现一个快速排序算法..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="code-include-comments" checked> 包含详细注释
+                    </label>
+                    <label>
+                        <input type="checkbox" id="code-include-tests"> 包含测试用例
+                    </label>
+                    <label>
+                        <input type="checkbox" id="code-include-examples"> 包含使用示例
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generate-code-btn" class="action-btn"><i class="fas fa-magic"></i> 生成代码</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导语生成器弹窗 -->
+    <div id="intro-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-feather-alt"></i> 智能导语生成器</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="intro-content-type">内容类型</label>
+                    <select id="intro-content-type">
+                        <option value="article">文章</option>
+                        <option value="novel">小说</option>
+                        <option value="report">报告</option>
+                        <option value="blog">博客</option>
+                        <option value="academic">学术论文</option>
+                        <option value="news">新闻报道</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="intro-style">导语风格</label>
+                    <select id="intro-style">
+                        <option value="zhihu-short-story">知乎短篇小说风</option>
+                        <option value="fanqie-novel">番茄小说风</option>
+                        <option value="new-media-mini-program">新媒体小程序风格</option>
+                        <option value="professional">专业严谨</option>
+                        <option value="engaging">生动有趣</option>
+                        <option value="suspenseful">悬念引人</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="intro-length">导语长度</label>
+                    <select id="intro-length">
+                        <option value="short">简短 (50-100字)</option>
+                        <option value="medium">中等 (100-200字)</option>
+                        <option value="long">较长 (200-300字)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="intro-core-content">核心内容</label>
+                    <textarea id="intro-core-content" rows="6" placeholder="输入文章或故事的核心内容、主要观点或情节要点..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="intro-custom-prompt">自定义提示词 (可选)</label>
+                    <textarea id="intro-custom-prompt" rows="3" placeholder="可以输入特定的导语生成要求..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="intro-auto-load" checked> 勾选时自动加载到输入框
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generate-intro-btn" class="action-btn"><i class="fas fa-magic"></i> 生成导语</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 灵感生成器弹窗 -->
+    <div id="inspiration-generator-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-lightbulb"></i> 创意灵感生成器</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inspiration-type">创作类型</label>
+                    <select id="inspiration-type">
+                        <option value="novel">小说</option>
+                        <option value="poetry">诗歌</option>
+                        <option value="script">剧本</option>
+                        <option value="essay">散文</option>
+                        <option value="business">商业创意</option>
+                        <option value="product">产品设计</option>
+                        <option value="art">艺术创作</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inspiration-genre">题材/风格</label>
+                    <select id="inspiration-genre">
+                        <option value="scifi">科幻</option>
+                        <option value="fantasy">奇幻</option>
+                        <option value="romance">言情</option>
+                        <option value="mystery">悬疑</option>
+                        <option value="thriller">惊悚</option>
+                        <option value="historical">历史</option>
+                        <option value="contemporary">现代</option>
+                        <option value="experimental">实验性</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="inspiration-keywords">关键词 (用逗号分隔)</label>
+                    <input type="text" id="inspiration-keywords" placeholder="例如：时间旅行, 人工智能, 爱情, 背叛">
+                </div>
+                <div class="form-group">
+                    <label for="inspiration-elements">核心元素</label>
+                    <textarea id="inspiration-elements" rows="4" placeholder="描述你希望包含的核心元素、情节要点或创意方向..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="inspiration-custom-prompt">自定义提示词 (可选)</label>
+                    <textarea id="inspiration-custom-prompt" rows="3" placeholder="可以输入特定的灵感生成要求..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="inspiration-auto-load" checked> 勾选时自动转化为灵感生成通道
+                    </label>
+                    <label>
+                        <input type="checkbox" id="inspiration-multiple-ideas" checked> 生成多个创意点子
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="generate-inspiration-btn" class="action-btn"><i class="fas fa-magic"></i> 生成灵感</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 拆书功能弹窗 -->
+    <div id="book-splitter-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-book-open"></i> 智能拆书助手</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="book-splitter-content">粘贴原文</label>
+                    <textarea id="book-splitter-content" rows="12" placeholder="在此处粘贴您需要分析或拆解的书籍章节内容..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="book-splitter-custom-prompt">自定义要求 (可选)</label>
+                    <textarea id="book-splitter-custom-prompt" rows="4" placeholder="例如：帮我提炼这本书的核心论点、关键案例和行动指南，输出为一篇精炼的摘要。"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="start-book-splitting-btn" class="action-btn"><i class="fas fa-magic"></i> 开始拆解</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 通用拆解模态框 -->
+    <div id="deconstruction-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2 id="deconstruction-title"><i class="fas fa-search-plus"></i> 通用拆解</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>粘贴需要分析的文本</label><textarea id="deconstruction-text" rows="12" placeholder="粘贴需要拆解的文本..."></textarea></div><div class="form-group"><label>自定义拆解要求 (可选)</label><textarea id="deconstruction-custom-prompt" rows="3" placeholder="输入特定的拆解要求..."></textarea></div></div><div class="modal-footer"><button id="confirm-deconstruction-btn" class="action-btn">开始拆解</button></div></div></div>
+
+    <!-- REBUILT MODALS START -->
+    <!-- 仿写功能弹窗 -->
+    <div id="imitation-writer-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h2><i class="fas fa-pencil-alt"></i> 智能仿写助手</h2><button class="close-btn">&times;</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label for="imitationContent">粘贴范文</label><textarea id="imitationContent" rows="10" placeholder="在此处粘贴您希望模仿其风格的范文..."></textarea></div>
+                <div class="form-group"><label for="newTopic">新的主题</label><textarea id="newTopic" rows="4" placeholder="输入您想用范文风格来创作的新主题或核心内容..."></textarea></div>
+                <div class="form-group"><label for="customPrompt">自定义要求 (可选)</label><textarea id="customPrompt" rows="3" placeholder="例如：保持范文的快节奏和比喻手法..."></textarea></div>
+            </div>
+            <div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="imitation-writer-modal" data-prompt-title="结构化仿写模板">开始仿写</button></div>
+        </div>
+    </div>
+    <!-- 卡牌系统模态框 -->
+    <div id="card-deconstruct-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-puzzle-piece"></i> 拆解室</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="deconstruct-type">选择拆解类型</label><select id="deconstruct-type"><option value="worldview">世界观卡牌</option><option value="character">人物卡牌</option><option value="plot">情节卡牌</option><option value="emotion">情绪卡牌</option><option value="scene">场景卡牌</option></select></div><div class="form-group"><label for="deconstruct-content">粘贴原文进行拆解</label><textarea id="deconstruct-content" rows="10" placeholder="在此处粘贴需要拆解的内容..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="card-deconstruct-modal" data-prompt-title="卡牌拆解助手">开始拆解</button></div></div></div>
+    <div id="card-library-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-layer-group"></i> 卡牌室</h2><button class="close-btn">&times;</button></div><div class="modal-body"><p>这里将展示所有已拆解和创建的卡牌。</p><div id="card-library-display"></div></div><div class="modal-footer"><button class="action-btn close-btn">关闭</button></div></div></div>
+    <div id="card-composer-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-drafting-compass"></i> 组合室</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="composer-card-selection">选择卡牌进行组合</label><div id="composer-card-selection"></div></div><div class="form-group"><label for="composer-requirements">描述你的组合要求</label><textarea id="composer-requirements" rows="5" placeholder="例如：将人物A和场景B结合..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="card-composer-modal" data-prompt-title="卡牌组合助手">开始组合</button></div></div></div>
+    <!-- 核心构建模态框 -->
+    <div id="persona-module-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-theater-masks"></i> 人设模块</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="persona-keywords">输入核心人设关键词</label><input type="text" id="persona-keywords" placeholder="例如：腹黑, 病娇, 忠犬"></div><div class="form-group"><label for="persona-reference">粘贴参考书籍/段落 (可选)</label><textarea id="persona-reference" rows="8" placeholder="粘贴一段你希望分析或借鉴的人设描写..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="persona-module-modal" data-prompt-title="人设构建助手">开始构建</button></div></div></div>
+    <div id="worldview-module-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-atlas"></i> 世界观模块</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="worldview-type">世界观类型</label><input type="text" id="worldview-type" placeholder="例如：东方玄幻, 赛博朋克, 克苏鲁"></div><div class="form-group"><label for="worldview-rules">核心设定/规则</label><textarea id="worldview-rules" rows="8" placeholder="描述你的世界观核心规则..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="worldview-module-modal" data-prompt-title="世界观构建助手">开始构建</button></div></div></div>
+    <div id="outline-module-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-list-ol"></i> 细纲模块</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="outline-summary">故事核心梗概</label><textarea id="outline-summary" rows="5" placeholder="一句话或一段话描述你的故事核心..."></textarea></div><div class="form-group"><label for="outline-structure">选择大纲结构</label><select id="outline-structure"><option value="三幕式">三幕式结构</option><option value="五幕式">五幕式结构</option><option value="英雄之旅">英雄之旅</option><option value="自定义">自定义</option></select></div><div class="form-group"><label for="outline-chapters">期望章节数</label><input type="number" id="outline-chapters" value="20"></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="outline-module-modal" data-prompt-title="细纲生成助手">生成细纲</button></div></div></div>
+    <div id="golden-chapters-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-medal"></i> 黄金三章</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="golden-setting">故事核心设定</label><textarea id="golden-setting" rows="5" placeholder="输入你的核心设定、金手指、世界观..."></textarea></div><div class="form-group"><label for="golden-character-start">主角初始状态</label><textarea id="golden-character-start" rows="3" placeholder="主角开局的困境或平凡状态..."></textarea></div><div class="form-group"><label for="golden-conflict">开局爆点/冲突</label><textarea id="golden-conflict" rows="3" placeholder="故事开头的第一个冲突或转折点..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="golden-chapters-modal" data-prompt-title="黄金三章生成器">生成开篇</button></div></div></div>
+    <!-- 结构与仿写模态框 -->
+    <div id="clue-extraction-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-search"></i> 提取线索伏笔</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="clue-text">粘贴需要分析的文本</label><textarea id="clue-text" rows="12" placeholder="粘贴小说章节或全文..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="clue-extraction-modal" data-prompt-title="线索伏笔提取器">开始提取</button></div></div></div>
+    <div id="loop-construction-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-recycle"></i> 循环构建</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="loop-type">选择循环类型</label><select id="loop-type"><option value="small">小循环 (情节-反馈)</option><option value="medium">中循环 (期待-满足)</option><option value="large">大循环 (挖坑-填坑)</option></select></div><div class="form-group"><label for="loop-content">输入当前情节/设定</label><textarea id="loop-content" rows="8" placeholder="描述当前的情节、人物状态或世界观设定..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="loop-construction-modal" data-prompt-title="循环构建助手">开始构建</button></div></div></div>
+    <!-- 场景与转换模态框 -->
+    <div id="scene-character-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-users"></i> 场景加人物</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="scene-desc">场景描述</label><textarea id="scene-desc" rows="5" placeholder="例如：在一个雨夜的废弃教堂里..."></textarea></div><div class="form-group"><label for="scene-char-desc">人物描述</label><textarea id="scene-char-desc" rows="5" placeholder="例如：一个失去记忆的侦探和一个神秘的黑衣女人..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="scene-character-modal" data-prompt-title="场景人物构建">开始构建</button></div></div></div>
+    <div id="novel-to-script-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-film"></i> 小说转剧本</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="novel-to-script-text">粘贴小说原文</label><textarea id="novel-to-script-text" rows="12" placeholder="粘贴需要转换的小说片段..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="novel-to-script-modal" data-prompt-title="小说转剧本助手">开始转换</button></div></div></div>
+    <div id="novel-to-anime-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-palette"></i> 转动漫分镜</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label for="novel-to-anime-text">粘贴小说原文</label><textarea id="novel-to-anime-text" rows="12" placeholder="粘贴需要转换的小说片段..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="novel-to-anime-modal" data-prompt-title="动漫分镜助手">开始转换</button></div></div></div>
+    <!-- REBUILT MODALS END -->
+
+    <!-- 新增写作辅助模态框 -->
+    <div id="worldview-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-globe-asia"></i> 世界观设定</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>题材/风格</label><input type="text" id="theme" placeholder="例如：赛博朋克、东方玄幻"></div><div class="form-group"><label>核心概念</label><textarea id="core_concept" rows="4" placeholder="一句话描述你的世界，例如：一个魔法与科技共存的浮空岛世界"></textarea></div><div class="form-group"><label>关键元素</label><input type="text" id="key_elements" placeholder="用逗号分隔，例如：龙, 飞船, 基因改造"></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="worldview-modal" data-prompt-title="世界观设定助手">开始设定</button></div></div></div>
+    <div id="character-design-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-user-edit"></i> 角色设计</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>核心身份</label><input type="text" id="identity" placeholder="例如：一个被流放的王子、一个叛逆的黑客"></div><div class="form-group"><label>性格关键词</label><input type="text" id="keywords" placeholder="用逗号分隔，例如：勇敢, 莽撞, 内心敏感"></div><div class="form-group"><label>核心目标/动机</label><textarea id="goal" rows="3" placeholder="角色最渴望的是什么？"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="character-design-modal" data-prompt-title="角色设计助手">开始设计</button></div></div></div>
+    <div id="plot-planner-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-sitemap"></i> 情节规划</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>故事类型</label><input type="text" id="type" placeholder="例如：复仇、成长、冒险"></div><div class="form-group"><label>情节结构</label><select id="structure"><option value="三幕式结构">三幕式结构</option><option value="英雄之旅">英雄之旅</option><option value="五幕式结构">五幕式结构</option></select></div><div class="form-group"><label>核心冲突</label><textarea id="conflict" rows="3" placeholder="主角面临的最大挑战是什么？"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="plot-planner-modal" data-prompt-title="情节规划助手">开始规划</button></div></div></div>
+    <div id="style-analyzer-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-diagnoses"></i> 风格分析</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>待分析文本</label><textarea id="text" rows="8" placeholder="粘贴需要分析风格的文本..."></textarea></div><div class="form-group"><label><input type="checkbox" id="improve_suggestion" checked> 提供改进建议</label></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="style-analyzer-modal" data-prompt-title="写作风格分析器">开始分析</button></div></div></div>
+    <div id="dialogue-enhancer-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-comments"></i> 对白润色</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>场景/情境描述</label><input type="text" id="context" placeholder="对话发生在何时何地？人物关系如何？"></div><div class="form-group"><label>待润色对白</label><textarea id="dialogue" rows="6" placeholder="粘贴需要润色的对白..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="dialogue-enhancer-modal" data-prompt-title="对白润色专家">开始润色</button></div></div></div>
+    <div id="pov-shifter-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-exchange-alt"></i> 视角转换</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>转换目标</label><select id="pov_instruction"><option value="转换为第一人称">转换为第一人称</option><option value="转换为第三人称">转换为第三人称</option></select></div><div class="form-group"><label>待转换文本</label><textarea id="text" rows="8" placeholder="粘贴需要转换视角的文本..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="pov-shifter-modal" data-prompt-title="第一/第三人称转换">开始转换</button></div></div></div>
+    <div id="emotion-mapper-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-chart-line"></i> 情绪曲线</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>待分析文本</label><textarea id="text" rows="10" placeholder="粘贴需要分析情绪曲线的文本..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="emotion-mapper-modal" data-prompt-title="情绪曲线分析">开始分析</button></div></div></div>
+    <div id="naming-helper-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-magic"></i> 起名助手</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>风格/题材</label><input type="text" id="theme" placeholder="例如：东方玄幻、赛博朋克、中世纪奇幻"></div><div class="form-group"><label>类型</label><select id="type"><option value="角色名">角色名</option><option value="地名">地名</option><option value="组织名">组织名</option><option value="技能/物品名">技能/物品名</option></select></div><div class="form-group"><label>其他要求</label><textarea id="requirements" rows="3" placeholder="例如：男性，听起来强大而富有智慧"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="naming-helper-modal" data-prompt-title="起名助手">开始起名</button></div></div></div>
+    <div id="review-simulator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-star-half-alt"></i> 读者评论模拟</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>发布平台/社区风格</label><input type="text" id="platform" placeholder="例如：知乎、豆瓣、晋江、起点"></div><div class="form-group"><label>小说片段</label><textarea id="text" rows="8" placeholder="粘贴你的小说片段..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="review-simulator-modal" data-prompt-title="模拟读者评论">开始模拟</button></div></div></div>
+
+    <!-- 新增代码工具模态框 -->
+    <div id="code-refactor-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-wrench"></i> 代码重构</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>编程语言</label><input type="text" id="language" placeholder="例如：JavaScript, Python"></div><div class="form-group"><label>待重构代码</label><textarea id="code" rows="8" placeholder="粘贴需要重构的代码..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="code-refactor-modal" data-prompt-title="代码重构建议">获取建议</button></div></div></div>
+    <div id="code-explainer-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-book-reader"></i> 代码解释</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>编程语言</label><input type="text" id="language" placeholder="例如：JavaScript, Python"></div><div class="form-group"><label>待解释代码</label><textarea id="code" rows="8" placeholder="粘贴需要解释的代码..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="code-explainer-modal" data-prompt-title="代码解释器">开始解释</button></div></div></div>
+    <div id="test-case-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-vial"></i> 测试用例生成</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>编程语言</label><input type="text" id="language" placeholder="例如：JavaScript, Python"></div><div class="form-group"><label>测试框架 (可选)</label><input type="text" id="framework" placeholder="例如：Jest, Pytest"></div><div class="form-group"><label>待测试代码</label><textarea id="code" rows="6" placeholder="粘贴需要生成测试用例的函数或类..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="test-case-generator-modal" data-prompt-title="测试用例生成器">开始生成</button></div></div></div>
+    <div id="api-doc-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-file-alt"></i> API文档生成</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>代码/路由定义</label><textarea id="code" rows="10" placeholder="粘贴你的API路由定义或相关控制器代码..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="api-doc-generator-modal" data-prompt-title="API文档生成器">开始生成</button></div></div></div>
+    <div id="regex-helper-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-spell-check"></i> 正则表达式助手</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>需求描述</label><textarea id="requirement" rows="5" placeholder="用自然语言描述你希望匹配的模式，例如：匹配一个有效的邮箱地址"></textarea></div><div class="form-group"><label>测试字符串</label><textarea id="examples" rows="5" placeholder="提供一些需要匹配或不匹配的例子"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="regex-helper-modal" data-prompt-title="正则表达式助手">开始生成</button></div></div></div>
+    <div id="commit-message-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-code-branch"></i> 提交信息生成</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>代码改动 (git diff)</label><textarea id="diff" rows="10" placeholder="粘贴 'git diff' 的输出..."></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="commit-message-generator-modal" data-prompt-title="Git提交信息生成器">开始生成</button></div></div></div>
+    <div id="sql-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-database"></i> SQL生成器</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>数据库类型</label><select id="db_type"><option value="PostgreSQL">PostgreSQL</option><option value="MySQL">MySQL</option><option value="SQLite">SQLite</option><option value="SQL Server">SQL Server</option></select></div><div class="form-group"><label>需求描述</label><textarea id="requirement" rows="6" placeholder="用自然语言描述你需要的查询，例如：从 'users' 表中查找所有年龄大于30且居住在'北京'的用户"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="sql-generator-modal" data-prompt-title="SQL查询生成器">开始生成</button></div></div></div>
+    <div id="frontend-component-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fab fa-react"></i> 前端组件生成</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>框架</label><select id="framework"><option value="React">React</option><option value="Vue">Vue</option><option value="Svelte">Svelte</option><option value="HTML/CSS/JS">原生 HTML/CSS/JS</option></select></div><div class="form-group"><label>组件描述</label><textarea id="description" rows="6" placeholder="描述你需要的前端组件，例如：一个带校验功能的登录表单，包含用户名和密码输入框"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="frontend-component-generator-modal" data-prompt-title="前端组件生成器">开始生成</button></div></div></div>
+    <div id="ci-cd-generator-modal" class="modal-overlay"><div class="modal-content"><div class="modal-header"><h2><i class="fas fa-cogs"></i> CI/CD配置生成</h2><button class="close-btn">&times;</button></div><div class="modal-body"><div class="form-group"><label>平台</label><select id="platform"><option value="GitHub Actions">GitHub Actions</option><option value="GitLab CI">GitLab CI</option></select></div><div class="form-group"><label>项目类型和需求</label><textarea id="requirements" rows="6" placeholder="例如：一个Node.js项目，需要执行安装依赖、运行测试和构建Docker镜像等步骤"></textarea></div></div><div class="modal-footer"><button class="action-btn generic-modal-btn" data-modal-id="ci-cd-generator-modal" data-prompt-title="CI/CD配置生成器">开始生成</button></div></div></div>
+
+
+    <!-- 数据层 (prompts.json is now fetched, not loaded as a script) -->
+    <script src="js/data/prompts.js"></script>
+    <!-- 核心逻辑 -->
+    <script src="js/database.js"></script>
+    <script src="js/core/api.js"></script>
+    <script src="js/core/chat.js"></script>
+    <!-- UI 组件 -->
+    <script src="js/ui/notifications.js"></script>
+    <script src="js/ui/theme.js"></script>
+    <script src="js/ui/chat-history.js"></script>
+    <script src="js/ui/misc.js"></script>
+    <!-- 功能组件 -->
+    <script src="js/components/project-manager.js"></script>
+    <script src="js/components/export-manager.js"></script>
+    <script src="js/components/toolbox.js"></script>
+    <script src="js/components/sharing.js"></script>
+    <script src="js/prompt-manager.js"></script>
+    <script src="js/modal-handlers.js"></script> <!-- 新增 -->
+    <script src="js/utils.js"></script>
+    <!-- 主入口 -->
+    <script src="js/main.js"></script>
+    <!-- 提示词工作流弹窗 -->
+   <div id="prompt-workflow-modal" class="modal-overlay">
+       <div class="modal-content">
+           <div class="modal-header">
+               <h2><i class="fas fa-project-diagram"></i> 提示词工作流</h2>
+               <button class="close-btn">&times;</button>
+           </div>
+           <div class="modal-body">
+               <div class="form-group">
+                   <label for="workflow-generator-prompt">第一步：选择一个“生成器”提示词</label>
+                   <select id="workflow-generator-prompt"></select>
+                   <small>这个提示词将用于生成一批初始项目（例如，生成50个小说标题）。</small>
+               </div>
+               <div class="form-group">
+                   <label for="workflow-item-count">生成数量</label>
+                   <input type="number" id="workflow-item-count" value="10" min="1" max="100">
+               </div>
+               <hr style="border: 1px solid var(--border-color); margin: 20px 0;">
+               <div class="form-group">
+                   <label>第二步：选择“处理器”提示词（按执行顺序）</label>
+                   <div id="workflow-processors-wrapper" style="display: flex; align-items: center; gap: 10px;">
+                       <div id="workflow-processors-container" style="flex-grow: 1; display: flex; flex-direction: column; gap: 10px;">
+                           <select class="workflow-processor-prompt"></select>
+                           <select class="workflow-processor-prompt"></select>
+                       </div>
+                       <button id="add-processor-btn" class="control-btn" title="添加处理器"><i class="fas fa-plus"></i></button>
+                   </div>
+                   <small>生成器产出的每个项目，都将依次通过这些处理器进行加工。</small>
+               </div>
+           </div>
+           <div class="modal-footer">
+               <button id="start-workflow-btn" class="action-btn"><i class="fas fa-play-circle"></i> 启动工作流</button>
+           </div>
+       </div>
+   </div>
+
+</body>
+</html>

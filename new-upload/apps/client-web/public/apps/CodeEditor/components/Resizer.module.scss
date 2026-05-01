@@ -1,0 +1,67 @@
+@use '../../../styles/cyberpunk.module.scss' as cyber;
+
+.resizer {
+  flex-shrink: 0;
+  background: transparent;
+  transition: background 0.2s ease;
+  position: relative;
+  z-index: 10;
+
+  &.horizontal {
+    width: 4px;
+    cursor: col-resize;
+
+    &:hover,
+    &.resizing {
+      background: rgba(250, 234, 95, 0.3);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 2px;
+      height: 20px;
+      background: rgba(250, 234, 95, 0.5);
+      border-radius: 1px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover::after,
+    &.resizing::after {
+      opacity: 1;
+    }
+  }
+
+  &.vertical {
+    height: 4px;
+    cursor: row-resize;
+
+    &:hover,
+    &.resizing {
+      background: rgba(250, 234, 95, 0.3);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 20px;
+      height: 2px;
+      background: rgba(250, 234, 95, 0.5);
+      border-radius: 1px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    &:hover::after,
+    &.resizing::after {
+      opacity: 1;
+    }
+  }
+}

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光玉中医健康工作台</title>
+    <meta name="description" content="独立的中医健康评估与 AI 辅助解读前端项目，侧重主诉整理、体质倾向观察、风险分流与记录管理。">
+    <link rel="stylesheet" href="./assets/css/all.min.css">
+    <link rel="stylesheet" href="./css/home.css">
+    <link rel="stylesheet" href="./css/unified-ui.css">
+    <style>
+        .home-main { padding: 0 16px 120px; }
+        .home-shell { display: grid; gap: 22px; }
+        .route-grid, .step-grid { display: grid; gap: 14px; }
+        .route-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .step-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .route-card, .step-card, .notice-card { display: grid; gap: 12px; padding: 20px; border-radius: 28px; background: rgba(255,255,255,.84); border: 1px solid rgba(255,255,255,.94); box-shadow: var(--ui-shadow-md); }
+        .route-card strong, .step-card strong { font-size: 18px; color: var(--ui-text); }
+        .route-card p, .step-card p, .notice-card p { font-size: 13px; line-height: 1.85; color: var(--ui-text-soft); }
+        .hero-card { display: grid; gap: 18px; padding: 28px; border-radius: 34px; background: rgba(255,255,255,.86); border: 1px solid rgba(255,255,255,.96); box-shadow: var(--ui-shadow-lg); }
+        .hero-card h1 { font-size: 34px; color: var(--ui-text); }
+        .hero-mark { width: 60px; height: 60px; border-radius: 22px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255,255,255,.92); }
+        .hero-copy { max-width: 760px; font-size: 14px; line-height: 1.9; color: var(--ui-text-soft); }
+        .seed-chat, .route-link { min-height: 42px; padding: 0 16px; border-radius: 16px; border: 1px solid rgba(255,255,255,.92); background: rgba(255,255,255,.88); color: var(--ui-text); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
+        .seed-chat.primary { background: var(--primary-gradient); color: white; border-color: transparent; }
+        .notice-list { display: grid; gap: 10px; padding-left: 18px; }
+        .notice-list li { font-size: 13px; line-height: 1.8; color: var(--ui-text-soft); }
+        @media (max-width: 1080px) { .route-grid, .step-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 720px) { .route-grid, .step-grid { grid-template-columns: 1fr; } .hero-card h1 { font-size: 28px; } }
+    </style>
+</head>
+<body data-theme="adult">
+    <div class="stars-bg" id="starsBg"></div>
+    <div class="app-container">
+        <header class="page-header" style="padding:16px;">
+            <div class="back-btn" style="visibility:hidden;"><i class="fas fa-arrow-left"></i></div>
+            <div style="text-align:center;">
+                <h1 class="page-title">光玉中医健康工作台</h1>
+                <p class="page-subtitle" style="margin-top:4px;">独立的中医健康评估与 AI 辅助解读项目</p>
+            </div>
+            <a href="./pages/api-settings.html" class="back-btn" title="模型设置"><i class="fas fa-sliders-h"></i></a>
+        </header>
+
+        <main class="content-section home-main">
+            <div class="home-shell">
+                <section class="hero-card" data-reveal>
+                    <div class="hero-mark" aria-hidden="true">
+                        <svg class="svg-icon" viewBox="0 0 24 24">
+                            <path d="M12 3.5c2.2 3 4.3 4.7 6.5 5.4-1.9 1.2-3.3 3-4.1 5.5-1-2.4-2.4-4.2-4.3-5.4 1.4-1.3 2.2-3 1.9-5.5Z"></path>
+                            <path d="M7 10c1.2 1.7 2.7 2.7 4.4 3.1-1.5 1-2.5 2.3-3 4-.7-1.7-1.7-3-3.2-4C6.1 12.2 6.7 11.2 7 10Z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>先把主诉、节律和体感看清，再决定下一步。</h1>
+                        <p class="hero-copy">这里做的是中医健康评估、风险分流、体质倾向观察和 AI 辅助解读，不替代线下面诊，也不直接给处方。你可以先做风险分流、体质自评，或者直接进入 AI 解读页整理当前不适。</p>
+                    </div>
+                    <div class="status-chip-row">
+                        <span class="status-chip local" id="homeModeChip">本地辅助解读</span>
+                        <span class="meta-chip"><strong>项目定位</strong><span>健康评估</span></span>
+                        <span class="meta-chip"><strong>记录库</strong><span id="homeArchiveCount">0 份记录</span></span>
+                        <span class="meta-chip"><strong>边界</strong><span>非诊断</span></span>
+                    </div>
+                </section>
+
+                <section class="route-grid" data-reveal>
+                    <article class="route-card">
+                        <strong>先做风险分流</strong>
+                        <p>如果你担心现在的情况是不是该尽快线下就医，先从这一入口开始。</p>
+                        <div class="page-tools">
+                            <a class="route-link" href="./pages/test.html">去评估页</a>
+                            <button class="seed-chat primary seed-chat" type="button" data-msg="你先帮我判断一下，我这种情况是不是应该尽快线下就医。">直接问 AI</button>
+                        </div>
+                    </article>
+                    <article class="route-card">
+                        <strong>做体质自评</strong>
+                        <p>先看自己更偏气虚、阳虚、阴虚、痰湿或气郁的哪类线索，但不把它当最终结论。</p>
+                        <div class="page-tools">
+                            <a class="route-link" href="./pages/test.html">开始自评</a>
+                            <button class="seed-chat primary seed-chat" type="button" data-msg="帮我看看我的体质倾向更像哪一类，但不要把它当成最终诊断。">直接问 AI</button>
+                        </div>
+                    </article>
+                    <article class="route-card">
+                        <strong>进入 AI 解读</strong>
+                        <p>适合已经知道自己最困扰的症状，想先做主诉整理、节律梳理和边界判断。</p>
+                        <div class="page-tools">
+                            <a class="route-link" href="./pages/chat.html">去解读页</a>
+                            <button class="seed-chat primary seed-chat" type="button" data-msg="帮我先把现在最主要的不舒服说清楚，再决定下一步怎么看。">带着主诉进入</button>
+                        </div>
+                    </article>
+                    <article class="route-card">
+                        <strong>去观察台</strong>
+                        <p>如果你还说不清，可以先从寒热、睡眠、脾胃、大便和舌象自述这些观察入口开始。</p>
+                        <div class="page-tools">
+                            <a class="route-link" href="./pages/observe.html">打开观察台</a>
+                            <a class="route-link" href="./pages/profile.html">看我的记录</a>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="step-grid" data-reveal>
+                    <article class="step-card">
+                        <strong>1. 先采主诉</strong>
+                        <p>部位、持续时间、诱因、加重缓解和伴随变化，先整理清楚。</p>
+                    </article>
+                    <article class="step-card">
+                        <strong>2. 再看体感</strong>
+                        <p>冷热、睡眠、食欲、食后反应、大便、小便和情志联动一起看。</p>
+                    </article>
+                    <article class="step-card">
+                        <strong>3. 做风险分流</strong>
+                        <p>先看哪些情况不能继续拖，哪些应该优先线下就诊或急诊。</p>
+                    </article>
+                    <article class="step-card">
+                        <strong>4. 存进记录库</strong>
+                        <p>评估结果会入档，后面可以一键发给 AI 继续解读。</p>
+                    </article>
+                </section>
+
+                <section class="notice-card" data-reveal>
+                    <strong style="font-size:18px;color:var(--ui-text);">使用边界</strong>
+                    <ul class="notice-list">
+                        <li>这里做的是健康评估、体质观察和 AI 辅助解读，不是执业医疗诊断系统。</li>
+                        <li>如果出现胸痛、呼吸困难、黑便、呕血、持续高热、晕厥、剧烈腹痛等情况，请优先线下就医。</li>
+                        <li>任何涉及方药、剂量、针灸方案、正式辨证结论的问题，都应该面诊执业中医师或相关专科医生。</li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="./index.html" class="nav-item active"><i class="fas fa-home"></i><span>首页</span></a>
+            <a href="./pages/test.html" class="nav-item"><i class="fas fa-clipboard-list"></i><span>评估</span></a>
+            <a href="./pages/chat.html" class="nav-item"><i class="fas fa-comment-dots"></i><span>AI解读</span></a>
+            <a href="./pages/observe.html" class="nav-item"><i class="fas fa-eye"></i><span>观察</span></a>
+            <a href="./pages/profile.html" class="nav-item"><i class="fas fa-folder-open"></i><span>档案</span></a>
+        </nav>
+    </div>
+
+    <script src="./dist/js/local-companion.js"></script>
+    <script src="./dist/js/api-config.js"></script>
+    <script src="./dist/js/profile-archive.js"></script>
+    <script src="./dist/js/page-home.js"></script>
+</body>
+</html>

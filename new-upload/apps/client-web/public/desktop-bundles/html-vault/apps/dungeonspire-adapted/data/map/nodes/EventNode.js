@@ -1,0 +1,1 @@
+export default { type: 'Unknown', icon: 'question', chance: 0.2 };

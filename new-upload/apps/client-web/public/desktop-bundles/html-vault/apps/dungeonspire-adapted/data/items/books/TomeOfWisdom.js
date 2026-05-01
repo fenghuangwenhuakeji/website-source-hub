@@ -1,0 +1,1 @@
+export default { id: 'book_wis', name: 'Tome of Wisdom', effect: 'Learn a random Mage card.' };

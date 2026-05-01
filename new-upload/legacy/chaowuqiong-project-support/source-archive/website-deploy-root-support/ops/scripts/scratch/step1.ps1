@@ -1,0 +1,8 @@
+Write-Host "========================================"
+Write-Host "部署验证脚本"
+Write-Host "========================================"
+Write-Host ""
+Write-Host "密码: gong134135"
+Write-Host ""
+Write-Host "请在弹出的窗口中输入密码执行命令"
+Write-Host ""

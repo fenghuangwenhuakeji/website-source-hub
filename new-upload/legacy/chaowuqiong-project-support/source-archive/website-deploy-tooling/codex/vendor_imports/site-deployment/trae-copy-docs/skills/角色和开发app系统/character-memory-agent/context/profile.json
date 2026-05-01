@@ -1,0 +1,14 @@
+{
+    "openThreads":  [
+
+                    ],
+    "continuityMode":  "project-aware",
+    "defaultFocus":  [
+                         "goal",
+                         "constraints",
+                         "current-state",
+                         "open-risks",
+                         "next-action"
+                     ],
+    "activeProject":  null
+}

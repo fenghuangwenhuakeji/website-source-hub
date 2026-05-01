@@ -1,0 +1,1 @@
+export class SandboxEngine extends BaseGameEngine { constructor(c){super(c); Modules.games.type='sandbox2d'; Modules.games.ctx=this.ctx; Modules.games.initSandbox(); this.draw=()=>{Modules.games.loop();}} }

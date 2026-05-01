@@ -1,0 +1,5 @@
+export const IO_ERRORS = {
+    FILE_NOT_FOUND: 'ERR_IO_001',
+    PERMISSION_DENIED: 'ERR_IO_002',
+    DISK_FULL: 'ERR_IO_003'
+};

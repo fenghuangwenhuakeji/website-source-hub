@@ -1,0 +1,15 @@
+{
+    "canonicalId":  "cloud-server-agent",
+    "childAgentCapable":  true,
+    "currentSkills":  [
+                          "engineering",
+                          "service",
+                          "implementation"
+                      ],
+    "specializations":  [
+                            "implement feature",
+                            "refactor module",
+                            "stabilize backend",
+                            "improve architecture"
+                        ]
+}

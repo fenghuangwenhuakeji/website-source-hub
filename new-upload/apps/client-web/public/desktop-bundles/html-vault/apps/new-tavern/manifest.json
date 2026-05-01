@@ -1,0 +1,308 @@
+{
+  "version": "2.0.0",
+  "description": "Tarven游戏V2.0资源清单",
+  "images": [
+    {
+      "id": "tavern_bg_day",
+      "path": "/assets/images/tavern/bg_day.png",
+      "priority": 1,
+      "description": "酒馆白天背景"
+    },
+    {
+      "id": "tavern_bg_night",
+      "path": "/assets/images/tavern/bg_night.png",
+      "priority": 1,
+      "description": "酒馆夜晚背景"
+    },
+    {
+      "id": "player_idle",
+      "path": "/assets/images/characters/player_idle.png",
+      "priority": 1,
+      "description": "玩家待机动画"
+    },
+    {
+      "id": "player_attack",
+      "path": "/assets/images/characters/player_attack.png",
+      "priority": 1,
+      "description": "玩家攻击动画"
+    },
+    {
+      "id": "player_walking",
+      "path": "/assets/images/characters/player_walking.png",
+      "priority": 1,
+      "description": "玩家行走动画"
+    },
+    {
+      "id": "npc_tavernkeeper",
+      "path": "/assets/images/characters/npc_tavernkeeper.png",
+      "priority": 1,
+      "description": "酒馆老板"
+    },
+    {
+      "id": "npc_adventurer",
+      "path": "/assets/images/characters/npc_adventurer.png",
+      "priority": 1,
+      "description": "冒险者"
+    },
+    {
+      "id": "npc_merchant",
+      "path": "/assets/images/characters/npc_merchant.png",
+      "priority": 1,
+      "description": "商人"
+    },
+    {
+      "id": "enemy_goblin",
+      "path": "/assets/images/enemies/goblin.png",
+      "priority": 2,
+      "description": "哥布林"
+    },
+    {
+      "id": "enemy_orc",
+      "path": "/assets/images/enemies/orc.png",
+      "priority": 2,
+      "description": "兽人"
+    },
+    {
+      "id": "enemy_boss",
+      "path": "/assets/images/enemies/boss.png",
+      "priority": 2,
+      "description": "BOSS"
+    },
+    {
+      "id": "icon_sword",
+      "path": "/assets/images/icons/sword.png",
+      "priority": 1,
+      "description": "剑图标"
+    },
+    {
+      "id": "icon_shield",
+      "path": "/assets/images/icons/shield.png",
+      "priority": 1,
+      "description": "盾图标"
+    },
+    {
+      "id": "icon_potion",
+      "path": "/assets/images/icons/potion.png",
+      "priority": 1,
+      "description": "药水图标"
+    },
+    {
+      "id": "icon_card",
+      "path": "/assets/images/icons/card.png",
+      "priority": 1,
+      "description": "卡牌图标"
+    },
+    {
+      "id": "icon_coin",
+      "path": "/assets/images/icons/coin.png",
+      "priority": 1,
+      "description": "金币图标"
+    },
+    {
+      "id": "icon_star",
+      "path": "/assets/images/icons/star.png",
+      "priority": 1,
+      "description": "星星图标"
+    },
+    {
+      "id": "ui_button_normal",
+      "path": "/assets/images/ui/button_normal.png",
+      "priority": 1,
+      "description": "普通按钮"
+    },
+    {
+      "id": "ui_button_hover",
+      "path": "/assets/images/ui/button_hover.png",
+      "priority": 1,
+      "description": "悬停按钮"
+    },
+    {
+      "id": "ui_dialogue_box",
+      "path": "/assets/images/ui/dialogue_box.png",
+      "priority": 1,
+      "description": "对话框"
+    },
+    {
+      "id": "map_forest",
+      "path": "/assets/images/maps/forest.png",
+      "priority": 2,
+      "description": "森林地图"
+    },
+    {
+      "id": "map_dungeon",
+      "path": "/assets/images/maps/dungeon.png",
+      "priority": 2,
+      "description": "地牢地图"
+    },
+    {
+      "id": "effect_fireball",
+      "path": "/assets/images/effects/fireball.png",
+      "priority": 2,
+      "description": "火球特效"
+    },
+    {
+      "id": "effect_heal",
+      "path": "/assets/images/effects/heal.png",
+      "priority": 2,
+      "description": "治疗特效"
+    },
+    {
+      "id": "card_warrior",
+      "path": "/assets/images/cards/warrior.png",
+      "priority": 2,
+      "description": "战士卡牌"
+    },
+    {
+      "id": "card_mage",
+      "path": "/assets/images/cards/mage.png",
+      "priority": 2,
+      "description": "法师卡牌"
+    },
+    {
+      "id": "card_rogue",
+      "path": "/assets/images/cards/rogue.png",
+      "priority": 2,
+      "description": "盗贼卡牌"
+    }
+  ],
+  "audio": [
+    {
+      "id": "bgm_main",
+      "path": "/assets/audio/bgm/main.mp3",
+      "type": "music",
+      "priority": 1,
+      "description": "主菜单音乐",
+      "loop": true
+    },
+    {
+      "id": "bgm_tavern",
+      "path": "/assets/audio/bgm/tavern.mp3",
+      "type": "music",
+      "priority": 1,
+      "description": "酒馆音乐",
+      "loop": true
+    },
+    {
+      "id": "bgm_battle",
+      "path": "/assets/audio/bgm/battle.mp3",
+      "type": "music",
+      "priority": 2,
+      "description": "战斗音乐",
+      "loop": true
+    },
+    {
+      "id": "bgm_boss",
+      "path": "/assets/audio/bgm/boss.mp3",
+      "type": "music",
+      "priority": 2,
+      "description": "BOSS战音乐",
+      "loop": true
+    },
+    {
+      "id": "sfx_attack",
+      "path": "/assets/audio/sfx/attack.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "攻击音效"
+    },
+    {
+      "id": "sfx_hit",
+      "path": "/assets/audio/sfx/hit.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "受击音效"
+    },
+    {
+      "id": "sfx_skill",
+      "path": "/assets/audio/sfx/skill.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "技能音效"
+    },
+    {
+      "id": "sfx_victory",
+      "path": "/assets/audio/sfx/victory.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "胜利音效"
+    },
+    {
+      "id": "sfx_defeat",
+      "path": "/assets/audio/sfx/defeat.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "失败音效"
+    },
+    {
+      "id": "sfx_click",
+      "path": "/assets/audio/sfx/click.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "点击音效"
+    },
+    {
+      "id": "sfx_levelup",
+      "path": "/assets/audio/sfx/levelup.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "升级音效"
+    },
+    {
+      "id": "sfx_coin",
+      "path": "/assets/audio/sfx/coin.wav",
+      "type": "sfx",
+      "priority": 1,
+      "description": "金币音效"
+    }
+  ],
+  "data": [
+    {
+      "id": "items",
+      "path": "/assets/data/items.json",
+      "priority": 1,
+      "description": "物品数据"
+    },
+    {
+      "id": "skills",
+      "path": "/assets/data/skills.json",
+      "priority": 1,
+      "description": "技能数据"
+    },
+    {
+      "id": "enemies",
+      "path": "/assets/data/enemies.json",
+      "priority": 1,
+      "description": "敌人数据"
+    },
+    {
+      "id": "quests",
+      "path": "/assets/data/quests.json",
+      "priority": 1,
+      "description": "任务数据"
+    },
+    {
+      "id": "achievements",
+      "path": "/assets/data/achievements.json",
+      "priority": 1,
+      "description": "成就数据"
+    },
+    {
+      "id": "cards",
+      "path": "/assets/data/cards.json",
+      "priority": 2,
+      "description": "卡牌数据"
+    },
+    {
+      "id": "classes",
+      "path": "/assets/data/classes.json",
+      "priority": 1,
+      "description": "职业数据"
+    },
+    {
+      "id": "dialogues",
+      "path": "/assets/data/dialogues.json",
+      "priority": 1,
+      "description": "对话数据"
+    }
+  ]
+}

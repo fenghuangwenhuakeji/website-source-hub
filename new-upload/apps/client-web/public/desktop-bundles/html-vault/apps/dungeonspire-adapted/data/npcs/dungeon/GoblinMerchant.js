@@ -1,0 +1,1 @@
+export default { id: 'npc_gob_merch', name: 'Zig', role: 'Trader', dialogue: 'Shiny things for sale!' };
