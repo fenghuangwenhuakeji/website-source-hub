@@ -28,6 +28,8 @@ import charactersRouter from './routes/characters.js';
 import llmProxyRouter from './routes/llmProxy.js';
 import smsAuthRouter from './routes/smsAuth.js';
 import wechatAuthRouter from './routes/wechatAuth.js';
+import licenseRouter from './routes/license.js';
+import appVersionRouter from './routes/appVersion.js';
 
 const app = express();
 const WECHAT_APP_SECRET_PATTERN = /^[A-Za-z0-9]{32}$/;
@@ -73,7 +75,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Config-Scope'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Config-Scope', 'X-Client-Type', 'X-App-Version'],
 }));
 
 app.use(express.json({
@@ -114,6 +116,8 @@ app.use('/api/characters', apiRateLimiter, charactersRouter);
 app.use('/api/llm-proxy', apiRateLimiter, llmProxyRouter);
 app.use('/api/sms', authRateLimiter, smsAuthRouter);
 app.use('/api/wechat', wechatAuthRouter);
+app.use('/api/license', apiRateLimiter, licenseRouter);
+app.use('/api/app', apiRateLimiter, appVersionRouter);
 
 app.get('/health', (_req, res) => {
   res.json({

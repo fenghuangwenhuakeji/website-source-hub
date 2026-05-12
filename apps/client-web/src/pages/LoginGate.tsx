@@ -148,6 +148,11 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
         return;
       }
 
+      if (access.needsRecharge || access.canEnter === false) {
+        window.location.replace(resolveOfficialSiteUrlFromSearch(location.search, '/recharge'));
+        return;
+      }
+
       navigate(buildAcceptanceAwarePath('/main'), { replace: true });
     };
 
@@ -374,9 +379,41 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     void loadWechatQr().catch(() => {});
   }, [showWechatOnly, sessionChecking, wechatLogin]);
 
+  const ensureDesktopAppVersion = async () => {
+    if (!window.electronAPI) {
+      return true;
+    }
+
+    const response: any = await api.app.version();
+    const updateRequired = response?.data?.updateRequired || response?.code === 'APP_UPDATE_REQUIRED';
+
+    if (!updateRequired) {
+      return true;
+    }
+
+    const downloadUrl = response?.data?.downloadUrl || 'https://fhwhkj.top/download';
+    Modal.warning({
+      title: '请更新到最新版客户端',
+      content: response?.message || '当前客户端版本过低，请下载最新版后继续使用。',
+      okText: '下载最新版',
+      onOk: () => {
+        if (window.electronAPI?.openExternal) {
+          window.electronAPI.openExternal(downloadUrl);
+          return;
+        }
+        window.open(downloadUrl, '_blank', 'noopener,noreferrer');
+      },
+    });
+
+    return false;
+  };
+
   const handlePasswordLogin = async (values: { account: string; password: string }) => {
     try {
       setPasswordLoading(true);
+      if (!(await ensureDesktopAppVersion())) {
+        return;
+      }
       const response: any = await api.auth.login({
         username: values.account.trim(),
         password: values.password,
@@ -397,6 +434,9 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   const handleSmsLogin = async (values: { phoneNumber: string; code: string; inviteCode?: string }) => {
     try {
       setSmsLoading(true);
+      if (!(await ensureDesktopAppVersion())) {
+        return;
+      }
       const response: any = await api.auth.smsLogin({
         phoneNumber: normalizePhone(values.phoneNumber),
         code: values.code.trim(),
@@ -430,6 +470,9 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
     try {
       setRegisterLoading(true);
+      if (!(await ensureDesktopAppVersion())) {
+        return;
+      }
       const response: any = await api.auth.register({
         username: values.username.trim(),
         password: values.password,
@@ -459,6 +502,9 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
     try {
       setSendingCode('smsLogin');
+      if (!(await ensureDesktopAppVersion())) {
+        return;
+      }
       const response: any = await api.auth.sendSmsCode(phoneNumber, 'login');
       if (!response?.success) {
         throw new Error(response?.message || '验证码发送失败');
@@ -483,6 +529,9 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
     try {
       setSendingCode('register');
+      if (!(await ensureDesktopAppVersion())) {
+        return;
+      }
       const response: any = await api.auth.sendSmsCode(phoneNumber, 'register');
       if (!response?.success) {
         throw new Error(response?.message || '注册验证码发送失败');
@@ -862,12 +911,38 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
           <span>{themeMode === 'dark' ? '切到浅色' : '切到深色'}</span>
         </button>
 
-        <div className={styles.authLayout}>
-          <section className={styles.compactHeader}>
-            <div>
-              <Title level={1} className={styles.pageTitle}>
-                {pageTitle}
+        <div className={`${styles.authLayout} ${styles.loginLayout}`}>
+          <section className={styles.loginBrandHero}>
+            <div className={styles.loginBrandContent}>
+              <div className={styles.loginBrandMark}>
+                <span>凤煌科技</span>
+                <strong>{pageTitle}</strong>
+              </div>
+              <Title level={1} className={styles.loginHeroTitle}>
+                登录凤煌创作中心
               </Title>
+              <Text className={styles.loginHeroText}>
+                同一个账号可在网页端和客户端使用短篇小说、漫剧创作等功能。登录后将统一校验试用、订阅和兑换权益。
+              </Text>
+              <div className={styles.loginHeroChips}>
+                <span>统一登录</span>
+                <span>权益同步</span>
+                <span>安全验证</span>
+              </div>
+            </div>
+            <div className={styles.loginHeroStats}>
+              <div>
+                <strong>3 天</strong>
+                <span>新账号试用</span>
+              </div>
+              <div>
+                <strong>Web + APP</strong>
+                <span>同一套权益</span>
+              </div>
+              <div>
+                <strong>实时校验</strong>
+                <span>试用 / 订阅 / 兑换</span>
+              </div>
             </div>
           </section>
 
@@ -875,7 +950,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
             <Row gutter={[16, 16]} className={styles.authForms}>
               {showWechatOnly ? null : (
               <Col xs={24} lg={showSmsOnly || showRegisterOnly || showPasswordOnly ? 24 : 15}>
-                <Card className={styles.surfaceCard}>
+                <Card className={`${styles.surfaceCard} ${styles.authPanelCard}`}>
                   <Tabs
                     activeKey={activeTab}
                     onChange={(key) => setActiveTab(key as DirectAuthMode)}

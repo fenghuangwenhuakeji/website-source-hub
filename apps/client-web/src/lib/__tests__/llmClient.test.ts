@@ -10,6 +10,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import {
   getDefaultConfig,
+  buildProxyCustomHeaders,
   loadConfig,
   loadConfigSync,
   saveConfig,
@@ -22,6 +23,7 @@ import {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CONFIG_KEY = 'webuiapps-llm-config';
+const SCOPED_CONFIG_KEY = `user:guest:${CONFIG_KEY}`;
 
 const MOCK_OPENAI_CONFIG: LLMConfig = {
   provider: 'openai',
@@ -63,7 +65,7 @@ function makeOpenAIResponse(content: string, toolCalls: unknown[] = []) {
 }
 
 function makeAnthropicResponse(textContent: string) {
-  const body = { content: [{ type: 'text', text: textContent }] };
+  const body = { choices: [{ message: { content: textContent, tool_calls: [] } }] };
   return {
     ok: true,
     status: 200,
@@ -99,7 +101,7 @@ describe('getDefaultConfig()', () => {
     const cfg = getDefaultConfig('openai');
     expect(cfg.provider).toBe('openai');
     expect(cfg.baseUrl).toBe('https://api.openai.com');
-    expect(cfg.model).toBe('gpt-5.3-chat-latest');
+    expect(cfg.model).toBe('gpt-4o');
     expect('apiKey' in cfg).toBe(false);
   });
 
@@ -107,7 +109,7 @@ describe('getDefaultConfig()', () => {
     const cfg = getDefaultConfig('anthropic');
     expect(cfg.provider).toBe('anthropic');
     expect(cfg.baseUrl).toBe('https://api.anthropic.com');
-    expect(cfg.model).toBe('claude-opus-4-6');
+    expect(cfg.model).toBe('claude-sonnet-4');
   });
 
   it('returns correct defaults for deepseek', () => {
@@ -120,8 +122,8 @@ describe('getDefaultConfig()', () => {
   it('returns correct defaults for minimax', () => {
     const cfg = getDefaultConfig('minimax');
     expect(cfg.provider).toBe('minimax');
-    expect(cfg.baseUrl).toBe('https://api.minimax.io/anthropic');
-    expect(cfg.model).toBe('MiniMax-M2.5');
+    expect(cfg.baseUrl).toBe('https://api.minimaxi.com/v1');
+    expect(cfg.model).toBe('MiniMax-M2.7');
   });
 
   it('returns the same stable reference for the same provider', () => {
@@ -140,23 +142,23 @@ describe('loadConfigSync()', () => {
   });
 
   it('returns parsed config when localStorage has valid JSON', () => {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(MOCK_OPENAI_CONFIG));
+    localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(MOCK_OPENAI_CONFIG));
     expect(loadConfigSync()).toEqual(MOCK_OPENAI_CONFIG);
   });
 
   it('returns null when localStorage contains invalid JSON', () => {
-    localStorage.setItem(CONFIG_KEY, 'not-valid-json{{{');
+    localStorage.setItem(SCOPED_CONFIG_KEY, 'not-valid-json{{{');
     expect(loadConfigSync()).toBeNull();
   });
 
   it('returns null when value is empty string', () => {
-    localStorage.setItem(CONFIG_KEY, '');
+    localStorage.setItem(SCOPED_CONFIG_KEY, '');
     expect(loadConfigSync()).toBeNull();
   });
 
   it('preserves optional customHeaders field', () => {
     const cfg: LLMConfig = { ...MOCK_OPENAI_CONFIG, customHeaders: 'X-Foo: bar\nX-Baz: qux' };
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+    localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(cfg));
     expect(loadConfigSync()?.customHeaders).toBe('X-Foo: bar\nX-Baz: qux');
   });
 });
@@ -178,7 +180,7 @@ describe('loadConfig()', () => {
       const result = await loadConfig();
 
       expect(result).toEqual(MOCK_OPENAI_CONFIG);
-      expect(localStorage.getItem(CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
+      expect(localStorage.getItem(SCOPED_CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
     });
   });
 
@@ -192,14 +194,14 @@ describe('loadConfig()', () => {
       const result = await loadConfig();
 
       expect(result).toEqual(MOCK_OPENAI_CONFIG);
-      expect(localStorage.getItem(CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
+      expect(localStorage.getItem(SCOPED_CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
     });
   });
 
   describe('Scenario B: API returns 404 (no file)', () => {
     it('falls back to localStorage when API returns 404', async () => {
       globalThis.fetch = vi.fn().mockResolvedValueOnce({ ok: false, status: 404 } as Response);
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(MOCK_OPENAI_CONFIG));
+      localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(MOCK_OPENAI_CONFIG));
 
       expect(await loadConfig()).toEqual(MOCK_OPENAI_CONFIG);
     });
@@ -214,7 +216,7 @@ describe('loadConfig()', () => {
   describe('Scenario C: fetch throws (network error / production)', () => {
     it('falls back to localStorage on network error', async () => {
       globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
-      localStorage.setItem(CONFIG_KEY, JSON.stringify(MOCK_ANTHROPIC_CONFIG));
+      localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(MOCK_ANTHROPIC_CONFIG));
 
       expect(await loadConfig()).toEqual(MOCK_ANTHROPIC_CONFIG);
     });
@@ -227,7 +229,7 @@ describe('loadConfig()', () => {
 
     it('resolves null when both API and localStorage fail (does not throw)', async () => {
       globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
-      localStorage.setItem(CONFIG_KEY, 'corrupted-json');
+      localStorage.setItem(SCOPED_CONFIG_KEY, 'corrupted-json');
 
       await expect(loadConfig()).resolves.toBeNull();
     });
@@ -242,7 +244,7 @@ describe('saveConfig()', () => {
 
     await saveConfig(MOCK_OPENAI_CONFIG);
 
-    expect(localStorage.getItem(CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
+    expect(localStorage.getItem(SCOPED_CONFIG_KEY)).toBe(JSON.stringify(MOCK_OPENAI_CONFIG));
   });
 
   it('POSTs new { llm } format to /api/llm-config', async () => {
@@ -253,7 +255,7 @@ describe('saveConfig()', () => {
 
     expect(mockFetch).toHaveBeenCalledWith('/api/llm-config', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Config-Scope': 'guest' },
       body: JSON.stringify({ llm: MOCK_OPENAI_CONFIG }),
     });
   });
@@ -282,7 +284,7 @@ describe('saveConfig()', () => {
     await saveConfig(MOCK_OPENAI_CONFIG);
     await saveConfig(MOCK_ANTHROPIC_CONFIG);
 
-    const stored = JSON.parse(localStorage.getItem(CONFIG_KEY) ?? 'null');
+    const stored = JSON.parse(localStorage.getItem(SCOPED_CONFIG_KEY) ?? 'null');
     expect(stored?.provider).toBe('anthropic');
   });
 
@@ -292,7 +294,7 @@ describe('saveConfig()', () => {
 
     globalThis.fetch = vi.fn().mockImplementationOnce(() => {
       // By the time fetch is called, localStorage should already be written
-      localStorageWrittenBeforeFetch = localStorage.getItem(CONFIG_KEY) !== null;
+      localStorageWrittenBeforeFetch = localStorage.getItem(SCOPED_CONFIG_KEY) !== null;
       return Promise.resolve({ ok: true } as Response);
     });
 
@@ -322,14 +324,16 @@ describe('chat()', () => {
       expect(result.toolCalls).toEqual([]);
     });
 
-    it('sets Authorization Bearer token header', async () => {
+    it('sends provider credentials inside the proxy request body', async () => {
       const mockFetch = vi.fn().mockResolvedValueOnce(makeOpenAIResponse('ok'));
       globalThis.fetch = mockFetch;
 
       await chat(MOCK_MESSAGES, [], MOCK_OPENAI_CONFIG);
 
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['Authorization']).toBe('Bearer sk-test-key');
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
+      expect(body.provider).toBe('openai');
+      expect(body.apiKey).toBe('sk-test-key');
+      expect(body.baseUrl).toBe('https://api.openai.com');
     });
 
     it('includes tools in body when tools array is non-empty', async () => {
@@ -358,7 +362,7 @@ describe('chat()', () => {
         .mockResolvedValueOnce(makeErrorResponse(429, 'Rate limit exceeded'));
 
       await expect(chat(MOCK_MESSAGES, [], MOCK_OPENAI_CONFIG)).rejects.toThrow(
-        'LLM API error 429',
+        'LLM Proxy error 429',
       );
     });
 
@@ -390,22 +394,23 @@ describe('chat()', () => {
       const result = await chat(MOCK_MESSAGES, [], deepseekConfig);
 
       expect(result.content).toBe('DeepSeek response');
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['X-LLM-Target-URL']).toContain('deepseek.com');
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
+      expect(body.provider).toBe('deepseek');
+      expect(body.baseUrl).toContain('deepseek.com');
     });
   });
 
   describe('Anthropic provider', () => {
-    it('uses x-api-key and anthropic-version headers', async () => {
+    it('routes Anthropic through the proxy with provider credentials in the body', async () => {
       const mockFetch = vi.fn().mockResolvedValueOnce(makeAnthropicResponse('Anthropic response'));
       globalThis.fetch = mockFetch;
 
       const result = await chat(MOCK_MESSAGES, [], MOCK_ANTHROPIC_CONFIG);
 
       expect(result.content).toBe('Anthropic response');
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['anthropic-version']).toBe('2023-06-01');
-      expect(headers['x-api-key']).toBe('ant-test-key');
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
+      expect(body.provider).toBe('anthropic');
+      expect(body.apiKey).toBe('ant-test-key');
     });
 
     it('extracts system message to top-level system field', async () => {
@@ -419,8 +424,7 @@ describe('chat()', () => {
       await chat(messages, [], MOCK_ANTHROPIC_CONFIG);
 
       const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
-      expect(body.system).toBe('You are helpful.');
-      expect(body.messages.some((m: { role: string }) => m.role === 'system')).toBe(false);
+      expect(body.messages).toContainEqual({ role: 'system', content: 'You are helpful.' });
     });
 
     it('converts tool_use blocks in response to toolCalls', async () => {
@@ -428,9 +432,19 @@ describe('chat()', () => {
         ok: true,
         json: () =>
           Promise.resolve({
-            content: [
-              { type: 'text', text: 'Using tool' },
-              { type: 'tool_use', id: 'toolu_123', name: 'get_weather', input: { city: 'SF' } },
+            choices: [
+              {
+                message: {
+                  content: 'Using tool',
+                  tool_calls: [
+                    {
+                      id: 'toolu_123',
+                      type: 'function',
+                      function: { name: 'get_weather', arguments: '{"city":"SF"}' },
+                    },
+                  ],
+                },
+              },
             ],
           }),
       } as unknown as Response);
@@ -449,7 +463,7 @@ describe('chat()', () => {
       globalThis.fetch = vi.fn().mockResolvedValueOnce(makeErrorResponse(401, 'Unauthorized'));
 
       await expect(chat(MOCK_MESSAGES, [], MOCK_ANTHROPIC_CONFIG)).rejects.toThrow(
-        'Anthropic API error 401',
+        'LLM Proxy error 401',
       );
     });
   });
@@ -459,8 +473,8 @@ describe('chat()', () => {
       const minimaxConfig: LLMConfig = {
         provider: 'minimax',
         apiKey: 'minimax-key',
-        baseUrl: 'https://api.minimax.io/anthropic',
-        model: 'MiniMax-M2.5',
+        baseUrl: 'https://api.minimaxi.com/v1',
+        model: 'MiniMax-M2.7',
       };
       const mockFetch = vi.fn().mockResolvedValueOnce(makeAnthropicResponse('MiniMax response'));
       globalThis.fetch = mockFetch;
@@ -468,8 +482,9 @@ describe('chat()', () => {
       const result = await chat(MOCK_MESSAGES, [], minimaxConfig);
 
       expect(result.content).toBe('MiniMax response');
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['anthropic-version']).toBe('2023-06-01');
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
+      expect(body.provider).toBe('minimax');
+      expect(body.baseUrl).toBe('https://api.minimaxi.com/v1');
     });
   });
 
@@ -484,9 +499,12 @@ describe('chat()', () => {
 
       await chat(MOCK_MESSAGES, [], cfg);
 
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['x-custom-x-org-id']).toBe('org-123');
-      expect(headers['x-custom-x-trace']).toBe('abc');
+      const body = JSON.parse(mockFetch.mock.calls[0][1].body as string);
+      expect(body.customHeaders).toBe('X-Org-Id: org-123\nX-Trace: abc');
+      expect(buildProxyCustomHeaders(cfg.customHeaders)).toEqual({
+        'x-custom-x-org-id': 'org-123',
+        'x-custom-x-trace': 'abc',
+      });
     });
 
     it('handles empty customHeaders without throwing', async () => {
@@ -507,9 +525,7 @@ describe('chat()', () => {
       const result = await chat(MOCK_MESSAGES, [], cfg);
 
       expect(result.content).toBe('ok');
-      const headers = mockFetch.mock.calls[0][1].headers as Record<string, string>;
-      expect(headers['x-custom-valid']).toBe('value');
-      expect(headers['x-custom-nocolon']).toBeUndefined();
+      expect(buildProxyCustomHeaders(cfg.customHeaders)).toEqual({ 'x-custom-valid': 'value' });
     });
   });
 });

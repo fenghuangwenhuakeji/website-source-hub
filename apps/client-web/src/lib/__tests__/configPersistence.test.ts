@@ -123,7 +123,7 @@ describe('savePersistedConfig()', () => {
 
     expect(mockFetch).toHaveBeenCalledWith('/api/llm-config', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-Config-Scope': 'guest' },
       body: JSON.stringify(MOCK_PERSISTED),
     });
   });

@@ -375,6 +375,22 @@ const apiClient = {
   experienceCodeRecords: {
     list: (params?: ExperienceCodeListParams) => api.get('/experience-code-records', { params }),
   },
+  licenseCenter: {
+    generateCodes: (data: {
+      productId?: string;
+      planName?: string;
+      durationDays?: number;
+      seatLimit?: number;
+      deviceLimit?: number;
+      quantity?: number;
+      prefix?: string;
+      note?: string;
+      expiresInDays?: number;
+      isPermanent?: boolean;
+    }) => api.post('/license/admin/license-codes', data),
+    userStatus: (productId: string, userId: string) =>
+      api.get(`/license/admin/products/${encodeURIComponent(productId)}/status/${encodeURIComponent(userId)}`),
+  },
   orders: {
     list: (params?: { page?: number; pageSize?: number; status?: string; orderKind?: string; keyword?: string }) =>
       api.get('/orders', { params }),

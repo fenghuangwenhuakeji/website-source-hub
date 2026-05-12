@@ -5,6 +5,7 @@ import { db, getDatabaseAdapter } from '../config/database.js';
 import { config } from '../config/index.js';
 import { authMiddleware, generateRefreshToken, generateToken, type AuthRequest } from '../middleware/auth.js';
 import { ApiError } from '../middleware/errorHandler.js';
+import { DEFAULT_LICENSE_PRODUCT_ID, ensureTrialForUserProduct } from '../utils/licenseCenter.js';
 
 const router = Router();
 const LOGIN_STATE_TTL_MS = 10 * 60 * 1000;
@@ -204,6 +205,7 @@ async function findOrCreateWechatUser(openid: string, unionid?: string, profile:
   );
 
   const created = await db.query<any[]>('SELECT * FROM users WHERE id = ? LIMIT 1', [userId]);
+  await ensureTrialForUserProduct(userId, DEFAULT_LICENSE_PRODUCT_ID, 'user');
   return created[0];
 }
 
@@ -278,6 +280,7 @@ async function bindWechatToUser(userId: string, openid: string, unionid?: string
 async function completeLocalDevWechatLogin(state: string, createdAt: number): Promise<LoginStateRecord> {
   const openid = `local-wechat-${state.slice(-8)}`;
   const user = await findOrCreateWechatUser(openid, `local-union-${state.slice(-8)}`);
+  await ensureTrialForUserProduct(String(user.id), DEFAULT_LICENSE_PRODUCT_ID, user.role);
   const token = generateToken({
     userId: String(user.id),
     username: user.username,
@@ -601,6 +604,7 @@ router.get('/callback', async (req: Request, res: Response, next: NextFunction) 
       });
     } else {
       const user = await findOrCreateWechatUser(tokenData.openid, tokenData.unionid, wechatProfile);
+      await ensureTrialForUserProduct(String(user.id), DEFAULT_LICENSE_PRODUCT_ID, user.role);
       const token = generateToken({
         userId: String(user.id),
         username: user.username,

@@ -6,6 +6,7 @@ import { authMiddleware, AuthRequest } from '../middleware/auth.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { paymentRateLimiter } from '../middleware/rateLimiter.js';
 import { grantDurationToUser } from '../utils/durationAccess.js';
+import { DEFAULT_LICENSE_PRODUCT_ID, upsertProductEntitlement } from '../utils/licenseCenter.js';
 import {
   markExpiredExperienceCodes,
   maskExperienceCode,
@@ -308,6 +309,17 @@ router.post('/experience-code/redeem', authMiddleware, async (req: Request, res:
 
       if (durationDays > 0) {
         await grantDurationToUser(userId, durationDays, 'day', connection);
+        await upsertProductEntitlement(
+          {
+            userId,
+            productId: DEFAULT_LICENSE_PRODUCT_ID,
+            accessType: 'paid',
+            durationDays,
+            seatLimit: 1,
+            deviceLimit: 1,
+          },
+          connection
+        );
       }
 
       await runExecute(

@@ -22,6 +22,10 @@ const rootRouter: RouteObject[] = [
     ),
   },
   {
+    path: '/register',
+    element: <Navigate to={buildAcceptanceAwarePath('/login?mode=register&forceLogin=1')} replace />,
+  },
+  {
     path: '/recharge',
     element: (
       <React.Suspense fallback={<RouteFallback />}>

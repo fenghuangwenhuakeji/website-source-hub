@@ -251,6 +251,138 @@
   box-shadow: none;
 }
 
+.loginShell {
+  overflow-x: hidden;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.96) 0%, rgba(2, 6, 23, 0.98) 54%, #06080d 100%),
+    #06080d;
+}
+
+.loginShell::before,
+.loginShell::after {
+  display: none;
+}
+
+.loginLayout {
+  gap: 24px;
+}
+
+.loginBrandHero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.42fr);
+  gap: 18px;
+  align-items: stretch;
+  min-height: 248px;
+  padding: 40px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(8, 13, 24, 0.96)),
+    #0b111c;
+  box-shadow:
+    0 24px 70px rgba(2, 6, 23, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.loginBrandContent {
+  display: grid;
+  align-content: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.loginBrandMark {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e2e8f0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.loginBrandMark strong {
+  color: #7dd3fc;
+}
+
+.loginHeroTitle {
+  max-width: 720px;
+  margin: 0 !important;
+  color: #f8fafc !important;
+  font-size: 56px !important;
+  line-height: 1.04 !important;
+}
+
+.loginHeroText {
+  display: block;
+  max-width: 760px;
+  color: rgba(226, 232, 240, 0.78) !important;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.loginHeroChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.loginHeroChips span {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid rgba(125, 211, 252, 0.2);
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.1);
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.loginHeroStats {
+  display: grid;
+  gap: 12px;
+}
+
+.loginHeroStats div {
+  display: grid;
+  align-content: center;
+  min-height: 0;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.loginHeroStats strong {
+  color: #f8fafc;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.loginHeroStats span {
+  margin-top: 8px;
+  color: rgba(203, 213, 225, 0.72);
+  font-size: 13px;
+}
+
+.authPanelCard {
+  border-radius: 24px !important;
+  background: rgba(8, 13, 24, 0.88) !important;
+  box-shadow:
+    0 24px 70px rgba(2, 6, 23, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.authPanelCard :global(.ant-card-body) {
+  padding: 28px !important;
+}
+
 .focusedBrandRow,
 .focusedShortcutRow {
   display: flex;
@@ -1601,5 +1733,140 @@
   .helperIcon {
     width: 44px;
     height: 44px;
+  }
+}
+
+.loginShell,
+.themeDark.loginShell {
+  min-height: 100dvh;
+  padding: 28px 24px;
+  overflow-x: hidden;
+  background:
+    linear-gradient(145deg, rgba(15, 23, 42, 0.97) 0%, rgba(2, 6, 23, 0.99) 58%, #06080d 100%),
+    #06080d;
+}
+
+.loginShell::before,
+.loginShell::after {
+  display: none;
+}
+
+.loginShell .inner {
+  position: relative;
+  max-width: 1320px;
+}
+
+.loginShell .themeToggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  width: auto;
+  min-height: 36px;
+  margin: 0;
+  padding: 0 14px;
+  border-color: rgba(148, 163, 184, 0.18);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.82) !important;
+  color: #dbeafe;
+}
+
+.loginLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 520px);
+  gap: 24px;
+  align-items: center;
+  min-height: calc(100dvh - 56px);
+  padding-top: 44px;
+}
+
+.loginLayout .section {
+  width: 100%;
+  margin: 0;
+}
+
+.loginLayout .authForms {
+  display: grid !important;
+  gap: 16px;
+  margin: 0 !important;
+}
+
+.loginLayout .authForms > :global(.ant-col) {
+  flex: 0 0 100% !important;
+  max-width: 100% !important;
+}
+
+.loginBrandHero {
+  min-height: 100%;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: space-between;
+  padding: 40px;
+  border-radius: 8px;
+}
+
+.loginHeroTitle {
+  font-size: 56px !important;
+  line-height: 1.03 !important;
+}
+
+.loginHeroStats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.loginHeroStats div {
+  min-height: 112px;
+  border-radius: 8px;
+}
+
+.authPanelCard,
+.loginLayout .surfaceCard {
+  border-radius: 8px !important;
+}
+
+.loginLayout :global(.ant-tabs-nav) {
+  margin-bottom: 22px !important;
+}
+
+@media (max-width: 1100px) {
+  .loginLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .loginBrandHero {
+    min-height: auto;
+  }
+
+  .loginHeroTitle {
+    font-size: 42px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .loginShell,
+  .themeDark.loginShell {
+    padding: 14px 12px;
+  }
+
+  .loginShell .themeToggle {
+    position: static;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .loginLayout {
+    min-height: auto;
+    padding-top: 0;
+  }
+
+  .loginBrandHero {
+    padding: 24px;
+  }
+
+  .loginHeroTitle {
+    font-size: 32px !important;
+  }
+
+  .loginHeroStats {
+    grid-template-columns: 1fr;
   }
 }

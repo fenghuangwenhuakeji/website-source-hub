@@ -6,6 +6,15 @@ import {
   isAuthFailureMessage,
   refreshSharedAccessToken,
 } from './sessionAuth';
+import {
+  DEFAULT_PRODUCT_ID,
+  canUseCachedLicense,
+  getLicenseDeviceId,
+  getLicenseDeviceName,
+  getLicenseSessionId,
+  saveCachedLicense,
+  type CachedLicense,
+} from './licenseClient';
 
 export type UserRole = 'normal' | 'admin' | 'rootadmin' | 'super_admin';
 
@@ -195,6 +204,25 @@ function hasDurationAccessFromProfile(data: any): boolean {
   return !!(data?.duration?.isPermanent || (data?.duration?.remainingSeconds || 0) > 0);
 }
 
+async function refreshLocalLicense(productId = DEFAULT_PRODUCT_ID): Promise<CachedLicense | null> {
+  const body = {
+    deviceId: getLicenseDeviceId(),
+    deviceName: getLicenseDeviceName(),
+    sessionId: getLicenseSessionId(),
+  };
+  const res = await fetchWithAuth(`/license/products/${encodeURIComponent(productId)}/heartbeat`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  const license = res.data?.license as CachedLicense | undefined;
+  if (res.success && license) {
+    saveCachedLicense(license);
+    return license;
+  }
+
+  return null;
+}
+
 export async function checkAdminAccess(): Promise<{ hasAccess: boolean; level: UserRole }> {
   if (isLocalAcceptanceMode()) {
     currentUserRole = 'admin';
@@ -228,6 +256,11 @@ export async function checkRechargeRequired(): Promise<{
   needsLogin: boolean;
   hasActiveMembership?: boolean;
   membershipExpiry?: string;
+  accessType?: string;
+  isTrial?: boolean;
+  canEnter?: boolean;
+  requiresPurchase?: boolean;
+  remainingSeconds?: number;
 }> {
   if (isLocalAcceptanceMode()) {
     currentUserRole = 'admin';
@@ -242,24 +275,44 @@ export async function checkRechargeRequired(): Promise<{
     };
   }
 
-  const res = await fetchWithAuth('/auth/check-recharge');
+  const res = await fetchWithAuth(`/license/products/${encodeURIComponent(DEFAULT_PRODUCT_ID)}/status`);
 
   if (isAuthFailureMessage(res.message)) {
     return { needsRecharge: true, totalRecharge: 0, needsLogin: true };
   }
 
   if (res.message === '网络异常') {
-    return { needsRecharge: true, totalRecharge: 0, needsLogin: false };
+    const offlineUsable = canUseCachedLicense(DEFAULT_PRODUCT_ID);
+    return {
+      needsRecharge: !offlineUsable,
+      totalRecharge: 0,
+      needsLogin: false,
+      hasActiveMembership: offlineUsable,
+      canEnter: offlineUsable,
+      requiresPurchase: !offlineUsable,
+      accessType: offlineUsable ? 'offline' : 'none',
+    };
   }
 
   if (res.success && res.data) {
-    currentHasRecharged = !!res.data.hasActiveMembership;
+    const canEnter = !!res.data.canEnter;
+    currentHasRecharged = canEnter;
+    if (canEnter) {
+      await refreshLocalLicense(DEFAULT_PRODUCT_ID);
+    } else {
+      saveCachedLicense(null);
+    }
     return {
-      needsRecharge: res.data.needsRecharge,
+      needsRecharge: !!res.data.requiresPurchase,
       totalRecharge: res.data.totalRecharge || 0,
       needsLogin: false,
-      hasActiveMembership: res.data.hasActiveMembership,
-      membershipExpiry: res.data.membershipExpiry,
+      hasActiveMembership: canEnter,
+      membershipExpiry: res.data.expiresAt,
+      accessType: res.data.accessType,
+      isTrial: !!res.data.isTrial,
+      canEnter,
+      requiresPurchase: !!res.data.requiresPurchase,
+      remainingSeconds: res.data.remainingSeconds || 0,
     };
   }
 

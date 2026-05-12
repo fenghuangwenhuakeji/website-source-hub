@@ -15,6 +15,8 @@ import {
   createPhoneVerificationCode,
   type VerificationPurpose,
 } from '../utils/phoneVerificationStore.js';
+import { DEFAULT_LICENSE_PRODUCT_ID, ensureTrialForUserProduct } from '../utils/licenseCenter.js';
+import { requireSupportedDesktopVersion } from '../utils/appVersion.js';
 
 const router = Router();
 
@@ -33,6 +35,7 @@ function normalizePurpose(value?: string): VerificationPurpose {
 
 router.post(
   '/send-code',
+  requireSupportedDesktopVersion,
   [
     body('phoneNumber')
       .notEmpty()
@@ -94,6 +97,7 @@ router.post(
 
 router.post(
   '/login',
+  requireSupportedDesktopVersion,
   [
     body('phoneNumber')
       .notEmpty()
@@ -165,6 +169,8 @@ router.post(
         );
         user = (await db.query<any[]>('SELECT * FROM users WHERE id = ?', [user.id]))[0];
       }
+
+      await ensureTrialForUserProduct(String(user.id), DEFAULT_LICENSE_PRODUCT_ID, user.role);
 
       const token = generateToken({
         userId: String(user.id),

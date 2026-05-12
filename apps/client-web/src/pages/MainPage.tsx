@@ -41,21 +41,42 @@ export default function MainPage(_props: MainPageProps) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    void (async () => {
+    let disposed = false;
+
+    const validateAccess = async () => {
       if (!isLoggedIn()) {
         redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
         return;
       }
 
       const access = await checkRechargeRequired();
+      if (disposed) {
+        return;
+      }
       if (access.needsLogin) {
         logout();
         redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
         return;
       }
 
+      if (access.needsRecharge || access.canEnter === false) {
+        redirectToOfficial(buildOfficialPath('/recharge', {
+          from: APP_MAIN_PATH,
+          reason: 'license_required',
+        }));
+        return;
+      }
+
       setReady(true);
-    })();
+    };
+
+    void validateAccess();
+    const timer = window.setInterval(() => void validateAccess(), 120000);
+
+    return () => {
+      disposed = true;
+      window.clearInterval(timer);
+    };
   }, []);
 
   if (!ready) {

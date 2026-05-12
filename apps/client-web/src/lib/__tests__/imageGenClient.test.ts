@@ -12,6 +12,7 @@ import {
 } from '../imageGenClient';
 
 const CONFIG_KEY = 'webuiapps-imagegen-config';
+const SCOPED_CONFIG_KEY = `user:guest:${CONFIG_KEY}`;
 
 const MOCK_IG_CONFIG: ImageGenConfig = {
   provider: 'openai',
@@ -56,12 +57,12 @@ describe('loadImageGenConfigSync()', () => {
   });
 
   it('returns parsed config from localStorage', () => {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(MOCK_IG_CONFIG));
+    localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(MOCK_IG_CONFIG));
     expect(loadImageGenConfigSync()).toEqual(MOCK_IG_CONFIG);
   });
 
   it('returns null on invalid JSON', () => {
-    localStorage.setItem(CONFIG_KEY, 'bad-json');
+    localStorage.setItem(SCOPED_CONFIG_KEY, 'bad-json');
     expect(loadImageGenConfigSync()).toBeNull();
   });
 });
@@ -76,7 +77,7 @@ describe('loadImageGenConfig()', () => {
     const result = await loadImageGenConfig();
 
     expect(result).toEqual(MOCK_IG_CONFIG);
-    expect(localStorage.getItem(CONFIG_KEY)).toBe(JSON.stringify(MOCK_IG_CONFIG));
+    expect(localStorage.getItem(SCOPED_CONFIG_KEY)).toBe(JSON.stringify(MOCK_IG_CONFIG));
   });
 
   it('returns null from file API when imageGen is absent (LLM-only config)', async () => {
@@ -93,7 +94,7 @@ describe('loadImageGenConfig()', () => {
 
   it('falls back to localStorage when API is unavailable', async () => {
     globalThis.fetch = vi.fn().mockRejectedValueOnce(new Error('Network error'));
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(MOCK_IG_CONFIG));
+    localStorage.setItem(SCOPED_CONFIG_KEY, JSON.stringify(MOCK_IG_CONFIG));
 
     const result = await loadImageGenConfig();
 
@@ -123,6 +124,6 @@ describe('loadImageGenConfig()', () => {
 describe('saveImageGenConfig()', () => {
   it('writes to localStorage', () => {
     saveImageGenConfig(MOCK_IG_CONFIG);
-    expect(JSON.parse(localStorage.getItem(CONFIG_KEY)!)).toEqual(MOCK_IG_CONFIG);
+    expect(JSON.parse(localStorage.getItem(SCOPED_CONFIG_KEY)!)).toEqual(MOCK_IG_CONFIG);
   });
 });

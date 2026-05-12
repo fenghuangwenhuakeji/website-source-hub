@@ -21,6 +21,7 @@ const menuItems: MenuItem[] = [
   { key: '/exchange-records', icon: 'gift', label: '兑换记录' },
   { key: '/experience-codes', icon: 'gift', label: '体验码管理' },
   { key: '/experience-code-records', icon: 'time', label: '体验码记录' },
+  { key: '/license-center', icon: 'gift', label: '授权中心' },
   { key: '/referrals', icon: 'team', label: '邀请增长' },
   { key: '/durations', icon: 'time', label: '时长管理' },
 ];
@@ -57,6 +58,10 @@ const pageMeta: Record<string, { title: string; subtitle: string }> = {
   '/experience-code-records': {
     title: '体验码记录',
     subtitle: '查看体验码的兑换、绑定用户、过期和激活时间，便于追踪发放效果。',
+  },
+  '/license-center': {
+    title: '授权中心',
+    subtitle: '生成产品卡密，查询用户在指定产品下的授权、席位和设备状态。',
   },
   '/referrals': {
     title: '邀请增长',

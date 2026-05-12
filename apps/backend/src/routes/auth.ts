@@ -13,6 +13,11 @@ import {
 import { ApiError } from '../middleware/errorHandler.js';
 import { getDurationAccessStatus } from '../utils/durationAccess.js';
 import {
+  DEFAULT_LICENSE_PRODUCT_ID,
+  ensureTrialForUserProduct,
+  getProductAccessStatus,
+} from '../utils/licenseCenter.js';
+import {
   applyReferralBindingRewards,
   getDiamondAccountSummary,
   getUserPayoutProfile,
@@ -28,6 +33,7 @@ import {
   isValidPhoneNumber,
   sendVerificationCode,
 } from '../utils/sms.js';
+import { requireSupportedDesktopVersion } from '../utils/appVersion.js';
 
 const router = Router();
 
@@ -263,7 +269,7 @@ async function handlePhoneLogin(phoneNumber: string, code: string, inviteCode?: 
   };
 }
 
-router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/register', requireSupportedDesktopVersion, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       username,
@@ -366,6 +372,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
     );
 
     const referredByName = await bindReferralIfNeeded(userId, referralCode);
+    await ensureTrialForUserProduct(userId, DEFAULT_LICENSE_PRODUCT_ID, 'user');
     const user = await fetchUserById(userId);
 
     const token = generateToken({ userId, username, role: 'user' });
@@ -391,7 +398,7 @@ router.post('/register', async (req: Request, res: Response, next: NextFunction)
   }
 });
 
-router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/login', requireSupportedDesktopVersion, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { username, password } = req.body as LoginBody;
 
@@ -440,6 +447,7 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
       'UPDATE users SET login_attempts = 0, locked_until = NULL, last_login = NOW() WHERE id = ?',
       [user.id],
     );
+    await ensureTrialForUserProduct(String(user.id), DEFAULT_LICENSE_PRODUCT_ID, user.role);
 
     const token = generateToken({
       userId: String(user.id),
@@ -591,7 +599,7 @@ router.post('/phone/code', async (req: Request, res: Response, next: NextFunctio
   }
 });
 
-router.post('/phone/login', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/phone/login', requireSupportedDesktopVersion, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { phone, phoneNumber, code, inviteCode } = req.body as PhoneLoginBody;
     const targetPhone = phoneNumber || phone;
@@ -601,6 +609,7 @@ router.post('/phone/login', async (req: Request, res: Response, next: NextFuncti
     }
 
     const result = await handlePhoneLogin(targetPhone, code, inviteCode);
+    await ensureTrialForUserProduct(String(result.user.id), DEFAULT_LICENSE_PRODUCT_ID, result.user.role);
 
     res.json({
       success: true,
@@ -802,7 +811,7 @@ router.put('/payout-profile', authMiddleware, async (req: Request, res: Response
   }
 });
 
-router.get('/profile', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+router.get('/profile', requireSupportedDesktopVersion, authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authReq = req as AuthRequest;
     const userId = authReq.user!.id;
@@ -825,6 +834,7 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response, next:
 
     const user = users[0];
     const durationAccess = await getDurationAccessStatus(userId);
+    const licenseAccess = await getProductAccessStatus(userId, DEFAULT_LICENSE_PRODUCT_ID, user.role);
     const diamondAccount = await getDiamondAccountSummary(userId);
     const payoutProfile = await getUserPayoutProfile(userId);
 
@@ -853,8 +863,9 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response, next:
           isActive: durationAccess.canEnter,
           remainingSeconds: durationAccess.remainingSeconds,
           expiresAt: durationAccess.expiresAt,
-          canEnter: durationAccess.canEnter,
+          canEnter: durationAccess.canEnter || licenseAccess.canEnter,
         },
+        license: licenseAccess,
       },
     });
   } catch (error) {
@@ -862,7 +873,7 @@ router.get('/profile', authMiddleware, async (req: Request, res: Response, next:
   }
 });
 
-router.get('/check-recharge', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+router.get('/check-recharge', requireSupportedDesktopVersion, authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const authReq = req as AuthRequest;
     const userId = authReq.user!.id;
@@ -878,6 +889,13 @@ router.get('/check-recharge', authMiddleware, async (req: Request, res: Response
           hasActiveMembership: true,
           membershipExpiry: null,
           points: Number((authReq.user as any)?.points || 0),
+          accessType: 'admin',
+          isTrial: false,
+          trialStartedAt: null,
+          trialExpiresAt: null,
+          remainingSeconds: 999999999,
+          canEnter: true,
+          requiresPurchase: false,
         },
       });
     }
@@ -893,16 +911,26 @@ router.get('/check-recharge', authMiddleware, async (req: Request, res: Response
 
     const user = users[0];
     const durationAccess = await getDurationAccessStatus(userId);
+    const licenseAccess = await getProductAccessStatus(userId, DEFAULT_LICENSE_PRODUCT_ID, userRole);
+    const canEnter = durationAccess.canEnter || licenseAccess.canEnter;
 
     return res.json({
       success: true,
       data: {
-        needsRecharge: !durationAccess.canEnter,
+        needsRecharge: !canEnter,
         totalRecharge: Number(user.total_recharge || 0),
         needsLogin: false,
-        hasActiveMembership: durationAccess.canEnter,
-        membershipExpiry: durationAccess.expiresAt,
+        hasActiveMembership: canEnter,
+        membershipExpiry: licenseAccess.expiresAt || durationAccess.expiresAt,
         points: Number(user.points || 0),
+        license: licenseAccess,
+        accessType: licenseAccess.accessType,
+        isTrial: licenseAccess.isTrial,
+        trialStartedAt: licenseAccess.trialStartedAt,
+        trialExpiresAt: licenseAccess.trialExpiresAt,
+        remainingSeconds: Math.max(durationAccess.remainingSeconds, licenseAccess.remainingSeconds),
+        canEnter,
+        requiresPurchase: !canEnter,
       },
     });
   } catch (error) {
@@ -910,7 +938,7 @@ router.get('/check-recharge', authMiddleware, async (req: Request, res: Response
   }
 });
 
-router.post('/refresh', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/refresh', requireSupportedDesktopVersion, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { refreshToken } = req.body as { refreshToken?: string };
 

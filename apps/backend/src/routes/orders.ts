@@ -4,7 +4,8 @@ import type { PoolConnection } from '../config/database.js';
 import { query, transaction } from '../config/database.js';
 import { authMiddleware } from '../middleware/auth.js';
 import { AppError } from '../middleware/errorHandler.js';
-import { grantDurationToUser } from '../utils/durationAccess.js';
+import { durationToSeconds, grantDurationToUser } from '../utils/durationAccess.js';
+import { DEFAULT_LICENSE_PRODUCT_ID, upsertProductEntitlement } from '../utils/licenseCenter.js';
 import { insertPointsRecord } from '../utils/pointsRecord.js';
 import { applyRechargeCommission } from '../utils/referralProgram.js';
 
@@ -80,6 +81,18 @@ async function exchangeDurationProduct(userId: string, productId: string) {
       connection,
     });
     await grantDurationToUser(userId, Number(product.duration), product.duration_unit, connection);
+    await upsertProductEntitlement(
+      {
+        userId,
+        productId: DEFAULT_LICENSE_PRODUCT_ID,
+        accessType: product.duration_unit === 'permanent' ? 'permanent' : 'paid',
+        durationDays: durationToSeconds(Number(product.duration), product.duration_unit) / 86400,
+        isPermanent: product.duration_unit === 'permanent',
+        seatLimit: 1,
+        deviceLimit: 1,
+      },
+      connection
+    );
 
     return {
       exchangedPoints: Number(product.points_cost),

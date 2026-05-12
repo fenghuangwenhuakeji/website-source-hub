@@ -263,26 +263,28 @@ export default function RechargeCenter() {
   const payoutReady = Boolean(profile?.payoutProfile?.realName && profile?.payoutProfile?.payoutAccount);
   const payoutMethodLabel =
     profile?.payoutProfile?.payoutMethod === 'alipay' ? '支付宝' : '微信';
-  const backendRemainingSeconds = toNumber(profile?.duration?.remainingSeconds);
+  const backendRemainingSeconds = toNumber(profile?.license?.remainingSeconds ?? profile?.duration?.remainingSeconds);
   const accessEnabled =
     localAcceptanceMode ||
-    Boolean(profile?.duration?.isPermanent) ||
+    Boolean(profile?.license?.isPermanent || profile?.duration?.isPermanent) ||
     countdownSeconds > 0 ||
     Boolean(
       backendRemainingSeconds <= 0 &&
-        (profile?.duration?.canEnter || access?.hasActiveMembership),
+        (profile?.license?.canEnter || profile?.duration?.canEnter || access?.hasActiveMembership),
     );
   const durationStatusText = localAcceptanceMode
     ? '本地验收模式已启用，可直接进入主程序。'
-    : profile?.duration?.isPermanent
+    : profile?.license?.isPermanent || profile?.duration?.isPermanent
       ? '已开通永久时长'
+      : profile?.license?.isTrial && countdownSeconds > 0
+        ? `试用中，剩余 ${formatRemainingDuration(countdownSeconds)}`
       : countdownSeconds > 0
         ? `剩余 ${formatRemainingDuration(countdownSeconds)}`
-        : profile?.duration?.expiresAt || access?.membershipExpiry
-          ? `已于 ${formatDateTime(profile?.duration?.expiresAt || access?.membershipExpiry)} 到期`
-          : '尚未兑换有效时长';
+        : profile?.license?.expiresAt || profile?.duration?.expiresAt || access?.membershipExpiry
+          ? `已于 ${formatDateTime(profile?.license?.expiresAt || profile?.duration?.expiresAt || access?.membershipExpiry)} 到期`
+          : '尚未兑换有效授权';
   const hasDurationRecord = Boolean(
-    profile?.duration?.isPermanent || profile?.duration?.expiresAt || access?.membershipExpiry,
+    profile?.license?.isPermanent || profile?.duration?.isPermanent || profile?.license?.expiresAt || profile?.duration?.expiresAt || access?.membershipExpiry,
   );
   const isDurationExpired = !accessEnabled && hasDurationRecord;
   const accessStateLabel = localAcceptanceMode ? '本地验收' : accessEnabled ? '已开通' : isDurationExpired ? '已过期' : '待兑换';
@@ -298,16 +300,16 @@ export default function RechargeCenter() {
     `钻石按 T+${settlementDays} 结算，达到 ${formatMoney(withdrawThresholdAmount)} 门槛后才能申请提现。`;
 
   useEffect(() => {
-    if (profile?.duration?.isPermanent) {
+    if (profile?.license?.isPermanent || profile?.duration?.isPermanent) {
       setCountdownSeconds(0);
       return;
     }
 
     setCountdownSeconds(Math.max(0, backendRemainingSeconds));
-  }, [backendRemainingSeconds, profile?.duration?.isPermanent]);
+  }, [backendRemainingSeconds, profile?.duration?.isPermanent, profile?.license?.isPermanent]);
 
   useEffect(() => {
-    if (profile?.duration?.isPermanent || countdownSeconds <= 0) {
+    if (profile?.license?.isPermanent || profile?.duration?.isPermanent || countdownSeconds <= 0) {
       return undefined;
     }
 
@@ -316,7 +318,7 @@ export default function RechargeCenter() {
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [countdownSeconds > 0, profile?.duration?.isPermanent]);
+  }, [countdownSeconds > 0, profile?.duration?.isPermanent, profile?.license?.isPermanent]);
 
   useEffect(() => {
     applyThemeMode(themeMode);
@@ -532,19 +534,25 @@ export default function RechargeCenter() {
     try {
       const values = await redeemForm.validateFields();
       setRedeemLoading(true);
-      const response: any = await api.recharge.redeemExperienceCode({
+      let response: any = await api.license.redeemCode('fenghuang', {
         code: String(values.code || '').trim(),
       });
 
       if (!response?.success) {
-        throw new Error(response?.message || '体验码激活失败。');
+        response = await api.recharge.redeemExperienceCode({
+          code: String(values.code || '').trim(),
+        });
       }
 
-      message.success(response?.message || '体验码激活成功，已同步更新权益。');
+      if (!response?.success) {
+        throw new Error(response?.message || '卡密激活失败。');
+      }
+
+      message.success(response?.message || '卡密激活成功，已同步更新权益。');
       redeemForm.resetFields();
       await refreshPage(true);
     } catch (error: any) {
-      message.error(error?.message || error?.response?.data?.message || '体验码激活失败。');
+      message.error(error?.message || error?.response?.data?.message || '卡密激活失败。');
     } finally {
       setRedeemLoading(false);
     }

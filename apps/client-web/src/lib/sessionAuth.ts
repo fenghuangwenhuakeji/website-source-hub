@@ -23,6 +23,7 @@ type RefreshAttemptResult = {
 };
 
 let refreshPromise: Promise<string | null> | null = null;
+let desktopVersionPromise: Promise<string | null> | null = null;
 
 function getFailureMessage(payload: any): string {
   if (!payload) {
@@ -49,13 +50,34 @@ export function hasStoredSession(): boolean {
   return Boolean(readSharedToken() || readSharedRefreshToken());
 }
 
+async function buildClientHeaders(): Promise<Record<string, string>> {
+  if (typeof window === 'undefined' || !window.electronAPI) {
+    return {
+      'X-Client-Type': 'web',
+    };
+  }
+
+  if (!desktopVersionPromise) {
+    desktopVersionPromise = Promise.resolve(window.electronAPI.getAppVersion?.())
+      .then((version) => (version ? String(version) : null))
+      .catch(() => null);
+  }
+
+  const appVersion = await desktopVersionPromise;
+  return {
+    'X-Client-Type': 'desktop',
+    ...(appVersion ? { 'X-App-Version': appVersion } : {}),
+  };
+}
+
 async function requestRefreshToken(refreshToken: string): Promise<RefreshAttemptResult> {
   try {
+    const clientHeaders = await buildClientHeaders();
     if (typeof window !== 'undefined' && window.electronAPI?.api?.request) {
       const payload: any = await window.electronAPI.api.request(`${API_BASE}/auth/refresh`, {
         method: 'POST',
         body: { refreshToken },
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...clientHeaders },
       });
 
       const token = typeof payload?.data?.token === 'string' ? payload.data.token : null;
@@ -76,6 +98,7 @@ async function requestRefreshToken(refreshToken: string): Promise<RefreshAttempt
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        ...clientHeaders,
       },
       body: JSON.stringify({ refreshToken }),
     });

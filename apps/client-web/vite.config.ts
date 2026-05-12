@@ -929,6 +929,8 @@ const config = ({ mode }: ConfigEnv): UserConfigExport => {
         '/api/duration': { target: 'http://127.0.0.1:3000', changeOrigin: true },
         '/api/sms': { target: 'http://127.0.0.1:3000', changeOrigin: true },
         '/api/wechat': { target: 'http://127.0.0.1:3000', changeOrigin: true },
+        '/api/license': { target: 'http://127.0.0.1:3000', changeOrigin: true },
+        '/api/app': { target: 'http://127.0.0.1:3000', changeOrigin: true },
         '/api/vip': { target: 'http://127.0.0.1:3000', changeOrigin: true },
         '/api/election': { target: 'http://127.0.0.1:3000', changeOrigin: true },
         '/api/novels': { target: 'http://127.0.0.1:3000', changeOrigin: true },

@@ -215,6 +215,109 @@ function createSchema(database: DatabaseSync): void {
       created_at TEXT DEFAULT CURRENT_TIMESTAMP
     );
 
+    CREATE TABLE IF NOT EXISTS products (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      client_key TEXT,
+      default_trial_days INTEGER NOT NULL DEFAULT 3,
+      offline_valid_days INTEGER NOT NULL DEFAULT 3,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS product_plans (
+      id TEXT PRIMARY KEY,
+      product_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      duration_days INTEGER NOT NULL DEFAULT 30,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      features TEXT,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS user_product_entitlements (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      access_type TEXT NOT NULL DEFAULT 'paid',
+      expires_at TEXT,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      trial_started_at TEXT,
+      trial_expires_at TEXT,
+      trial_claimed_at TEXT,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      features TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS license_codes (
+      id TEXT PRIMARY KEY,
+      code TEXT NOT NULL UNIQUE,
+      display_code TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      plan_name TEXT,
+      duration_days INTEGER NOT NULL DEFAULT 30,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'unused',
+      features TEXT,
+      generated_by TEXT,
+      redeemed_by TEXT,
+      redeemed_at TEXT,
+      note TEXT,
+      expired_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS license_code_redemptions (
+      id TEXT PRIMARY KEY,
+      code_id TEXT NOT NULL,
+      code TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      redeemed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS user_devices (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      device_id TEXT NOT NULL,
+      device_name TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      first_activated_at TEXT,
+      last_seen_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id, device_id)
+    );
+
+    CREATE TABLE IF NOT EXISTS license_sessions (
+      id TEXT PRIMARY KEY,
+      session_id TEXT NOT NULL UNIQUE,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      device_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active',
+      started_at TEXT,
+      last_heartbeat_at TEXT,
+      heartbeat_expires_at TEXT,
+      ended_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS points_records (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id TEXT NOT NULL,
@@ -353,6 +456,10 @@ function createSchema(database: DatabaseSync): void {
     CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id);
     CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
     CREATE INDEX IF NOT EXISTS idx_points_records_user ON points_records(user_id);
+    CREATE INDEX IF NOT EXISTS idx_entitlements_user_product ON user_product_entitlements(user_id, product_id);
+    CREATE INDEX IF NOT EXISTS idx_license_codes_product_status ON license_codes(product_id, status);
+    CREATE INDEX IF NOT EXISTS idx_user_devices_user_product ON user_devices(user_id, product_id);
+    CREATE INDEX IF NOT EXISTS idx_license_sessions_active ON license_sessions(user_id, product_id, status, heartbeat_expires_at);
     CREATE INDEX IF NOT EXISTS idx_experience_redeem_codes_status ON experience_redeem_codes(status);
     CREATE INDEX IF NOT EXISTS idx_experience_redeem_codes_plan_key ON experience_redeem_codes(plan_key);
     CREATE INDEX IF NOT EXISTS idx_experience_redeem_codes_bound_user_id ON experience_redeem_codes(bound_user_id);
@@ -436,6 +543,20 @@ function seedDatabase(database: DatabaseSync): void {
     [8, '永久卡', '一次开通，长期有效', 4999, 49990, 0, 0, 'permanent', 0, 1, 8],
   ] as const;
   packagePresets.forEach((preset) => upsertPackage.run(...preset));
+
+  const upsertProduct = database.prepare(`
+    INSERT INTO products (
+      id, name, client_key, default_trial_days, offline_valid_days, is_active, created_at, updated_at
+    ) VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+    ON CONFLICT(id) DO UPDATE SET
+      name = excluded.name,
+      client_key = excluded.client_key,
+      default_trial_days = excluded.default_trial_days,
+      offline_valid_days = excluded.offline_valid_days,
+      is_active = excluded.is_active,
+      updated_at = CURRENT_TIMESTAMP
+  `);
+  upsertProduct.run('fenghuang', '凤煌', 'fenghuang-desktop', 3, 3, 1);
 
   const upsertExchange = database.prepare(`
     INSERT INTO points_exchange_products (

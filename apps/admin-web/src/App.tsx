@@ -12,6 +12,7 @@ const ExchangeProducts = lazy(() => import('./pages/exchange-products'));
 const ExchangeRecords = lazy(() => import('./pages/exchange-records'));
 const ExperienceCodes = lazy(() => import('./pages/experience-codes'));
 const ExperienceCodeRecords = lazy(() => import('./pages/experience-code-records'));
+const LicenseCenter = lazy(() => import('./pages/license-center'));
 const Referrals = lazy(() => import('./pages/referrals'));
 const Durations = lazy(() => import('./pages/durations'));
 const Login = lazy(() => import('./pages/login'));
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="exchange-records" element={<ExchangeRecords />} />
             <Route path="experience-codes" element={<ExperienceCodes />} />
             <Route path="experience-code-records" element={<ExperienceCodeRecords />} />
+            <Route path="license-center" element={<LicenseCenter />} />
             <Route path="referrals" element={<Referrals />} />
             <Route path="durations" element={<Durations />} />
             <Route path="*" element={<Navigate to="/dashboard" replace />} />

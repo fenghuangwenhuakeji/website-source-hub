@@ -1,4 +1,5 @@
 import { execute, getDatabaseAdapter, query } from './database.js';
+import { DEFAULT_LICENSE_PRODUCT_ID } from '../utils/licenseCenter.js';
 
 const ROOTADMIN_HASH = '$2a$12$I548cdBv/YfCiehCzCGvuOCHlGRxdCHEd3GjYb7wwrI7jzStqYki2';
 const STANDARD_TEST_USER_HASH = '$2a$12$UpbnhrjUJBDV9nf2t/RWIu7lxWA1G4H8ZluF3.MEfR7R.Q64e0kzO';
@@ -130,6 +131,136 @@ async function ensureSqliteExperienceCodeTables(): Promise<void> {
   );
 }
 
+async function ensureSqliteLicenseCenterTables(): Promise<void> {
+  await execute(
+    `CREATE TABLE IF NOT EXISTS products (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      client_key TEXT,
+      default_trial_days INTEGER NOT NULL DEFAULT 3,
+      offline_valid_days INTEGER NOT NULL DEFAULT 3,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS product_plans (
+      id TEXT PRIMARY KEY,
+      product_id TEXT NOT NULL,
+      name TEXT NOT NULL,
+      duration_days INTEGER NOT NULL DEFAULT 30,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      features TEXT,
+      is_active INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS user_product_entitlements (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      access_type TEXT NOT NULL DEFAULT 'paid',
+      expires_at TEXT,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      trial_started_at TEXT,
+      trial_expires_at TEXT,
+      trial_claimed_at TEXT,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      features TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id)
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_codes (
+      id TEXT PRIMARY KEY,
+      code TEXT NOT NULL UNIQUE,
+      display_code TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      plan_name TEXT,
+      duration_days INTEGER NOT NULL DEFAULT 30,
+      seat_limit INTEGER NOT NULL DEFAULT 1,
+      device_limit INTEGER NOT NULL DEFAULT 1,
+      is_permanent INTEGER NOT NULL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'unused',
+      features TEXT,
+      generated_by TEXT,
+      redeemed_by TEXT,
+      redeemed_at TEXT,
+      note TEXT,
+      expired_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_code_redemptions (
+      id TEXT PRIMARY KEY,
+      code_id TEXT NOT NULL,
+      code TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      redeemed_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS user_devices (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      device_id TEXT NOT NULL,
+      device_name TEXT,
+      status TEXT NOT NULL DEFAULT 'active',
+      first_activated_at TEXT,
+      last_seen_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE(user_id, product_id, device_id)
+    )`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_sessions (
+      id TEXT PRIMARY KEY,
+      session_id TEXT NOT NULL UNIQUE,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL,
+      device_id TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active',
+      started_at TEXT,
+      last_heartbeat_at TEXT,
+      heartbeat_expires_at TEXT,
+      ended_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute('CREATE INDEX IF NOT EXISTS idx_entitlements_user_product ON user_product_entitlements(user_id, product_id)');
+  await execute('CREATE INDEX IF NOT EXISTS idx_license_codes_product_status ON license_codes(product_id, status)');
+  await execute('CREATE INDEX IF NOT EXISTS idx_user_devices_user_product ON user_devices(user_id, product_id)');
+  await execute('CREATE INDEX IF NOT EXISTS idx_license_sessions_active ON license_sessions(user_id, product_id, status, heartbeat_expires_at)');
+  await execute(
+    `INSERT OR IGNORE INTO products (
+      id, name, client_key, default_trial_days, offline_valid_days, is_active, created_at, updated_at
+    ) VALUES (?, '凤煌', 'fenghuang-desktop', 3, 3, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+    [DEFAULT_LICENSE_PRODUCT_ID],
+  );
+}
+
 async function ensureMySqlUserColumns(): Promise<void> {
   const columns = await query<MySqlColumnRow[]>('SHOW COLUMNS FROM users');
   const columnNames = new Set(columns.map((column) => column.Field));
@@ -193,6 +324,80 @@ async function ensureMySqlColumns(tableName: string, statements: ColumnStatement
   }
 
   return columnNames;
+}
+
+async function mysqlIndexExists(tableName: string, indexName: string): Promise<boolean> {
+  if (!(await mysqlTableExists(tableName))) {
+    return false;
+  }
+
+  const rows = await query<Record<string, unknown>[]>(
+    `SELECT 1
+     FROM INFORMATION_SCHEMA.STATISTICS
+     WHERE TABLE_SCHEMA = DATABASE()
+       AND TABLE_NAME = ?
+       AND INDEX_NAME = ?
+     LIMIT 1`,
+    [tableName, indexName],
+  );
+
+  return rows.length > 0;
+}
+
+async function ensureMySqlReferralCompatibility(): Promise<void> {
+  if (!(await mysqlTableExists('referrals'))) {
+    return;
+  }
+
+  await ensureMySqlColumns('referrals', [
+    {
+      name: 'gross_order_amount',
+      sql: 'ALTER TABLE referrals ADD COLUMN gross_order_amount DECIMAL(12,2) NULL',
+    },
+    {
+      name: 'commission_mode',
+      sql: 'ALTER TABLE referrals ADD COLUMN commission_mode VARCHAR(20) NULL',
+    },
+    {
+      name: 'commission_value',
+      sql: 'ALTER TABLE referrals ADD COLUMN commission_value DECIMAL(12,4) NULL',
+    },
+    {
+      name: 'available_at',
+      sql: 'ALTER TABLE referrals ADD COLUMN available_at DATETIME NULL',
+    },
+    {
+      name: 'settled_at',
+      sql: 'ALTER TABLE referrals ADD COLUMN settled_at DATETIME NULL',
+    },
+    {
+      name: 'metadata',
+      sql: 'ALTER TABLE referrals ADD COLUMN metadata LONGTEXT NULL',
+    },
+  ]);
+
+  await execute("ALTER TABLE referrals MODIFY COLUMN referee_type VARCHAR(20) NOT NULL DEFAULT 'trial'");
+  await execute("ALTER TABLE referrals MODIFY COLUMN reward_type VARCHAR(20) NOT NULL DEFAULT 'points'");
+  await execute("ALTER TABLE referrals MODIFY COLUMN reward_status VARCHAR(20) NOT NULL DEFAULT 'completed'");
+
+  if (await mysqlIndexExists('referrals', 'uk_referrals_referee')) {
+    await execute('ALTER TABLE referrals DROP INDEX uk_referrals_referee');
+  }
+
+  if (!(await mysqlIndexExists('referrals', 'idx_referrals_referee'))) {
+    await execute('CREATE INDEX idx_referrals_referee ON referrals(referee_id)');
+  }
+
+  if (await mysqlIndexExists('referrals', 'uk_referrals_paid_order')) {
+    await execute('ALTER TABLE referrals DROP INDEX uk_referrals_paid_order');
+  }
+
+  if (!(await mysqlIndexExists('referrals', 'idx_referrals_paid_order'))) {
+    await execute(
+      `CREATE INDEX idx_referrals_paid_order
+       ON referrals(referrer_id, referee_id, referee_type, order_id)`,
+    );
+  }
 }
 
 async function ensureMySqlRechargeColumns(): Promise<void> {
@@ -391,6 +596,146 @@ async function ensureMySqlExperienceCodeTables(): Promise<void> {
   ]);
 }
 
+async function ensureMySqlLicenseCenterTables(): Promise<void> {
+  await execute(
+    `CREATE TABLE IF NOT EXISTS products (
+      id VARCHAR(64) NOT NULL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL,
+      client_key VARCHAR(100) NULL,
+      default_trial_days INT NOT NULL DEFAULT 3,
+      offline_valid_days INT NOT NULL DEFAULT 3,
+      is_active TINYINT(1) NOT NULL DEFAULT 1,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS product_plans (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      product_id VARCHAR(64) NOT NULL,
+      name VARCHAR(100) NOT NULL,
+      duration_days INT NOT NULL DEFAULT 30,
+      seat_limit INT NOT NULL DEFAULT 1,
+      device_limit INT NOT NULL DEFAULT 1,
+      is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+      features TEXT NULL,
+      is_active TINYINT(1) NOT NULL DEFAULT 1,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      INDEX idx_product_plans_product (product_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS user_product_entitlements (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      user_id VARCHAR(36) NOT NULL,
+      product_id VARCHAR(64) NOT NULL,
+      access_type VARCHAR(32) NOT NULL DEFAULT 'paid',
+      expires_at DATETIME NULL,
+      is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+      trial_started_at DATETIME NULL,
+      trial_expires_at DATETIME NULL,
+      trial_claimed_at DATETIME NULL,
+      seat_limit INT NOT NULL DEFAULT 1,
+      device_limit INT NOT NULL DEFAULT 1,
+      features TEXT NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY uk_entitlements_user_product (user_id, product_id),
+      INDEX idx_entitlements_product (product_id),
+      INDEX idx_entitlements_expires (expires_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_codes (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      code VARCHAR(80) NOT NULL UNIQUE,
+      display_code VARCHAR(100) NOT NULL,
+      product_id VARCHAR(64) NOT NULL,
+      plan_name VARCHAR(100) NULL,
+      duration_days INT NOT NULL DEFAULT 30,
+      seat_limit INT NOT NULL DEFAULT 1,
+      device_limit INT NOT NULL DEFAULT 1,
+      is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+      status VARCHAR(24) NOT NULL DEFAULT 'unused',
+      features TEXT NULL,
+      generated_by VARCHAR(36) NULL,
+      redeemed_by VARCHAR(36) NULL,
+      redeemed_at DATETIME NULL,
+      note VARCHAR(255) NULL,
+      expired_at DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      INDEX idx_license_codes_product_status (product_id, status)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_code_redemptions (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      code_id VARCHAR(36) NOT NULL,
+      code VARCHAR(80) NOT NULL,
+      user_id VARCHAR(36) NOT NULL,
+      product_id VARCHAR(64) NOT NULL,
+      redeemed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_license_redemptions_user (user_id),
+      INDEX idx_license_redemptions_product (product_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS user_devices (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      user_id VARCHAR(36) NOT NULL,
+      product_id VARCHAR(64) NOT NULL,
+      device_id VARCHAR(128) NOT NULL,
+      device_name VARCHAR(128) NULL,
+      status VARCHAR(24) NOT NULL DEFAULT 'active',
+      first_activated_at DATETIME NULL,
+      last_seen_at DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UNIQUE KEY uk_user_devices_user_product_device (user_id, product_id, device_id),
+      INDEX idx_user_devices_user_product (user_id, product_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `CREATE TABLE IF NOT EXISTS license_sessions (
+      id VARCHAR(36) NOT NULL PRIMARY KEY,
+      session_id VARCHAR(64) NOT NULL UNIQUE,
+      user_id VARCHAR(36) NOT NULL,
+      product_id VARCHAR(64) NOT NULL,
+      device_id VARCHAR(128) NOT NULL,
+      status VARCHAR(24) NOT NULL DEFAULT 'active',
+      started_at DATETIME NULL,
+      last_heartbeat_at DATETIME NULL,
+      heartbeat_expires_at DATETIME NULL,
+      ended_at DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      INDEX idx_license_sessions_active (user_id, product_id, status, heartbeat_expires_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+
+  await execute(
+    `INSERT INTO products (
+       id, name, client_key, default_trial_days, offline_valid_days, is_active, created_at
+     ) VALUES (?, '凤煌', 'fenghuang-desktop', 3, 3, 1, CURRENT_TIMESTAMP)
+     ON DUPLICATE KEY UPDATE
+       name = VALUES(name),
+       client_key = VALUES(client_key),
+       default_trial_days = VALUES(default_trial_days),
+       offline_valid_days = VALUES(offline_valid_days),
+       is_active = 1`,
+    [DEFAULT_LICENSE_PRODUCT_ID],
+  );
+}
+
 async function runMySqlBackfill(): Promise<void> {
   await execute(
     `UPDATE users
@@ -537,6 +882,7 @@ export async function runAuthSystemMigrations(): Promise<void> {
   if (adapter === 'sqlite') {
     await ensureSqliteUserColumns();
     await ensureSqliteExperienceCodeTables();
+    await ensureSqliteLicenseCenterTables();
     await runSqliteBackfill();
     await upsertRootAdminSqlite();
     await upsertStandardTestUserSqlite();
@@ -545,7 +891,9 @@ export async function runAuthSystemMigrations(): Promise<void> {
 
   await ensureMySqlUserColumns();
   await ensureMySqlRechargeColumns();
+  await ensureMySqlReferralCompatibility();
   await ensureMySqlExperienceCodeTables();
+  await ensureMySqlLicenseCenterTables();
   await runMySqlBackfill();
   await upsertRootAdminMySql();
   await upsertStandardTestUserMySql();

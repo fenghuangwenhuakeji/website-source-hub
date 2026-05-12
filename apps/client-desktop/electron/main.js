@@ -1,4 +1,4 @@
-const { app, BrowserWindow, shell, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, dialog, Menu } = require('electron');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
@@ -9,6 +9,7 @@ const APP_ID = 'com.fenghuang.desktop';
 const APP_PROTOCOL = 'fenghuang';
 const DEFAULT_CLOUD_ORIGIN = 'https://fhwhkj.top';
 const DEFAULT_ENTRY_PATH = '/access/main';
+const DESKTOP_AUTH_BRIDGE_PATH = '/__desktop-auth-bridge';
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 const ACCEPTANCE_MODE_MARKER = path.join(DIST_DIR, '.acceptance-mode.json');
 
@@ -35,6 +36,7 @@ let mainWindow = null;
 let localServer = null;
 let localAppOrigin = '';
 let pendingProtocolUrl = '';
+let cloudAuthBridgeInProgress = false;
 const DEFAULT_COMMAND_TIMEOUT_MS = 60_000;
 const MAX_DIRECTORY_ENTRIES = 500;
 const SKIPPED_DIRECTORY_NAMES = new Set([
@@ -232,11 +234,11 @@ function getEntryPath() {
 }
 
 function getEntryUrl() {
-    if (isLocalAcceptanceMode()) {
-        return `${localAppOrigin}${getEntryPath()}`;
-    }
+    return `${localAppOrigin}${getEntryPath()}`;
+}
 
-    return new URL(DEFAULT_ENTRY_PATH, CLOUD_ORIGIN).toString();
+function buildCloudUrl(pathname = '/login') {
+    return new URL(pathname, CLOUD_ORIGIN).toString();
 }
 
 function focusMainWindow() {
@@ -265,6 +267,60 @@ function handleProtocolUrl(url) {
 
     mainWindow.loadURL(getEntryUrl());
     focusMainWindow();
+}
+
+async function readAuthSnapshotFromCurrentPage() {
+    if (!mainWindow) {
+        return null;
+    }
+
+    try {
+        return await mainWindow.webContents.executeJavaScript(`
+            (() => {
+                const read = (...keys) => {
+                    for (const key of keys) {
+                        const value = window.localStorage.getItem(key);
+                        if (value) return value;
+                    }
+                    return null;
+                };
+                const token = read('fhwh_token', 'token');
+                const refreshToken = read('fhwh_refresh_token', 'refreshToken');
+                const user = read('fhwh_user', 'user');
+                return token ? { token, refreshToken, user } : null;
+            })()
+        `, true);
+    } catch {
+        return null;
+    }
+}
+
+function encodeAuthBridgePayload(authSnapshot) {
+    return encodeURIComponent(JSON.stringify({
+        token: authSnapshot?.token || null,
+        refreshToken: authSnapshot?.refreshToken || null,
+        user: authSnapshot?.user || null,
+        nextPath: DEFAULT_ENTRY_PATH,
+    }));
+}
+
+async function loadLocalAppWithAuthFromCloud() {
+    if (cloudAuthBridgeInProgress) {
+        return;
+    }
+
+    cloudAuthBridgeInProgress = true;
+    const authSnapshot = await readAuthSnapshotFromCurrentPage();
+    if (!authSnapshot?.token) {
+        mainWindow.loadURL(buildCloudUrl(`/login?from=${encodeURIComponent(DEFAULT_ENTRY_PATH)}`));
+        cloudAuthBridgeInProgress = false;
+        return;
+    }
+
+    mainWindow.loadURL(`${localAppOrigin}${DESKTOP_AUTH_BRIDGE_PATH}#${encodeAuthBridgePayload(authSnapshot)}`);
+    setTimeout(() => {
+        cloudAuthBridgeInProgress = false;
+    }, 1000);
 }
 
 function resolveCloudOrigin(...candidates) {
@@ -308,6 +364,50 @@ function ensureFrontendBuilt() {
 function normalizeRequestPath(requestPath) {
     const decodedPath = decodeURIComponent(requestPath || '/');
     return decodedPath === '/' ? '/index.html' : decodedPath;
+}
+
+function writeDesktopAuthBridgeResponse(res) {
+    res.writeHead(200, {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+    });
+    res.end(`<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>正在同步登录状态</title>
+  <style>
+    html, body { margin: 0; min-height: 100%; background: #050814; color: #e5e7eb; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { display: grid; place-items: center; }
+    main { text-align: center; }
+  </style>
+</head>
+<body>
+  <main>正在同步登录状态...</main>
+  <script>
+    (() => {
+      const write = (keys, value) => {
+        for (const key of keys) {
+          if (value == null || value === '') {
+            localStorage.removeItem(key);
+          } else {
+            localStorage.setItem(key, value);
+          }
+        }
+      };
+      try {
+        const payload = JSON.parse(decodeURIComponent(location.hash.slice(1) || '{}'));
+        write(['fhwh_token', 'token'], payload.token);
+        write(['fhwh_refresh_token', 'refreshToken'], payload.refreshToken);
+        write(['fhwh_user', 'user'], payload.user);
+        location.replace(payload.nextPath || '${DEFAULT_ENTRY_PATH}');
+      } catch (error) {
+        location.replace('/login?forceLogin=1');
+      }
+    })();
+  </script>
+</body>
+</html>`);
 }
 
 function resolveDesktopBundlePath(normalizedPath) {
@@ -477,6 +577,9 @@ function buildProxyHeaders(req, targetUrl) {
     }
 
     headers.origin = new URL(targetUrl).origin;
+    headers['user-agent'] = `FenghuangDesktop/${app.getVersion()} Electron/${process.versions.electron}`;
+    headers['x-client-type'] = 'desktop';
+    headers['x-app-version'] = app.getVersion();
     return headers;
 }
 
@@ -515,6 +618,11 @@ function startLocalServer() {
 
                 if (requestUrl.pathname.startsWith('/api/')) {
                     await proxyApiRequest(req, res, requestUrl);
+                    return;
+                }
+
+                if (requestUrl.pathname === DESKTOP_AUTH_BRIDGE_PATH) {
+                    writeDesktopAuthBridgeResponse(res);
                     return;
                 }
 
@@ -563,7 +671,22 @@ function isAppUrl(url) {
         return true;
     }
 
-    return !isLocalAcceptanceMode() && resolvedUrl.origin === CLOUD_ORIGIN;
+    return resolvedUrl.origin === CLOUD_ORIGIN;
+}
+
+function shouldBridgeCloudAccessUrl(url) {
+    const resolvedUrl = resolveNavigationUrl(url);
+    if (!resolvedUrl || resolvedUrl.origin !== CLOUD_ORIGIN) {
+        return false;
+    }
+
+    if (resolvedUrl.pathname === DEFAULT_ENTRY_PATH || resolvedUrl.pathname.startsWith(`${DEFAULT_ENTRY_PATH}/`)) {
+        return true;
+    }
+
+    // If the official site already has a web session, /login may resolve to the
+    // website dashboard. Bridge that completed web login back into the local app.
+    return resolvedUrl.pathname === '/dashboard';
 }
 
 function createFallbackWindow(error) {
@@ -579,6 +702,7 @@ function createFallbackWindow(error) {
             contextIsolation: true,
         },
         backgroundColor: '#050814',
+        autoHideMenuBar: true,
         show: false,
     });
 
@@ -615,12 +739,19 @@ function createWindow() {
         },
         frame: true,
         backgroundColor: '#050814',
+        autoHideMenuBar: true,
         show: false,
     });
 
-    mainWindow.loadURL(getEntryUrl());
+    mainWindow.setMenu(null);
+    mainWindow.setMenuBarVisibility(false);
 
     mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        if (shouldBridgeCloudAccessUrl(url)) {
+            void loadLocalAppWithAuthFromCloud();
+            return { action: 'deny' };
+        }
+
         if (isAppUrl(url)) {
             mainWindow.loadURL(url);
         } else {
@@ -631,9 +762,27 @@ function createWindow() {
     });
 
     mainWindow.webContents.on('will-navigate', (event, url) => {
+        if (shouldBridgeCloudAccessUrl(url)) {
+            event.preventDefault();
+            void loadLocalAppWithAuthFromCloud();
+            return;
+        }
+
         if (!isAppUrl(url)) {
             event.preventDefault();
             shell.openExternal(url);
+        }
+    });
+
+    mainWindow.webContents.on('did-navigate', (_event, url) => {
+        if (shouldBridgeCloudAccessUrl(url)) {
+            void loadLocalAppWithAuthFromCloud();
+        }
+    });
+
+    mainWindow.webContents.on('did-navigate-in-page', (_event, url) => {
+        if (shouldBridgeCloudAccessUrl(url)) {
+            void loadLocalAppWithAuthFromCloud();
         }
     });
 
@@ -649,6 +798,9 @@ function createWindow() {
         console.error('加载失败:', errorCode, errorDescription);
         mainWindow.loadFile(path.join(__dirname, 'error.html'));
     });
+
+    mainWindow.loadURL(getEntryUrl());
+    mainWindow.show();
 }
 
 function setupApiHandler() {
@@ -660,6 +812,9 @@ function setupApiHandler() {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
+                    'User-Agent': `FenghuangDesktop/${app.getVersion()} Electron/${process.versions.electron}`,
+                    'X-Client-Type': 'desktop',
+                    'X-App-Version': app.getVersion(),
                     ...headers,
                 },
             };
@@ -858,6 +1013,7 @@ app.whenReady().then(async () => {
     app.setName(APP_NAME);
     app.setAppUserModelId(APP_ID);
     app.setAsDefaultProtocolClient(APP_PROTOCOL);
+    Menu.setApplicationMenu(null);
 
     setupApiHandler();
     setupDesktopBridgeHandlers();

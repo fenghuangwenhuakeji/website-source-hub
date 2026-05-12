@@ -4,6 +4,7 @@ const API_BASE = '/api';
 
 const isElectron = typeof window !== 'undefined' && window.electronAPI;
 const electronApi = isElectron ? window.electronAPI : null;
+let desktopVersionPromise: Promise<string | null> | null = null;
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
@@ -36,13 +37,43 @@ function buildUrl(endpoint: string, params?: Record<string, any>) {
   return url;
 }
 
+async function getDesktopAppVersion(): Promise<string | null> {
+  if (!isElectron || !electronApi?.getAppVersion) {
+    return null;
+  }
+
+  if (!desktopVersionPromise) {
+    desktopVersionPromise = Promise.resolve(electronApi.getAppVersion())
+      .then((version) => (version ? String(version) : null))
+      .catch(() => null);
+  }
+
+  return desktopVersionPromise;
+}
+
+async function buildClientHeaders(): Promise<Record<string, string>> {
+  if (!isElectron) {
+    return {
+      'X-Client-Type': 'web',
+    };
+  }
+
+  const appVersion = await getDesktopAppVersion();
+  return {
+    'X-Client-Type': 'desktop',
+    ...(appVersion ? { 'X-App-Version': appVersion } : {}),
+  };
+}
+
 async function sendRequest(
   url: string,
   options: RequestOptions,
   token: string | null,
 ): Promise<RequestResult> {
+  const clientHeaders = await buildClientHeaders();
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    ...clientHeaders,
     ...options.headers,
   };
 
@@ -123,6 +154,7 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
   if (!result.ok) {
     return {
       success: false,
+      code: result.data?.code,
       message:
         result.data?.message ||
         result.data?.error ||
@@ -135,6 +167,9 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
 }
 
 const api = {
+  app: {
+    version: () => request('/app/version'),
+  },
   auth: {
     login: (data: { username: string; password: string }) =>
       request('/auth/login', { method: 'POST', body: data }),
@@ -214,6 +249,19 @@ const api = {
     order: (orderId: string) => request(`/recharge/order/${orderId}`),
     redeemExperienceCode: (data: { code: string }) =>
       request('/recharge/experience-code/redeem', { method: 'POST', body: data }),
+  },
+  license: {
+    status: (productId = 'fenghuang') => request(`/license/products/${encodeURIComponent(productId)}/status`),
+    activateDevice: (productId: string, data: { deviceId: string; deviceName?: string }) =>
+      request(`/license/products/${encodeURIComponent(productId)}/activate-device`, { method: 'POST', body: data }),
+    issue: (productId: string, data: { deviceId: string; deviceName?: string; sessionId?: string }) =>
+      request(`/license/products/${encodeURIComponent(productId)}/issue`, { method: 'POST', body: data }),
+    heartbeat: (productId: string, data: { deviceId: string; deviceName?: string; sessionId?: string }) =>
+      request(`/license/products/${encodeURIComponent(productId)}/heartbeat`, { method: 'POST', body: data }),
+    releaseSeat: (productId: string, data: { deviceId?: string; sessionId?: string }) =>
+      request(`/license/products/${encodeURIComponent(productId)}/release-seat`, { method: 'POST', body: data }),
+    redeemCode: (productId: string, data: { code: string }) =>
+      request(`/license/products/${encodeURIComponent(productId)}/redeem-code`, { method: 'POST', body: data }),
   },
   wechat: {
     getLoginQrcode: () => request('/wechat/login-qrcode'),

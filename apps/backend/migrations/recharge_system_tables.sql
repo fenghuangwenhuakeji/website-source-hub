@@ -189,6 +189,147 @@ CREATE TABLE IF NOT EXISTS user_durations (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS products (
+  id VARCHAR(64) NOT NULL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  client_key VARCHAR(100) NULL,
+  default_trial_days INT NOT NULL DEFAULT 3,
+  offline_valid_days INT NOT NULL DEFAULT 3,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS product_plans (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  product_id VARCHAR(64) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  duration_days INT NOT NULL DEFAULT 30,
+  seat_limit INT NOT NULL DEFAULT 1,
+  device_limit INT NOT NULL DEFAULT 1,
+  is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+  features TEXT NULL,
+  is_active TINYINT(1) NOT NULL DEFAULT 1,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_product_plans_product (product_id),
+  CONSTRAINT fk_product_plans_product
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS user_product_entitlements (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  product_id VARCHAR(64) NOT NULL,
+  access_type VARCHAR(32) NOT NULL DEFAULT 'paid',
+  expires_at DATETIME NULL,
+  is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+  trial_started_at DATETIME NULL,
+  trial_expires_at DATETIME NULL,
+  trial_claimed_at DATETIME NULL,
+  seat_limit INT NOT NULL DEFAULT 1,
+  device_limit INT NOT NULL DEFAULT 1,
+  features TEXT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_entitlements_user_product (user_id, product_id),
+  INDEX idx_entitlements_product (product_id),
+  INDEX idx_entitlements_expires (expires_at),
+  CONSTRAINT fk_entitlements_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE,
+  CONSTRAINT fk_entitlements_product
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS license_codes (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  code VARCHAR(80) NOT NULL UNIQUE,
+  display_code VARCHAR(100) NOT NULL,
+  product_id VARCHAR(64) NOT NULL,
+  plan_name VARCHAR(100) NULL,
+  duration_days INT NOT NULL DEFAULT 30,
+  seat_limit INT NOT NULL DEFAULT 1,
+  device_limit INT NOT NULL DEFAULT 1,
+  is_permanent TINYINT(1) NOT NULL DEFAULT 0,
+  status VARCHAR(24) NOT NULL DEFAULT 'unused',
+  features TEXT NULL,
+  generated_by VARCHAR(36) NULL,
+  redeemed_by VARCHAR(36) NULL,
+  redeemed_at DATETIME NULL,
+  note VARCHAR(255) NULL,
+  expired_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_license_codes_product_status (product_id, status),
+  CONSTRAINT fk_license_codes_product
+    FOREIGN KEY (product_id) REFERENCES products(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS license_code_redemptions (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  code_id VARCHAR(36) NOT NULL,
+  code VARCHAR(80) NOT NULL,
+  user_id VARCHAR(36) NOT NULL,
+  product_id VARCHAR(64) NOT NULL,
+  redeemed_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_license_redemptions_user (user_id),
+  INDEX idx_license_redemptions_product (product_id),
+  CONSTRAINT fk_license_redemptions_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS user_devices (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  user_id VARCHAR(36) NOT NULL,
+  product_id VARCHAR(64) NOT NULL,
+  device_id VARCHAR(128) NOT NULL,
+  device_name VARCHAR(128) NULL,
+  status VARCHAR(24) NOT NULL DEFAULT 'active',
+  first_activated_at DATETIME NULL,
+  last_seen_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY uk_user_devices_user_product_device (user_id, product_id, device_id),
+  INDEX idx_user_devices_user_product (user_id, product_id),
+  CONSTRAINT fk_user_devices_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS license_sessions (
+  id VARCHAR(36) NOT NULL PRIMARY KEY,
+  session_id VARCHAR(64) NOT NULL UNIQUE,
+  user_id VARCHAR(36) NOT NULL,
+  product_id VARCHAR(64) NOT NULL,
+  device_id VARCHAR(128) NOT NULL,
+  status VARCHAR(24) NOT NULL DEFAULT 'active',
+  started_at DATETIME NULL,
+  last_heartbeat_at DATETIME NULL,
+  heartbeat_expires_at DATETIME NULL,
+  ended_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_license_sessions_active (user_id, product_id, status, heartbeat_expires_at),
+  CONSTRAINT fk_license_sessions_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+INSERT INTO products (id, name, client_key, default_trial_days, offline_valid_days, is_active)
+VALUES ('fenghuang', '凤煌', 'fenghuang-desktop', 3, 3, 1)
+ON DUPLICATE KEY UPDATE
+  name = VALUES(name),
+  client_key = VALUES(client_key),
+  default_trial_days = VALUES(default_trial_days),
+  offline_valid_days = VALUES(offline_valid_days),
+  is_active = VALUES(is_active);
+
 CREATE TABLE IF NOT EXISTS points_records (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   user_id VARCHAR(36) NOT NULL,
@@ -225,14 +366,21 @@ CREATE TABLE IF NOT EXISTS referrals (
   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   referrer_id VARCHAR(36) NOT NULL,
   referee_id VARCHAR(36) NOT NULL,
-  referee_type ENUM('trial', 'paid') NOT NULL DEFAULT 'trial',
-  reward_type ENUM('points', 'cashback') NOT NULL DEFAULT 'points',
+  referee_type VARCHAR(20) NOT NULL DEFAULT 'trial',
+  reward_type VARCHAR(20) NOT NULL DEFAULT 'points',
   reward_amount DECIMAL(12, 2) NOT NULL DEFAULT 0.00,
-  reward_status ENUM('pending', 'completed') NOT NULL DEFAULT 'completed',
+  reward_status VARCHAR(20) NOT NULL DEFAULT 'completed',
   order_id VARCHAR(36) NULL,
+  gross_order_amount DECIMAL(12, 2) NULL,
+  commission_mode VARCHAR(20) NULL,
+  commission_value DECIMAL(12, 4) NULL,
+  available_at DATETIME NULL,
+  settled_at DATETIME NULL,
+  metadata LONGTEXT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  UNIQUE KEY uk_referrals_referee (referee_id),
   INDEX idx_referrals_referrer (referrer_id),
+  INDEX idx_referrals_referee (referee_id),
+  INDEX idx_referrals_paid_order (referrer_id, referee_id, referee_type, order_id),
   CONSTRAINT fk_referrals_referrer
     FOREIGN KEY (referrer_id) REFERENCES users(id)
     ON DELETE CASCADE,

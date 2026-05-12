@@ -1,4 +1,5 @@
 const LOCAL_OFFICIAL_SITE_PORT = '5182';
+const DEFAULT_OFFICIAL_SITE_URL = 'https://fhwhkj.top';
 
 function isLoopbackHost(hostname: string) {
   return hostname === '127.0.0.1' || hostname === 'localhost';
@@ -51,6 +52,11 @@ export function resolveOfficialSiteUrl(path = '/login') {
   }
 
   const envUrl = (import.meta.env.VITE_OFFICIAL_SITE_URL as string | undefined)?.trim();
+
+  if (window.electronAPI) {
+    return new URL(normalizedPath, envUrl || DEFAULT_OFFICIAL_SITE_URL).toString();
+  }
+
   const { hostname, origin, protocol, port } = window.location;
   const isLocalHost = isLoopbackHost(hostname);
 

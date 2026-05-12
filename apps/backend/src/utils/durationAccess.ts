@@ -1,7 +1,7 @@
 import type { PoolConnection } from '../config/database.js';
 import { execute as dbExecute, query } from '../config/database.js';
 
-export type DurationUnit = 'hour' | 'day' | 'month' | 'year' | 'permanent';
+export type DurationUnit = 'hour' | 'day' | 'week' | 'month' | 'year' | 'permanent';
 
 export interface DurationAccessStatus {
   hasRecord: boolean;
@@ -46,6 +46,8 @@ export function durationToSeconds(duration: number, unit: DurationUnit): number 
       return duration * 3600;
     case 'day':
       return duration * 86400;
+    case 'week':
+      return duration * 7 * 86400;
     case 'month':
       return duration * 30 * 86400;
     case 'year':
