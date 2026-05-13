@@ -69,28 +69,28 @@ export const showcaseApps: ShowcaseApp[] = [
   },
   {
     id: 'novel-assistant',
-    title: '小说助手',
+    title: '小说展示',
     description:
-      '卷章树、人物卡、世界观、正文，全部沉淀于同一套工作台',
-    category: '在线工坊',
-    status: '已上线',
-    features: ['卷章结构', '人物卡', '世界观设定'],
+      '官网用于展示小说题材、样稿、设定和作品资料，不再承担完整在线创作职责',
+    category: '官网展示',
+    status: '展示中',
+    features: ['题材样稿', '作品设定', '小说资料页'],
     featured: false,
     featuredReason:
-      '官网最核心的在线创作入口，开页即续写',
+      '对外展示小说能力与作品气质的入口，真正创作请进入桌面端',
     pageUrl: '/novels',
   },
   {
     id: 'script-workshop',
-    title: '剧本工坊',
+    title: '剧本展示',
     description:
-      '从场景目标到对白节奏，从分镜规划到镜头调度，覆盖短剧、电影与广告脚本',
-    category: '在线工坊',
-    status: '已上线',
+      '官网用于展示剧本方向、场景结构、对白节奏和镜头表达，不再承担完整在线创作职责',
+    category: '官网展示',
+    status: '展示中',
     features: ['幕结构', '场景目标', '对白节奏'],
     featured: false,
     featuredReason:
-      '凤煌内容能力的第二条主线，文字到镜头的完整生产线',
+      '对外展示剧本能力与镜头表达的入口，真正创作请进入桌面端',
     pageUrl: '/writing?type=script',
   },
 ];

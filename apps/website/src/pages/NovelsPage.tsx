@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { featuredGenres, featuredNovels } from '../data/library';
@@ -7,6 +7,7 @@ import {
   countProjectWords,
   getWritingProjects,
 } from '../utils/localWriting';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 interface NovelCard {
   id: string;
@@ -23,6 +24,8 @@ interface NovelCard {
 }
 
 const NOVEL_EDITOR_URL = '/writing?type=novel&workspace=novel';
+const desktopDownloadUrl = resolveDesktopDownloadUrl();
+const NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY = 'fh_novel_showcase_guide_dismissed';
 type NovelLengthTier = 'short' | 'medium' | 'long';
 
 const NOVEL_TIER_META: Record<
@@ -182,6 +185,25 @@ const novelCardItem = {
 
 export default function NovelsPage() {
   const [activeGenre, setActiveGenre] = useState('全部');
+  const [showDesktopGuide, setShowDesktopGuide] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.sessionStorage.getItem(NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY) === '1') return;
+
+    const timer = window.setTimeout(() => {
+      setShowDesktopGuide(true);
+    }, 600);
+
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const closeDesktopGuide = () => {
+    setShowDesktopGuide(false);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY, '1');
+    }
+  };
 
   const cards = useMemo<NovelCard[]>(() => {
     const localDrafts = getWritingProjects()
@@ -276,6 +298,33 @@ export default function NovelsPage() {
 
   return (
     <div className="page-shell library-shell">
+      {showDesktopGuide ? (
+        <div className="desktop-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="novel-guide-title">
+          <div className="desktop-guide-modal">
+            <button
+              type="button"
+              className="desktop-guide-close"
+              onClick={closeDesktopGuide}
+              aria-label="关闭客户端下载提示"
+            >
+              ×
+            </button>
+            <div className="desktop-guide-kicker">小说展示页</div>
+            <h2 id="novel-guide-title">完整体验请下载客户端</h2>
+            <p>
+              当前页面用于展示小说题材、样稿、设定和作品资料，不是完整在线创作工具。需要完整体验、完整创作和完整工作流，请下载客户端。
+            </p>
+            <div className="desktop-guide-actions">
+              <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
+                下载客户端
+              </a>
+              <button type="button" className="btn btn-secondary" onClick={closeDesktopGuide}>
+                继续浏览展示
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
       {/* Atmospheric background */}
       <div className="library-bg-aura" />
       <div className="library-bg-grid" />
@@ -292,50 +341,61 @@ export default function NovelsPage() {
             {/* Left column */}
             <div className="space-y-6">
               <motion.div variants={heroKicker} className="section-kicker">
-                小说工坊
+                小说展示
               </motion.div>
 
               <div>
                 <h1 className="page-title mt-4">
                   <span className="title-line-mask">
                     <motion.span className="title-line" variants={heroTitleMask}>
-                      先写钩子，再长成一个世界
+                      先看作品，再进入真正的工作台
                     </motion.span>
                   </span>
                 </h1>
                 <motion.p variants={heroLead} className="page-lead mt-4">
-                  短篇一击命中，中长篇慢慢铺开，卷章、正文、人物、设定在同一套工作台里一起生长
+                  这里主要展示小说题材、样稿、设定和作品陈列，方便浏览和对外介绍。
+                  如果你要继续长篇创作、卷章整理和正文生产，请优先下载桌面端。
                 </motion.p>
+              </div>
+              <div className="rounded-[24px] border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                这里只是展示页，不是完整在线创作工具。需要完整体验，请下载客户端。
               </div>
 
               <motion.div variants={heroButtonContainer} className="flex flex-wrap gap-3">
                 <motion.div variants={heroButtonItem}>
-                  <Link to={NOVEL_EDITOR_URL} className="btn btn-primary">
-                    进入小说工坊
-                  </Link>
+                  <a href={desktopDownloadUrl} className="btn btn-primary">
+                    下载桌面端
+                  </a>
                 </motion.div>
                 <motion.div variants={heroButtonItem}>
-                  <Link
-                    to={latestDraft ? `${NOVEL_EDITOR_URL}&project=${latestDraft.id}` : NOVEL_EDITOR_URL}
-                    className="btn btn-secondary"
-                  >
-                    {latestDraft ? '继续最近项目' : '打开工作台'}
-                  </Link>
+                  <a href="#novel-gallery" className="btn btn-secondary">
+                    查看小说陈列
+                  </a>
                 </motion.div>
+                {latestDraft ? (
+                  <motion.div variants={heroButtonItem}>
+                    <Link
+                      to={`${NOVEL_EDITOR_URL}&project=${latestDraft.id}`}
+                      className="btn btn-secondary"
+                    >
+                      继续最近项目
+                    </Link>
+                  </motion.div>
+                ) : null}
               </motion.div>
 
               <motion.div
                 variants={heroHint}
                 className="rounded-[24px] border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-3 text-xs leading-6 text-[var(--fh-text-secondary)]"
               >
-                直接进工作台，或先选短篇 / 中篇 / 长篇节奏，再一键开写
+                官网页负责展示和浏览；真正的创作、续写和项目管理，请进入桌面端工作台
               </motion.div>
 
               <motion.div variants={heroTierCardContainer} className="mt-6 grid gap-3 sm:grid-cols-3">
                 {tierCards.map((card) => (
                   <motion.div key={card.tier} variants={heroTierCardItem}>
                     <Link
-                      to={card.href}
+                      to="/novels#novel-gallery"
                       className={`block rounded-[24px] border p-4 transition ${
                         card.active
                           ? 'border-[var(--fh-accent)]/30 bg-[var(--fh-accent)]/10'
@@ -386,15 +446,15 @@ export default function NovelsPage() {
             {/* Right column — 最近续写 */}
             <motion.div variants={heroRightPanel} className="glass-card p-5 relative overflow-hidden">
               <div className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--fh-text-muted)]">
-                最近续写
+                页面定位
               </div>
               <div className="mt-3 text-2xl font-bold text-[var(--fh-text)]">
-                {latestDraft ? latestDraft.title : '下一部故事，等你命名'}
+                {latestDraft ? `${latestDraft.title} · 本地草稿已识别` : '官网小说页以展示为主'}
               </div>
               <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
                 {latestDraft
-                  ? latestDraft.description
-                  : '草稿自动留在这里，下次回来直接续写，无需重新找入口'}
+                  ? '检测到你本地有最近草稿，但继续写作仍建议回到桌面端，官网页更适合浏览作品和展示资料。'
+                  : '没有本地草稿时，这里更适合用来浏览作品、展示题材和理解产品方向，而不是直接当成在线写作工具。'}
               </p>
 
               <motion.div variants={heroRightStatContainer} className="mt-5 grid gap-3 sm:grid-cols-3">
@@ -419,29 +479,28 @@ export default function NovelsPage() {
               </motion.div>
 
               <div className="mt-4 rounded-2xl border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
-                当前节奏：{NOVEL_TIER_META[latestDraftTier].label} — {NOVEL_TIER_META[latestDraftTier].description}
+                {latestDraft
+                  ? `最近草稿属于 ${NOVEL_TIER_META[latestDraftTier].label}，但续写入口建议回到桌面端。`
+                  : '你现在看到的是小说展示页，不是完整在线创作工作台。'}
               </div>
 
               <div className="mt-5 flex flex-wrap gap-3">
-                <Link
-                  to={
-                    latestDraft
-                      ? `${NOVEL_EDITOR_URL}&project=${latestDraft.id}&tier=${latestDraftTier}`
-                      : `${NOVEL_EDITOR_URL}&tier=short`
-                  }
-                  className="btn btn-primary"
-                >
-                  {latestDraft ? '继续进入小说工坊' : '创建并开写'}
-                </Link>
+                <a href={desktopDownloadUrl} className="btn btn-primary">
+                  下载桌面端
+                </a>
                 {latestDraft ? (
                   <Link to={`/novels/${latestDraft.id}`} className="btn btn-secondary">
-                    查看作品页
+                    查看草稿详情
                   </Link>
-                ) : null}
+                ) : (
+                  <Link to="/showcase" className="btn btn-secondary">
+                    查看完整作品展示
+                  </Link>
+                )}
               </div>
 
               <div className="mt-5 rounded-2xl bg-[var(--fh-bg-elevated)] px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
-                自动保存已开启，卷章、正文、人物和设定随写随存
+                本地草稿如果存在会被识别出来，但官网页本身不再承担完整创作职责
               </div>
 
               <span className="library-hero-deco">{latestDraft ? '续' : '写'}</span>
@@ -456,9 +515,9 @@ export default function NovelsPage() {
         >
           <div>
             <div className="section-kicker">作品橱窗</div>
-            <h2 className="mt-2 text-3xl font-bold text-[var(--fh-text)]">所有故事，都在这里继续</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[var(--fh-text)]">小说项目与样稿陈列</h2>
             <p className="mt-2 text-sm text-[var(--fh-text-muted)]">
-              当前筛选：{activeGenre}，从草稿到成品，随时回来推进
+              当前筛选：{activeGenre}，这里更偏向浏览作品、样稿和本地草稿概览
             </p>
           </div>
 
@@ -541,9 +600,15 @@ export default function NovelsPage() {
                   <Link to={`/novels/${card.id}`} className="btn btn-secondary">
                     查看详情
                   </Link>
-                  <Link to={editorUrl} className="btn btn-primary">
-                    {card.isDraft ? '继续写作' : '进入小说工坊'}
-                  </Link>
+                  {card.isDraft ? (
+                    <Link to={editorUrl} className="btn btn-primary">
+                      继续最近项目
+                    </Link>
+                  ) : (
+                    <a href={desktopDownloadUrl} className="btn btn-primary">
+                      下载桌面端创作
+                    </a>
+                  )}
                 </div>
               </motion.article>
             );

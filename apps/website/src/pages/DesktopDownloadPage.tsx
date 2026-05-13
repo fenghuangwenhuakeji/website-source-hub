@@ -51,8 +51,11 @@ export default function DesktopDownloadPage() {
                 把凤煌工作台装进电脑
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
-                用客户端打开完整应用生态：写作、代码编辑、Agent 工具和项目管理都在一个窗口里。账号、权益和网页版保持同步。
+                桌面端才是真实产品形态。写作、代码编辑、Agent 工具和项目管理都在客户端里完整展开；网页端仅为展示和入口分发。
               </p>
+              <div className="mt-5 max-w-2xl rounded-[24px] border border-white/14 bg-white/8 px-4 py-4 text-sm leading-7 text-white/80 backdrop-blur">
+                如果你需要完整体验，请直接下载客户端。网页端适合看展示、看作品、看入口，但不代表完整能力。
+              </div>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a href={primaryDownloadUrl} className="btn bg-white text-[#141414] hover:bg-[#f4eadc]" title={primaryDownloadLabel}>
                   {primaryDownloadLabel}
@@ -61,7 +64,7 @@ export default function DesktopDownloadPage() {
                   打开已安装客户端
                 </a>
                 <a href={webUrl} className="btn border border-white/20 bg-transparent text-white/86 hover:bg-white/10">
-                  先用网页版
+                  查看网页展示
                 </a>
               </div>
             </div>
@@ -70,7 +73,7 @@ export default function DesktopDownloadPage() {
               <div className="text-xs font-semibold tracking-[0.18em] text-[var(--fh-text-muted)]">推荐下载</div>
               <h2 className="mt-3 text-3xl font-semibold tracking-[-0.04em]">{primaryPlatformLabel}</h2>
               <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
-                下载后按系统提示安装。安装完成后，可从桌面图标启动，也可以回到这里一键打开客户端。
+                下载后按系统提示安装。安装完成后，可从桌面图标启动，也可以回到这里一键打开客户端；完整功能以客户端为准。
               </p>
               <a href={primaryDownloadUrl} className="btn btn-primary mt-6 w-full" title={primaryDownloadLabel}>
                 立即下载
@@ -133,12 +136,12 @@ export default function DesktopDownloadPage() {
           </div>
           <div className="glass-card p-6 sm:p-7">
             <div className="section-kicker">网页版</div>
-            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[var(--fh-text)]">暂时不安装？</h2>
+            <h2 className="mt-4 text-2xl font-semibold tracking-[-0.03em] text-[var(--fh-text)]">网页版仅供展示</h2>
             <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
-              网页版工作台可以直接打开，适合快速体验和临时处理。后续安装客户端后，账号和权益仍然通用。
+              网页端更适合查看展示页、作品资料和账号入口，不等同于完整产品。需要完整体验、完整工作流和真实使用，请安装客户端。
             </p>
             <a href={webUrl} className="btn btn-secondary mt-5 w-full">
-              打开网页版工作台
+              打开网页展示页
             </a>
             <a href={MAC_ZIP_DOWNLOAD_URL} className="mt-3 inline-flex text-sm text-[var(--fh-text-muted)] hover:text-[var(--fh-text)]">
               macOS ZIP 备用下载

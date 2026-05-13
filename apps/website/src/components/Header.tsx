@@ -33,15 +33,15 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
 
   const navItems: NavItem[] = [
     {
-      label: '小说助手',
+      label: '小说展示',
       to: '/novels',
-      title: '进入小说助手',
+      title: '查看小说展示',
       active: location.pathname === '/novels',
     },
     {
-      label: '剧本工坊',
+      label: '剧本展示',
       to: '/writing?type=script',
-      title: '进入剧本工坊',
+      title: '查看剧本展示',
       active: location.pathname === '/writing' && new URLSearchParams(location.search).get('type') === 'script',
     },
     {
@@ -166,9 +166,9 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                   </button>
                 </li>
                 <li className="mobile-only nav-mobile-panel">
-                  <div className="nav-mobile-label">桌面端</div>
+                  <div className="nav-mobile-label">真实产品</div>
                   <a href={desktopDownloadHref} className="btn btn-primary nav-cta" onClick={closeMenu}>
-                    下载桌面端
+                    下载客户端
                   </a>
                 </li>
                 <li className="mobile-only nav-mobile-panel">
@@ -213,8 +213,8 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
               >
                 {themeMode === 'dark' ? '切换浅色' : '切换深色'}
               </button>
-              <a href={desktopDownloadHref} className="btn btn-secondary nav-ghost" title="下载桌面端">
-                桌面端
+              <a href={desktopDownloadHref} className="btn btn-secondary nav-ghost" title="下载客户端">
+                下载客户端
               </a>
               {isAuthenticated ? (
                 <>

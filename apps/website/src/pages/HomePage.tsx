@@ -17,13 +17,13 @@ const coreLines = [
     id: 'desktop',
     label: '桌面产品',
     title: '完整入口',
-    description: '登录、导入、本地联动和深度工作流。',
+    description: '真实产品形态，承接登录、导入、本地联动和完整工作流。',
   },
   {
     id: 'workshops',
-    label: '内容工坊',
-    title: '持续生产',
-    description: '小说写长内容，剧本推镜头表达。',
+    label: '网页展示',
+    title: '资料浏览',
+    description: '官网页主要用于展示作品、入口和项目资料。',
   },
   {
     id: 'showcase',
@@ -36,12 +36,12 @@ const coreLines = [
 const capabilityCards = [
   {
     title: '桌面软件',
-    description: '真正能跑起来、能承接完整流程的桌面产品。',
+    description: '真正能跑起来、能承接完整创作流程的正式客户端。',
     index: '01',
   },
   {
-    title: '小说与剧本',
-    description: '从小说写作到漫剧剧本，再到分镜视频表达。',
+    title: '官网展示',
+    description: '网页端更适合展示小说、剧本、应用和品牌信息。',
     index: '02',
   },
   {
@@ -220,16 +220,16 @@ export default function HomePage() {
 
   const [featuredHero, ...featuredRest] = featuredShowcase;
   const heroSubtitle = isAuthenticated
-    ? `欢迎回来，${user?.nickname ?? '创作者'}。先回官网工作台，再分发到小说、剧本、作品展示和桌面端。`
-    : '先用官网账号进入工作台，再分发到小说、剧本、作品展示和桌面端。';
+    ? `欢迎回来，${user?.nickname ?? '创作者'}。桌面端才是真实产品，官网页主要负责展示和账号分发；需要完整体验，请下载客户端。`
+    : '桌面端才是真实产品，网页端仅为展示与入口分发；需要完整体验，请下载客户端。';
   const entryCards = [
     {
       id: '01',
       title: isAuthenticated ? '官网工作台' : '官网账号',
       code: 'ACCOUNT',
       description: isAuthenticated
-        ? '账号已经连上官网工作台，可以继续前往写作、展示和个人设置。'
-        : '先登录或注册官网账号，再进入工作台统一分发到各条产品线。',
+        ? '官网账号已经连上，可以继续前往展示页、个人设置和客户端下载入口。'
+        : '先登录或注册官网账号，再统一进入展示页、个人设置和客户端下载入口。',
       primaryCta: isAuthenticated ? '进入官网工作台' : '官网登录',
       primaryHref: isAuthenticated ? '/dashboard' : '/login',
       secondaryCta: isAuthenticated ? '个人设置' : '立即注册',
@@ -239,19 +239,19 @@ export default function HomePage() {
       id: '02',
       title: '桌面端',
       code: 'DESKTOP',
-      description: '完整入口，直接承接更深的本地与桌面工作流。',
-      primaryCta: '下载桌面端',
+      description: '真实产品形态，完整体验、完整能力、完整工作流都在客户端。',
+      primaryCta: '下载客户端',
       primaryHref: desktopDownloadUrl,
       external: true,
     },
     {
       id: '03',
-      title: '小说工坊 / 剧本工坊',
+      title: '小说展示 / 剧本展示',
       code: 'WORKSHOPS',
-      description: '内容生产线，从故事到镜头持续推进。',
-      primaryCta: '进入小说工坊',
+      description: '网页端以展示和入口说明为主，不承担完整创作职责。',
+      primaryCta: '查看小说展示',
       primaryHref: '/novels',
-      secondaryCta: '进入剧本工坊',
+      secondaryCta: '查看剧本展示',
       secondaryHref: '/writing?type=script',
     },
     {
@@ -280,11 +280,11 @@ export default function HomePage() {
             <div className="desktop-guide-kicker">桌面端客户端</div>
             <h2 id="desktop-guide-title">下载桌面端，进入完整工作台</h2>
             <p>
-              如果你要安装到电脑上的软件，请点击下载桌面端。小说助手、剧本工坊是官网里的功能入口，不是安装包。
+              桌面端才是真实产品，网页端仅为展示和入口分发。需要完整体验，请下载客户端；小说展示、剧本入口都不是安装包。
             </p>
             <div className="desktop-guide-actions">
               <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
-                立即下载桌面端
+                立即下载客户端
               </a>
               <button type="button" className="btn btn-secondary" onClick={closeDesktopGuide}>
                 先看看官网
@@ -384,7 +384,7 @@ export default function HomePage() {
                 </motion.div>
                 <motion.div variants={heroButtonItem}>
                   <a href={desktopDownloadUrl} className="btn btn-secondary">
-                    下载桌面端
+                    下载客户端
                   </a>
                 </motion.div>
               </motion.div>

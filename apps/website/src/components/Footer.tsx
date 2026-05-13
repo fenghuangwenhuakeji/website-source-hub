@@ -13,10 +13,10 @@ const contactLinks = [
 
 const navLinks = [
   { label: '首页', to: '/' },
-  { label: '小说助手', to: '/novels' },
-  { label: '剧本工坊', to: '/writing?type=script' },
+  { label: '小说展示', to: '/novels' },
+  { label: '剧本展示', to: '/writing?type=script' },
   { label: '作品展示', to: '/showcase' },
-  { label: '桌面端下载', href: resolveDesktopDownloadUrl() },
+  { label: '下载客户端', href: resolveDesktopDownloadUrl() },
 ];
 
 export function Footer() {
@@ -50,9 +50,12 @@ export function Footer() {
               <br />
               游戏开发、联合共创。
             </p>
+            <p className="mt-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
+              桌面端才是真实产品，网页端仅为展示与入口分发。需要完整体验，请下载客户端。
+            </p>
             <div className="footer-actions">
               <a href={resolveDesktopDownloadUrl()} className="btn btn-primary btn-sm">
-                下载桌面端
+                下载客户端
               </a>
               <Link to="/showcase" className="btn btn-secondary btn-sm">
                 作品展示

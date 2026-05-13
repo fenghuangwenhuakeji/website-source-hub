@@ -1,9 +1,13 @@
-import { Suspense, lazy, useCallback } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import { normalizeProjectType } from '../utils/writingMetadata';
 import type { WritingProjectType } from '../types/writing';
+import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 const LazyWritingWorkbench = lazy(() => import('../components/writing/WritingWorkbench'));
+const desktopDownloadUrl = resolveDesktopDownloadUrl();
+const SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY = 'fh_script_showcase_guide_dismissed';
 
 function WritingWorkbenchFallback() {
   return (
@@ -27,13 +31,37 @@ function WritingWorkbenchFallback() {
 
 export default function WritingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [showDesktopGuide, setShowDesktopGuide] = useState(false);
   const projectId = searchParams.get('project') ?? '';
   const rawType = searchParams.get('type');
   const rawWorkspace = searchParams.get('workspace');
   const rawTier = searchParams.get('tier');
+  const rawMode = searchParams.get('mode');
   const initialType = rawType ? normalizeProjectType(rawType) : undefined;
   const initialNovelTier = rawTier === 'short' || rawTier === 'medium' || rawTier === 'long' ? rawTier : undefined;
   const forceNovelWorkspace = rawWorkspace === 'novel' || initialType === 'novel';
+  const isDisplayOnlyPage = initialType !== 'novel' && rawMode !== 'workspace';
+  const showcaseTitle =
+    initialType === 'storyboard' ? '分镜展示' : '剧本展示';
+  const workspaceEntryHref = `/writing?type=${initialType ?? 'script'}&mode=workspace`;
+
+  useEffect(() => {
+    if (!isDisplayOnlyPage || typeof window === 'undefined') return;
+    if (window.sessionStorage.getItem(SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY) === '1') return;
+
+    const timer = window.setTimeout(() => {
+      setShowDesktopGuide(true);
+    }, 600);
+
+    return () => window.clearTimeout(timer);
+  }, [isDisplayOnlyPage]);
+
+  const closeDesktopGuide = useCallback(() => {
+    setShowDesktopGuide(false);
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.setItem(SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY, '1');
+    }
+  }, []);
   const handleProjectChange = useCallback(
     (nextProjectId: string) => {
       if (nextProjectId === projectId) {
@@ -71,6 +99,86 @@ export default function WritingPage() {
     },
     [initialType, setSearchParams],
   );
+
+  if (isDisplayOnlyPage) {
+    return (
+      <div className="page-shell writing-shell min-h-screen">
+        {showDesktopGuide ? (
+          <div className="desktop-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="script-guide-title">
+            <div className="desktop-guide-modal">
+              <button
+                type="button"
+                className="desktop-guide-close"
+                onClick={closeDesktopGuide}
+                aria-label="关闭客户端下载提示"
+              >
+                ×
+              </button>
+              <div className="desktop-guide-kicker">{showcaseTitle}</div>
+              <h2 id="script-guide-title">完整体验请下载客户端</h2>
+              <p>
+                当前页面用于展示剧本方向、结构信息和镜头表达入口，不是完整在线创作工具。需要完整体验、完整创作和完整工作流，请下载客户端。
+              </p>
+              <div className="desktop-guide-actions">
+                <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
+                  下载客户端
+                </a>
+                <Link to={workspaceEntryHref} className="btn btn-secondary" onClick={closeDesktopGuide}>
+                  继续进入网页版创作
+                </Link>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="container py-10 sm:py-14 space-y-8">
+          <section className="glass-card p-6 sm:p-8">
+            <div className="section-kicker">{showcaseTitle}</div>
+            <h1 className="page-title mt-4">这里只是展示页，完整体验请下载客户端</h1>
+            <p className="page-lead mt-4">
+              {showcaseTitle} 负责展示剧本方向、场景结构、对白节奏和镜头化表达，不承担完整在线创作职责。
+              需要真正继续项目，请使用桌面端客户端。
+            </p>
+            <div className="mt-5 rounded-[24px] border border-[var(--fh-accent)]/20 bg-[var(--fh-accent)]/10 px-4 py-4 text-sm leading-7 text-[var(--fh-text-secondary)]">
+              桌面端才是真实产品，网页端仅为展示与入口分发。这里可以看展示、看资料、看方向，但不能代表完整能力。
+            </div>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a href={desktopDownloadUrl} className="btn btn-primary">
+                下载客户端
+              </a>
+              <Link to={workspaceEntryHref} className="btn btn-secondary">
+                继续进入网页版创作
+              </Link>
+              <Link to="/showcase" className="btn btn-secondary">
+                查看作品展示
+              </Link>
+            </div>
+          </section>
+
+          <section className="grid gap-4 md:grid-cols-3">
+            <article className="glass-card p-5">
+              <div className="text-sm font-semibold text-[var(--fh-text)]">页面定位</div>
+              <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                这里展示剧本方向、结构感和镜头语言，不作为真实在线工作台。
+              </p>
+            </article>
+            <article className="glass-card p-5">
+              <div className="text-sm font-semibold text-[var(--fh-text)]">适合做什么</div>
+              <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                浏览展示、理解产品方向、查看剧本相关入口和品牌能力。
+              </p>
+            </article>
+            <article className="glass-card p-5">
+              <div className="text-sm font-semibold text-[var(--fh-text)]">真正继续项目</div>
+              <p className="mt-3 text-sm leading-7 text-[var(--fh-text-secondary)]">
+                推荐直接下载客户端；如果你必须继续原来的网页版剧本创作，也可以从当前页继续进入。
+              </p>
+            </article>
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Suspense fallback={<WritingWorkbenchFallback />}>
