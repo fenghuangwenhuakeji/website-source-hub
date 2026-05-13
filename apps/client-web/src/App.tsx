@@ -11,6 +11,10 @@ const APP_MAIN_PATH = '/access/main';
 
 const MainPage = lazy(() => import('./pages/MainPage'));
 
+function isDesktopRuntime() {
+  return typeof window !== 'undefined' && Boolean(window.electronAPI);
+}
+
 function redirectToOfficial(path: string) {
   if (typeof window === 'undefined') {
     return;
@@ -37,6 +41,36 @@ function getOfficialAuthPath(search: string) {
   return '/login';
 }
 
+function shouldSendToOfficialProfile(pathname: string) {
+  return pathname === '/profile' || pathname.endsWith('/access/profile');
+}
+
+function shouldSendToOfficialRegister(pathname: string) {
+  return pathname === '/register' || pathname.endsWith('/access/register');
+}
+
+function resolveBrowserAccessFallback(pathname: string, search: string) {
+  if (shouldSendToOfficialPage(pathname, 'login')) {
+    return buildOfficialPath(getOfficialAuthPath(search), { from: APP_MAIN_PATH });
+  }
+
+  if (shouldSendToOfficialRegister(pathname)) {
+    return buildOfficialPath('/register', { from: APP_MAIN_PATH });
+  }
+
+  if (shouldSendToOfficialPage(pathname, 'recharge')) {
+    return buildOfficialPath('/recharge', { from: APP_MAIN_PATH });
+  }
+
+  if (shouldSendToOfficialProfile(pathname)) {
+    return buildOfficialPath('/profile', { from: APP_MAIN_PATH });
+  }
+
+  // The desktop launcher is app-only. Web traffic should return to the
+  // official site instead of rendering the Electron-facing workspace shell.
+  return buildOfficialPath('/download', { from: APP_MAIN_PATH });
+}
+
 function PageFallback({ label }: { label: string }) {
   return (
     <AccessLoading title={label} description="桌面模块正在接入，请稍候片刻。" compact />
@@ -57,6 +91,11 @@ function App() {
 
       const pathname = typeof window === 'undefined' ? '' : window.location.pathname;
       const search = typeof window === 'undefined' ? '' : window.location.search;
+
+      if (!isDesktopRuntime()) {
+        redirectToOfficial(resolveBrowserAccessFallback(pathname, search));
+        return;
+      }
 
       if (shouldSendToOfficialPage(pathname, 'login')) {
         redirectToOfficial(buildOfficialPath(getOfficialAuthPath(search), { from: APP_MAIN_PATH }));

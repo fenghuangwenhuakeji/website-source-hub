@@ -14,6 +14,7 @@ import type {
 
 const DESKTOP_REGISTRY_FILE = 'desktop-apps/registry.json';
 const DESKTOP_REGISTRY_LS_KEY = 'desktop-apps-registry';
+const INSTALLED_APPS_LOAD_TIMEOUT_MS = 1200;
 const manifestStorageKey = (appId: string) => `desktop-apps-manifest:${appId}`;
 const logDesktopApps = (...args: unknown[]) => {
   if (typeof window === 'undefined') return;
@@ -23,6 +24,23 @@ const logDesktopApps = (...args: unknown[]) => {
 const warnDesktopApps = (...args: unknown[]) => {
   if (typeof window === 'undefined') return;
   console.warn('[desktopApps]', ...args);
+};
+
+const withTimeout = async <T,>(promise: Promise<T>, timeoutMs: number, label: string): Promise<T> => {
+  let timeoutId: number | undefined;
+  const timeout = new Promise<never>((_resolve, reject) => {
+    timeoutId = window.setTimeout(() => {
+      reject(new Error(`${label} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+  });
+
+  try {
+    return await Promise.race([promise, timeout]);
+  } finally {
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
+  }
 };
 
 const ensureDesktopAppManagePermission = (): void => {
@@ -778,7 +796,18 @@ export async function getInstalledDesktopApps(): Promise<DesktopAppDefinition[]>
 }
 
 export async function loadDesktopApps(): Promise<DesktopAppDefinition[]> {
-  const installed = await getInstalledDesktopApps();
+  let installed: DesktopAppDefinition[] = [];
+
+  try {
+    installed = await withTimeout(
+      getInstalledDesktopApps(),
+      INSTALLED_APPS_LOAD_TIMEOUT_MS,
+      'installed desktop apps load',
+    );
+  } catch (error) {
+    warnDesktopApps('failed to load installed desktop apps; falling back to builtin apps', { error });
+  }
+
   const combined = [...BUILTIN_DESKTOP_APPS, ...installed].map(normalizeStaticBundleDefinition);
   logDesktopApps('loadDesktopApps', { builtin: BUILTIN_DESKTOP_APPS.length, installed: installed.length, total: combined.length });
   return combined;
