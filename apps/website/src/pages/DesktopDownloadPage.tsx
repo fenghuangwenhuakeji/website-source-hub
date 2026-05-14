@@ -1,10 +1,7 @@
 import { Link } from 'react-router-dom';
 import { resolveDesktopWebUrl } from '../utils/desktopAccess';
+import { resolveDesktopDownloadUrls } from '../utils/desktopDownloads';
 
-const WINDOWS_DOWNLOAD_URL = '/downloads/fenghuang/windows-latest.exe';
-const WINDOWS_PORTABLE_DOWNLOAD_URL = '/downloads/fenghuang/windows-portable-latest.exe';
-const MAC_DOWNLOAD_URL = '/downloads/fenghuang/mac-latest.dmg';
-const MAC_ZIP_DOWNLOAD_URL = '/downloads/fenghuang/mac-latest.zip';
 const APP_PROTOCOL_URL = 'fenghuang://open';
 
 function detectPlatform() {
@@ -28,7 +25,8 @@ function detectPlatform() {
 export default function DesktopDownloadPage() {
   const platform = detectPlatform();
   const webUrl = resolveDesktopWebUrl();
-  const primaryDownloadUrl = platform === 'mac' ? MAC_DOWNLOAD_URL : WINDOWS_DOWNLOAD_URL;
+  const downloadUrls = resolveDesktopDownloadUrls();
+  const primaryDownloadUrl = platform === 'mac' ? downloadUrls.macDmg : downloadUrls.windowsInstaller;
   const primaryDownloadLabel = platform === 'mac' ? '下载 macOS 版' : '下载 Windows 版';
   const primaryPlatformLabel = platform === 'mac' ? 'macOS 通用版' : 'Windows 安装版';
 
@@ -86,7 +84,7 @@ export default function DesktopDownloadPage() {
         </section>
 
         <section className="mt-6 grid gap-4 lg:grid-cols-3">
-          <a href={WINDOWS_DOWNLOAD_URL} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
+          <a href={downloadUrls.windowsInstaller} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-base font-semibold text-[var(--fh-text)]">Windows 安装版</div>
@@ -95,7 +93,7 @@ export default function DesktopDownloadPage() {
               <span className="text-sm text-[var(--fh-text-muted)] transition group-hover:translate-x-1">下载</span>
             </div>
           </a>
-          <a href={MAC_DOWNLOAD_URL} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
+          <a href={downloadUrls.macDmg} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-base font-semibold text-[var(--fh-text)]">macOS 通用版</div>
@@ -104,7 +102,7 @@ export default function DesktopDownloadPage() {
               <span className="text-sm text-[var(--fh-text-muted)] transition group-hover:translate-x-1">下载</span>
             </div>
           </a>
-          <a href={WINDOWS_PORTABLE_DOWNLOAD_URL} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
+          <a href={downloadUrls.windowsPortable} className="glass-card group p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--fh-shadow-lg)]">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-base font-semibold text-[var(--fh-text)]">Windows 免安装版</div>
@@ -143,7 +141,7 @@ export default function DesktopDownloadPage() {
             <a href={webUrl} className="btn btn-secondary mt-5 w-full">
               打开网页展示页
             </a>
-            <a href={MAC_ZIP_DOWNLOAD_URL} className="mt-3 inline-flex text-sm text-[var(--fh-text-muted)] hover:text-[var(--fh-text)]">
+            <a href={downloadUrls.macZip} className="mt-3 inline-flex text-sm text-[var(--fh-text-muted)] hover:text-[var(--fh-text)]">
               macOS ZIP 备用下载
             </a>
           </div>
