@@ -6,10 +6,12 @@ The public download page supports CDN/object-storage distribution without changi
 
 If no environment variables are configured, the website still uses the current origin-hosted files:
 
-- `/downloads/fenghuang/fenghuang-windows-setup-1.0.3.exe`
-- `/downloads/fenghuang/fenghuang-windows-portable-1.0.3.exe`
-- `/downloads/fenghuang/fenghuang-mac-1.0.3-universal.dmg`
-- `/downloads/fenghuang/fenghuang-mac-1.0.3-universal.zip`
+- `/downloads/fenghuang/fenghuang-windows-setup-1.0.2.exe`
+- `/downloads/fenghuang/fenghuang-windows-portable-1.0.2.exe`
+- `/downloads/fenghuang/fenghuang-mac-1.0.2-universal.dmg`
+- `/downloads/fenghuang/fenghuang-mac-1.0.2-universal.zip`
+
+The current published installer artifacts are `1.0.2`. Do not upload or advertise them as `1.0.3`; rebuild desktop installers from `apps/client-desktop` first.
 
 Keep the legacy `latest` URLs as redirects or aliases for compatibility:
 
@@ -40,10 +42,10 @@ VITE_DESKTOP_DOWNLOAD_BASE_URL=https://cdn.example.com/fenghuang
 
 That maps to:
 
-- `https://cdn.example.com/fenghuang/fenghuang-windows-setup-1.0.3.exe`
-- `https://cdn.example.com/fenghuang/fenghuang-windows-portable-1.0.3.exe`
-- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.3-universal.dmg`
-- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.3-universal.zip`
+- `https://cdn.example.com/fenghuang/fenghuang-windows-setup-1.0.2.exe`
+- `https://cdn.example.com/fenghuang/fenghuang-windows-portable-1.0.2.exe`
+- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.2-universal.dmg`
+- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.2-universal.zip`
 
 ## Origin cache headers
 
@@ -75,7 +77,7 @@ Avoid long immutable caching for `windows-latest.exe` style names unless the CDN
 Use a range request to test installer throughput without downloading the full file:
 
 ```bash
-curl -L -r 0-10485759 -o /dev/null -w "status=%{http_code} total=%{time_total} speed=%{speed_download}\n" https://fhwhkj.top/downloads/fenghuang/fenghuang-windows-setup-1.0.3.exe
+curl -L -r 0-10485759 -o /dev/null -w "status=%{http_code} total=%{time_total} speed=%{speed_download}\n" https://fhwhkj.top/downloads/fenghuang/fenghuang-windows-setup-1.0.2.exe
 ```
 
 Use headers to confirm CDN/cache behavior:
