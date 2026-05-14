@@ -69,4 +69,8 @@ Read [`SETUP.md`](./SETUP.md) for the Win-Workstation onboarding and build flow.
 
 Read [`docs/source-coverage.md`](./docs/source-coverage.md) for the source-of-truth mapping from `D:\网站部署` and `D:\HTML`.
 
+Read [`docs/unified-auth-spec.md`](./docs/unified-auth-spec.md) for the canonical 凤煌 unified login contract used across website, desktop, and future software integrations.
+
+Read [`docs/unified-auth-integration-examples.md`](./docs/unified-auth-integration-examples.md) for concrete client integration request/response examples.
+
 `Nike232/super-wuqiong-app` remains the launcher/archive repo for the older super-wuqiong namespace. It is not allowed to own the required 凤煌 desktop app surface for this repository.

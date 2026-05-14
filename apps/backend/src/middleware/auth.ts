@@ -29,10 +29,11 @@ function getJwtSecret(): string {
   return config.jwt.secret || process.env.JWT_SECRET || 'default_secret';
 }
 
-function buildUnauthorized(res: Response, message: string): void {
+function buildUnauthorized(res: Response, message: string, code = 'AUTH_UNAUTHORIZED'): void {
   res.status(401).json({
     success: false,
     message,
+    code,
   });
 }
 
@@ -45,7 +46,7 @@ export const authMiddleware = async (
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      buildUnauthorized(res, 'Unauthorized. Please log in first.');
+      buildUnauthorized(res, 'Unauthorized. Please log in first.', 'AUTH_LOGIN_REQUIRED');
       return;
     }
 
@@ -62,7 +63,7 @@ export const authMiddleware = async (
       );
 
       if (users.length === 0) {
-        buildUnauthorized(res, 'User does not exist or has been disabled.');
+        buildUnauthorized(res, 'User does not exist or has been disabled.', 'AUTH_USER_DISABLED');
         return;
       }
 
@@ -70,11 +71,11 @@ export const authMiddleware = async (
       next();
     } catch (jwtError: any) {
       if (jwtError?.name === 'TokenExpiredError') {
-        buildUnauthorized(res, 'Session expired. Please log in again.');
+        buildUnauthorized(res, 'Session expired. Please log in again.', 'AUTH_TOKEN_EXPIRED');
         return;
       }
 
-      buildUnauthorized(res, 'Invalid login token.');
+      buildUnauthorized(res, 'Invalid login token.', 'AUTH_TOKEN_INVALID');
     }
   } catch (error) {
     next(error);
@@ -128,7 +129,7 @@ export const adminAuth = (
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      buildUnauthorized(res, 'Unauthorized. Please log in first.');
+      buildUnauthorized(res, 'Unauthorized. Please log in first.', 'AUTH_LOGIN_REQUIRED');
       return;
     }
 
@@ -150,7 +151,7 @@ export const adminAuth = (
       req.admin = decoded;
       next();
     } catch {
-      buildUnauthorized(res, 'Invalid admin token.');
+      buildUnauthorized(res, 'Invalid admin token.', 'AUTH_ADMIN_TOKEN_INVALID');
     }
   } catch (error) {
     next(error);

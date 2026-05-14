@@ -53,6 +53,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
+          code: 'AUTH_INVALID_REQUEST',
           message: 'Invalid request parameters.',
           errors: errors.array(),
         });
@@ -65,6 +66,7 @@ router.post(
       if (!sendStatus.allowed) {
         return res.status(429).json({
           success: false,
+          code: 'AUTH_PHONE_CODE_RATE_LIMITED',
           message: `Sending too frequently. Try again in ${sendStatus.retryAfterSeconds} second(s).`,
         });
       }
@@ -74,6 +76,7 @@ router.post(
       if (!result.success) {
         return res.status(500).json({
           success: false,
+          code: 'AUTH_PHONE_CODE_SEND_FAILED',
           message: result.message,
         });
       }
@@ -82,6 +85,7 @@ router.post(
 
       return res.json({
         success: true,
+        code: 'AUTH_PHONE_CODE_SENT',
         message: 'Verification code sent successfully.',
         ...(process.env.NODE_ENV === 'development' ? { code } : {}),
       });
@@ -89,6 +93,7 @@ router.post(
       console.error('Failed to send SMS verification code:', error);
       return res.status(500).json({
         success: false,
+        code: 'AUTH_PHONE_CODE_SEND_FAILED',
         message: 'Failed to send verification code.',
       });
     }
@@ -116,6 +121,7 @@ router.post(
       if (!errors.isEmpty()) {
         return res.status(400).json({
           success: false,
+          code: 'AUTH_INVALID_REQUEST',
           message: 'Invalid request parameters.',
           errors: errors.array(),
         });
@@ -131,6 +137,7 @@ router.post(
       if (!verification.success) {
         return res.status(400).json({
           success: false,
+          code: 'AUTH_PHONE_CODE_INVALID',
           message: verification.message,
         });
       }
@@ -185,6 +192,7 @@ router.post(
 
       return res.json({
         success: true,
+        code: isNewUser ? 'AUTH_REGISTERED_VIA_PHONE' : 'AUTH_LOGIN_SUCCESS',
         message: isNewUser ? 'Registration completed.' : 'Login successful.',
         data: {
           token,
@@ -204,6 +212,7 @@ router.post(
       console.error('Phone login failed:', error);
       return res.status(500).json({
         success: false,
+        code: 'AUTH_PHONE_LOGIN_FAILED',
         message: 'Phone login failed.',
       });
     }

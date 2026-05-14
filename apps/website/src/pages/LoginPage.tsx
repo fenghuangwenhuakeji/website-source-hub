@@ -3,6 +3,14 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import {
+  AUTH_ENDPOINTS,
+  buildPasswordLoginPayload,
+  buildPhoneCodeLoginPayload,
+  buildSendPhoneCodePayload,
+  extractAuthSession,
+  normalizeAuthError,
+} from '@fhwh/shared/utils/auth';
 import { apiClient } from '../utils/api';
 import { useAuthStore } from '../store/auth';
 import { buildPathWithFrom, getSafeReturnPath, openReturnPath } from '../utils/safeReturnPath';
@@ -64,20 +72,50 @@ export default function LoginPage() {
     openReturnPath(returnPath, navigate);
   };
 
+  const sendPhoneCode = async (phoneNumber: string, purpose: 'login' | 'register') => {
+    try {
+      return await apiClient.post(
+        AUTH_ENDPOINTS.sendPhoneCode,
+        buildSendPhoneCodePayload({ phoneNumber, purpose }),
+      );
+    } catch (error) {
+      return await apiClient.post('/api/sms/send-code', {
+        phoneNumber,
+        purpose,
+      });
+    }
+  };
+
+  const loginWithPhoneCode = async (phoneNumber: string, code: string) => {
+    try {
+      return await apiClient.post(
+        AUTH_ENDPOINTS.phoneLogin,
+        buildPhoneCodeLoginPayload({ phoneNumber, code }),
+      );
+    } catch (error) {
+      return await apiClient.post('/api/sms/login', {
+        phoneNumber,
+        code,
+      });
+    }
+  };
+
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await apiClient.post('/api/auth/login', data);
-      const payload = response.data?.data ?? response.data;
-      const { user, token, refreshToken } = payload;
-      if (!user || !token) {
+      const response = await apiClient.post('/api/auth/login', buildPasswordLoginPayload({
+        account: data.username,
+        password: data.password,
+      }));
+      const session = extractAuthSession(response.data);
+      if (!session) {
         throw new Error('Invalid login response');
       }
-      finishAuth(user, token, refreshToken);
+      finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
     } catch (err: any) {
-      setError(err.response?.data?.error || '登录失败，请检查账号和密码');
+      setError(normalizeAuthError(err, '登录失败，请检查账号和密码'));
     } finally {
       setIsLoading(false);
     }
@@ -94,15 +132,12 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await apiClient.post('/api/sms/send-code', {
-        phoneNumber,
-        purpose: 'login',
-      });
+      const response = await sendPhoneCode(phoneNumber, 'login');
       const payload = response.data?.data ?? response.data;
       setSmsPhone(phoneNumber);
       setError(payload?.code ? `验证码已发送，开发验证码：${payload.code}` : '验证码已发送，请查收短信。');
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data?.error || '验证码发送失败');
+      setError(normalizeAuthError(err, '验证码发送失败'));
     } finally {
       setSmsSending(false);
     }
@@ -124,18 +159,14 @@ export default function LoginPage() {
     setError('');
 
     try {
-      const response = await apiClient.post('/api/sms/login', {
-        phoneNumber,
-        code: smsCode.trim(),
-      });
-      const payload = response.data?.data ?? response.data;
-      const { user, token, refreshToken } = payload;
-      if (!user || !token) {
+      const response = await loginWithPhoneCode(phoneNumber, smsCode.trim());
+      const session = extractAuthSession(response.data);
+      if (!session) {
         throw new Error('Invalid sms login response');
       }
-      finishAuth(user, token, refreshToken);
+      finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data?.error || '短信登录失败');
+      setError(normalizeAuthError(err, '短信登录失败'));
     } finally {
       setSmsLoading(false);
     }
@@ -204,7 +235,7 @@ export default function LoginPage() {
       }
     } catch (err: any) {
       loginWindow?.close();
-      setError(err.response?.data?.message || err.response?.data?.error || err.message || '打开微信登录失败');
+      setError(normalizeAuthError(err, '打开微信登录失败'));
     } finally {
       setWechatLoading(false);
     }
