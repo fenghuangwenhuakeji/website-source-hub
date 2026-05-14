@@ -6,6 +6,13 @@ The public download page supports CDN/object-storage distribution without changi
 
 If no environment variables are configured, the website still uses the current origin-hosted files:
 
+- `/downloads/fenghuang/fenghuang-windows-setup-1.0.3.exe`
+- `/downloads/fenghuang/fenghuang-windows-portable-1.0.3.exe`
+- `/downloads/fenghuang/fenghuang-mac-1.0.3-universal.dmg`
+- `/downloads/fenghuang/fenghuang-mac-1.0.3-universal.zip`
+
+Keep the legacy `latest` URLs as redirects or aliases for compatibility:
+
 - `/downloads/fenghuang/windows-latest.exe`
 - `/downloads/fenghuang/windows-portable-latest.exe`
 - `/downloads/fenghuang/mac-latest.dmg`
@@ -15,14 +22,14 @@ If no environment variables are configured, the website still uses the current o
 
 1. Upload installers to OSS/object storage.
 2. Put CDN in front of the bucket.
-3. Use versioned filenames when possible, for example `fenghuang-setup-1.2.0.exe`.
+3. Use versioned filenames, for example `fenghuang-windows-setup-1.2.0.exe`.
 4. Configure the website build with explicit file URLs:
 
 ```bash
-VITE_DESKTOP_DOWNLOAD_WINDOWS_URL=https://cdn.example.com/fenghuang/fenghuang-setup-1.2.0.exe
-VITE_DESKTOP_DOWNLOAD_WINDOWS_PORTABLE_URL=https://cdn.example.com/fenghuang/fenghuang-portable-1.2.0.exe
-VITE_DESKTOP_DOWNLOAD_MAC_DMG_URL=https://cdn.example.com/fenghuang/fenghuang-1.2.0-universal.dmg
-VITE_DESKTOP_DOWNLOAD_MAC_ZIP_URL=https://cdn.example.com/fenghuang/fenghuang-1.2.0-universal.zip
+VITE_DESKTOP_DOWNLOAD_WINDOWS_URL=https://cdn.example.com/fenghuang/fenghuang-windows-setup-1.2.0.exe
+VITE_DESKTOP_DOWNLOAD_WINDOWS_PORTABLE_URL=https://cdn.example.com/fenghuang/fenghuang-windows-portable-1.2.0.exe
+VITE_DESKTOP_DOWNLOAD_MAC_DMG_URL=https://cdn.example.com/fenghuang/fenghuang-mac-1.2.0-universal.dmg
+VITE_DESKTOP_DOWNLOAD_MAC_ZIP_URL=https://cdn.example.com/fenghuang/fenghuang-mac-1.2.0-universal.zip
 ```
 
 For temporary compatibility with the existing latest filenames, configure only the shared directory:
@@ -33,10 +40,10 @@ VITE_DESKTOP_DOWNLOAD_BASE_URL=https://cdn.example.com/fenghuang
 
 That maps to:
 
-- `https://cdn.example.com/fenghuang/windows-latest.exe`
-- `https://cdn.example.com/fenghuang/windows-portable-latest.exe`
-- `https://cdn.example.com/fenghuang/mac-latest.dmg`
-- `https://cdn.example.com/fenghuang/mac-latest.zip`
+- `https://cdn.example.com/fenghuang/fenghuang-windows-setup-1.0.3.exe`
+- `https://cdn.example.com/fenghuang/fenghuang-windows-portable-1.0.3.exe`
+- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.3-universal.dmg`
+- `https://cdn.example.com/fenghuang/fenghuang-mac-1.0.3-universal.zip`
 
 ## Origin cache headers
 
@@ -68,13 +75,13 @@ Avoid long immutable caching for `windows-latest.exe` style names unless the CDN
 Use a range request to test installer throughput without downloading the full file:
 
 ```bash
-curl -L -r 0-10485759 -o /dev/null -w "status=%{http_code} total=%{time_total} speed=%{speed_download}\n" https://fhwhkj.top/downloads/fenghuang/windows-latest.exe
+curl -L -r 0-10485759 -o /dev/null -w "status=%{http_code} total=%{time_total} speed=%{speed_download}\n" https://fhwhkj.top/downloads/fenghuang/fenghuang-windows-setup-1.0.3.exe
 ```
 
 Use headers to confirm CDN/cache behavior:
 
 ```bash
-curl -I https://cdn.example.com/fenghuang/fenghuang-setup-1.2.0.exe
+curl -I https://cdn.example.com/fenghuang/fenghuang-windows-setup-1.2.0.exe
 ```
 
 Look for provider-specific cache headers such as `X-Cache`, `Via`, `Age`, or equivalent CDN hit/miss headers.

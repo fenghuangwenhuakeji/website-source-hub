@@ -1,10 +1,12 @@
 type DesktopDownloadKey = 'windowsInstaller' | 'windowsPortable' | 'macDmg' | 'macZip';
 
+const DESKTOP_APP_VERSION = '1.0.3';
+
 const DEFAULT_DOWNLOAD_FILENAMES: Record<DesktopDownloadKey, string> = {
-  windowsInstaller: 'windows-latest.exe',
-  windowsPortable: 'windows-portable-latest.exe',
-  macDmg: 'mac-latest.dmg',
-  macZip: 'mac-latest.zip',
+  windowsInstaller: `fenghuang-windows-setup-${DESKTOP_APP_VERSION}.exe`,
+  windowsPortable: `fenghuang-windows-portable-${DESKTOP_APP_VERSION}.exe`,
+  macDmg: `fenghuang-mac-${DESKTOP_APP_VERSION}-universal.dmg`,
+  macZip: `fenghuang-mac-${DESKTOP_APP_VERSION}-universal.zip`,
 };
 
 const DEFAULT_LOCAL_DOWNLOADS: Record<DesktopDownloadKey, string> = {
