@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { featuredGenres, featuredNovels } from '../data/library';
@@ -25,7 +25,6 @@ interface NovelCard {
 
 const NOVEL_EDITOR_URL = '/writing?type=novel&workspace=novel';
 const desktopDownloadUrl = resolveDesktopDownloadUrl();
-const NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY = 'fh_novel_showcase_guide_dismissed';
 type NovelLengthTier = 'short' | 'medium' | 'long';
 
 const NOVEL_TIER_META: Record<
@@ -185,25 +184,6 @@ const novelCardItem = {
 
 export default function NovelsPage() {
   const [activeGenre, setActiveGenre] = useState('全部');
-  const [showDesktopGuide, setShowDesktopGuide] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.sessionStorage.getItem(NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY) === '1') return;
-
-    const timer = window.setTimeout(() => {
-      setShowDesktopGuide(true);
-    }, 600);
-
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const closeDesktopGuide = () => {
-    setShowDesktopGuide(false);
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(NOVEL_SHOWCASE_GUIDE_DISMISSED_KEY, '1');
-    }
-  };
 
   const cards = useMemo<NovelCard[]>(() => {
     const localDrafts = getWritingProjects()
@@ -298,33 +278,6 @@ export default function NovelsPage() {
 
   return (
     <div className="page-shell library-shell">
-      {showDesktopGuide ? (
-        <div className="desktop-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="novel-guide-title">
-          <div className="desktop-guide-modal">
-            <button
-              type="button"
-              className="desktop-guide-close"
-              onClick={closeDesktopGuide}
-              aria-label="关闭客户端下载提示"
-            >
-              ×
-            </button>
-            <div className="desktop-guide-kicker">小说展示页</div>
-            <h2 id="novel-guide-title">完整体验请下载客户端</h2>
-            <p>
-              当前页面用于展示小说题材、样稿、设定和作品资料，不是完整在线创作工具。需要完整体验、完整创作和完整工作流，请下载客户端。
-            </p>
-            <div className="desktop-guide-actions">
-              <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
-                下载客户端
-              </a>
-              <button type="button" className="btn btn-secondary" onClick={closeDesktopGuide}>
-                继续浏览展示
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
       {/* Atmospheric background */}
       <div className="library-bg-aura" />
       <div className="library-bg-grid" />

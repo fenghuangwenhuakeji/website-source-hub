@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
@@ -8,7 +8,6 @@ import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 import { useParallax } from '../hooks/useParallax';
 
 const desktopDownloadUrl = resolveDesktopDownloadUrl();
-const DESKTOP_GUIDE_DISMISSED_KEY = 'fh_desktop_download_guide_dismissed';
 
 const featuredShowcase = showcaseApps.slice(0, 3);
 
@@ -181,7 +180,6 @@ function useScrollReveal() {
 
 export default function HomePage() {
   const { isAuthenticated, user } = useAuthStore();
-  const [showDesktopGuide, setShowDesktopGuide] = useState(false);
   const revealRef = useScrollReveal();
   const parallaxSlow = useParallax(0.15);
   const parallaxMedium = useParallax(0.3);
@@ -199,24 +197,6 @@ export default function HomePage() {
     el.addEventListener('mousemove', handleMove);
     return () => el.removeEventListener('mousemove', handleMove);
   }, []);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.sessionStorage.getItem(DESKTOP_GUIDE_DISMISSED_KEY) === '1') return;
-
-    const timer = window.setTimeout(() => {
-      setShowDesktopGuide(true);
-    }, 900);
-
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const closeDesktopGuide = () => {
-    setShowDesktopGuide(false);
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(DESKTOP_GUIDE_DISMISSED_KEY, '1');
-    }
-  };
 
   const [featuredHero, ...featuredRest] = featuredShowcase;
   const heroSubtitle = isAuthenticated
@@ -266,33 +246,6 @@ export default function HomePage() {
 
   return (
     <div ref={revealRef} className="home-shell">
-      {showDesktopGuide ? (
-        <div className="desktop-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="desktop-guide-title">
-          <div className="desktop-guide-modal">
-            <button
-              type="button"
-              className="desktop-guide-close"
-              onClick={closeDesktopGuide}
-              aria-label="关闭桌面端下载提示"
-            >
-              ×
-            </button>
-            <div className="desktop-guide-kicker">桌面端客户端</div>
-            <h2 id="desktop-guide-title">下载桌面端，进入完整工作台</h2>
-            <p>
-              桌面端才是真实产品，网页端仅为展示和入口分发。需要完整体验，请下载客户端；小说展示、剧本入口都不是安装包。
-            </p>
-            <div className="desktop-guide-actions">
-              <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
-                立即下载客户端
-              </a>
-              <button type="button" className="btn btn-secondary" onClick={closeDesktopGuide}>
-                先看看官网
-              </button>
-            </div>
-          </div>
-        </div>
-      ) : null}
       <section className="hero" id="home" ref={heroRef}>
         <div
           className="hero-background"

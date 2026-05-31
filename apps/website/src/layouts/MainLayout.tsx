@@ -6,7 +6,6 @@ import { Footer } from '../components/Footer';
 import {
   applyThemeMode,
   resolveThemeMode,
-  setPreferredThemeMode,
   subscribeThemeMode,
   type ThemeMode,
 } from '../utils/themePreference';
@@ -49,13 +48,9 @@ export function MainLayout() {
 
   useEffect(() => subscribeThemeMode(setThemeMode), []);
 
-  const toggleThemeMode = () => {
-    setPreferredThemeMode(themeMode === 'dark' ? 'light' : 'dark');
-  };
-
   return (
     <div className="site-shell flex min-h-screen flex-col">
-      <Header themeMode={themeMode} onToggleThemeMode={toggleThemeMode} />
+      <Header />
       <main className="site-main flex-1">
         <AnimatePresence mode="wait">
           <motion.div

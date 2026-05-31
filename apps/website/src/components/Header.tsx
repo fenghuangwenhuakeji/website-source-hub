@@ -5,8 +5,8 @@ import type { ThemeMode } from '../utils/themePreference';
 import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 type HeaderProps = {
-  themeMode: ThemeMode;
-  onToggleThemeMode: () => void;
+  themeMode?: ThemeMode;
+  onToggleThemeMode?: () => void;
 };
 
 type NavItem = {
@@ -19,7 +19,7 @@ type NavItem = {
 
 const HEADER_OFFSET = 96;
 
-export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
+export function Header(_props: HeaderProps) {
   const { isAuthenticated, user, logout } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
@@ -32,6 +32,12 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
   const closeMenu = () => setMenuOpen(false);
 
   const navItems: NavItem[] = [
+    {
+      label: '中短篇小说',
+      to: '/novella',
+      title: '查看中短篇小说',
+      active: location.pathname === '/novella',
+    },
     {
       label: '小说展示',
       to: '/novels',
@@ -155,17 +161,6 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
                   <li key={item.label}>{renderNavItem(item)}</li>
                 ))}
                 <li className="mobile-only nav-mobile-panel">
-                  <div className="nav-mobile-label">主题</div>
-                  <button
-                    type="button"
-                    className="theme-toggle-button nav-ghost-button"
-                    onClick={onToggleThemeMode}
-                    aria-label="切换主题模式"
-                  >
-                    {themeMode === 'dark' ? '切换浅色' : '切换深色'}
-                  </button>
-                </li>
-                <li className="mobile-only nav-mobile-panel">
                   <div className="nav-mobile-label">真实产品</div>
                   <a href={desktopDownloadHref} className="btn btn-primary nav-cta" onClick={closeMenu}>
                     下载客户端
@@ -205,14 +200,6 @@ export function Header({ themeMode, onToggleThemeMode }: HeaderProps) {
             </nav>
 
             <div className="nav-right nav-actions">
-              <button
-                type="button"
-                className="theme-toggle-button nav-ghost-button"
-                onClick={onToggleThemeMode}
-                aria-label="切换主题模式"
-              >
-                {themeMode === 'dark' ? '切换浅色' : '切换深色'}
-              </button>
               <a href={desktopDownloadHref} className="btn btn-secondary nav-ghost" title="下载客户端">
                 下载客户端
               </a>

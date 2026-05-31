@@ -1,4 +1,4 @@
-import { Suspense, lazy, useCallback, useEffect, useState } from 'react';
+import { Suspense, lazy, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useSearchParams } from 'react-router-dom';
 import { normalizeProjectType } from '../utils/writingMetadata';
@@ -7,7 +7,6 @@ import { resolveDesktopDownloadUrl } from '../utils/desktopAccess';
 
 const LazyWritingWorkbench = lazy(() => import('../components/writing/WritingWorkbench'));
 const desktopDownloadUrl = resolveDesktopDownloadUrl();
-const SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY = 'fh_script_showcase_guide_dismissed';
 
 function WritingWorkbenchFallback() {
   return (
@@ -31,7 +30,6 @@ function WritingWorkbenchFallback() {
 
 export default function WritingPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [showDesktopGuide, setShowDesktopGuide] = useState(false);
   const projectId = searchParams.get('project') ?? '';
   const rawType = searchParams.get('type');
   const rawWorkspace = searchParams.get('workspace');
@@ -45,23 +43,6 @@ export default function WritingPage() {
     initialType === 'storyboard' ? '分镜展示' : '剧本展示';
   const workspaceEntryHref = `/writing?type=${initialType ?? 'script'}&mode=workspace`;
 
-  useEffect(() => {
-    if (!isDisplayOnlyPage || typeof window === 'undefined') return;
-    if (window.sessionStorage.getItem(SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY) === '1') return;
-
-    const timer = window.setTimeout(() => {
-      setShowDesktopGuide(true);
-    }, 600);
-
-    return () => window.clearTimeout(timer);
-  }, [isDisplayOnlyPage]);
-
-  const closeDesktopGuide = useCallback(() => {
-    setShowDesktopGuide(false);
-    if (typeof window !== 'undefined') {
-      window.sessionStorage.setItem(SCRIPT_SHOWCASE_GUIDE_DISMISSED_KEY, '1');
-    }
-  }, []);
   const handleProjectChange = useCallback(
     (nextProjectId: string) => {
       if (nextProjectId === projectId) {
@@ -103,34 +84,6 @@ export default function WritingPage() {
   if (isDisplayOnlyPage) {
     return (
       <div className="page-shell writing-shell min-h-screen">
-        {showDesktopGuide ? (
-          <div className="desktop-guide-overlay" role="dialog" aria-modal="true" aria-labelledby="script-guide-title">
-            <div className="desktop-guide-modal">
-              <button
-                type="button"
-                className="desktop-guide-close"
-                onClick={closeDesktopGuide}
-                aria-label="关闭客户端下载提示"
-              >
-                ×
-              </button>
-              <div className="desktop-guide-kicker">{showcaseTitle}</div>
-              <h2 id="script-guide-title">完整体验请下载客户端</h2>
-              <p>
-                当前页面用于展示剧本方向、结构信息和镜头表达入口，不是完整在线创作工具。需要完整体验、完整创作和完整工作流，请下载客户端。
-              </p>
-              <div className="desktop-guide-actions">
-                <a href={desktopDownloadUrl} className="btn btn-primary" onClick={closeDesktopGuide}>
-                  下载客户端
-                </a>
-                <Link to={workspaceEntryHref} className="btn btn-secondary" onClick={closeDesktopGuide}>
-                  继续进入网页版创作
-                </Link>
-              </div>
-            </div>
-          </div>
-        ) : null}
-
         <div className="container py-10 sm:py-14 space-y-8">
           <section className="glass-card p-6 sm:p-8">
             <div className="section-kicker">{showcaseTitle}</div>
