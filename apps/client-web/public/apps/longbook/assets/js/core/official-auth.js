@@ -6,6 +6,7 @@ const OfficialAuth = {
     SITE_BASE_URL: (window.OFFICIAL_SITE_BASE_URL || 'https://fhwhkj.top').replace(/\/$/, ''),
     API_BASE_URL: (window.OFFICIAL_API_BASE_URL || 'https://fhwhkj.top/api').replace(/\/$/, ''),
     PRODUCT_ID: window.OFFICIAL_PRODUCT_ID || 'fenghuang',
+    CLIENT_VERSION: window.OFFICIAL_CLIENT_VERSION || '1.0.3',
     TOKEN_KEYS: ['fhwh_token', 'token'],
     REFRESH_TOKEN_KEYS: ['fhwh_refresh_token', 'refreshToken'],
     USER_KEYS: ['fhwh_user', 'user'],
@@ -82,6 +83,15 @@ const OfficialAuth = {
         return url.toString();
     },
 
+    _headers(extra = {}) {
+        return {
+            'Content-Type': 'application/json',
+            'X-Client-Type': 'web',
+            'X-App-Version': this.CLIENT_VERSION,
+            ...extra
+        };
+    },
+
     openLogin() {
         const url = this.buildSiteUrl('/login', { from: this._currentReturnPath() });
         window.open(url, '_blank', 'noopener');
@@ -124,7 +134,7 @@ const OfficialAuth = {
         try {
             const response = await fetch(`${this.API_BASE_URL}/auth/refresh`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'X-Client-Type': 'web' },
+                headers: this._headers(),
                 body: JSON.stringify({ refreshToken })
             });
             const payload = await response.json().catch(() => null);
@@ -147,11 +157,7 @@ const OfficialAuth = {
 
     async request(path, options = {}, retry = true) {
         let token = this.readToken() || await this.refreshAccessToken();
-        const headers = {
-            'Content-Type': 'application/json',
-            'X-Client-Type': 'web',
-            ...(options.headers || {})
-        };
+        const headers = this._headers(options.headers || {});
         if (token) headers.Authorization = `Bearer ${token}`;
 
         try {
