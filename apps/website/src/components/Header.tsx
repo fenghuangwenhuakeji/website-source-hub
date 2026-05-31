@@ -13,6 +13,7 @@ type NavItem = {
   label: string;
   title: string;
   to?: string;
+  href?: string;
   hash?: string;
   active?: boolean;
 };
@@ -34,9 +35,9 @@ export function Header(_props: HeaderProps) {
   const navItems: NavItem[] = [
     {
       label: '中短篇小说',
-      to: '/novella',
+      href: '/novella/',
       title: '查看中短篇小说',
-      active: location.pathname === '/novella',
+      active: location.pathname === '/novella' || location.pathname === '/novella/',
     },
     {
       label: '长篇下载',
@@ -98,6 +99,11 @@ export function Header(_props: HeaderProps) {
       return;
     }
 
+    if (item.href) {
+      window.location.assign(item.href);
+      return;
+    }
+
     if (!item.hash) {
       return;
     }
@@ -115,16 +121,29 @@ export function Header(_props: HeaderProps) {
     requestAnimationFrame(() => scrollToHash(item.hash!));
   };
 
-  const renderNavItem = (item: NavItem) => (
-    <button
-      type="button"
-      className={`nav-link brand-nav-link${item.active ? ' active' : ''}`}
-      onClick={() => handleNavAction(item)}
-      title={item.title}
-    >
-      <span className="brand-nav-link-text">{item.label}</span>
-    </button>
-  );
+  const renderNavItem = (item: NavItem) => {
+    const className = `nav-link brand-nav-link${item.active ? ' active' : ''}`;
+    const content = <span className="brand-nav-link-text">{item.label}</span>;
+
+    if (item.href) {
+      return (
+        <a className={className} href={item.href} onClick={closeMenu} title={item.title}>
+          {content}
+        </a>
+      );
+    }
+
+    return (
+      <button
+        type="button"
+        className={className}
+        onClick={() => handleNavAction(item)}
+        title={item.title}
+      >
+        {content}
+      </button>
+    );
+  };
 
   useEffect(() => {
     closeMenu();

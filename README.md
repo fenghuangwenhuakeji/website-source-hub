@@ -33,6 +33,24 @@ website-source-hub/
 - `packages/shared`: shared TypeScript utilities and types
 - `infra/cloud-bridge`: deployment bridge docs, scripts, and history
 
+## Official Account And Novella Bridge
+
+The official website is the account source for the current `fhwhkj.top` product line.
+
+- Official login lives in `apps/website` and `apps/backend`.
+- Password login is the default path. SMS login is retained for first login, recovery, binding, and risk control.
+- A user who logs in by SMS without an existing password receives `mustSetPassword: true` and is forced through `/profile?forcePassword=1` before returning to the requested product.
+- The top navigation item `中短篇小说` is a normal browser link to `/novella/`, not an internal React route.
+- Login and register pages honor safe `from` values. External app return paths currently include `/access/*` and `/novella/`, and are opened with `window.location.assign(...)`.
+- The medium-short novella app reads the official `fhwh_token` from local storage and calls `/novella-api/api/auth/session` to establish its own business session.
+- Product entitlements are separated. Official website points, duration, and licenses do not equal novella wallet, membership, orders, or daily quota.
+
+Current production website release after the unified login return fixes:
+
+```text
+/srv/prod-sites/fenghuang-platform/releases/novella-login-return-20260601-0145
+```
+
 The desktop acceptance target is not just the login/recharge shell. The packaged 凤煌 app must expose the current repo's app ecosystem, including:
 
 - `代码编辑器`

@@ -31,8 +31,12 @@ export function buildPathWithFrom(path: string, from: string) {
   return nextQuery ? `${pathname}?${nextQuery}` : pathname;
 }
 
+export function isExternalAppReturnPath(path: string) {
+  return path.startsWith('/access/') || path === '/novella' || path.startsWith('/novella/');
+}
+
 export function openReturnPath(path: string, navigate: (path: string) => void) {
-  if (path.startsWith('/access/')) {
+  if (isExternalAppReturnPath(path)) {
     window.location.assign(path);
     return;
   }

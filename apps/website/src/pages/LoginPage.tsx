@@ -61,6 +61,10 @@ export default function LoginPage() {
     }
 
     setAuth(user, token, refreshToken || '');
+    if (user?.mustSetPassword) {
+      navigate(buildPathWithFrom('/profile?forcePassword=1', returnPath), { replace: true });
+      return;
+    }
     openReturnPath(returnPath, navigate);
   };
 

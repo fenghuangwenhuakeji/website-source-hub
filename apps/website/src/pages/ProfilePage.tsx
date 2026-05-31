@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
 import { apiClient } from '../utils/api';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { getSafeReturnPath, openReturnPath } from '../utils/safeReturnPath';
 
 const profileSchema = z.object({
   nickname: z.string().min(2, '昵称至少 2 个字符').max(50, '昵称最多 50 个字符'),
@@ -66,7 +67,11 @@ function genderLabel(value?: string | null) {
 }
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { user, updateUser, setAuth } = useAuthStore();
+  const forcePassword = new URLSearchParams(location.search).get('forcePassword') === '1';
+  const returnPath = getSafeReturnPath(location.search);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [message, setMessage] = useState('');
@@ -76,6 +81,11 @@ export default function ProfilePage() {
   const [phoneBinding, setPhoneBinding] = useState(false);
   const [phoneCountdown, setPhoneCountdown] = useState(0);
   const [phoneFeedback, setPhoneFeedback] = useState<PhoneFeedback | null>(null);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [passwordFeedback, setPasswordFeedback] = useState<PhoneFeedback | null>(null);
   const avatarSrc = typeof user?.avatar === 'string' && user.avatar.trim() ? user.avatar.trim() : '';
   const avatarFallback = user?.nickname?.[0]?.toUpperCase() || user?.username?.[0]?.toUpperCase() || '凤';
   const accountLabel = user?.email || user?.phone || user?.username || '官网账号';
@@ -119,6 +129,15 @@ export default function ProfilePage() {
       website: user?.website || '',
     },
   });
+
+  useEffect(() => {
+    if (forcePassword) {
+      setPasswordFeedback({
+        type: 'info',
+        text: '为了降低短信登录成本并保护账号，请先设置登录密码。设置完成后会继续进入原页面。',
+      });
+    }
+  }, [forcePassword]);
 
   useEffect(() => {
     let cancelled = false;
@@ -276,6 +295,111 @@ export default function ProfilePage() {
     }
   };
 
+  const handleChangePassword = async () => {
+    setPasswordFeedback(null);
+    if (newPassword.length < 6) {
+      setPasswordFeedback({ type: 'error', text: '新密码至少 6 位。' });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordFeedback({ type: 'error', text: '两次输入的新密码不一致。' });
+      return;
+    }
+
+    setPasswordSaving(true);
+    try {
+      await apiClient.post('/api/auth/change-password', {
+        currentPassword: currentPassword || undefined,
+        newPassword,
+      });
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      setPasswordFeedback({ type: 'success', text: '密码已更新，下次可以直接使用手机号或账号密码登录。' });
+      updateUser({ hasPassword: true, mustSetPassword: false });
+      if (forcePassword) {
+        openReturnPath(returnPath, navigate);
+      }
+    } catch (err: any) {
+      setPasswordFeedback({
+        type: 'error',
+        text: err.response?.data?.message || err.response?.data?.error || '密码更新失败，请确认当前密码后重试。',
+      });
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+
+  const passwordPanel = (
+    <section className={`profile-bind-box${forcePassword ? ' is-unbound' : ''}`}>
+      <div className="profile-bind-heading">
+        <div>
+          <div className="section-kicker">登录方式</div>
+          <h2>{forcePassword ? '请先设置登录密码' : '设置登录密码'}</h2>
+          <p>
+            {forcePassword
+              ? '这是首次短信登录后的必要步骤。设置完成后，下次可以直接用手机号和密码登录。'
+              : '设置后可用手机号、用户名或邮箱加密码登录，日常登录不再依赖短信验证码。'}
+          </p>
+        </div>
+        <span className="profile-bind-status">{forcePassword ? '必须完成' : '推荐'}</span>
+      </div>
+      <div className="profile-bind-form">
+        <label className="profile-field">
+          <span>当前密码</span>
+          <input
+            type="password"
+            value={currentPassword}
+            onChange={(event) => {
+              setCurrentPassword(event.target.value);
+              setPasswordFeedback(null);
+            }}
+            placeholder="首次设置可留空"
+          />
+        </label>
+        <label className="profile-field">
+          <span>新密码</span>
+          <input
+            type="password"
+            value={newPassword}
+            onChange={(event) => {
+              setNewPassword(event.target.value);
+              setPasswordFeedback(null);
+            }}
+            placeholder="至少 6 位"
+          />
+        </label>
+        <label className="profile-field">
+          <span>确认新密码</span>
+          <input
+            type="password"
+            value={confirmPassword}
+            onChange={(event) => {
+              setConfirmPassword(event.target.value);
+              setPasswordFeedback(null);
+            }}
+            placeholder="再输入一次"
+          />
+        </label>
+        <div className="profile-bind-actions">
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={handleChangePassword}
+            disabled={passwordSaving}
+          >
+            {passwordSaving ? '保存中...' : '保存密码并继续'}
+          </button>
+        </div>
+      </div>
+      {passwordFeedback ? (
+        <div className={`profile-bind-feedback is-${passwordFeedback.type}`} role="status" aria-live="polite">
+          {passwordFeedback.text}
+        </div>
+      ) : null}
+    </section>
+  );
+
   const bindPhonePanel = (
     <section className={`profile-bind-box${binding?.phoneBound ? ' is-bound' : ' is-unbound'}`}>
       <div className="profile-bind-heading">
@@ -368,28 +492,35 @@ export default function ProfilePage() {
               <p className="profile-subtitle">{accountLabel}</p>
             </div>
           </div>
-          <div className="profile-hero-actions">
-            <Link to="/recharge" className="btn btn-primary btn-sm">
-              订阅与积分
-            </Link>
-            <Link to="/dashboard" className="btn btn-secondary btn-sm">
-              返回工作台
-            </Link>
-          </div>
+          {!forcePassword ? (
+            <div className="profile-hero-actions">
+              <Link to="/recharge" className="btn btn-primary btn-sm">
+                订阅与积分
+              </Link>
+              <Link to="/dashboard" className="btn btn-secondary btn-sm">
+                返回工作台
+              </Link>
+            </div>
+          ) : null}
         </section>
 
-        <div className="profile-stats">
-          {accountStats.map((item) => (
-            <section key={item.label} className="profile-stat">
-              <span>{item.label}</span>
-              <strong>{item.value}</strong>
-              <small>{item.hint}</small>
-            </section>
-          ))}
-        </div>
+        {!forcePassword ? (
+          <div className="profile-stats">
+            {accountStats.map((item) => (
+              <section key={item.label} className="profile-stat">
+                <span>{item.label}</span>
+                <strong>{item.value}</strong>
+                <small>{item.hint}</small>
+              </section>
+            ))}
+          </div>
+        ) : null}
 
-        {bindPhonePanel}
+        {forcePassword ? passwordPanel : bindPhonePanel}
 
+        {!forcePassword ? passwordPanel : null}
+
+        {!forcePassword ? (
         <div className="profile-layout">
           <section className="profile-panel profile-form-panel">
             <div className="profile-panel-heading">
@@ -542,6 +673,7 @@ export default function ProfilePage() {
             </div>
           </aside>
         </div>
+        ) : null}
       </div>
     </div>
   );

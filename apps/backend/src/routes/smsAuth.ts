@@ -197,6 +197,9 @@ router.post(
             role: user.role,
             points: user.points || 0,
             isNewUser,
+            hasPassword: Boolean(user.password_hash),
+            mustSetPassword: !user.password_hash,
+            loginMethod: 'sms',
           },
         },
       });

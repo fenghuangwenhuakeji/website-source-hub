@@ -155,6 +155,8 @@ function createAuthPayload(user: UserRow) {
     points: Number(user.points || 0),
     referralCode: user.referral_code || null,
     bindingStatus: buildBindingStatus(user),
+    hasPassword: Boolean(user.password_hash),
+    mustSetPassword: !user.password_hash,
   };
 }
 
@@ -619,6 +621,7 @@ router.post('/phone/login', requireSupportedDesktopVersion, async (req: Request,
         user: {
           ...createAuthPayload(result.user),
           isNewUser: result.isNewUser,
+          loginMethod: 'sms',
         },
       },
     });
@@ -818,6 +821,7 @@ router.get('/profile', requireSupportedDesktopVersion, authMiddleware, async (re
 
     const users = await db.query<UserRow[]>(
       `SELECT id, username, email, phone, phone_verified_at, nickname, avatar_url, role,
+              password_hash,
               COALESCE(points, 0) AS points,
               COALESCE(total_recharge, 0) AS total_recharge,
               COALESCE(total_earnings, 0) AS total_earnings,

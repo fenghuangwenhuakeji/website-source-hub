@@ -22,6 +22,9 @@ interface User {
   points?: number;
   totalRecharge?: number;
   referralCode?: string | null;
+  hasPassword?: boolean;
+  mustSetPassword?: boolean;
+  loginMethod?: string;
   lastLoginAt?: string | null;
   createdAt?: string | null;
   bindingStatus?: {
