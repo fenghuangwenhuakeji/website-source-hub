@@ -70,38 +70,6 @@
             setMessage(result.reason || '当前官网账号未开通权益，请前往官网充值。');
         }
     },
-    async handleLogin() {
-        const username = document.getElementById('authUsername')?.value?.trim();
-        const password = document.getElementById('authPassword')?.value;
-        const err = document.getElementById('authError');
-        if (!username || !password) {
-            if (err) { err.textContent = '请输入用户名和密码'; err.classList.add('show'); }
-            return;
-        }
-        const result = await UserManager.login(username, password);
-        if (result.success) {
-            App.hideAuthOverlay();
-            location.reload();
-        } else {
-            if (err) { err.textContent = result.message; err.classList.add('show'); }
-        }
-    },
-    async handleRegister() {
-        const username = document.getElementById('authUsername')?.value?.trim();
-        const password = document.getElementById('authPassword')?.value;
-        const err = document.getElementById('authError');
-        if (!username || !password) {
-            if (err) { err.textContent = '请输入用户名和密码'; err.classList.add('show'); }
-            return;
-        }
-        const result = await UserManager.register(username, password);
-        if (result.success) {
-            App.hideAuthOverlay();
-            location.reload();
-        } else {
-            if (err) { err.textContent = result.message; err.classList.add('show'); }
-        }
-    },
     // ===== 用户中心 =====
     showUserCenter: () => {
         const modal = document.getElementById('userCenterModal');

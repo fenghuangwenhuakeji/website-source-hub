@@ -122,10 +122,6 @@
             <button class="license-btn-secondary" onclick="App.handleOfficialRegister()" style="margin-bottom:8px;">注册官网账号</button>
             <button class="license-btn-secondary" onclick="App.syncOfficialAuth()" style="margin-bottom:12px;">我已登录，刷新授权</button>
             <div style="height:1px; background:rgba(255,255,255,0.08); margin:12px 0;"></div>
-            <input type="text" class="license-input" id="authUsername" placeholder="本地用户名" style="margin-bottom:10px;">
-            <input type="password" class="license-input" id="authPassword" placeholder="本地密码" style="margin-bottom:10px;">
-            <button class="license-btn-secondary" onclick="App.handleLogin()" style="margin-bottom:8px;">使用本地账号登录</button>
-            <button class="license-btn-secondary" onclick="App.handleRegister()" style="margin-bottom:8px;">创建本地账号</button>
             <button class="license-btn-secondary" onclick="App.hideAuthOverlay(); const overlay=document.getElementById('licenseOverlay'); if(overlay) overlay.style.display='flex';" style="background:transparent; border:1px solid rgba(148,163,184,0.2); color:rgba(148,163,184,0.5);">不登录，直接免费体验</button>
             <div class="license-error" id="authError"></div>
         </div>
