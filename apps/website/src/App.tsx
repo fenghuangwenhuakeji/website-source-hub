@@ -8,6 +8,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const DesktopDownloadPage = lazy(() => import('./pages/DesktopDownloadPage'));
 const HomePage = lazy(() => import('./pages/HomePage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const LongBookDownloadPage = lazy(() => import('./pages/LongBookDownloadPage'));
 const NovelDetailPage = lazy(() => import('./pages/NovelDetailPage'));
 const NovelsPage = lazy(() => import('./pages/NovelsPage'));
 const ProfilePage = lazy(() => import('./pages/ProfilePage'));
@@ -51,6 +52,8 @@ function App() {
             <Route path="/home/" element={<HomePage />} />
             <Route path="/showcase" element={<AppsShowcasePage />} />
             <Route path="/download" element={<DesktopDownloadPage />} />
+            <Route path="/longbook" element={<LongBookDownloadPage />} />
+            <Route path="/longbook-download" element={<LongBookDownloadPage />} />
             <Route path="/novels" element={<NovelsPage />} />
             <Route path="/novels/:id" element={<NovelDetailPage />} />
             <Route path="/writing" element={<WritingPage />} />

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#050505">
+    <title>AI 写作中心 - 创世旗舰版 (Genesis Archon Ultimate)</title>
+    <link href="assets/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+    <link href="css/mobile.css?v=hybrid-workflow-v30" rel="stylesheet">
+    <script src="assets/js/marked.min.js"></script>
+    <script src="assets/js/echarts.min.js"></script>
+    <script src="assets/js/jszip.min.js"></script>
+    <script src="assets/js/epub.min.js"></script>
+    <script src="assets/js/pdf.min.js"></script>
+    <script src="assets/js/vis-network.min.js"></script>
+    <script src="assets/js/3d-force-graph.min.js"></script>
+    <!-- Tailwind CSS (Local) -->
+    <script src="assets/js/tailwindcss.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                accent: '#ffd700',
+                                dim: '#888888',
+                                main: '#f2f2f2',
+                                panel: 'rgba(18, 18, 20, 0.7)',
+                                border: 'rgba(255, 255, 255, 0.08)'
+                            },
+                            fontFamily: {
+                                mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                            },
+                            animation: {
+                                'fade-in': 'fadeIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+                                'spin-slow': 'spin 3s linear infinite',
+                            },
+                            keyframes: {
+                                fadeIn: {
+                                    '0%': { opacity: '0', transform: 'translateY(10px)' },
+                                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    <style>
+        /* ===== License & Auth Overlay Styles ===== */
+        .license-overlay {
+            position: fixed; inset: 0;
+            background: rgba(5,5,8,0.92);
+            backdrop-filter: blur(16px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Rajdhani', sans-serif;
+        }
+        .license-box {
+            width: 460px; max-width: 92vw;
+            background: linear-gradient(145deg, rgba(18,18,20,0.95), rgba(30,30,35,0.95));
+            border: 1px solid rgba(250,234,95,0.25);
+            border-radius: 16px;
+            padding: 32px;
+            position: relative;
+            color: rgba(255,255,255,0.9);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 40px rgba(250,234,95,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+        }
+        .license-box::before {
+            content: ''; position: absolute;
+            top: 0; left: 20px; right: 20px; height: 2px;
+            background: linear-gradient(90deg, transparent, #faea5f, transparent);
+            border-radius: 2px;
+        }
+        .license-title { font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; color: #faea5f; text-align: center; margin-bottom: 6px; text-shadow: 0 0 20px rgba(250,234,95,0.3); }
+        .license-sub { font-size: 12px; color: rgba(255,255,255,0.4); text-align: center; margin-bottom: 20px; font-family: 'JetBrains Mono', monospace; }
+        .license-input { width: 100%; height: 48px; background: rgba(28,29,32,0.8); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; color: #fff; font-size: 15px; padding: 0 16px; font-family: 'JetBrains Mono', monospace; letter-spacing: 2px; text-align: center; outline: none; margin-bottom: 10px; transition: all 0.2s; }
+        .license-input:focus { border-color: #faea5f; box-shadow: 0 0 0 3px rgba(250,234,95,0.15), 0 0 20px rgba(250,234,95,0.1); }
+        .license-btn { width: 100%; height: 46px; background: linear-gradient(135deg, #faea5f, #f5d742); border: none; border-radius: 10px; color: #0a0a0f; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(250,234,95,0.25); }
+        .license-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(250,234,95,0.4); }
+        .license-btn:disabled { background: #1c1d20; color: rgba(255,255,255,0.35); cursor: not-allowed; box-shadow: none; transform: none; }
+        .license-btn-secondary { width: 100%; height: 40px; background: transparent; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; color: rgba(255,255,255,0.6); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+        .license-btn-secondary:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.9); background: rgba(255,255,255,0.03); }
+        .license-error { color: #ff3f4d; font-size: 12px; text-align: center; margin-top: 10px; font-family: 'JetBrains Mono', monospace; display: none; }
+        .license-error.show { display: block; }
+        .license-success { text-align: center; }
+        .license-success h3 { color: #4ade80; font-size: 20px; margin-bottom: 8px; text-shadow: 0 0 15px rgba(74,222,128,0.3); }
+        .license-success p { color: rgba(255,255,255,0.7); font-size: 13px; margin-bottom: 4px; line-height: 1.6; }
+        .hidden { display: none !important; }
+        /* Top Member Bar */
+        .top-member-info { display: flex; align-items: center; gap: 8px; font-size: 12px; min-width: 0; flex: 1; justify-content: flex-end; }
+        .top-member-badge { padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 700; background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .top-member-quota { color: #F59E0B; font-family: monospace; font-size: 11px; }
+        .top-member-btn { padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; background: linear-gradient(135deg, #6366F1, #4F46E5); color: #fff; border: none; cursor: pointer; }
+        #topBar { pointer-events: none; }
+        #topBar button,
+        #topBar a,
+        #topBar input,
+        #topBar select,
+        #topBar textarea,
+        #topBar [onclick],
+        #topBar [role="button"] { pointer-events: auto; }
+    </style>
+</head>
+<body>
+
+<!-- Auth Overlay (登录/注册) -->
+<div class="license-overlay" id="authOverlay" style="display:none; z-index:100000;">
+    <div class="license-box" style="max-width:360px;">
+        <div class="license-title">欢迎回到创作中心</div>
+        <div class="license-sub">登录您的账号以继续创作</div>
+        <div style="margin-top:16px;">
+            <button class="license-btn" onclick="App.handleOfficialLogin()" style="margin-bottom:8px;">使用官网账号登录</button>
+            <button class="license-btn-secondary" onclick="App.handleOfficialRegister()" style="margin-bottom:8px;">注册官网账号</button>
+            <button class="license-btn-secondary" onclick="App.syncOfficialAuth()" style="margin-bottom:12px;">我已登录，刷新授权</button>
+            <div style="height:1px; background:rgba(255,255,255,0.08); margin:12px 0;"></div>
+            <input type="text" class="license-input" id="authUsername" placeholder="本地用户名" style="margin-bottom:10px;">
+            <input type="password" class="license-input" id="authPassword" placeholder="本地密码" style="margin-bottom:10px;">
+            <button class="license-btn-secondary" onclick="App.handleLogin()" style="margin-bottom:8px;">使用本地账号登录</button>
+            <button class="license-btn-secondary" onclick="App.handleRegister()" style="margin-bottom:8px;">创建本地账号</button>
+            <button class="license-btn-secondary" onclick="App.hideAuthOverlay(); const overlay=document.getElementById('licenseOverlay'); if(overlay) overlay.style.display='flex';" style="background:transparent; border:1px solid rgba(148,163,184,0.2); color:rgba(148,163,184,0.5);">不登录，直接免费体验</button>
+            <div class="license-error" id="authError"></div>
+        </div>
+    </div>
+</div>
+
+<!-- User Center Modal -->
+<div class="license-overlay" id="userCenterModal" style="display:none; z-index:100001;" onclick="if(event.target===this)App.hideUserCenter()">
+    <div class="license-box" style="max-width:360px;" onclick="event.stopPropagation()">
+        <div class="license-title">用户中心</div>
+        <div class="license-sub">管理您的账号</div>
+        <div id="ucInfo" style="margin:16px 0; padding:12px; border-radius:8px; background:rgba(30,30,35,0.6); border:1px solid rgba(255,255,255,0.08);"></div>
+        <div style="margin-bottom:12px;">
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:6px;">已注册账号</div>
+            <div id="ucUserList" style="display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button class="license-btn-secondary" style="flex:1; background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.5);" onclick="App.openOfficialRecharge(); App.hideUserCenter();">官网充值</button>
+            <button class="license-btn-secondary" style="flex:1; background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.5);" onclick="App.syncOfficialAuth(); App.hideUserCenter();">同步权益</button>
+            <button class="license-btn-secondary" style="flex:1; background:rgba(244,63,94,0.1); border:1px solid rgba(244,63,94,0.2); color:#F43F5E;" onclick="App.logout()">退出登录</button>
+        </div>
+    </div>
+</div>
+
+<!-- License Activation Overlay -->
+<div class="license-overlay" id="licenseOverlay" style="display:none;">
+    <div class="license-box" id="licenseBox">
+        <div class="license-title" id="licenseTitle">激活您的创作中心</div>
+        <div class="license-sub" id="licenseSub">请输入卡密以解锁全部功能</div>
+        <div id="licenseCurrentStatus" class="hidden" style="margin-bottom:16px; padding:12px; border-radius:8px; background:rgba(99,102,241,0.08); border:1px solid rgba(99,102,241,0.15);">
+            <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:4px;">当前套餐</div>
+            <div style="font-size:14px; font-weight:600; color:#818CF8;" id="licenseCurrentTier">-</div>
+            <div style="font-size:11px; color:rgba(255,255,255,0.3); margin-top:2px;" id="licenseCurrentQuota">-</div>
+        </div>
+        <div id="licenseInputArea">
+            <input type="text" class="license-input" id="licenseKeyInput" placeholder="官网兑换码 / 旧版卡密" maxlength="39">
+            <div id="licenseKeyHint" style="font-size:11px; color:rgba(255,255,255,0.3); margin-top:4px; text-align:right;">支持官网兑换码或旧卡密</div>
+            <button class="license-btn" id="licenseRechargeBtn" onclick="App.openOfficialRecharge()" style="margin-bottom:8px;">前往官网充值</button>
+            <button class="license-btn-secondary" id="licenseSyncBtn" onclick="App.syncOfficialAuth()" style="margin-bottom:8px;">刷新官网授权</button>
+            <button class="license-btn-secondary" id="licenseActivateBtn" onclick="handleActivate()">兑换卡密</button>
+            <button class="license-btn-secondary" id="licenseFreeBtn" onclick="enterApp()">先免费体验（50万 Token）</button>
+            <div class="license-error" id="licenseError"></div>
+            <div style="margin-top:16px; padding:12px; border-radius:8px; background:rgba(30,30,35,0.5); border:1px solid rgba(255,255,255,0.08);">
+                <div style="font-size:11px; font-weight:600; color:rgba(255,255,255,0.5); margin-bottom:10px; text-align:center;">套餐选购 · 官网统一支付</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                    <div style="padding:10px; border-radius:6px; background:rgba(18,18,20,0.5); border:1px solid rgba(255,255,255,0.06);"><div style="font-size:12px; font-weight:600; color:#06B6D4;">入门款</div><div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">10万 Token/日</div><div style="font-size:13px; font-weight:700; color:#faea5f; margin-top:4px;">¥9.9</div></div>
+                    <div style="padding:10px; border-radius:6px; background:rgba(18,18,20,0.5); border:1px solid rgba(255,255,255,0.06);"><div style="font-size:12px; font-weight:600; color:#818CF8;">基础款</div><div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">30万 Token/日</div><div style="font-size:13px; font-weight:700; color:#faea5f; margin-top:4px;">¥29.9</div></div>
+                    <div style="padding:10px; border-radius:6px; background:rgba(18,18,20,0.5); border:1px solid rgba(255,255,255,0.06);"><div style="font-size:12px; font-weight:600; color:#A855F7;">进阶版</div><div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">50万 Token/日</div><div style="font-size:13px; font-weight:700; color:#faea5f; margin-top:4px;">¥49.9</div></div>
+                    <div style="padding:10px; border-radius:6px; background:rgba(18,18,20,0.5); border:1px solid rgba(250,234,95,0.12);"><div style="font-size:12px; font-weight:600; color:#faea5f;">白金版 ⭐</div><div style="font-size:11px; color:rgba(255,255,255,0.4); margin-top:2px;">100万 Token/日</div><div style="font-size:13px; font-weight:700; color:#faea5f; margin-top:4px;">¥99.9</div></div>
+                </div>
+                <div style="margin-top:10px; text-align:center; font-size:11px; color:rgba(255,255,255,0.3);">支付成功后权益直接计入官网账号；卡密仅用于兑换码和人工发放</div>
+            </div>
+        </div>
+        <div class="license-success hidden" id="licenseSuccessArea">
+            <h3>✓ 激活成功</h3>
+            <p id="licenseSuccessText"></p>
+            <button class="license-btn" style="margin-top:20px;" onclick="enterApp()">进入创作中心</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast-area" style="z-index: 9999;"></div>
+
+<!-- Top Bar -->
+<div class="top-bar" id="topBar" style="display:none; height:48px; background:linear-gradient(90deg, rgba(10,10,12,0.95), rgba(20,20,25,0.95)); backdrop-filter:blur(12px); border-bottom:1px solid rgba(255,255,255,0.06); position:fixed; top:0; left:0; right:0; z-index:9998; align-items:center; justify-content:space-between; padding:0 20px;">
+    <div style="display:flex; align-items:center; gap:10px; font-size:15px; font-weight:800; color:#faea5f; letter-spacing:1px;">
+        <i class="fa-solid fa-dragon" style="font-size:18px; color:#faea5f;"></i>
+        <span>创世旗舰版</span>
+    </div>
+    <div class="top-member-info" id="topMemberBar" style="display:none;">
+        <button id="topUserBtn" onclick="App.showUserCenter()" style="background:transparent; border:none; color:#818CF8; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;">
+            <i class="fa-solid fa-user-circle"></i>
+            <span id="topUserName">登录</span>
+        </button>
+        <span style="color:rgba(255,255,255,0.15);">|</span>
+        <span class="top-member-badge" id="topMemberBadge">体验版</span>
+        <span class="top-member-quota" id="topMemberQuota">500,000 Token</span>
+        <span style="color:rgba(255,255,255,0.15);">|</span>
+        <span style="color:rgba(255,255,255,0.6); font-size:11px;" id="topMemberText">免费体验</span>
+        <span style="color:rgba(245,158,11,0.8); font-size:11px; font-family:monospace; display:none; margin-left:4px;" id="topMemberCountdown"></span>
+        <button class="top-member-btn" onclick="App.showLicenseOverlay()">充值</button>
+    </div>
+</div>
+
+<!-- Mobile Header -->
+<div class="mobile-header" id="mobile-header">
+    <button class="mobile-hamburger" id="mobile-hamburger" onclick="App.toggleMobileMenu()">
+        <i class="fa-solid fa-bars"></i>
+    </button>
+    <div class="mobile-title" id="mobile-title" onclick="App.nav('home')">创世中心</div>
+    <button class="mobile-home-btn" onclick="App.nav('home')">
+        <i class="fa-solid fa-dragon"></i>
+    </button>
+</div>
+
+<!-- Mobile Overlay -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="App.closeMobileMenu()"></div>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="sidebar-item active" onclick="App.nav('home')" title="首页"><i class="fa-solid fa-dragon text-accent"></i><span>创世中心</span></div>
+    <div class="sidebar-divider"></div>
+    
+    <!-- Core Writing Pipeline -->
+    <div class="sidebar-item" onclick="App.nav('project_manager')" title="项目管理"><i class="fa-solid fa-layer-group text-accent"></i><span>项目管理</span></div>
+    <div class="sidebar-item" onclick="App.nav('phoenix')" title="凤凰创作流"><i class="fa-solid fa-fire-flame-curved"></i><span>凤凰创作流</span></div>
+    <div class="sidebar-item" onclick="App.nav('writer')" title="长篇执笔"><i class="fa-solid fa-feather-pointed"></i><span>长篇执笔 (旗舰)</span></div>
+    <div class="sidebar-item" onclick="App.nav('world_engine')" title="世界引擎"><i class="fa-solid fa-atom"></i><span>世界引擎</span></div>
+    <div class="sidebar-item" onclick="App.nav('fusion_book')" title="融合拆书"><i class="fa-solid fa-book-open-reader"></i><span>融合拆书</span></div>
+    <div class="sidebar-item" onclick="App.nav('fusion_workbench')" title="拆书弹药库"><i class="fa-solid fa-table-columns"></i><span>拆书弹药库</span></div>
+    <div class="sidebar-item" onclick="App.nav('creative_studio')" title="创意工坊"><i class="fa-solid fa-wand-magic-sparkles"></i><span>创意工坊</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+    <!-- 万能工坊 & 工具中心 -->
+    <div class="sidebar-item" onclick="App.nav('workshop')" title="万能工坊"><i class="fa-solid fa-hammer"></i><span>万能工坊</span></div>
+    <div class="sidebar-item" onclick="App.nav('tools_center')" title="工具中心"><i class="fa-solid fa-toolbox"></i><span>工具中心</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+    <!-- Context System -->
+    <div class="sidebar-item" onclick="App.nav('rag_context')" title="RAG上下文"><i class="fa-solid fa-magnifying-glass-chart"></i><span>RAG 上下文</span></div>
+    <div class="sidebar-item" onclick="App.nav('memory_system')" title="三层记忆"><i class="fa-solid fa-brain"></i><span>三层记忆</span></div>
+
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Simulation & Specialized -->
+    
+    <div class="sidebar-item" onclick="App.nav('reader_center')" title="阅读中心"><i class="fa-solid fa-book-open"></i><span>阅读中心</span></div>
+    <div class="sidebar-item" onclick="App.nav('web_chat')" title="网页对话"><i class="fa-solid fa-comments"></i><span>网页对话</span></div>
+    
+    <div class="sidebar-divider"></div>
+
+
+    <div style="flex:1"></div>
+    <!-- 本地同步状态指示器 -->
+    <div id="local-sync-indicator" class="items-center gap-1 px-3 py-1.5 cursor-pointer hover:bg-white/5 rounded-lg mx-1" style="display:none" onclick="App.nav('settings');setTimeout(()=>Modules.settings.switchTab('data'),100)" title="本地同步状态"></div>
+    <div class="sidebar-item" onclick="App.nav('settings')" title="设置"><i class="fa-solid fa-gear"></i><span>系统设置</span></div>
+    <div class="sidebar-item" onclick="App.toggleSidebar()" title="折叠/展开" id="sidebar-toggle-btn"><i class="fa-solid fa-angles-left" id="sidebar-toggle-icon"></i><span>收起导航</span></div>
+</div>
+
+<!-- Main Viewport -->
+<div class="viewport" id="viewport">
+    <!-- Dynamic Content -->
+</div>
+
+<!-- Core Scripts -->
+<script src="assets/js/core/db.js?v=api-split-v35"></script>
+<script src="assets/js/core/utils.js?v=fusion-ammo-export-v32"></script>
+	<script src="assets/js/core/ui.js"></script>
+	<script src="assets/js/core/machine-id.js"></script>
+	<script src="assets/js/core/official-auth.js?v=official-auth-v1"></script>
+	<script src="assets/js/core/license-core.js"></script>
+	<script src="assets/js/core/user-manager.js?v=official-auth-v1"></script>
+	<script src="assets/js/core/membership.js?v=official-auth-v1"></script>
+<script src="assets/js/core/ai.js?v=api-split-v35"></script>
+<script src="assets/js/core/ai_multimodal.js"></script>
+<script src="assets/js/modules/theme_engine.js"></script>
+
+<!-- Genesis Core — 项目中枢 (必须在 base 之前) -->
+<script src="assets/js/modules/genesis_core.js?v=import-workbench-v47"></script>
+<script src="assets/js/modules_split/core_path_hub.js?v=import-workbench-v47"></script>
+
+<!-- Modules -->
+<script src="assets/js/modules/base.js?v=import-workbench-v47"></script>
+
+<!-- Project Manager -->
+<script src="assets/js/modules_split/project_manager/project_manager.js?v=import-workbench-v47"></script>
+
+<!-- Writer (Split) -->
+<script src="assets/js/modules_split/writer/writer_core.js?v=cycle-sync-v52"></script>
+<script src="assets/js/modules_split/writer/writer_tree.js?v=workbench-hub-v43"></script>
+<script src="assets/js/modules_split/writer/writer_rag.js"></script>
+<script src="assets/js/modules_split/writer/writer_ai.js?v=workbench-hub-v44"></script>
+<script src="assets/js/modules_split/writer/writer_polish.js?v=writer-polish-service-v1"></script>
+<script src="assets/js/modules_split/writer/writer_polish_deepseek.js?v=deepseek-v4-humanize-v1"></script>
+<script src="assets/js/modules_split/writer/writer_batch.js?v=workbench-hub-v44"></script>
+<script src="assets/js/modules_split/writer/writer_panel.js?v=workbench-hub-v43"></script>
+<script src="assets/js/modules_split/writer/writer_review.js"></script>
+<script src="assets/js/modules_split/writer/writer_consistency.js"></script>
+<script src="assets/js/modules_split/writer/writer_rhythm.js"></script>
+
+<!-- Phoenix (Split) -->
+<script src="assets/js/modules_split/phoenix/phoenix_core.js?v=direct-sync-v51"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_step1.js?v=entity-graph-v55"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_step2.js?v=direct-sync-v51"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_ai.js?v=direct-sync-v51"></script>
+<script src="assets/js/modules_split/phoenix/phoenix_finish.js?v=cycle-sync-v52"></script>
+
+<!-- World Engine (Split) -->
+<script src="assets/js/modules_split/world/world_core.js?v=graph-controls-v61"></script>
+<script src="assets/js/modules_split/world/world_dashboard.js?v=world-graph-fix-v53"></script>
+<script src="assets/js/modules_split/world/world_graph.js?v=graph-controls-v61"></script>
+<script src="assets/js/modules_split/world/world_chapters.js"></script>
+<script src="assets/js/modules_split/world/world_import.js?v=entity-graph-v55"></script>
+	<script src="assets/js/modules_split/world/world_novel_import.js?v=cycle-sync-v52"></script>
+<script src="assets/js/modules_split/world/world_pipeline.js?v=graph-controls-v61"></script>
+
+<!-- Fusion Book (Split) -->
+<script src="assets/js/modules_split/fusion_book/fusion_book_core.js?v=fusion-ammo-v63"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_extract.js?v=fusion-ammo-v63"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_pipeline.js?v=fusion-ammo-v63"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_consistency.js?v=workbench-hub-v39"></script>
+<script src="assets/js/modules_split/fusion_book/fusion_book_export.js?v=fusion-ammo-v63"></script>
+
+<!-- Library / Reader Center (Split) -->
+<script src="assets/js/modules_split/library/library_core.js"></script>
+<script src="assets/js/modules_split/library/library_reader.js"></script>
+<script src="assets/js/modules_split/library/library_chat.js"></script>
+
+<!-- RAG (Split) -->
+<script src="assets/js/modules_split/rag/rag_core.js"></script>
+<script src="assets/js/modules_split/rag/rag_advanced.js"></script>
+
+<!-- Tools Center (Split) -->
+<script src="assets/js/modules_split/tools_center/tools_center_core.js"></script>
+<script src="assets/js/modules_split/tools_center/tools_center_workflow.js"></script>
+
+<!-- Web Chat (Split) -->
+<script src="assets/js/modules_split/web_chat/web_chat_core.js?v=layered-graph-v28"></script>
+<script src="assets/js/modules_split/web_chat/web_chat_ai.js"></script>
+
+<!-- Creative Studio (Split) -->
+<script src="assets/js/modules_split/creative/creative_core.js"></script>
+<script src="assets/js/modules_split/creative/creative_inspiration.js"></script>
+<script src="assets/js/modules_split/creative/creative_short.js"></script>
+<script src="assets/js/modules_split/creative/creative_brainstorm.js"></script>
+<script src="assets/js/modules_split/creative/creative_deai.js?v=api-split-v35"></script>
+<script src="assets/js/modules_split/creative/creative_generators.js"></script>
+<script src="assets/js/modules_split/creative/creative_deconstruct.js"></script>
+<script src="assets/js/modules_split/creative/creative_storyboard.js"></script>
+<script src="assets/js/modules_split/creative/creative_comic.js"></script>
+<script src="assets/js/modules_split/creative/creative_visual.js"></script>
+<script src="assets/js/modules_split/creative/creative_video.js"></script>
+<script src="assets/js/modules_split/creative/creative_drama.js"></script>
+<script src="assets/js/modules_split/creative/creative_lookbook.js"></script>
+<script src="assets/js/modules_split/creative/creative_platform.js"></script>
+<script src="assets/js/modules_split/creative/creative_trends.js"></script>
+
+<!-- Toolbox (Split) -->
+<script src="assets/js/modules_split/toolbox/toolbox_core.js"></script>
+<script src="assets/js/modules_split/toolbox/toolbox_fusion.js"></script>
+<script src="assets/js/modules_split/toolbox/toolbox_tools.js"></script>
+
+<!-- Settings (Split) -->
+	<script src="assets/js/modules_split/settings/settings_core.js?v=official-auth-v1"></script>
+<script src="assets/js/modules_split/settings/settings_theme.js"></script>
+<script src="assets/js/modules_split/settings/settings_typography.js"></script>
+<script src="assets/js/modules_split/settings/settings_api_pool.js?v=api-split-v35"></script>
+<script src="assets/js/modules_split/settings/settings_creative.js"></script>
+<script src="assets/js/modules_split/settings/settings_api.js"></script>
+<script src="assets/js/modules_split/settings/settings_data.js?v=api-split-v35"></script>
+
+<!-- Memory (Split) -->
+<script src="assets/js/modules_split/memory/memory_core.js"></script>
+<script src="assets/js/modules_split/memory/memory_working.js"></script>
+<script src="assets/js/modules_split/memory/memory_longterm.js"></script>
+
+<!-- Fusion Workbench (Split) -->
+<script src="assets/js/modules_split/fusion_workbench/fwb_core.js?v=fusion-ammo-v63"></script>
+<script src="assets/js/modules_split/fusion_workbench/fwb_tabs.js?v=fusion-ammo-v63"></script>
+<script src="assets/js/modules_split/fusion_workbench/fwb_actions.js?v=fusion-ammo-v63"></script>
+
+<!-- Unsplit Modules -->
+<script src="assets/js/modules/rag_ui.js"></script>
+<script src="assets/js/modules/memory_ui.js?v=layered-graph-v28"></script>
+<script src="assets/js/modules/mobile_engine.js?v=mobile-content-v1"></script>
+
+<!-- App Entry -->
+	<script src="assets/js/core/app.js?v=official-auth-v1"></script>
+
+</body>
+</html>

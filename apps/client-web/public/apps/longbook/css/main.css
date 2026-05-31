@@ -1,0 +1,51 @@
+/* 
+ * WriterCenterArchon - 核心样式
+ * 补充 Tailwind 无法覆盖的细节
+ */
+
+/* 自定义滚动条 */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* 隐藏滚动条但保留功能 */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 玻璃拟态 */
+.glass-blur {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* 工具按钮 */
+.tool-btn {
+    @apply w-8 h-8 rounded flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-colors;
+}
+
+/* 编辑器光标 */
+#main-editor {
+    caret-color: #ffd700;
+}
+
+/* 选中态 */
+::selection {
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+}

@@ -39,6 +39,12 @@ export function Header(_props: HeaderProps) {
       active: location.pathname === '/novella',
     },
     {
+      label: '长篇下载',
+      to: '/longbook-download',
+      title: '下载长篇创作项目包',
+      active: location.pathname === '/longbook-download' || location.pathname === '/longbook',
+    },
+    {
       label: '小说展示',
       to: '/novels',
       title: '查看小说展示',
@@ -162,8 +168,11 @@ export function Header(_props: HeaderProps) {
                 ))}
                 <li className="mobile-only nav-mobile-panel">
                   <div className="nav-mobile-label">真实产品</div>
+                  <Link to="/longbook-download" className="btn btn-primary nav-cta" onClick={closeMenu}>
+                    长篇项目包
+                  </Link>
                   <a href={desktopDownloadHref} className="btn btn-primary nav-cta" onClick={closeMenu}>
-                    下载客户端
+                    全部客户端
                   </a>
                 </li>
                 <li className="mobile-only nav-mobile-panel">
@@ -200,9 +209,9 @@ export function Header(_props: HeaderProps) {
             </nav>
 
             <div className="nav-right nav-actions">
-              <a href={desktopDownloadHref} className="btn btn-secondary nav-ghost" title="下载客户端">
-                下载客户端
-              </a>
+              <Link to="/longbook-download" className="btn btn-secondary nav-ghost" title="下载长篇创作项目包">
+                长篇下载
+              </Link>
               {isAuthenticated ? (
                 <>
                   <Link

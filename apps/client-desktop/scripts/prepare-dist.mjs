@@ -11,6 +11,7 @@ const sourceIndex = path.join(sourceDist, 'index.html');
 const acceptanceModeEnabled = process.env.LOCAL_ACCEPTANCE_MODE === '1';
 
 const REQUIRED_DIST_FILES = [
+  ['apps/longbook/index.html', '长篇创作'],
   ['apps/fenghuang/index.html', '凤煌创作入口'],
   ['apps/medium-short/index.html', '中短篇创作'],
   ['desktop-bundles/agent-creator/index.html', 'Agent Creator'],

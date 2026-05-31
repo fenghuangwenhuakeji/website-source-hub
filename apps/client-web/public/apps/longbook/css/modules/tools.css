@@ -1,0 +1,54 @@
+/* 工具箱通用样式 */
+.tool-layout {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 200px);
+}
+
+.tool-input, .tool-output {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tool-input label, .tool-output label {
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.output-box {
+    flex: 1;
+    background: var(--bg-tertiary);
+    border-radius: var(--radius-sm);
+    padding: 15px;
+    border: 1px dashed var(--border-color);
+    overflow-y: auto;
+}
+
+.tag {
+    display: inline-block;
+    padding: 4px 8px;
+    background: rgba(187, 134, 252, 0.15);
+    color: var(--accent-color);
+    border-radius: 4px;
+    font-size: 0.85rem;
+    margin-right: 8px;
+    margin-bottom: 8px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .tool-layout {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .tool-input .input-area {
+        min-height: 150px;
+    }
+
+    .output-box {
+        min-height: 200px;
+    }
+}

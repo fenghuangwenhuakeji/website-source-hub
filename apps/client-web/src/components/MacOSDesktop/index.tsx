@@ -136,6 +136,7 @@ const CORE_ENTRY_APP_IDS = [
   'codeEditor',
   'webChat',
   'short-book-lab',
+  'longbook',
   'html-vault',
   'fenghuang',
   'settings',
@@ -157,6 +158,7 @@ const APP_SUMMARY_MAP: Record<string, string> = {
   codeEditor: '打开代码编辑器工作台。',
   webChat: '打开 Agent Creator。',
   'short-book-lab': '短篇拆书与内容分析。',
+  longbook: '长篇创作、章节和设定工作区。',
   'medium-short': '中短篇创作和阅读工作区。',
   'html-vault': '浏览 HTML Vault 内置应用。',
   fenghuang: '打开凤煌创作套件。',
@@ -2009,7 +2011,7 @@ const FinderPanel: React.FC<{
   }, [activeAppIds, activeSection, apps, finderQuery, importedApps, utilityApps]);
 
   const quickOpenApps = apps.filter((app) =>
-    ['kui-chat', 'ai-agent', 'frontend-converter', 'codeEditor', 'webChat', 'short-book-lab', 'html-vault', 'fenghuang', 'settings'].includes(app.id),
+    ['kui-chat', 'ai-agent', 'frontend-converter', 'codeEditor', 'webChat', 'short-book-lab', 'longbook', 'html-vault', 'fenghuang', 'settings'].includes(app.id),
   );
 
   return (

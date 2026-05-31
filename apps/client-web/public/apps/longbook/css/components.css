@@ -1,0 +1,37 @@
+/* 按钮基础 */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.btn-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.btn-icon:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: var(--color-accent);
+}
+
+/* 滚动条隐藏但可滚动 (Clean Look) */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 玻璃拟态效果 */
+.glass {
+    background: rgba(18, 18, 20, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
