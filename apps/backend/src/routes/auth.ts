@@ -657,8 +657,8 @@ router.get('/me', authMiddleware, async (req: Request, res: Response, next: Next
     const userId = authReq.user!.id;
 
     const users = await db.query<UserRow[]>(
-      `SELECT id, username, email, phone, phone_verified_at, nickname, avatar_url, role, gender,
-              birthday, location, website, wechat_openid, wechat_bound_at,
+      `SELECT id, username, email, phone, phone_verified_at, nickname, avatar_url, role,
+              wechat_openid, wechat_unionid, wechat_bound_at,
               points, total_recharge, must_bind_contact, created_at, last_login
        FROM users
        WHERE id = ?`,
@@ -675,10 +675,12 @@ router.get('/me', authMiddleware, async (req: Request, res: Response, next: Next
       success: true,
       data: {
         ...createAuthPayload(user),
-        gender: user.gender,
-        birthday: user.birthday,
-        location: user.location,
-        website: user.website,
+        gender: user.gender || null,
+        birthday: user.birthday || null,
+        location: user.location || null,
+        website: user.website || null,
+        wechatOpenid: user.wechat_openid || null,
+        wechatUnionid: user.wechat_unionid || null,
         totalRecharge: Number(user.total_recharge || 0),
         createdAt: user.created_at,
         lastLoginAt: user.last_login,
