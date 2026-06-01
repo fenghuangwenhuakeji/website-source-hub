@@ -657,7 +657,8 @@ router.get('/me', authMiddleware, async (req: Request, res: Response, next: Next
     const userId = authReq.user!.id;
 
     const users = await db.query<UserRow[]>(
-      `SELECT id, username, email, phone, phone_verified_at, nickname, avatar_url, role,
+      `SELECT id, username, password_hash, password_updated_at,
+              email, phone, phone_verified_at, nickname, avatar_url, role,
               wechat_openid, wechat_unionid, wechat_bound_at,
               points, total_recharge, must_bind_contact, created_at, last_login
        FROM users
