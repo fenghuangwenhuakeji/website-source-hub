@@ -11,7 +11,7 @@ export function ProtectedRoute() {
     return <Navigate to={buildPathWithFrom('/login', currentPath)} replace />;
   }
 
-  if (user?.mustSetPassword && location.pathname !== '/profile') {
+  if (user?.mustSetPassword && (location.pathname !== '/profile' || new URLSearchParams(location.search).get('forcePassword') !== '1')) {
     return <Navigate to={buildPathWithFrom('/profile?forcePassword=1', currentPath)} replace />;
   }
 
