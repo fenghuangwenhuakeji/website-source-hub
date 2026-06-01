@@ -52,6 +52,7 @@ interface RegisterBody {
 }
 
 interface LoginBody {
+  account?: string;
   username: string;
   password: string;
 }
@@ -70,6 +71,7 @@ interface ForgotPasswordResetBody {
 interface PhoneCodeBody {
   phone?: string;
   phoneNumber?: string;
+  purpose?: 'login' | 'register' | 'password_reset' | 'bind_phone';
 }
 
 interface PhoneLoginBody {
@@ -143,6 +145,7 @@ function buildBindingStatus(user: UserRow) {
 function createAuthPayload(user: UserRow) {
   const isAdmin = ['admin', 'rootadmin', 'super_admin'].includes(String(user.role || '').toLowerCase());
   return {
+    id: String(user.id),
     userId: String(user.id),
     username: user.username,
     nickname: user.nickname,
@@ -157,6 +160,16 @@ function createAuthPayload(user: UserRow) {
     bindingStatus: buildBindingStatus(user),
     hasPassword: Boolean(user.password_hash),
     mustSetPassword: !user.password_hash,
+  };
+}
+
+function normalizeLoginAccount(body: Partial<LoginBody>) {
+  const account = String(body.account || body.username || '').trim();
+  const password = String(body.password || '');
+
+  return {
+    account,
+    password,
   };
 }
 
@@ -292,21 +305,30 @@ router.post('/register', requireSupportedDesktopVersion, async (req: Request, re
     const hasWechatBinding = Boolean(wechatOpenid);
 
     if (!hasPhoneBinding && !hasWechatBinding) {
-      throw ApiError.badRequest('New accounts must bind a phone number or WeChat before registration.');
+      throw ApiError.badRequest(
+        'New accounts must bind a phone number or WeChat before registration.',
+        'AUTH_BIND_REQUIRED',
+      );
     }
 
     if (phone) {
       if (!isValidPhoneNumber(phone)) {
-        throw ApiError.badRequest('Invalid phone number format.');
+        throw ApiError.badRequest('Invalid phone number format.', 'AUTH_PHONE_INVALID');
       }
 
       if (!phoneCode) {
-        throw ApiError.badRequest('Phone registration requires a verification code.');
+        throw ApiError.badRequest(
+          'Phone registration requires a verification code.',
+          'AUTH_PHONE_CODE_REQUIRED',
+        );
       }
 
       const verification = consumePhoneVerificationCode(phone, 'register', phoneCode);
       if (!verification.success) {
-        throw ApiError.badRequest(verification.message || 'Phone verification failed.');
+        throw ApiError.badRequest(
+          verification.message || 'Phone verification failed.',
+          'AUTH_PHONE_CODE_INVALID',
+        );
       }
     }
 
@@ -329,7 +351,10 @@ router.post('/register', requireSupportedDesktopVersion, async (req: Request, re
     );
 
     if (existingUsers.length > 0) {
-      throw ApiError.badRequest('Username, phone, email, or WeChat account already exists.');
+      throw ApiError.badRequest(
+        'Username, phone, email, or WeChat account already exists.',
+        'AUTH_ACCOUNT_ALREADY_EXISTS',
+      );
     }
 
     const userId = uuidv4();
@@ -382,6 +407,7 @@ router.post('/register', requireSupportedDesktopVersion, async (req: Request, re
 
     res.status(201).json({
       success: true,
+      code: 'AUTH_REGISTER_SUCCESS',
       data: {
         user: createAuthPayload(user),
         token,
@@ -402,29 +428,30 @@ router.post('/register', requireSupportedDesktopVersion, async (req: Request, re
 
 router.post('/login', requireSupportedDesktopVersion, async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { username, password } = req.body as LoginBody;
+    const { account, password } = normalizeLoginAccount(req.body as Partial<LoginBody>);
 
-    if (!username || !password) {
-      throw ApiError.badRequest('Account and password are required.');
+    if (!account || !password) {
+      throw ApiError.badRequest('Account and password are required.', 'AUTH_ACCOUNT_PASSWORD_REQUIRED');
     }
 
-    const user = await findUserByAccount(username);
+    const user = await findUserByAccount(account);
     if (!user) {
-      throw ApiError.unauthorized('Invalid account or password.');
+      throw ApiError.unauthorized('Invalid account or password.', 'AUTH_INVALID_CREDENTIALS');
     }
 
     if (user.locked_until && new Date(user.locked_until) > new Date()) {
       const minutes = Math.ceil((new Date(user.locked_until).getTime() - Date.now()) / 60000);
-      throw ApiError.forbidden(`Account is locked. Try again in ${minutes} minute(s).`);
+      throw ApiError.forbidden(`Account is locked. Try again in ${minutes} minute(s).`, 'AUTH_ACCOUNT_LOCKED');
     }
 
     if (user.status === 'banned') {
-      throw ApiError.forbidden('This account has been disabled.');
+      throw ApiError.forbidden('This account has been disabled.', 'AUTH_ACCOUNT_DISABLED');
     }
 
     if (!user.password_hash) {
       throw ApiError.unauthorized(
         'This account does not have a password yet. Please sign in with phone or WeChat first.',
+        'AUTH_PASSWORD_NOT_SET',
       );
     }
 
@@ -442,7 +469,7 @@ router.post('/login', requireSupportedDesktopVersion, async (req: Request, res: 
         user.id,
       ]);
 
-      throw ApiError.unauthorized('Invalid account or password.');
+      throw ApiError.unauthorized('Invalid account or password.', 'AUTH_INVALID_CREDENTIALS');
     }
 
     await db.execute(
@@ -466,6 +493,7 @@ router.post('/login', requireSupportedDesktopVersion, async (req: Request, res: 
 
     res.json({
       success: true,
+      code: 'AUTH_LOGIN_SUCCESS',
       data: {
         user: createAuthPayload(latestUser),
         token,
@@ -482,7 +510,7 @@ router.post('/forgot-password/request', async (req: Request, res: Response, next
     const { phoneNumber, account } = req.body as ForgotPasswordRequestBody;
 
     if (!phoneNumber || !isValidPhoneNumber(phoneNumber)) {
-      throw ApiError.badRequest('Please enter a valid phone number.');
+      throw ApiError.badRequest('Please enter a valid phone number.', 'AUTH_PHONE_INVALID');
     }
 
     const user = (
@@ -490,24 +518,25 @@ router.post('/forgot-password/request', async (req: Request, res: Response, next
     )[0];
 
     if (!user) {
-      throw ApiError.notFound('No account is bound to this phone number.');
+      throw ApiError.notFound('No account is bound to this phone number.', 'AUTH_ACCOUNT_NOT_FOUND');
     }
 
     if (account && ![user.username, user.email, user.phone].includes(account)) {
-      throw ApiError.badRequest('The account does not match the phone number.');
+      throw ApiError.badRequest('The account does not match the phone number.', 'AUTH_ACCOUNT_PHONE_MISMATCH');
     }
 
     const sendStatus = canSendPhoneVerificationCode(phoneNumber, 'password_reset');
     if (!sendStatus.allowed) {
       throw ApiError.badRequest(
         `Sending too frequently. Try again in ${sendStatus.retryAfterSeconds} second(s).`,
+        'AUTH_PHONE_CODE_RATE_LIMITED',
       );
     }
 
     const code = generateVerificationCode();
     const result = await sendVerificationCode(phoneNumber, code);
     if (!result.success) {
-      throw ApiError.internal(result.message || 'Failed to send password reset code.');
+      throw ApiError.internal(result.message || 'Failed to send password reset code.', 'AUTH_PHONE_CODE_SEND_FAILED');
     }
 
     createPhoneVerificationCode(phoneNumber, 'password_reset', code);
@@ -515,6 +544,7 @@ router.post('/forgot-password/request', async (req: Request, res: Response, next
 
     res.json({
       success: true,
+      code: 'AUTH_PASSWORD_RESET_CODE_SENT',
       message: 'Password reset code sent successfully.',
       ...(process.env.NODE_ENV === 'development' ? { code } : {}),
     });
@@ -528,14 +558,14 @@ router.post('/forgot-password/reset', async (req: Request, res: Response, next: 
     const { phoneNumber, code, newPassword } = req.body as ForgotPasswordResetBody;
 
     if (!phoneNumber || !isValidPhoneNumber(phoneNumber)) {
-      throw ApiError.badRequest('Please enter a valid phone number.');
+      throw ApiError.badRequest('Please enter a valid phone number.', 'AUTH_PHONE_INVALID');
     }
 
     ensurePasswordValid(newPassword);
 
     const verification = consumePhoneVerificationCode(phoneNumber, 'password_reset', code);
     if (!verification.success) {
-      throw ApiError.badRequest(verification.message || 'Invalid verification code.');
+      throw ApiError.badRequest(verification.message || 'Invalid verification code.', 'AUTH_PHONE_CODE_INVALID');
     }
 
     const user = (
@@ -543,7 +573,7 @@ router.post('/forgot-password/reset', async (req: Request, res: Response, next: 
     )[0];
 
     if (!user) {
-      throw ApiError.notFound('No account is bound to this phone number.');
+      throw ApiError.notFound('No account is bound to this phone number.', 'AUTH_ACCOUNT_NOT_FOUND');
     }
 
     const passwordHash = await bcrypt.hash(newPassword, config.security.bcryptRounds);
@@ -560,6 +590,7 @@ router.post('/forgot-password/reset', async (req: Request, res: Response, next: 
 
     res.json({
       success: true,
+      code: 'AUTH_PASSWORD_RESET_SUCCESS',
       message: 'Password has been reset successfully.',
     });
   } catch (error) {
@@ -569,30 +600,34 @@ router.post('/forgot-password/reset', async (req: Request, res: Response, next: 
 
 router.post('/phone/code', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { phone, phoneNumber } = req.body as PhoneCodeBody;
+    const { phone, phoneNumber, purpose } = req.body as PhoneCodeBody;
     const targetPhone = phoneNumber || phone;
+    const normalizedPurpose =
+      purpose === 'register' || purpose === 'password_reset' || purpose === 'bind_phone' ? purpose : 'login';
 
     if (!targetPhone || !isValidPhoneNumber(targetPhone)) {
-      throw ApiError.badRequest('Please enter a valid phone number.');
+      throw ApiError.badRequest('Please enter a valid phone number.', 'AUTH_PHONE_INVALID');
     }
 
-    const sendStatus = canSendPhoneVerificationCode(targetPhone, 'login');
+    const sendStatus = canSendPhoneVerificationCode(targetPhone, normalizedPurpose);
     if (!sendStatus.allowed) {
       throw ApiError.badRequest(
         `Sending too frequently. Try again in ${sendStatus.retryAfterSeconds} second(s).`,
+        'AUTH_PHONE_CODE_RATE_LIMITED',
       );
     }
 
     const code = generateVerificationCode();
     const result = await sendVerificationCode(targetPhone, code);
     if (!result.success) {
-      throw ApiError.internal(result.message || 'Failed to send SMS code.');
+      throw ApiError.internal(result.message || 'Failed to send SMS code.', 'AUTH_PHONE_CODE_SEND_FAILED');
     }
 
-    createPhoneVerificationCode(targetPhone, 'login', code);
+    createPhoneVerificationCode(targetPhone, normalizedPurpose, code);
 
     res.json({
       success: true,
+      code: 'AUTH_PHONE_CODE_SENT',
       message: 'Verification code sent successfully.',
       ...(process.env.NODE_ENV === 'development' ? { code } : {}),
     });
@@ -607,7 +642,7 @@ router.post('/phone/login', requireSupportedDesktopVersion, async (req: Request,
     const targetPhone = phoneNumber || phone;
 
     if (!targetPhone) {
-      throw ApiError.badRequest('Phone number is required.');
+      throw ApiError.badRequest('Phone number is required.', 'AUTH_PHONE_REQUIRED');
     }
 
     const result = await handlePhoneLogin(targetPhone, code, inviteCode);
@@ -615,6 +650,7 @@ router.post('/phone/login', requireSupportedDesktopVersion, async (req: Request,
 
     res.json({
       success: true,
+      code: result.isNewUser ? 'AUTH_REGISTERED_VIA_PHONE' : 'AUTH_LOGIN_SUCCESS',
       data: {
         token: result.token,
         refreshToken: result.refreshToken,
@@ -647,6 +683,7 @@ router.post('/wechat/callback', (_req: Request, res: Response) => {
 router.post('/logout', authMiddleware, (_req: Request, res: Response) => {
   res.json({
     success: true,
+    code: 'AUTH_LOGOUT_SUCCESS',
     message: 'Logged out successfully.',
   });
 });
@@ -674,6 +711,7 @@ router.get('/me', authMiddleware, async (req: Request, res: Response, next: Next
 
     res.json({
       success: true,
+      code: 'AUTH_PROFILE_FETCH_SUCCESS',
       data: {
         ...createAuthPayload(user),
         gender: user.gender || null,
@@ -734,6 +772,7 @@ router.post('/change-password', authMiddleware, async (req: Request, res: Respon
 
     res.json({
       success: true,
+      code: 'AUTH_PASSWORD_CHANGE_SUCCESS',
       message: 'Password updated successfully.',
     });
   } catch (error) {
@@ -779,6 +818,7 @@ router.post('/bind-phone', authMiddleware, async (req: Request, res: Response, n
 
     res.json({
       success: true,
+      code: 'AUTH_PHONE_BIND_SUCCESS',
       message: 'Phone number bound successfully.',
     });
   } catch (error) {
@@ -794,6 +834,7 @@ router.get('/payout-profile', authMiddleware, async (req: Request, res: Response
 
     res.json({
       success: true,
+      code: 'AUTH_PAYOUT_PROFILE_FETCH_SUCCESS',
       data: profile,
     });
   } catch (error) {
@@ -809,6 +850,7 @@ router.put('/payout-profile', authMiddleware, async (req: Request, res: Response
 
     res.json({
       success: true,
+      code: 'AUTH_PAYOUT_PROFILE_SAVE_SUCCESS',
       message: 'Payout profile saved successfully.',
       data: profile,
     });
@@ -847,6 +889,7 @@ router.get('/profile', requireSupportedDesktopVersion, authMiddleware, async (re
 
     res.json({
       success: true,
+      code: 'AUTH_PROFILE_DETAIL_FETCH_SUCCESS',
       data: {
         ...createAuthPayload(user),
         totalRecharge: Number(user.total_recharge || 0),
@@ -889,6 +932,7 @@ router.get('/check-recharge', requireSupportedDesktopVersion, authMiddleware, as
     if (userRole === 'admin' || userRole === 'rootadmin' || userRole === 'super_admin') {
       return res.json({
         success: true,
+        code: 'AUTH_RECHARGE_CHECK_SUCCESS',
         data: {
           needsRecharge: false,
           totalRecharge: 999999,
@@ -923,6 +967,7 @@ router.get('/check-recharge', requireSupportedDesktopVersion, authMiddleware, as
 
     return res.json({
       success: true,
+      code: 'AUTH_RECHARGE_CHECK_SUCCESS',
       data: {
         needsRecharge: !canEnter,
         totalRecharge: Number(user.total_recharge || 0),
@@ -950,12 +995,12 @@ router.post('/refresh', requireSupportedDesktopVersion, async (req: Request, res
     const { refreshToken } = req.body as { refreshToken?: string };
 
     if (!refreshToken) {
-      throw ApiError.badRequest('Refresh token is required.');
+      throw ApiError.badRequest('Refresh token is required.', 'AUTH_REFRESH_REQUIRED');
     }
 
     const decoded = verifyToken(refreshToken);
     if (!decoded) {
-      throw ApiError.unauthorized('Refresh token is invalid.');
+      throw ApiError.unauthorized('Refresh token is invalid.', 'AUTH_REFRESH_INVALID');
     }
 
     const newToken = generateToken({
@@ -971,6 +1016,7 @@ router.post('/refresh', requireSupportedDesktopVersion, async (req: Request, res
 
     res.json({
       success: true,
+      code: 'AUTH_REFRESH_SUCCESS',
       data: {
         token: newToken,
         refreshToken: nextRefreshToken,

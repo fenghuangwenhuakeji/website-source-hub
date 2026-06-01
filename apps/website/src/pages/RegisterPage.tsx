@@ -3,6 +3,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import {
+  AUTH_ENDPOINTS,
+  buildRegisterPayload,
+  buildSendPhoneCodePayload,
+  extractAuthSession,
+  normalizeAuthError,
+} from '@fhwh/shared/utils/auth';
 import { WeChatGroupPromo } from '../components/WeChatGroupPromo';
 import { apiClient } from '../utils/api';
 import { useAuthStore } from '../store/auth';
@@ -26,6 +33,11 @@ const registerSchema = z
 type RegisterForm = z.infer<typeof registerSchema>;
 
 function normalizeRegisterError(error: any) {
+  const code = String(error?.response?.data?.code || error?.code || '').trim();
+  if (code) {
+    return normalizeAuthError(error, '注册失败，请稍后再试');
+  }
+
   const rawMessage =
     error?.response?.data?.message ||
     error?.response?.data?.error ||
@@ -75,6 +87,20 @@ export default function RegisterPage() {
     return () => window.clearTimeout(timer);
   }, [countdown]);
 
+  const sendRegisterPhoneCode = async (phoneNumber: string) => {
+    try {
+      return await apiClient.post(
+        AUTH_ENDPOINTS.sendPhoneCode,
+        buildSendPhoneCodePayload({ phoneNumber, purpose: 'register' }),
+      );
+    } catch (error) {
+      return await apiClient.post('/api/sms/send-code', {
+        phoneNumber,
+        purpose: 'register',
+      });
+    }
+  };
+
   const handleSendCode = async () => {
     const phone = getValues('phone')?.trim();
     setError('');
@@ -87,10 +113,7 @@ export default function RegisterPage() {
 
     try {
       setIsSendingCode(true);
-      const response = await apiClient.post('/api/sms/send-code', {
-        phoneNumber: phone,
-        purpose: 'register',
-      });
+      const response = await sendRegisterPhoneCode(phone);
 
       if (response.data?.success === false) {
         throw new Error(response.data?.message || '验证码发送失败');
@@ -111,21 +134,20 @@ export default function RegisterPage() {
     setNotice('');
 
     try {
-      const response = await apiClient.post('/api/auth/register', {
+      const response = await apiClient.post('/api/auth/register', buildRegisterPayload({
         username: data.username,
+        password: data.password,
         nickname: data.nickname,
         email: data.email || undefined,
         phone: data.phone,
         phoneCode: data.phoneCode,
-        password: data.password,
-      });
+      }));
 
-      const payload = response.data?.data ?? response.data;
-      const { user, token, refreshToken } = payload;
-      if (!user || !token) {
+      const session = extractAuthSession(response.data);
+      if (!session) {
         throw new Error('Invalid register response');
       }
-      setAuth(user, token, refreshToken);
+      setAuth(session.user, session.tokens.token, session.tokens.refreshToken);
       openReturnPath(returnPath, navigate);
     } catch (err: any) {
       setError(normalizeRegisterError(err));

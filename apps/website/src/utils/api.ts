@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { AUTH_ENDPOINTS, buildAuthClientHeaders, buildRefreshTokenPayload } from '@fhwh/shared/utils/auth';
 import {
   clearSharedAuth,
   readSharedRefreshToken,
@@ -36,6 +37,11 @@ export function createApiClient() {
     timeout: 30000,
     headers: {
       'Content-Type': 'application/json',
+      ...buildAuthClientHeaders({
+        clientType: 'web',
+        appId: 'fenghuang-website',
+        appVersion: (import.meta.env.VITE_APP_VERSION as string | undefined)?.trim(),
+      }),
     },
   });
 
@@ -63,7 +69,17 @@ export function createApiClient() {
         const refreshToken = readSharedRefreshToken();
         if (refreshToken) {
           try {
-            const response = await axios.post(`${API_BASE_URL}/api/auth/refresh`, { refreshToken });
+            const response = await axios.post(
+              `${API_BASE_URL}${AUTH_ENDPOINTS.refresh}`,
+              buildRefreshTokenPayload({ refreshToken }),
+              {
+                headers: buildAuthClientHeaders({
+                  clientType: 'web',
+                  appId: 'fenghuang-website',
+                  appVersion: (import.meta.env.VITE_APP_VERSION as string | undefined)?.trim(),
+                }),
+              }
+            );
             const nextPayload = response.data?.data ?? response.data;
             const token = nextPayload?.token;
             const newRefreshToken = nextPayload?.refreshToken;
