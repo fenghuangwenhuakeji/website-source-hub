@@ -1732,6 +1732,17 @@ button, input, textarea, select {
   text-align: right;
 }
 
+.auth-text-link {
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--fh-accent);
+  text-decoration: none;
+}
+
+.auth-text-link:hover {
+  text-decoration: underline;
+}
+
 .auth-shortcuts {
   display: flex;
   flex-wrap: wrap;

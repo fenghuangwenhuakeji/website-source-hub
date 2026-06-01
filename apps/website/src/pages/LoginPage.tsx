@@ -13,7 +13,7 @@ const loginSchema = z.object({
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
-type LoginMode = 'password' | 'sms' | 'wechat';
+type LoginMode = 'password' | 'sms' | 'wechat' | 'reset';
 
 function normalizePhone(value: string) {
   return value.replace(/\D/g, '');
@@ -21,7 +21,7 @@ function normalizePhone(value: string) {
 
 function parseLoginMode(search: string): LoginMode {
   const mode = new URLSearchParams(search).get('mode');
-  return mode === 'sms' || mode === 'wechat' ? mode : 'password';
+  return mode === 'sms' || mode === 'wechat' || mode === 'reset' ? mode : 'password';
 }
 
 export default function LoginPage() {
@@ -32,6 +32,7 @@ export default function LoginPage() {
   const mode = parseLoginMode(location.search);
   const wechatLoginHref = buildPathWithFrom('/login?mode=wechat', returnPath);
   const smsLoginHref = buildPathWithFrom('/login?mode=sms', returnPath);
+  const resetPasswordHref = buildPathWithFrom('/login?mode=reset', returnPath);
   const passwordLoginHref = buildPathWithFrom('/login', returnPath);
   const registerHref = buildPathWithFrom('/register', returnPath);
   const [error, setError] = useState('');
@@ -40,6 +41,12 @@ export default function LoginPage() {
   const [smsCode, setSmsCode] = useState('');
   const [smsSending, setSmsSending] = useState(false);
   const [smsLoading, setSmsLoading] = useState(false);
+  const [resetPhone, setResetPhone] = useState('');
+  const [resetCode, setResetCode] = useState('');
+  const [resetPassword, setResetPassword] = useState('');
+  const [resetConfirmPassword, setResetConfirmPassword] = useState('');
+  const [resetSending, setResetSending] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const [wechatLoading, setWechatLoading] = useState(false);
   const [wechatAuthUrl, setWechatAuthUrl] = useState('');
   const [wechatState, setWechatState] = useState('');
@@ -145,6 +152,70 @@ export default function LoginPage() {
     }
   };
 
+  const handleSendResetCode = async () => {
+    const phoneNumber = normalizePhone(resetPhone);
+    if (!/^1[3-9]\d{9}$/.test(phoneNumber)) {
+      setError('请输入正确的手机号');
+      return;
+    }
+
+    setResetSending(true);
+    setError('');
+
+    try {
+      const response = await apiClient.post('/api/auth/forgot-password/request', {
+        phoneNumber,
+      });
+      const payload = response.data?.data ?? response.data;
+      setResetPhone(phoneNumber);
+      setError(payload?.code ? `验证码已发送，开发验证码：${payload.code}` : '验证码已发送，请查收短信。');
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || '验证码发送失败');
+    } finally {
+      setResetSending(false);
+    }
+  };
+
+  const handleResetPassword = async () => {
+    const phoneNumber = normalizePhone(resetPhone);
+    if (!/^1[3-9]\d{9}$/.test(phoneNumber)) {
+      setError('请输入正确的手机号');
+      return;
+    }
+    if (!resetCode.trim()) {
+      setError('请输入短信验证码');
+      return;
+    }
+    if (resetPassword.length < 6) {
+      setError('新密码至少需要 6 位');
+      return;
+    }
+    if (resetPassword !== resetConfirmPassword) {
+      setError('两次输入的密码不一致');
+      return;
+    }
+
+    setResetLoading(true);
+    setError('');
+
+    try {
+      await apiClient.post('/api/auth/forgot-password/reset', {
+        phoneNumber,
+        code: resetCode.trim(),
+        newPassword: resetPassword,
+      });
+      setResetCode('');
+      setResetPassword('');
+      setResetConfirmPassword('');
+      setError('密码已重置，请使用手机号和新密码登录。');
+      navigate(buildPathWithFrom('/login', returnPath), { replace: true });
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || '密码重置失败');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   const startWechatPolling = (state: string) => {
     if (pollTimerRef.current) {
       window.clearInterval(pollTimerRef.current);
@@ -237,14 +308,16 @@ export default function LoginPage() {
         <section className="auth-form auth-card auth-card-login glass-card">
           <div className="section-kicker">登录</div>
           <h1 className="auth-title">
-            {mode === 'sms' ? '短信验证码登录' : mode === 'wechat' ? '微信登录' : '账号密码登录'}
+            {mode === 'sms' ? '短信验证码登录' : mode === 'wechat' ? '微信登录' : mode === 'reset' ? '找回密码' : '账号密码登录'}
           </h1>
           <p className="auth-form-copy">
             {mode === 'sms'
               ? '输入手机号和验证码，登录同一个凤煌账号。'
               : mode === 'wechat'
                 ? '使用微信授权登录，成功后会自动回到你的目标页面。'
-                : '使用用户名、邮箱或手机号登录。'}
+                : mode === 'reset'
+                  ? '通过已绑定手机号验证身份，并设置新的登录密码。'
+                  : '使用用户名、邮箱或手机号登录。'}
           </p>
 
           {error ? <div className="auth-alert">{error}</div> : null}
@@ -262,6 +335,13 @@ export default function LoginPage() {
                 <input {...register('password')} type="password" placeholder="请输入密码" />
                 {errors.password ? <small>{errors.password.message}</small> : null}
               </label>
+
+              <div className="auth-actions-inline">
+                <span className="auth-inline-hint">无法登录？</span>
+                <Link to={resetPasswordHref} className="auth-text-link">
+                  忘记密码
+                </Link>
+              </div>
 
               <button type="submit" className="btn btn-primary auth-submit" disabled={isLoading}>
                 {isLoading ? '登录中...' : '登录'}
@@ -288,6 +368,35 @@ export default function LoginPage() {
             </div>
           ) : null}
 
+          {mode === 'reset' ? (
+            <div className="auth-form-body">
+              <label className="auth-field">
+                <span>绑定手机号</span>
+                <input value={resetPhone} onChange={(event) => setResetPhone(event.target.value)} placeholder="请输入手机号" />
+              </label>
+              <div className="auth-code-row">
+                <label className="auth-field">
+                  <span>验证码</span>
+                  <input value={resetCode} onChange={(event) => setResetCode(event.target.value)} placeholder="请输入短信验证码" />
+                </label>
+                <button type="button" className="btn btn-secondary btn-sm" disabled={resetSending} onClick={() => void handleSendResetCode()}>
+                  {resetSending ? '发送中...' : '发送验证码'}
+                </button>
+              </div>
+              <label className="auth-field">
+                <span>新密码</span>
+                <input value={resetPassword} onChange={(event) => setResetPassword(event.target.value)} type="password" placeholder="至少 6 位" />
+              </label>
+              <label className="auth-field">
+                <span>确认新密码</span>
+                <input value={resetConfirmPassword} onChange={(event) => setResetConfirmPassword(event.target.value)} type="password" placeholder="再次输入新密码" />
+              </label>
+              <button type="button" className="btn btn-primary auth-submit" disabled={resetLoading} onClick={() => void handleResetPassword()}>
+                {resetLoading ? '提交中...' : '重置密码'}
+              </button>
+            </div>
+          ) : null}
+
           {mode === 'wechat' ? (
             <div className="auth-form-body">
               <div className="auth-alert">{wechatMessage}</div>
@@ -309,6 +418,11 @@ export default function LoginPage() {
             <a href={smsLoginHref} className="btn btn-secondary btn-sm">
               短信登录
             </a>
+            {mode !== 'reset' ? (
+              <Link to={resetPasswordHref} className="btn btn-secondary btn-sm">
+                忘记密码
+              </Link>
+            ) : null}
             <Link to={registerHref} className="btn btn-secondary btn-sm">
               立即注册
             </Link>
