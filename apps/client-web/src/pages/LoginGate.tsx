@@ -273,8 +273,8 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
 
   const showCodeMessage = (response: any, successText: string) => {
     message.success(response?.message || successText);
-    if (response?.code) {
-      message.info(`开发验证码：${response.code}`);
+    if (response?.devCode) {
+      message.info(`开发验证码：${response.devCode}`);
     }
   };
 

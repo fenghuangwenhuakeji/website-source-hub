@@ -87,7 +87,7 @@ router.post(
         success: true,
         code: 'AUTH_PHONE_CODE_SENT',
         message: 'Verification code sent successfully.',
-        ...(process.env.NODE_ENV === 'development' ? { code } : {}),
+        ...(process.env.NODE_ENV === 'development' ? { devCode: code } : {}),
       });
     } catch (error) {
       console.error('Failed to send SMS verification code:', error);

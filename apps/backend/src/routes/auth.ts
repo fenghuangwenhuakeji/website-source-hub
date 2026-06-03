@@ -629,7 +629,7 @@ router.post('/phone/code', async (req: Request, res: Response, next: NextFunctio
       success: true,
       code: 'AUTH_PHONE_CODE_SENT',
       message: 'Verification code sent successfully.',
-      ...(process.env.NODE_ENV === 'development' ? { code } : {}),
+      ...(process.env.NODE_ENV === 'development' ? { devCode: code } : {}),
     });
   } catch (error) {
     next(error);
