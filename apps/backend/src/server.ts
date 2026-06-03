@@ -70,9 +70,19 @@ const corsOrigins = new Set(
     .map((origin) => origin.trim())
     .filter(Boolean)
 );
+
+function isLoopbackHttpOrigin(origin: string): boolean {
+  try {
+    const parsed = new URL(origin);
+    return parsed.protocol === 'http:' && (parsed.hostname === '127.0.0.1' || parsed.hostname === 'localhost');
+  } catch {
+    return false;
+  }
+}
+
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || corsOrigins.has(origin)) {
+    if (!origin || corsOrigins.has(origin) || isLoopbackHttpOrigin(origin)) {
       callback(null, true);
       return;
     }
