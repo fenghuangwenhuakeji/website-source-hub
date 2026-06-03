@@ -402,7 +402,7 @@ export default function RechargeCenter() {
 
         if (next.status === 'paid' && handledPaidOrderRef.current !== activeOrder.orderNo) {
           handledPaidOrderRef.current = activeOrder.orderNo;
-          message.success('充值成功，积分已到账，请继续兑换时长。');
+          message.success('充值成功，长篇 Token/日权益已到账。');
           setOrderModalOpen(false);
           await refreshPage(true);
         }
@@ -499,7 +499,7 @@ export default function RechargeCenter() {
       }
 
       if (orderRes.data.isAdmin || orderRes.data.status === 'paid') {
-        message.success(orderRes?.message || '管理员直充成功，积分已到账。');
+        message.success(orderRes?.message || '管理员直充成功，长篇 Token/日权益已到账。');
         setCheckoutOpen(false);
         handledPaidOrderRef.current = orderRes.data.orderNo || null;
         await refreshPage(true);
@@ -881,7 +881,7 @@ export default function RechargeCenter() {
               <div className={styles.compactHeader}>
                 <div>
                   <Title level={2} className={styles.sectionTitle}>
-                    充值套餐
+                    长篇 Token/日套餐
                   </Title>
                 </div>
               </div>
@@ -922,14 +922,13 @@ export default function RechargeCenter() {
                           </div>
                           <div className={styles.packageMeta}>
                             <span className={styles.metaPill}>
-                              <GiftOutlined /> 基础 {item.points}
+                              <GiftOutlined /> 每日 {item.points.toLocaleString()} Token
                             </span>
-                            <span className={styles.metaPill}>
-                              <GiftOutlined /> 赠送 {item.bonusPoints}
-                            </span>
-                            <span className={styles.metaPill}>
-                              <WalletOutlined /> 到账 {item.points + item.bonusPoints}
-                            </span>
+                            {item.bonusPoints ? (
+                              <span className={styles.metaPill}>
+                                <GiftOutlined /> 加赠 {item.bonusPoints.toLocaleString()} Token/日
+                              </span>
+                            ) : null}
                             {item.duration ? (
                               <span className={styles.metaPill}>
                                 <ClockCircleOutlined /> {formatDuration(item.duration, item.durationUnit)}
@@ -1458,7 +1457,7 @@ export default function RechargeCenter() {
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>支付金额</span>
                   <span className={styles.detailValue}>{formatMoney(selectedPackage.price)}</span>
-                  <span className={styles.muted}>到账 {selectedPackage.points + selectedPackage.bonusPoints} 积分</span>
+                  <span className={styles.muted}>开通 {(selectedPackage.points + selectedPackage.bonusPoints).toLocaleString()} Token/日</span>
                 </div>
               </div>
             </div>
@@ -1532,7 +1531,7 @@ export default function RechargeCenter() {
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>支付金额</span>
                   <span className={styles.detailValue}>{formatMoney(activeOrder.amount)}</span>
-                  <span className={styles.muted}>到账 {activeOrder.points + activeOrder.bonusPoints} 积分</span>
+                  <span className={styles.muted}>每日 {(activeOrder.points + activeOrder.bonusPoints).toLocaleString()} Token</span>
                 </div>
                 <div className={styles.detailItem}>
                   <span className={styles.detailLabel}>支付方式</span>

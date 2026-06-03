@@ -132,10 +132,13 @@ function createSchema(database: DatabaseSync): void {
       id TEXT PRIMARY KEY,
       order_no TEXT NOT NULL UNIQUE,
       user_id TEXT NOT NULL,
+      package_id INTEGER,
       amount REAL NOT NULL,
       points INTEGER NOT NULL,
       bonus_points INTEGER DEFAULT 0,
       product_name TEXT NOT NULL,
+      duration INTEGER DEFAULT 30,
+      duration_unit TEXT DEFAULT 'day',
       status TEXT DEFAULT 'pending',
       pay_method TEXT NOT NULL,
       pay_time TEXT,
@@ -533,14 +536,10 @@ function seedDatabase(database: DatabaseSync): void {
   `);
 
   const packagePresets = [
-    [1, '8小时卡', '适合首次体验与临时使用', 9.9, 99, 0, 8, 'hour', 0, 1, 1],
-    [2, '日卡', '轻量高频使用的单日时长卡', 14.9, 149, 0, 1, 'day', 0, 1, 2],
-    [3, '周卡', '适合短周期连续使用', 29.9, 299, 0, 7, 'day', 0, 1, 3],
-    [4, '月卡', '主推卡种，适合长期稳定使用', 79.9, 799, 0, 30, 'day', 1, 1, 4],
-    [5, '季卡', '中长期用户的高性价比选择', 299, 2990, 0, 90, 'day', 0, 1, 5],
-    [6, '半年卡', '适合工作流深度接入与持续协作', 699, 6990, 0, 180, 'day', 0, 1, 6],
-    [7, '年卡', '全年稳定使用的旗舰方案', 999, 9990, 0, 365, 'day', 1, 1, 7],
-    [8, '永久卡', '一次开通，长期有效', 4999, 49990, 0, 0, 'permanent', 0, 1, 8],
+    [1, '长篇入门款', '30天 · 10万 Token/日', 9.9, 100000, 0, 30, 'day', 0, 1, 1],
+    [2, '长篇基础款', '30天 · 30万 Token/日', 29.9, 300000, 0, 30, 'day', 0, 1, 2],
+    [3, '长篇进阶版', '30天 · 50万 Token/日', 49.9, 500000, 0, 30, 'day', 1, 1, 3],
+    [4, '长篇白金版', '30天 · 100万 Token/日', 99.9, 1000000, 0, 30, 'day', 0, 1, 4],
   ] as const;
   packagePresets.forEach((preset) => upsertPackage.run(...preset));
 

@@ -50,6 +50,34 @@ async function getPackageBonusPoints(packageId?: number | null): Promise<number>
   return Number((rows[0] as any)?.bonus_points || 0);
 }
 
+function isPermanentPackage(pkg: any): boolean {
+  const unit = String(pkg.duration_unit || '').toLowerCase();
+  return unit === 'permanent' || unit === 'forever' || unit === 'lifetime' || Number(pkg.duration || 0) >= 999999;
+}
+
+async function grantLongbookRecharge(userId: string, pkg: any, connection?: PoolConnection) {
+  const dailyQuota = Math.max(1, Number(pkg.points || 0) + Number(pkg.bonus_points || 0));
+  const isPermanent = isPermanentPackage(pkg);
+  await upsertProductEntitlement(
+    {
+      userId,
+      productId: DEFAULT_LICENSE_PRODUCT_ID,
+      accessType: isPermanent ? 'permanent' : 'paid',
+      durationDays: isPermanent ? 0 : durationToSeconds(Number(pkg.duration || 30), pkg.duration_unit || 'day') / 86400,
+      isPermanent,
+      seatLimit: 1,
+      deviceLimit: 1,
+      features: {
+        dailyQuota,
+        dailyTokens: dailyQuota,
+        planName: pkg.name,
+        source: 'official_recharge',
+      },
+    },
+    connection
+  );
+}
+
 async function exchangeDurationProduct(userId: string, productId: string) {
   return transaction(async (connection) => {
     const products = await selectRows<any[]>(
@@ -225,8 +253,8 @@ router.post('/create', authMiddleware, async (req, res, next) => {
         pkg.name,
         pkg.points,
         pkg.price,
-        0,
-        null,
+        Number(pkg.duration || 30),
+        pkg.duration_unit || 'day',
         payMethod || 'wechat',
         isAdmin ? 'paid' : 'pending',
         isAdmin ? new Date() : null,
@@ -235,13 +263,7 @@ router.post('/create', authMiddleware, async (req, res, next) => {
 
     if (isAdmin) {
       const totalPoints = Number(pkg.points || 0) + Number(pkg.bonus_points || 0);
-      await query('UPDATE users SET points = COALESCE(points, 0) + ? WHERE id = ?', [totalPoints, userId]);
-      await insertPointsRecord({
-        userId,
-        points: totalPoints,
-        type: 'recharge',
-        description: `后台直充积分：${pkg.name}`,
-      });
+      await grantLongbookRecharge(userId, pkg);
 
       const referrerRows = await query<any[]>('SELECT referred_by FROM users WHERE id = ?', [userId]);
       const referrerId = (referrerRows[0] as any)?.referred_by;
@@ -254,7 +276,7 @@ router.post('/create', authMiddleware, async (req, res, next) => {
 
       return res.json({
         success: true,
-        message: '管理员已为用户充值积分',
+        message: '管理员已为用户开通长篇 Token/日权益',
         data: {
           orderId,
           orderNo,
@@ -295,23 +317,27 @@ router.post('/pay-callback', async (req, res, next) => {
     }
 
     const order = orders[0] as any;
-    const bonusPoints = await getPackageBonusPoints(order.package_id);
-    const totalPoints = Number(order.points || 0) + bonusPoints;
+    const packages = await query<any[]>(
+      'SELECT * FROM recharge_packages WHERE id = ? LIMIT 1',
+      [order.package_id]
+    );
+    const pkg = packages[0] || {
+      name: order.package_name,
+      points: order.points,
+      bonus_points: await getPackageBonusPoints(order.package_id),
+      duration: order.duration || 30,
+      duration_unit: order.duration_unit || 'day',
+    };
 
     await query(
       "UPDATE orders SET status = 'paid', paid_at = NOW() WHERE order_no = ?",
       [orderNo]
     );
-    await query('UPDATE users SET points = COALESCE(points, 0) + ? WHERE id = ?', [
-      totalPoints,
+    await query('UPDATE users SET total_recharge = COALESCE(total_recharge, 0) + ? WHERE id = ?', [
+      Number(order.amount || 0),
       order.user_id,
     ]);
-    await insertPointsRecord({
-      userId: String(order.user_id),
-      points: totalPoints,
-      type: 'recharge',
-      description: `充值到账积分：${order.package_name}`,
-    });
+    await grantLongbookRecharge(String(order.user_id), pkg);
 
     const referrerRows = await query<any[]>(
       'SELECT referred_by FROM users WHERE id = ? LIMIT 1',
@@ -322,7 +348,7 @@ router.post('/pay-callback', async (req, res, next) => {
       await applyRechargeCommission(referrerId, order.user_id, Number(order.points || 0), order.id);
     }
 
-    res.json({ success: true, message: '支付成功，积分已到账' });
+    res.json({ success: true, message: '支付成功，长篇 Token/日权益已到账' });
   } catch (error) {
     next(error);
   }

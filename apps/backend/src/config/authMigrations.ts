@@ -410,8 +410,20 @@ async function ensureMySqlRechargeColumns(): Promise<void> {
 
   const rechargeOrderColumns = await ensureMySqlColumns('recharge_orders', [
     {
+      name: 'package_id',
+      sql: 'ALTER TABLE recharge_orders ADD COLUMN package_id INT NULL',
+    },
+    {
       name: 'bonus_points',
       sql: 'ALTER TABLE recharge_orders ADD COLUMN bonus_points INT NOT NULL DEFAULT 0',
+    },
+    {
+      name: 'duration',
+      sql: 'ALTER TABLE recharge_orders ADD COLUMN duration INT NOT NULL DEFAULT 30',
+    },
+    {
+      name: 'duration_unit',
+      sql: "ALTER TABLE recharge_orders ADD COLUMN duration_unit VARCHAR(20) NOT NULL DEFAULT 'day'",
     },
     {
       name: 'product_name',
@@ -476,6 +488,8 @@ async function ensureMySqlRechargeColumns(): Promise<void> {
       `UPDATE recharge_orders
        SET bonus_points = COALESCE(bonus_points, 0),
            product_name = COALESCE(NULLIF(product_name, ''), ${packageNameExpr}, 'Recharge Order'),
+           duration = COALESCE(NULLIF(duration, 0), 30),
+           duration_unit = COALESCE(NULLIF(duration_unit, ''), 'day'),
            pay_time = COALESCE(pay_time, ${paidAtExpr}),
            paid_amount = COALESCE(paid_amount, amount),
            currency = COALESCE(NULLIF(currency, ''), 'CNY'),
@@ -492,6 +506,29 @@ async function ensureMySqlRechargeColumns(): Promise<void> {
        MODIFY COLUMN expire_time DATETIME NOT NULL`,
     );
   }
+
+  await execute(
+    `INSERT INTO recharge_packages (
+       id, name, description, price, points, bonus_points, duration, duration_unit, recommended, is_active, sort_order
+     ) VALUES
+       (1, '长篇入门款', '30天 · 10万 Token/日', 9.90, 100000, 0, 30, 'day', 0, 1, 1),
+       (2, '长篇基础款', '30天 · 30万 Token/日', 29.90, 300000, 0, 30, 'day', 0, 1, 2),
+       (3, '长篇进阶版', '30天 · 50万 Token/日', 49.90, 500000, 0, 30, 'day', 1, 1, 3),
+       (4, '长篇白金版', '30天 · 100万 Token/日', 99.90, 1000000, 0, 30, 'day', 0, 1, 4)
+     ON DUPLICATE KEY UPDATE
+       name = VALUES(name),
+       description = VALUES(description),
+       price = VALUES(price),
+       points = VALUES(points),
+       bonus_points = VALUES(bonus_points),
+       duration = VALUES(duration),
+       duration_unit = VALUES(duration_unit),
+       recommended = VALUES(recommended),
+       is_active = VALUES(is_active),
+       sort_order = VALUES(sort_order)`,
+  );
+
+  await execute('UPDATE recharge_packages SET is_active = 0 WHERE id NOT IN (1, 2, 3, 4)');
 
   const orderColumns = await ensureMySqlColumns('orders', [
     {

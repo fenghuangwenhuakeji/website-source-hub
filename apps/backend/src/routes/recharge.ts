@@ -69,7 +69,8 @@ router.post('/create', paymentRateLimiter, authMiddleware, async (req: Request, 
     const { productId, payMethod } = req.body;
 
     const products = await db.query<RowDataPacket[]>(
-      `SELECT id, name, price, points, COALESCE(bonus_points, 0) AS bonus_points
+      `SELECT id, name, price, points, COALESCE(bonus_points, 0) AS bonus_points,
+              duration, duration_unit
        FROM recharge_packages
        WHERE id = ? AND is_active = 1
        LIMIT 1`,
@@ -91,16 +92,20 @@ router.post('/create', paymentRateLimiter, authMiddleware, async (req: Request, 
 
     await db.execute(
       `INSERT INTO recharge_orders (
-        id, order_no, user_id, amount, points, bonus_points, product_name, status, pay_method, expire_time, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, NOW())`,
+        id, order_no, user_id, package_id, amount, points, bonus_points, product_name,
+        duration, duration_unit, status, pay_method, expire_time, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?, ?, NOW())`,
       [
         orderId,
         orderNo,
         userId,
+        product.id,
         product.price,
         product.points,
         product.bonus_points,
         product.name,
+        Number(product.duration || 30),
+        product.duration_unit || 'day',
         payMethod,
         expireTime,
       ]

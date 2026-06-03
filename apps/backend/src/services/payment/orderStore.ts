@@ -1,7 +1,7 @@
 import type { PoolConnection } from '../../config/database.js';
 import { RowDataPacket, db } from '../../config/database.js';
 import { ApiError } from '../../middleware/errorHandler.js';
-import { insertPointsRecord } from '../../utils/pointsRecord.js';
+import { DEFAULT_LICENSE_PRODUCT_ID, upsertProductEntitlement } from '../../utils/licenseCenter.js';
 import { applyRechargeCommission } from '../../utils/referralProgram.js';
 import { toDate, toNumber } from './common.js';
 import type {
@@ -55,12 +55,68 @@ function mapRechargeOrder(row: any): PaymentOrder {
     createdAt: toDate(row.created_at),
     payTime: toDate(row.pay_time),
     expireTime: toDate(row.expire_time),
-    packageId: null,
-    duration: 0,
-    durationUnit: null,
+    packageId: row.package_id === null || row.package_id === undefined ? null : Number(row.package_id),
+    duration: toNumber(row.duration),
+    durationUnit: row.duration_unit ? String(row.duration_unit) : null,
     providerTransactionId: row.provider_transaction_id ? String(row.provider_transaction_id) : null,
     providerStatus: row.provider_status ? String(row.provider_status) : null,
   };
+}
+
+function isPermanentLongbookOrder(order: PaymentOrder): boolean {
+  const unit = String(order.durationUnit || '').toLowerCase();
+  return unit === 'permanent' || unit === 'forever' || unit === 'lifetime' || order.duration >= 999999;
+}
+
+function durationDaysForOrder(order: PaymentOrder): number {
+  if (isPermanentLongbookOrder(order)) {
+    return 0;
+  }
+
+  const duration = Math.max(toNumber(order.duration, 30), 1);
+  const unit = String(order.durationUnit || 'day').toLowerCase();
+
+  if (unit === 'hour') {
+    return Math.max(1, Math.ceil(duration / 24));
+  }
+  if (unit === 'week') {
+    return duration * 7;
+  }
+  if (unit === 'month') {
+    return duration * 30;
+  }
+  if (unit === 'year') {
+    return duration * 365;
+  }
+
+  return duration;
+}
+
+async function grantLongbookEntitlement(
+  connection: PoolConnection,
+  order: PaymentOrder
+): Promise<void> {
+  const dailyQuota = Math.max(1, order.points + order.bonusPoints);
+  const isPermanent = isPermanentLongbookOrder(order);
+  await upsertProductEntitlement(
+    {
+      userId: order.userId,
+      productId: DEFAULT_LICENSE_PRODUCT_ID,
+      accessType: isPermanent ? 'permanent' : 'paid',
+      durationDays: durationDaysForOrder(order),
+      isPermanent,
+      seatLimit: 1,
+      deviceLimit: 1,
+      features: {
+        dailyQuota,
+        dailyTokens: dailyQuota,
+        planName: order.productName,
+        source: 'official_recharge',
+        orderNo: order.orderNo,
+      },
+    },
+    connection
+  );
 }
 
 function mapLegacyOrder(row: any): PaymentOrder {
@@ -147,7 +203,6 @@ async function markRechargeOrderAsPaid(
   provider: PaymentProvider,
   payload: PaymentProcessPayload
 ): Promise<PaymentOrder> {
-  const totalPoints = order.points + order.bonusPoints;
   const paidAmount = payload.paidAmount ?? order.amount;
   const paidAt = payload.paidAt || new Date();
 
@@ -185,20 +240,12 @@ async function markRechargeOrderAsPaid(
 
   await connection.execute(
     `UPDATE users
-     SET points = COALESCE(points, 0) + ?, total_recharge = COALESCE(total_recharge, 0) + ?
+     SET total_recharge = COALESCE(total_recharge, 0) + ?
      WHERE id = ?`,
-    [totalPoints, order.amount, order.userId]
+    [order.amount, order.userId]
   );
 
-  await insertPointsRecord({
-    userId: order.userId,
-    points: totalPoints,
-    type: 'recharge',
-    description: `Recharge points: ${order.productName}`,
-    connection,
-  });
-
-  await insertPointsLog(connection, order, totalPoints);
+  await grantLongbookEntitlement(connection, order);
   await applyReferrerCommission(connection, order);
 
   return {
@@ -217,7 +264,6 @@ async function markLegacyOrderAsPaid(
   provider: PaymentProvider,
   payload: PaymentProcessPayload
 ): Promise<PaymentOrder> {
-  const totalPoints = order.points + order.bonusPoints;
   const paidAmount = payload.paidAmount ?? order.amount;
   const paidAt = payload.paidAt || new Date();
 
@@ -255,20 +301,12 @@ async function markLegacyOrderAsPaid(
 
   await connection.execute(
     `UPDATE users
-     SET points = COALESCE(points, 0) + ?, total_recharge = COALESCE(total_recharge, 0) + ?
+     SET total_recharge = COALESCE(total_recharge, 0) + ?
      WHERE id = ?`,
-    [totalPoints, order.amount, order.userId]
+    [order.amount, order.userId]
   );
 
-  await insertPointsRecord({
-    userId: order.userId,
-    points: totalPoints,
-    type: 'recharge',
-    description: `Recharge points: ${order.productName}`,
-    connection,
-  });
-
-  await insertPointsLog(connection, order, totalPoints);
+  await grantLongbookEntitlement(connection, order);
   await applyReferrerCommission(connection, order);
 
   return {
@@ -285,16 +323,20 @@ export async function findPaymentOrder(params: {
   orderId?: string;
   orderNo?: string;
 }): Promise<PaymentOrder | null> {
-  const { sql, params: values } = buildOrderWhereClause(params.orderId, params.orderNo);
+  const rechargeWhere = buildOrderWhereClause(params.orderId, params.orderNo, 'ro');
 
   const rechargeOrders = await db.query<RowDataPacket[]>(
-    `SELECT id, order_no, user_id, amount, points, COALESCE(bonus_points, 0) AS bonus_points,
-            product_name, status, pay_method, pay_time, expire_time, created_at,
+    `SELECT ro.id, ro.order_no, ro.user_id, ro.amount, ro.points, COALESCE(ro.bonus_points, 0) AS bonus_points,
+            COALESCE(ro.product_name, rp.name, 'Recharge Order') AS product_name,
+            COALESCE(NULLIF(ro.duration, 0), rp.duration, 30) AS duration,
+            COALESCE(NULLIF(ro.duration_unit, ''), rp.duration_unit, 'day') AS duration_unit,
+            ro.status, ro.pay_method, ro.pay_time, ro.expire_time, ro.created_at,
             provider_transaction_id, provider_status
-     FROM recharge_orders
-     WHERE ${sql}
+     FROM recharge_orders ro
+     LEFT JOIN recharge_packages rp ON rp.id = ro.package_id
+     WHERE ${rechargeWhere.sql}
      LIMIT 1`,
-    values
+    rechargeWhere.params
   );
 
   if (rechargeOrders.length > 0) {
@@ -397,11 +439,15 @@ export async function processPaymentSuccess(
 ): Promise<PaymentOrder | null> {
   return db.transaction(async (connection) => {
     const [rechargeRows] = await connection.execute(
-      `SELECT id, order_no, user_id, amount, points, COALESCE(bonus_points, 0) AS bonus_points,
-              product_name, status, pay_method, pay_time, expire_time, created_at,
-              provider_transaction_id, provider_status
-       FROM recharge_orders
-       WHERE order_no = ?
+      `SELECT ro.id, ro.order_no, ro.user_id, ro.amount, ro.points, COALESCE(ro.bonus_points, 0) AS bonus_points,
+              COALESCE(ro.product_name, rp.name, 'Recharge Order') AS product_name,
+              COALESCE(NULLIF(ro.duration, 0), rp.duration, 30) AS duration,
+              COALESCE(NULLIF(ro.duration_unit, ''), rp.duration_unit, 'day') AS duration_unit,
+              ro.status, ro.pay_method, ro.pay_time, ro.expire_time, ro.created_at,
+              ro.package_id, ro.provider_transaction_id, ro.provider_status
+       FROM recharge_orders ro
+       LEFT JOIN recharge_packages rp ON rp.id = ro.package_id
+       WHERE ro.order_no = ?
        LIMIT 1
        FOR UPDATE`,
       [orderNo]
