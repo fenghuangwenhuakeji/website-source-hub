@@ -262,6 +262,18 @@ const api = {
       request(`/license/products/${encodeURIComponent(productId)}/release-seat`, { method: 'POST', body: data }),
     redeemCode: (productId: string, data: { code: string }) =>
       request(`/license/products/${encodeURIComponent(productId)}/redeem-code`, { method: 'POST', body: data }),
+    createCodes: (data: {
+      productId?: string;
+      planName?: string;
+      durationDays: number;
+      seatLimit?: number;
+      deviceLimit?: number;
+      quantity: number;
+      prefix?: string;
+      note?: string;
+      expiresInDays?: number;
+      isPermanent?: boolean;
+    }) => request('/license/admin/license-codes', { method: 'POST', body: data }),
   },
   wechat: {
     getLoginQrcode: () => request('/wechat/login-qrcode'),

@@ -7,9 +7,11 @@ import {
   Empty,
   Form,
   Input,
+  InputNumber,
   Modal,
   QRCode,
   Row,
+  Select,
   Tag,
   Typography,
   message,
@@ -85,6 +87,8 @@ type ReferralRulesData = {
 type ProfileData = {
   username?: string;
   nickname?: string;
+  role?: string;
+  isAdmin?: boolean;
   phone?: string | null;
   referralCode?: string | null;
   points?: number;
@@ -110,6 +114,13 @@ type ProfileData = {
     canEnter?: boolean;
     remainingSeconds?: number;
   };
+  license?: {
+    canEnter?: boolean;
+    isPermanent?: boolean;
+    isTrial?: boolean;
+    expiresAt?: string | null;
+    remainingSeconds?: number;
+  };
 };
 
 type AccessData = {
@@ -130,6 +141,17 @@ type ActiveOrder = {
   status: string;
   expireTime?: string | null;
   qrCode: string;
+};
+
+type LongbookLicenseCodeForm = {
+  durationMode: '30' | '90' | '365' | 'custom' | 'permanent';
+  durationDays?: number;
+  quantity: number;
+  prefix?: string;
+  planName?: string;
+  seatLimit: number;
+  deviceLimit: number;
+  note?: string;
 };
 
 function toNumber(value: unknown, fallback = 0) {
@@ -227,6 +249,11 @@ function formatCommissionReward(rule: ReferralCommissionRule, boosted = false) {
   return formatMoney(rewardAmount);
 }
 
+function isAdminRole(profile?: ProfileData | null) {
+  const role = String(profile?.role || '').toLowerCase();
+  return Boolean(profile?.isAdmin) || role === 'admin' || role === 'rootadmin' || role === 'super_admin';
+}
+
 export default function RechargeCenter() {
   const navigate = useNavigate();
   const handledPaidOrderRef = useRef<string | null>(null);
@@ -243,7 +270,10 @@ export default function RechargeCenter() {
   const [payMethod, setPayMethod] = useState<PayMethod>('alipay');
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [redeemForm] = Form.useForm<{ code: string }>();
+  const [licenseCodeForm] = Form.useForm<LongbookLicenseCodeForm>();
   const [redeemLoading, setRedeemLoading] = useState(false);
+  const [licenseCodeGenerating, setLicenseCodeGenerating] = useState(false);
+  const [generatedLicenseCodes, setGeneratedLicenseCodes] = useState<string[]>([]);
   const [orderModalOpen, setOrderModalOpen] = useState(false);
   const [submittingId, setSubmittingId] = useState<string | null>(null);
   const [exchangeSubmittingId, setExchangeSubmittingId] = useState<string | null>(null);
@@ -298,6 +328,7 @@ export default function RechargeCenter() {
   const withdrawalNotice =
     String(referralRules?.withdrawalNotice || '').trim() ||
     `钻石按 T+${settlementDays} 结算，达到 ${formatMoney(withdrawThresholdAmount)} 门槛后才能申请提现。`;
+  const canGenerateLongbookCodes = isAdminRole(profile);
 
   useEffect(() => {
     if (profile?.license?.isPermanent || profile?.duration?.isPermanent) {
@@ -555,6 +586,61 @@ export default function RechargeCenter() {
       message.error(error?.message || error?.response?.data?.message || '卡密激活失败。');
     } finally {
       setRedeemLoading(false);
+    }
+  }
+
+  async function handleGenerateLongbookCodes() {
+    try {
+      const values = await licenseCodeForm.validateFields();
+      const isPermanent = values.durationMode === 'permanent';
+      const durationDays = isPermanent
+        ? 0
+        : values.durationMode === 'custom'
+          ? Number(values.durationDays || 0)
+          : Number(values.durationMode || 30);
+
+      if (!isPermanent && durationDays <= 0) {
+        throw new Error('请输入有效的授权天数。');
+      }
+
+      setLicenseCodeGenerating(true);
+      const response: any = await api.license.createCodes({
+        productId: 'fenghuang',
+        planName:
+          values.planName ||
+          (isPermanent ? '长篇小说永久赠送码' : `长篇小说 ${durationDays} 天赠送码`),
+        durationDays,
+        seatLimit: Number(values.seatLimit || 1),
+        deviceLimit: Number(values.deviceLimit || 1),
+        quantity: Number(values.quantity || 1),
+        prefix: String(values.prefix || 'LONG').trim() || 'LONG',
+        note: String(values.note || '官方赠送').trim() || '官方赠送',
+        isPermanent,
+      });
+
+      const codes = Array.isArray(response?.data?.codes) ? response.data.codes.map(String) : [];
+      if (!response?.success || codes.length === 0) {
+        throw new Error(response?.message || '长篇卡密生成失败。');
+      }
+
+      setGeneratedLicenseCodes(codes);
+      message.success(`已生成 ${codes.length} 个长篇卡密。`);
+    } catch (error: any) {
+      message.error(error?.message || error?.response?.data?.message || '长篇卡密生成失败。');
+    } finally {
+      setLicenseCodeGenerating(false);
+    }
+  }
+
+  async function handleCopyGeneratedCodes() {
+    const text = generatedLicenseCodes.join('\n');
+    if (!text) return;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      message.success('已复制生成的长篇卡密。');
+    } catch {
+      message.warning('浏览器未允许自动复制，请手动选中复制。');
     }
   }
 
@@ -865,6 +951,158 @@ export default function RechargeCenter() {
                 )}
               </Row>
             </section>
+
+            {canGenerateLongbookCodes ? (
+              <section className={styles.section}>
+                <div className={styles.compactHeader}>
+                  <div>
+                    <Title level={2} className={styles.sectionTitle}>
+                      长篇卡密生成
+                    </Title>
+                  </div>
+                </div>
+
+                <Card className={styles.surfaceCard}>
+                  <div className={styles.cardTitleRow}>
+                    <div>
+                      <Title level={3} className={styles.cardTitle}>
+                        官方赠送码
+                      </Title>
+                      <Text className={styles.muted}>
+                        这里生成的是长篇桌面端授权码，进入官网授权中心，不进入中短篇积分钱包。
+                      </Text>
+                    </div>
+                    <Tag color="cyan" style={{ marginInlineEnd: 0, borderRadius: 999 }}>
+                      fenghuang
+                    </Tag>
+                  </div>
+
+                  <Alert
+                    showIcon
+                    type="warning"
+                    message="长篇和中短篇兑换码已分离"
+                    description="生成后发给用户，用户在长篇软件里兑换；不要把这里的码发到中短篇积分兑换入口。"
+                  />
+
+                  <Form
+                    form={licenseCodeForm}
+                    layout="vertical"
+                    initialValues={{
+                      durationMode: '30',
+                      quantity: 10,
+                      prefix: 'LONG',
+                      seatLimit: 1,
+                      deviceLimit: 1,
+                      note: '官方赠送',
+                    }}
+                    style={{ marginTop: 4 }}
+                  >
+                    <Row gutter={[14, 0]}>
+                      <Col xs={24} md={8}>
+                        <Form.Item name="durationMode" label="授权时长">
+                          <Select
+                            size="large"
+                            options={[
+                              { label: '30 天', value: '30' },
+                              { label: '90 天', value: '90' },
+                              { label: '365 天', value: '365' },
+                              { label: '自定义天数', value: 'custom' },
+                              { label: '永久', value: 'permanent' },
+                            ]}
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Form.Item noStyle shouldUpdate={(prev, next) => prev.durationMode !== next.durationMode}>
+                        {({ getFieldValue }) =>
+                          getFieldValue('durationMode') === 'custom' ? (
+                            <Col xs={24} md={8}>
+                              <Form.Item
+                                name="durationDays"
+                                label="自定义天数"
+                                rules={[{ required: true, message: '请输入授权天数' }]}
+                              >
+                                <InputNumber size="large" min={1} max={3650} precision={0} style={{ width: '100%' }} />
+                              </Form.Item>
+                            </Col>
+                          ) : null
+                        }
+                      </Form.Item>
+                      <Col xs={24} md={8}>
+                        <Form.Item
+                          name="quantity"
+                          label="生成数量"
+                          rules={[{ required: true, message: '请输入生成数量' }]}
+                        >
+                          <InputNumber size="large" min={1} max={500} precision={0} style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Form.Item name="prefix" label="前缀">
+                          <Input size="large" maxLength={12} placeholder="LONG" />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Form.Item name="seatLimit" label="席位数">
+                          <InputNumber size="large" min={1} max={20} precision={0} style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Form.Item name="deviceLimit" label="设备数">
+                          <InputNumber size="large" min={1} max={20} precision={0} style={{ width: '100%' }} />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Form.Item name="planName" label="批次名称">
+                          <Input size="large" placeholder="默认按时长自动命名" />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={16}>
+                        <Form.Item name="note" label="备注">
+                          <Input size="large" placeholder="官方赠送" />
+                        </Form.Item>
+                      </Col>
+                    </Row>
+
+                    <div className={styles.toolbarActions}>
+                      <Button
+                        type="primary"
+                        size="large"
+                        className={styles.primaryButton}
+                        loading={licenseCodeGenerating}
+                        onClick={() => void handleGenerateLongbookCodes()}
+                      >
+                        生成长篇卡密
+                      </Button>
+                      <Button
+                        size="large"
+                        className={styles.secondaryButton}
+                        disabled={generatedLicenseCodes.length === 0}
+                        onClick={() => void handleCopyGeneratedCodes()}
+                      >
+                        复制结果
+                      </Button>
+                    </div>
+                  </Form>
+
+                  {generatedLicenseCodes.length > 0 ? (
+                    <div className={styles.generatedCodePanel}>
+                      <div className={styles.cardTitleRow}>
+                        <Text className={styles.muted}>本次生成 {generatedLicenseCodes.length} 个</Text>
+                        <Button className={styles.secondaryButton} onClick={() => void handleCopyGeneratedCodes()}>
+                          一键复制
+                        </Button>
+                      </div>
+                      <Input.TextArea
+                        readOnly
+                        className={styles.generatedCodeTextarea}
+                        autoSize={{ minRows: 4, maxRows: 10 }}
+                        value={generatedLicenseCodes.join('\n')}
+                      />
+                    </div>
+                  ) : null}
+                </Card>
+              </section>
+            ) : null}
 
             <section className={styles.section}>
               <div className={styles.compactHeader}>

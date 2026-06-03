@@ -1198,6 +1198,21 @@
   width: 100%;
 }
 
+.generatedCodePanel {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  background: rgba(10, 16, 28, 0.56);
+}
+
+.generatedCodeTextarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace !important;
+  letter-spacing: 0 !important;
+  line-height: 1.7 !important;
+}
+
 .infoAlert {
   border-radius: 20px !important;
   border-color: rgba(148, 163, 184, 0.16) !important;
