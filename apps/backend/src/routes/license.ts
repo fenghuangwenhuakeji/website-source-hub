@@ -70,7 +70,7 @@ router.post('/products/:productId/issue', authMiddleware, async (req: Request, r
   }
 });
 
-router.post('/products/:productId/redeem-code', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+router.post(['/products/:productId/redeem-code', '/products/:productId/redeem'], authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = (req as any).user;
     const productId = productIdFromRequest(req);
