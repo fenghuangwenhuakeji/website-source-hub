@@ -14,6 +14,7 @@
     "build:backend": "npm --prefix apps/backend run build",
     "build:desktop-main": "npm --prefix apps/client-desktop run build:win",
     "build:acceptance:win": "npm run install:acceptance:win && npm run build:website && npm run build:client-web && npm run build:admin-web && npm run build:backend && npm --prefix apps/client-desktop run build:win:acceptance",
-    "package:longbook": "node tools/package-longbook-download.mjs"
+    "package:longbook": "node tools/package-longbook-download.mjs",
+    "package:longbook:desktop": "node tools/package-longbook-desktop.mjs"
   }
 }

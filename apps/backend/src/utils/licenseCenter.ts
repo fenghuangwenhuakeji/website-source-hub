@@ -727,6 +727,7 @@ export async function createLicenseCodes(input: {
   note?: string;
   expiresInDays?: number;
   isPermanent?: boolean;
+  features?: Record<string, unknown>;
 }) {
   const productId = normalizeProductId(input.productId);
   await getProduct(productId);
@@ -736,6 +737,7 @@ export async function createLicenseCodes(input: {
   const expiredAt = input.expiresInDays
     ? new Date(Date.now() + Math.max(Number(input.expiresInDays), 1) * 86400 * 1000)
     : null;
+  const features = JSON.stringify(input.features || {});
 
   for (let index = 0; index < quantity; index += 1) {
     const displayCode = await generateUniqueLicenseCode(input.prefix, undefined, localCodes);
@@ -744,7 +746,7 @@ export async function createLicenseCodes(input: {
       `INSERT INTO license_codes (
          id, code, display_code, product_id, plan_name, duration_days, seat_limit, device_limit,
          is_permanent, status, features, generated_by, note, expired_at, created_at, updated_at
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'unused', '{}', ?, ?, ?, NOW(), NOW())`,
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'unused', ?, ?, ?, ?, NOW(), NOW())`,
       [
         uuidv4(),
         code,
@@ -755,6 +757,7 @@ export async function createLicenseCodes(input: {
         Math.max(Number(input.seatLimit || 1), 1),
         Math.max(Number(input.deviceLimit || 1), 1),
         Boolean(input.isPermanent),
+        features,
         input.generatedBy || null,
         input.note || null,
         expiredAt,

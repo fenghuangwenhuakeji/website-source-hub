@@ -604,14 +604,19 @@ export default function RechargeCenter() {
       }
 
       setLicenseCodeGenerating(true);
+      const dailyQuota = Math.max(1, Number(values.dailyQuota || 1000000));
       const response: any = await api.license.createCodes({
         productId: 'fenghuang',
         planName:
           values.planName ||
-          (isPermanent ? '长篇小说永久赠送码' : `长篇小说 ${durationDays} 天赠送码`),
+          (isPermanent
+            ? `长篇小说永久赠送码（${dailyQuota.toLocaleString()} Token/日）`
+            : `长篇小说 ${durationDays} 天赠送码（${dailyQuota.toLocaleString()} Token/日）`),
         durationDays,
         seatLimit: Number(values.seatLimit || 1),
         deviceLimit: Number(values.deviceLimit || 1),
+        dailyQuota,
+        dailyTokens: dailyQuota,
         quantity: Number(values.quantity || 1),
         prefix: String(values.prefix || 'LONG').trim() || 'LONG',
         note: String(values.note || '官方赠送').trim() || '官方赠送',
@@ -969,7 +974,7 @@ export default function RechargeCenter() {
                         官方赠送码
                       </Title>
                       <Text className={styles.muted}>
-                        这里生成的是长篇桌面端授权码，进入官网授权中心，不进入中短篇积分钱包。
+                        这里生成的是长篇桌面端 Token/日授权码，进入官网授权中心，不进入中短篇积分钱包。
                       </Text>
                     </div>
                     <Tag color="cyan" style={{ marginInlineEnd: 0, borderRadius: 999 }}>
@@ -993,6 +998,7 @@ export default function RechargeCenter() {
                       prefix: 'LONG',
                       seatLimit: 1,
                       deviceLimit: 1,
+                      dailyQuota: 1000000,
                       note: '官方赠送',
                     }}
                     style={{ marginTop: 4 }}
@@ -1039,6 +1045,22 @@ export default function RechargeCenter() {
                       <Col xs={24} md={8}>
                         <Form.Item name="prefix" label="前缀">
                           <Input size="large" maxLength={12} placeholder="LONG" />
+                        </Form.Item>
+                      </Col>
+                      <Col xs={24} md={8}>
+                        <Form.Item
+                          name="dailyQuota"
+                          label="每日 Token"
+                          rules={[{ required: true, message: '请输入每日 Token 额度' }]}
+                        >
+                          <InputNumber
+                            size="large"
+                            min={1}
+                            max={100000000}
+                            step={10000}
+                            precision={0}
+                            style={{ width: '100%' }}
+                          />
                         </Form.Item>
                       </Col>
                       <Col xs={24} md={8}>

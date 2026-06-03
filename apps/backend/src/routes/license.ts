@@ -27,6 +27,14 @@ function productIdFromRequest(req: Request): string {
   return String(req.params.productId || DEFAULT_LICENSE_PRODUCT_ID);
 }
 
+function normalizePositiveInteger(value: unknown, fallback: number, max: number): number {
+  const parsed = Math.floor(Number(value));
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return fallback;
+  }
+  return Math.min(parsed, max);
+}
+
 router.get('/products/:productId/status', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = (req as any).user;
@@ -127,6 +135,12 @@ router.post('/admin/license-codes', authMiddleware, async (req: Request, res: Re
   try {
     requireAdmin(req);
     const user = (req as any).user;
+    const dailyQuota = normalizePositiveInteger(req.body?.dailyQuota ?? req.body?.dailyTokens, 1000000, 100000000);
+    const features = {
+      dailyQuota,
+      dailyTokens: dailyQuota,
+      planName: req.body?.planName || undefined,
+    };
     const codes = await createLicenseCodes({
       productId: req.body?.productId || DEFAULT_LICENSE_PRODUCT_ID,
       planName: req.body?.planName,
@@ -139,6 +153,7 @@ router.post('/admin/license-codes', authMiddleware, async (req: Request, res: Re
       note: req.body?.note,
       expiresInDays: req.body?.expiresInDays ? Number(req.body.expiresInDays) : undefined,
       isPermanent: Boolean(req.body?.isPermanent),
+      features,
     });
     res.json({ success: true, data: { codes } });
   } catch (error) {

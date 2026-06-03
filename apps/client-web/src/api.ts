@@ -268,6 +268,8 @@ const api = {
       durationDays: number;
       seatLimit?: number;
       deviceLimit?: number;
+      dailyQuota?: number;
+      dailyTokens?: number;
       quantity: number;
       prefix?: string;
       note?: string;

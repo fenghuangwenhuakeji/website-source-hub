@@ -3,12 +3,14 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const http = require('http');
 const path = require('path');
+const runtimePackage = require('../package.json');
 
-const APP_NAME = '凤煌';
-const APP_ID = 'com.fenghuang.desktop';
-const APP_PROTOCOL = 'fenghuang';
+const DESKTOP_CONFIG = runtimePackage.fenghuangDesktop || {};
+const APP_NAME = DESKTOP_CONFIG.appName || '凤煌';
+const APP_ID = DESKTOP_CONFIG.appId || 'com.fenghuang.desktop';
+const APP_PROTOCOL = DESKTOP_CONFIG.protocol || 'fenghuang';
 const DEFAULT_CLOUD_ORIGIN = 'https://fhwhkj.top';
-const DEFAULT_ENTRY_PATH = '/access/main';
+const DEFAULT_ENTRY_PATH = DESKTOP_CONFIG.defaultEntryPath || '/access/main';
 const DESKTOP_AUTH_BRIDGE_PATH = '/__desktop-auth-bridge';
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 const ACCEPTANCE_MODE_MARKER = path.join(DIST_DIR, '.acceptance-mode.json');
@@ -355,9 +357,11 @@ function getStaticDir() {
 }
 
 function ensureFrontendBuilt() {
-    const indexFile = path.join(DIST_DIR, 'index.html');
-    if (!fs.existsSync(indexFile)) {
-        throw new Error(`未找到本地前端产物：${indexFile}`);
+    const entryPath = getEntryPath();
+    const entryFile = resolveStaticFile(entryPath);
+
+    if (!entryFile || !fs.existsSync(entryFile)) {
+        throw new Error(`未找到本地前端入口：${entryPath}`);
     }
 }
 
@@ -812,10 +816,10 @@ function setupApiHandler() {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
+                    ...headers,
                     'User-Agent': `FenghuangDesktop/${app.getVersion()} Electron/${process.versions.electron}`,
                     'X-Client-Type': 'desktop',
                     'X-App-Version': app.getVersion(),
-                    ...headers,
                 },
             };
 

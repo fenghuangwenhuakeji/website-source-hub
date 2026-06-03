@@ -6,6 +6,7 @@ dist/
 dist-*/
 build/
 release/
+release-*/
 desktop-package/
 .codex-preview/
 
@@ -34,6 +35,9 @@ apps/backend/data/
 *.7z
 *.rar
 *.b64
+*.blockmap
+*.dmg
+*.exe
 
 # logs
 *.log
