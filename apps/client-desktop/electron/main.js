@@ -314,7 +314,7 @@ async function loadLocalAppWithAuthFromCloud() {
     cloudAuthBridgeInProgress = true;
     const authSnapshot = await readAuthSnapshotFromCurrentPage();
     if (!authSnapshot?.token) {
-        mainWindow.loadURL(buildCloudUrl(`/login?from=${encodeURIComponent(DEFAULT_ENTRY_PATH)}`));
+        mainWindow.loadURL(buildCloudUrl(`/login?forceLogin=1&from=${encodeURIComponent(DEFAULT_ENTRY_PATH)}`));
         cloudAuthBridgeInProgress = false;
         return;
     }

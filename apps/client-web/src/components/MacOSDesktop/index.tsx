@@ -427,7 +427,7 @@ const MacOSDesktop: React.FC<MacOSDesktopProps> = ({ onOpenRecharge }) => {
 
   const openLoginGate = useCallback((mode: 'password' | 'register' = 'password') => {
     if (typeof window === 'undefined') return;
-    const authPath = mode === 'register' ? '/register' : '/login';
+    const authPath = mode === 'register' ? '/register?forceLogin=1' : '/login?forceLogin=1';
     window.location.assign(resolveOfficialSiteUrl(buildOfficialPath(authPath, { from: '/access/main' })));
   }, []);
 

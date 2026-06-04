@@ -28,17 +28,26 @@ function shouldSendToOfficialPage(pathname: string, pageName: 'login' | 'recharg
 }
 
 function getOfficialAuthPath(search: string) {
-  const mode = new URLSearchParams(search).get('mode');
+  const params = new URLSearchParams(search);
+  const mode = params.get('mode');
+  const forceLogin = params.get('forceLogin') === '1';
+  const authParams = new URLSearchParams();
+
+  if (forceLogin) {
+    authParams.set('forceLogin', '1');
+  }
 
   if (mode === 'register') {
-    return '/register';
+    const query = authParams.toString();
+    return query ? `/register?${query}` : '/register';
   }
 
   if (mode === 'sms' || mode === 'wechat') {
-    return `/login?mode=${mode}`;
+    authParams.set('mode', mode);
   }
 
-  return '/login';
+  const query = authParams.toString();
+  return query ? `/login?${query}` : '/login';
 }
 
 function shouldSendToOfficialProfile(pathname: string) {
@@ -55,7 +64,7 @@ function resolveBrowserAccessFallback(pathname: string, search: string) {
   }
 
   if (shouldSendToOfficialRegister(pathname)) {
-    return buildOfficialPath('/register', { from: APP_MAIN_PATH });
+    return buildOfficialPath('/register?forceLogin=1', { from: APP_MAIN_PATH });
   }
 
   if (shouldSendToOfficialPage(pathname, 'recharge')) {
@@ -108,7 +117,7 @@ function App() {
       }
 
       if (!isLoggedIn()) {
-        redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
+        redirectToOfficial(buildOfficialPath('/login?forceLogin=1', { from: APP_MAIN_PATH }));
         return;
       }
 
@@ -132,7 +141,7 @@ function App() {
       <MainPage
         onLogout={() => {
           logout();
-          redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
+          redirectToOfficial(buildOfficialPath('/login?forceLogin=1', { from: APP_MAIN_PATH }));
         }}
       />
     </Suspense>

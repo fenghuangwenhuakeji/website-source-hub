@@ -45,7 +45,7 @@ export default function MainPage(_props: MainPageProps) {
 
     const validateAccess = async () => {
       if (!isLoggedIn()) {
-        redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
+        redirectToOfficial(buildOfficialPath('/login?forceLogin=1', { from: APP_MAIN_PATH }));
         return;
       }
 
@@ -55,7 +55,7 @@ export default function MainPage(_props: MainPageProps) {
       }
       if (access.needsLogin) {
         logout();
-        redirectToOfficial(buildOfficialPath('/login', { from: APP_MAIN_PATH }));
+        redirectToOfficial(buildOfficialPath('/login?forceLogin=1', { from: APP_MAIN_PATH }));
         return;
       }
 
