@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Card,
@@ -43,6 +43,12 @@ type WechatLoginState = {
   state: string;
 };
 
+type DesktopAuthCodeState = {
+  code: string;
+  expiresAt?: string;
+  expiresInSeconds?: number;
+};
+
 type DirectAuthMode = 'password' | 'sms' | 'register' | 'wechat';
 
 type CountdownKey = 'smsLogin' | 'register' | 'reset';
@@ -65,6 +71,14 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const forceLogin = useMemo(() => new URLSearchParams(location.search).get('forceLogin') === '1', [location.search]);
+  const desktopAuthMode = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('desktopAuth') === '1' || params.get('handoff') === 'longbook' || params.get('client') === 'longbook';
+  }, [location.search]);
+  const desktopProductId = useMemo(() => {
+    const params = new URLSearchParams(location.search);
+    return params.get('productId') || 'fenghuang';
+  }, [location.search]);
   const directAuthMode = useMemo(() => parseDirectAuthMode(location.search), [location.search]);
   const localAcceptanceMode = useMemo(() => isLocalAcceptanceMode(), [location.search]);
   const inviteSeed = useMemo(() => {
@@ -82,10 +96,12 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
   const [resetForm] = Form.useForm();
 
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => resolveThemeMode());
-  const [sessionChecking, setSessionChecking] = useState(() => !forceLogin);
+  const [sessionChecking, setSessionChecking] = useState(() => !(forceLogin && !desktopAuthMode));
   const [activeTab, setActiveTab] = useState<DirectAuthMode>(directAuthMode && directAuthMode !== 'wechat' ? directAuthMode : 'password');
   const [wechatLogin, setWechatLogin] = useState<WechatLoginState | null>(null);
   const [wechatMessage, setWechatMessage] = useState('点击按钮，在新窗口完成微信登录。');
+  const [desktopAuthCode, setDesktopAuthCode] = useState<DesktopAuthCodeState | null>(null);
+  const [desktopAuthLoading, setDesktopAuthLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [smsLoading, setSmsLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
@@ -118,10 +134,40 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     };
   }, []);
 
+  const issueDesktopAuthCode = useCallback(async () => {
+    try {
+      setDesktopAuthLoading(true);
+      const response: any = await api.auth.createDesktopAuthCode({ productId: desktopProductId });
+      if (!response?.success || !response?.data?.code) {
+        throw new Error(response?.message || '生成长篇授权码失败');
+      }
+
+      setDesktopAuthCode({
+        code: response.data.code,
+        expiresAt: response.data.expiresAt,
+        expiresInSeconds: response.data.expiresInSeconds,
+      });
+      return true;
+    } catch (error: any) {
+      message.error(error?.message || '生成长篇授权码失败');
+      return false;
+    } finally {
+      setDesktopAuthLoading(false);
+    }
+  }, [desktopProductId]);
+
   useEffect(() => {
     let cancelled = false;
 
     const syncExistingSession = async () => {
+      if (desktopAuthMode && isLoggedIn()) {
+        if (!cancelled) {
+          setSessionChecking(false);
+        }
+        await issueDesktopAuthCode();
+        return;
+      }
+
       if (forceLogin) {
         logout();
         if (!cancelled) {
@@ -161,7 +207,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     return () => {
       cancelled = true;
     };
-  }, [forceLogin, navigate]);
+  }, [desktopAuthMode, forceLogin, issueDesktopAuthCode, navigate]);
 
   useEffect(() => {
     applyThemeMode(themeMode);
@@ -255,7 +301,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
     }
   };
 
-  const finishLogin = (token: string, user?: unknown, refreshToken?: string) => {
+  const finishLogin = async (token: string, user?: unknown, refreshToken?: string) => {
     if (pollTimerRef.current) {
       window.clearInterval(pollTimerRef.current);
       pollTimerRef.current = null;
@@ -266,6 +312,11 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
       refreshToken: refreshToken ?? null,
       user: user ?? null,
     });
+
+    if (desktopAuthMode) {
+      await issueDesktopAuthCode();
+      return;
+    }
 
     onLoginSuccess?.();
     navigate(buildAcceptanceAwarePath('/main'), { replace: true });
@@ -313,7 +364,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
         if (data.status === 'success' && data.token) {
           stopWechatPolling();
           message.success('微信登录成功');
-          finishLogin(data.token, data.user, data.refreshToken);
+          void finishLogin(data.token, data.user, data.refreshToken);
         }
 
         if (data.status === 'expired') {
@@ -423,7 +474,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
       }
 
       message.success('登录成功');
-      finishLogin(response.data.token, response.data.user, response.data.refreshToken);
+      await finishLogin(response.data.token, response.data.user, response.data.refreshToken);
     } catch (error: any) {
       message.error(error?.message || '账号密码登录失败');
     } finally {
@@ -447,7 +498,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
       }
 
       message.success(response?.message || '登录成功');
-      finishLogin(response.data.token, response.data.user, response.data.refreshToken);
+      await finishLogin(response.data.token, response.data.user, response.data.refreshToken);
     } catch (error: any) {
       message.error(error?.message || '短信登录失败');
     } finally {
@@ -485,7 +536,7 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
       }
 
       message.success('注册成功');
-      finishLogin(response.data.token, response.data.user, response.data.refreshToken);
+      await finishLogin(response.data.token, response.data.user, response.data.refreshToken);
     } catch (error: any) {
       message.error(error?.message || '注册失败');
     } finally {
@@ -951,6 +1002,27 @@ export default function LoginGate({ onLoginSuccess }: LoginGateProps) {
               {showWechatOnly ? null : (
               <Col xs={24} lg={showSmsOnly || showRegisterOnly || showPasswordOnly ? 24 : 15}>
                 <Card className={`${styles.surfaceCard} ${styles.authPanelCard}`}>
+                  {desktopAuthMode ? (
+                    <div className={styles.desktopAuthPanel}>
+                      <div>
+                        <Text className={styles.smallText}>
+                          用官网账号登录后，把授权码填回长篇写作页面，即可同步当前账号和权益。
+                        </Text>
+                        {desktopAuthCode ? (
+                          <div className={styles.desktopAuthCode}>{desktopAuthCode.code}</div>
+                        ) : (
+                          <div className={styles.desktopAuthHint}>
+                            {desktopAuthLoading ? '正在生成授权码...' : '登录成功后会在这里显示授权码。'}
+                          </div>
+                        )}
+                      </div>
+                      {desktopAuthCode ? (
+                        <Button onClick={() => void issueDesktopAuthCode()} loading={desktopAuthLoading} className={styles.secondaryButton}>
+                          重新生成
+                        </Button>
+                      ) : null}
+                    </div>
+                  ) : null}
                   <Tabs
                     activeKey={activeTab}
                     onChange={(key) => setActiveTab(key as DirectAuthMode)}

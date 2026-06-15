@@ -6,11 +6,20 @@ export function PublicRoute() {
   const { isAuthenticated, user } = useAuthStore();
   const location = useLocation();
   const returnPath = getSafeReturnPath(location.search);
-  const forceLogin = new URLSearchParams(location.search).get('forceLogin') === '1';
+  const params = new URLSearchParams(location.search);
+  const forceLogin = params.get('forceLogin') === '1';
+  const desktopAuthMode =
+    params.get('desktopAuth') === '1' ||
+    params.get('handoff') === 'longbook' ||
+    params.get('client') === 'longbook';
   const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
   const isExternalReturn = isExternalAppReturnPath(returnPath);
 
   if (isAuthenticated && !forceLogin) {
+    if (isAuthRoute && desktopAuthMode) {
+      return <Outlet />;
+    }
+
     if (isAuthRoute && isExternalReturn) {
       return <Outlet />;
     }

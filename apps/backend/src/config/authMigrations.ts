@@ -131,6 +131,25 @@ async function ensureSqliteExperienceCodeTables(): Promise<void> {
   );
 }
 
+async function ensureSqliteDesktopAuthCodeTables(): Promise<void> {
+  await execute(
+    `CREATE TABLE IF NOT EXISTS desktop_auth_codes (
+      id TEXT PRIMARY KEY,
+      code_hash TEXT NOT NULL UNIQUE,
+      user_id TEXT NOT NULL,
+      product_id TEXT NOT NULL DEFAULT 'fenghuang',
+      status TEXT NOT NULL DEFAULT 'active',
+      expires_at TEXT NOT NULL,
+      used_at TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP
+    )`,
+  );
+
+  await execute('CREATE INDEX IF NOT EXISTS idx_desktop_auth_codes_user_id ON desktop_auth_codes(user_id)');
+  await execute('CREATE INDEX IF NOT EXISTS idx_desktop_auth_codes_expires_at ON desktop_auth_codes(expires_at)');
+  await execute('CREATE INDEX IF NOT EXISTS idx_desktop_auth_codes_status ON desktop_auth_codes(status)');
+}
+
 async function ensureSqliteLicenseCenterTables(): Promise<void> {
   await execute(
     `CREATE TABLE IF NOT EXISTS products (
@@ -633,6 +652,24 @@ async function ensureMySqlExperienceCodeTables(): Promise<void> {
   ]);
 }
 
+async function ensureMySqlDesktopAuthCodeTables(): Promise<void> {
+  await execute(
+    `CREATE TABLE IF NOT EXISTS desktop_auth_codes (
+      id VARCHAR(64) PRIMARY KEY,
+      code_hash VARCHAR(128) NOT NULL UNIQUE,
+      user_id VARCHAR(64) NOT NULL,
+      product_id VARCHAR(64) NOT NULL DEFAULT 'fenghuang',
+      status VARCHAR(16) NOT NULL DEFAULT 'active',
+      expires_at DATETIME NOT NULL,
+      used_at DATETIME NULL,
+      created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      INDEX idx_desktop_auth_codes_user_id (user_id),
+      INDEX idx_desktop_auth_codes_expires_at (expires_at),
+      INDEX idx_desktop_auth_codes_status (status)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`,
+  );
+}
+
 async function ensureMySqlLicenseCenterTables(): Promise<void> {
   await execute(
     `CREATE TABLE IF NOT EXISTS products (
@@ -919,6 +956,7 @@ export async function runAuthSystemMigrations(): Promise<void> {
   if (adapter === 'sqlite') {
     await ensureSqliteUserColumns();
     await ensureSqliteExperienceCodeTables();
+    await ensureSqliteDesktopAuthCodeTables();
     await ensureSqliteLicenseCenterTables();
     await runSqliteBackfill();
     await upsertRootAdminSqlite();
@@ -930,6 +968,7 @@ export async function runAuthSystemMigrations(): Promise<void> {
   await ensureMySqlRechargeColumns();
   await ensureMySqlReferralCompatibility();
   await ensureMySqlExperienceCodeTables();
+  await ensureMySqlDesktopAuthCodeTables();
   await ensureMySqlLicenseCenterTables();
   await runMySqlBackfill();
   await upsertRootAdminMySql();

@@ -209,6 +209,8 @@ const api = {
       request('/auth/change-password', { method: 'POST', body: data }),
     bindPhone: (data: { phoneNumber: string; code: string }) =>
       request('/auth/bind-phone', { method: 'POST', body: data }),
+    createDesktopAuthCode: (data?: { productId?: string }) =>
+      request('/auth/desktop-code', { method: 'POST', body: data || {} }),
     getPayoutProfile: () => request('/auth/payout-profile'),
     savePayoutProfile: (data: {
       realName: string;

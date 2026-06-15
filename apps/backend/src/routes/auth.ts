@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
+import { createHash, randomInt } from 'node:crypto';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../config/database.js';
 import { config } from '../config/index.js';
@@ -36,6 +37,8 @@ import {
 import { requireSupportedDesktopVersion } from '../utils/appVersion.js';
 
 const router = Router();
+const DESKTOP_AUTH_CODE_TTL_SECONDS = 5 * 60;
+const DESKTOP_AUTH_CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
 type UserRow = Record<string, any>;
 
@@ -89,6 +92,15 @@ interface ChangePasswordBody {
 interface BindPhoneBody {
   phoneNumber: string;
   code: string;
+}
+
+interface DesktopAuthCodeBody {
+  productId?: string;
+}
+
+interface DesktopAuthExchangeBody {
+  code?: string;
+  productId?: string;
 }
 
 interface PayoutProfileBody {
@@ -219,6 +231,45 @@ async function fetchUserById(userId: string): Promise<UserRow> {
   }
 
   return users[0];
+}
+
+function normalizeProductId(productId?: string): string {
+  const normalized = String(productId || DEFAULT_LICENSE_PRODUCT_ID).trim();
+  return normalized && normalized.length <= 64 ? normalized : DEFAULT_LICENSE_PRODUCT_ID;
+}
+
+function normalizeDesktopAuthCode(code?: string): string {
+  return String(code || '')
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, '');
+}
+
+function formatDesktopAuthCode(code: string): string {
+  return `${code.slice(0, 4)}-${code.slice(4)}`;
+}
+
+function generateDesktopAuthCode(): string {
+  let code = '';
+  for (let index = 0; index < 8; index += 1) {
+    code += DESKTOP_AUTH_CODE_ALPHABET[randomInt(DESKTOP_AUTH_CODE_ALPHABET.length)];
+  }
+  return code;
+}
+
+function hashDesktopAuthCode(code: string): string {
+  return createHash('sha256').update(code).digest('hex');
+}
+
+function toSqlDate(date: Date): string {
+  return date.toISOString().slice(0, 19).replace('T', ' ');
+}
+
+function createJwtPayload(user: UserRow) {
+  return {
+    userId: String(user.id),
+    username: user.username,
+    role: user.role || 'user',
+  };
 }
 
 async function handlePhoneLogin(phoneNumber: string, code: string, inviteCode?: string) {
@@ -686,6 +737,109 @@ router.post('/logout', authMiddleware, (_req: Request, res: Response) => {
     code: 'AUTH_LOGOUT_SUCCESS',
     message: 'Logged out successfully.',
   });
+});
+
+router.post('/desktop-code', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const authReq = req as AuthRequest;
+    const userId = authReq.user!.id;
+    const productId = normalizeProductId((req.body as DesktopAuthCodeBody)?.productId);
+    const code = generateDesktopAuthCode();
+    const now = new Date();
+    const expiresAt = new Date(now.getTime() + DESKTOP_AUTH_CODE_TTL_SECONDS * 1000);
+
+    await db.execute('DELETE FROM desktop_auth_codes WHERE expires_at <= ? OR used_at IS NOT NULL OR status <> ?', [
+      toSqlDate(now),
+      'active',
+    ]);
+
+    await db.execute(
+      `INSERT INTO desktop_auth_codes (
+        id, code_hash, user_id, product_id, status, expires_at, created_at
+      ) VALUES (?, ?, ?, ?, 'active', ?, ?)`,
+      [
+        uuidv4(),
+        hashDesktopAuthCode(code),
+        userId,
+        productId,
+        toSqlDate(expiresAt),
+        toSqlDate(now),
+      ],
+    );
+
+    res.json({
+      success: true,
+      code: 'AUTH_DESKTOP_CODE_CREATED',
+      message: 'Desktop login authorization code created.',
+      data: {
+        code: formatDesktopAuthCode(code),
+        expiresAt: expiresAt.toISOString(),
+        expiresInSeconds: DESKTOP_AUTH_CODE_TTL_SECONDS,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/desktop-exchange', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { code, productId } = req.body as DesktopAuthExchangeBody;
+    const normalizedCode = normalizeDesktopAuthCode(code);
+    if (normalizedCode.length !== 8) {
+      throw ApiError.badRequest('Invalid desktop authorization code.', 'AUTH_DESKTOP_CODE_INVALID');
+    }
+
+    const now = toSqlDate(new Date());
+    const rows = await db.query<UserRow[]>(
+      `SELECT id, user_id, product_id
+       FROM desktop_auth_codes
+       WHERE code_hash = ?
+         AND status = 'active'
+         AND used_at IS NULL
+         AND expires_at > ?
+       LIMIT 1`,
+      [hashDesktopAuthCode(normalizedCode), now],
+    );
+
+    const authCode = rows[0];
+    if (!authCode) {
+      throw ApiError.badRequest('Desktop authorization code is invalid or expired.', 'AUTH_DESKTOP_CODE_INVALID');
+    }
+
+    const requestedProductId = normalizeProductId(productId);
+    if (authCode.product_id && authCode.product_id !== requestedProductId) {
+      throw ApiError.badRequest('Desktop authorization code does not match this product.', 'AUTH_DESKTOP_CODE_PRODUCT_MISMATCH');
+    }
+
+    const consumeResult = await db.execute(
+      `UPDATE desktop_auth_codes
+       SET status = 'used', used_at = ?
+       WHERE id = ? AND status = 'active' AND used_at IS NULL`,
+      [now, authCode.id],
+    );
+    if (!consumeResult.affectedRows) {
+      throw ApiError.badRequest('Desktop authorization code is invalid or expired.', 'AUTH_DESKTOP_CODE_INVALID');
+    }
+
+    const user = await fetchUserById(String(authCode.user_id));
+    const payload = createJwtPayload(user);
+    const token = generateToken(payload);
+    const refreshToken = generateRefreshToken(payload);
+
+    res.json({
+      success: true,
+      code: 'AUTH_DESKTOP_EXCHANGE_SUCCESS',
+      message: 'Desktop login authorization code exchanged successfully.',
+      data: {
+        token,
+        refreshToken,
+        user: createAuthPayload(user),
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get('/me', authMiddleware, async (req: Request, res: Response, next: NextFunction) => {

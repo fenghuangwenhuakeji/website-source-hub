@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +22,11 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 type LoginMode = 'password' | 'sms' | 'wechat' | 'reset';
+type DesktopAuthCodeState = {
+  code: string;
+  expiresAt?: string;
+  expiresInSeconds?: number;
+};
 
 function normalizePhone(value: string) {
   return value.replace(/\D/g, '');
@@ -35,16 +40,35 @@ function parseLoginMode(search: string): LoginMode {
 export default function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setAuth } = useAuthStore();
+  const { setAuth, isAuthenticated } = useAuthStore();
   const returnPath = getSafeReturnPath(location.search);
+  const searchParams = new URLSearchParams(location.search);
+  const desktopAuthMode =
+    searchParams.get('desktopAuth') === '1' ||
+    searchParams.get('handoff') === 'longbook' ||
+    searchParams.get('client') === 'longbook';
+  const desktopProductId = searchParams.get('productId') || 'fenghuang';
   const mode = parseLoginMode(location.search);
-  const wechatLoginHref = buildPathWithFrom('/login?mode=wechat', returnPath);
-  const smsLoginHref = buildPathWithFrom('/login?mode=sms', returnPath);
-  const resetPasswordHref = buildPathWithFrom('/login?mode=reset', returnPath);
-  const passwordLoginHref = buildPathWithFrom('/login', returnPath);
-  const registerHref = buildPathWithFrom('/register', returnPath);
+  const buildAuthHref = (path: string) => {
+    const [pathname, query = ''] = path.split('?');
+    const params = new URLSearchParams(query);
+    if (desktopAuthMode) {
+      params.set('desktopAuth', '1');
+      params.set('client', 'longbook');
+      params.set('productId', desktopProductId);
+    }
+    const queryText = params.toString();
+    return buildPathWithFrom(queryText ? `${pathname}?${queryText}` : pathname, returnPath);
+  };
+  const wechatLoginHref = buildAuthHref('/login?mode=wechat');
+  const smsLoginHref = buildAuthHref('/login?mode=sms');
+  const resetPasswordHref = buildAuthHref('/login?mode=reset');
+  const passwordLoginHref = buildAuthHref('/login');
+  const registerHref = buildAuthHref('/register');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [desktopAuthCode, setDesktopAuthCode] = useState<DesktopAuthCodeState | null>(null);
+  const [desktopAuthLoading, setDesktopAuthLoading] = useState(false);
   const [smsPhone, setSmsPhone] = useState('');
   const [smsCode, setSmsCode] = useState('');
   const [smsSending, setSmsSending] = useState(false);
@@ -69,13 +93,43 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const finishAuth = (user: any, token: string, refreshToken?: string) => {
+  const issueDesktopAuthCode = useCallback(async () => {
+    try {
+      setDesktopAuthLoading(true);
+      setError('');
+      const response = await apiClient.post('/api/auth/desktop-code', {
+        productId: desktopProductId,
+      });
+      const payload = response.data?.data ?? response.data;
+      if (!payload?.code) {
+        throw new Error('生成长篇授权码失败');
+      }
+      setDesktopAuthCode({
+        code: payload.code,
+        expiresAt: payload.expiresAt,
+        expiresInSeconds: payload.expiresInSeconds,
+      });
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || '生成长篇授权码失败');
+      return false;
+    } finally {
+      setDesktopAuthLoading(false);
+    }
+  }, [desktopProductId]);
+
+  const finishAuth = async (user: any, token: string, refreshToken?: string) => {
     if (pollTimerRef.current) {
       window.clearInterval(pollTimerRef.current);
       pollTimerRef.current = null;
     }
 
     setAuth(user, token, refreshToken || '');
+    if (desktopAuthMode) {
+      await issueDesktopAuthCode();
+      return;
+    }
+
     if (user?.mustSetPassword) {
       navigate(buildPathWithFrom('/profile?forcePassword=1', returnPath), { replace: true });
       return;
@@ -124,7 +178,7 @@ export default function LoginPage() {
       if (!session) {
         throw new Error('Invalid login response');
       }
-      finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
+      await finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
     } catch (err: any) {
       setError(normalizeAuthError(err, '登录失败，请检查账号和密码'));
     } finally {
@@ -175,7 +229,7 @@ export default function LoginPage() {
       if (!session) {
         throw new Error('Invalid sms login response');
       }
-      finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
+      await finishAuth(session.user, session.tokens.token, session.tokens.refreshToken);
     } catch (err: any) {
       setError(normalizeAuthError(err, '短信登录失败'));
     } finally {
@@ -263,7 +317,7 @@ export default function LoginPage() {
         setWechatMessage(payload.message || '等待微信确认中...');
 
         if (payload.status === 'success' && payload.token && payload.user) {
-          finishAuth(payload.user, payload.token, payload.refreshToken);
+          void finishAuth(payload.user, payload.token, payload.refreshToken);
         }
 
         if (payload.status === 'expired' && pollTimerRef.current) {
@@ -324,6 +378,14 @@ export default function LoginPage() {
     void handleWechatLogin();
   }, [mode, wechatAuthUrl, wechatLoading]);
 
+  useEffect(() => {
+    if (!desktopAuthMode || !isAuthenticated || desktopAuthCode || desktopAuthLoading) {
+      return;
+    }
+
+    void issueDesktopAuthCode();
+  }, [desktopAuthCode, desktopAuthLoading, desktopAuthMode, isAuthenticated, issueDesktopAuthCode]);
+
   useEffect(
     () => () => {
       if (pollTimerRef.current) {
@@ -350,6 +412,25 @@ export default function LoginPage() {
                   ? '通过已绑定手机号验证身份，并设置新的登录密码。'
                   : '使用用户名、邮箱或手机号登录。'}
           </p>
+
+          {desktopAuthMode ? (
+            <div className="desktop-auth-panel">
+              <div>
+                <span>长篇本机登录授权</span>
+                <p>登录成功后，把这里显示的授权码填回长篇写作页面。</p>
+                {desktopAuthCode ? (
+                  <strong>{desktopAuthCode.code}</strong>
+                ) : (
+                  <em>{desktopAuthLoading ? '正在生成授权码...' : '完成登录后会显示授权码。'}</em>
+                )}
+              </div>
+              {desktopAuthCode ? (
+                <button type="button" className="btn btn-secondary btn-sm" disabled={desktopAuthLoading} onClick={() => void issueDesktopAuthCode()}>
+                  重新生成
+                </button>
+              ) : null}
+            </div>
+          ) : null}
 
           {error ? <div className="auth-alert">{error}</div> : null}
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,6 +31,11 @@ const registerSchema = z
   });
 
 type RegisterForm = z.infer<typeof registerSchema>;
+type DesktopAuthCodeState = {
+  code: string;
+  expiresAt?: string;
+  expiresInSeconds?: number;
+};
 
 function normalizeRegisterError(error: any) {
   const code = String(error?.response?.data?.code || error?.code || '').trim();
@@ -63,14 +68,33 @@ export default function RegisterPage() {
   const location = useLocation();
   const { setAuth } = useAuthStore();
   const returnPath = getSafeReturnPath(location.search);
-  const wechatLoginHref = buildPathWithFrom('/login?mode=wechat', returnPath);
-  const smsLoginHref = buildPathWithFrom('/login?mode=sms', returnPath);
-  const loginHref = buildPathWithFrom('/login', returnPath);
+  const searchParams = new URLSearchParams(location.search);
+  const desktopAuthMode =
+    searchParams.get('desktopAuth') === '1' ||
+    searchParams.get('handoff') === 'longbook' ||
+    searchParams.get('client') === 'longbook';
+  const desktopProductId = searchParams.get('productId') || 'fenghuang';
+  const buildAuthHref = (path: string) => {
+    const [pathname, query = ''] = path.split('?');
+    const params = new URLSearchParams(query);
+    if (desktopAuthMode) {
+      params.set('desktopAuth', '1');
+      params.set('client', 'longbook');
+      params.set('productId', desktopProductId);
+    }
+    const queryText = params.toString();
+    return buildPathWithFrom(queryText ? `${pathname}?${queryText}` : pathname, returnPath);
+  };
+  const wechatLoginHref = buildAuthHref('/login?mode=wechat');
+  const smsLoginHref = buildAuthHref('/login?mode=sms');
+  const loginHref = buildAuthHref('/login');
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [countdown, setCountdown] = useState(0);
+  const [desktopAuthCode, setDesktopAuthCode] = useState<DesktopAuthCodeState | null>(null);
+  const [desktopAuthLoading, setDesktopAuthLoading] = useState(false);
 
   const {
     register,
@@ -100,6 +124,32 @@ export default function RegisterPage() {
       });
     }
   };
+
+  const issueDesktopAuthCode = useCallback(async () => {
+    try {
+      setDesktopAuthLoading(true);
+      setError('');
+      const response = await apiClient.post('/api/auth/desktop-code', {
+        productId: desktopProductId,
+      });
+      const payload = response.data?.data ?? response.data;
+      if (!payload?.code) {
+        throw new Error('生成长篇授权码失败');
+      }
+      setDesktopAuthCode({
+        code: payload.code,
+        expiresAt: payload.expiresAt,
+        expiresInSeconds: payload.expiresInSeconds,
+      });
+      setNotice('注册成功。请把授权码填回长篇写作页面。');
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || err.response?.data?.error || err.message || '生成长篇授权码失败');
+      return false;
+    } finally {
+      setDesktopAuthLoading(false);
+    }
+  }, [desktopProductId]);
 
   const handleSendCode = async () => {
     const phone = getValues('phone')?.trim();
@@ -148,6 +198,10 @@ export default function RegisterPage() {
         throw new Error('Invalid register response');
       }
       setAuth(session.user, session.tokens.token, session.tokens.refreshToken);
+      if (desktopAuthMode) {
+        await issueDesktopAuthCode();
+        return;
+      }
       openReturnPath(returnPath, navigate);
     } catch (err: any) {
       setError(normalizeRegisterError(err));
@@ -164,6 +218,25 @@ export default function RegisterPage() {
             <div className="section-kicker">注册</div>
             <h1 className="auth-title">创建凤煌账号</h1>
             <p className="auth-form-copy">填写基础信息后即可完成注册，随后可进入官网工作台体验完整功能。</p>
+
+            {desktopAuthMode ? (
+              <div className="desktop-auth-panel">
+                <div>
+                  <span>长篇本机登录授权</span>
+                  <p>注册成功后，把这里显示的授权码填回长篇写作页面。</p>
+                  {desktopAuthCode ? (
+                    <strong>{desktopAuthCode.code}</strong>
+                  ) : (
+                    <em>{desktopAuthLoading ? '正在生成授权码...' : '完成注册后会显示授权码。'}</em>
+                  )}
+                </div>
+                {desktopAuthCode ? (
+                  <button type="button" className="btn btn-secondary btn-sm" disabled={desktopAuthLoading} onClick={() => void issueDesktopAuthCode()}>
+                    重新生成
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
 
             <form className="auth-form-body" onSubmit={handleSubmit(onSubmit)}>
               {error ? <div className="auth-alert">{error}</div> : null}

@@ -383,6 +383,34 @@
   padding: 28px !important;
 }
 
+.desktopAuthPanel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  border-radius: 16px;
+  background: rgba(8, 145, 178, 0.1);
+}
+
+.desktopAuthCode {
+  margin-top: 10px;
+  color: #f8fafc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.desktopAuthHint {
+  margin-top: 10px;
+  color: rgba(203, 213, 225, 0.76);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .focusedBrandRow,
 .focusedShortcutRow {
   display: flex;

@@ -1641,6 +1641,49 @@ button, input, textarea, select {
   gap: 1rem;
 }
 
+.desktop-auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0 0 1.25rem;
+  padding: 1rem;
+  border: 1px solid rgba(14, 165, 233, 0.24);
+  border-radius: var(--fh-radius-sm);
+  background: rgba(14, 165, 233, 0.08);
+}
+
+.desktop-auth-panel span {
+  display: block;
+  color: var(--fh-text);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.desktop-auth-panel p {
+  margin: 0.25rem 0 0;
+  color: var(--fh-text-muted);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.desktop-auth-panel strong {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--fh-text);
+  font-family: var(--fh-font-mono);
+  font-size: clamp(1.6rem, 6vw, 2.2rem);
+  letter-spacing: 0.08em;
+}
+
+.desktop-auth-panel em {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--fh-text-secondary);
+  font-style: normal;
+  font-weight: 600;
+}
+
 .auth-card {
   margin: 0 auto;
   width: 100%;
